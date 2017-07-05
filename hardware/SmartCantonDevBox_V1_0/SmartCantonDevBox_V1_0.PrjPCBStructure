@@ -1,0 +1,5 @@
+Record=TopLevelDocument|FileName=SmartCantonDevBox_TopPage.SchDoc
+Record=SheetSymbol|SourceDocument=SmartCantonDevBox_TopPage.SchDoc|Designator=GPS|SchDesignator=GPS|FileName=GPS.SchDoc|SymbolType=Normal|RawFileName=GPS.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol|RevisionGUID= |ItemGUID= |VaultGUID= 
+Record=SheetSymbol|SourceDocument=SmartCantonDevBox_TopPage.SchDoc|Designator=LoRa|SchDesignator=LoRa|FileName=LoRa.SchDoc|SymbolType=Normal|RawFileName=LoRa.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol|RevisionGUID= |ItemGUID= |VaultGUID= 
+Record=SheetSymbol|SourceDocument=SmartCantonDevBox_TopPage.SchDoc|Designator=Microcontroller|SchDesignator=Microcontroller|FileName=MCU.SchDoc|SymbolType=Normal|RawFileName=MCU.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol|RevisionGUID= |ItemGUID= |VaultGUID= 
+Record=SheetSymbol|SourceDocument=SmartCantonDevBox_TopPage.SchDoc|Designator=PowerSupply|SchDesignator=PowerSupply|FileName=PowerSupply.SchDoc|SymbolType=Normal|RawFileName=PowerSupply.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol|RevisionGUID= |ItemGUID= |VaultGUID= 
