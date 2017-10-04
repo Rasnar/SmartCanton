@@ -1,0 +1,555 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html">
+<style type="text/css">
+		h1, h2, h3, h4, h5, h6 {
+			font-family : segoe ui;
+			color : black;
+			background-color : #EDE7D9;
+			padding: 0.3em;
+		}
+
+		h1 {
+			font-size: 1.2em;
+		}		
+
+		h2 {
+			font-size: 1.2em;
+		}
+
+		body {
+			font-family : segoe ui;
+		}
+
+		td, th {
+			padding: 0.5em;
+			text-align : left;
+			width: 10em;
+		}
+		th {
+			background-color : #EEEEEE;
+
+		}
+		th.column1, td.column1 {
+			text-align: left;
+			width : auto;
+		}
+		table {
+			width : 100%;
+			font-size: 0.9em;
+		}
+
+		.DRC_summary_header {
+			padding-bottom : 0.1em;
+			border : 0px solid black;
+			width: 100%;
+			align: left;
+		}
+
+		.DRC_summary_header_col1,
+		.DRC_summary_header_col2, 
+		.DRC_summary_header_col3 {
+			color : black;
+			font-size:100%;
+			padding : 0em;
+			padding-top : 0.2em;
+			padding-bottom 0.2em;
+			border : 0px solid black;
+			vertical-align: top;
+			text-align: left;
+		}
+
+		.DRC_summary_header_col1 {
+			font-weight: bold;
+			width: 8em;
+		}
+
+		.DRC_summary_header_col2 {
+			width: 0.1em;
+		
+		}
+
+		.DRC_summary_header_col3 {
+			width : auto;
+		}
+
+		.header_holder {
+		    Width = 100%;
+		    border = 0px solid green;
+		    padding = 0;
+		}
+
+
+		.front_matter, .front_matter_column1, .front_matter_column2, .front_matter_column3
+		{
+			left : 0;
+			top : 0;
+			padding: 0em;
+			padding-top : 0.1em;
+			border : 0px solid black;
+			width : 100%;
+			vertical-align: top;
+			text-align: left;
+		}
+
+		.front_matter_column1 {
+			width : 8em;
+			font-weight: bold;
+		}
+
+		.front_matter_column2 {
+			width: 0.1em;
+		}
+
+		.front_matter_column3 {
+			width : auto;
+		}
+
+		.total_column1, .total_column {
+			font-weight : bold;
+		}
+		.total_column1 {
+			text-align : left;
+		}
+		.warning, .error {
+			color : red;
+			font-weight : bold;
+		}
+		tr.onmouseout_odd {
+			background-color : #white;
+		}
+		tr.onmouseout_even { 
+			background-color : #FAFAFA;
+		}
+		tr.onmouseover_odd, tr.onmouseover_even { 
+			background-color : #EEEEEE;
+		} 
+		a:link, a:visited, .q a:link,.q a:active,.q {
+			color: #21489e; 
+		}
+		a:link.callback, a:visited.callback { 
+			color: #21489e;
+		}
+		a:link.customize, a:visited.customize {
+			color: #C0C0C0;
+			position: absolute; 
+			right: 10px;
+		}	
+		p.contents_level1 {
+			font-weight : bold;
+			font-size : 110%;
+			margin : 0.5em;
+		}
+		p.contents_level2 {
+			position : relative;
+			left : 20px;
+			margin : 0.5em;
+		}
+	</style><script type="text/javascript">
+		function coordToMils(coord) {
+			var number = coord / 10000;
+			
+			if (number != number.toFixed(3))
+				number = number.toFixed(3);
+
+			return number + 'mil'
+		}
+
+		function coordToMM(coord) {
+			var number = 0.0254 * coord / 10000;
+			
+			if (number != number.toFixed(4))
+				number = number.toFixed(4);
+			
+			return number + 'mm'
+		}
+	
+		function convertCoord(coordNode, units) {
+			for (var i = 0; i < coordNode.childNodes.length; i++) {
+				coordNode.removeChild(coordNode.childNodes[i]);
+			}
+
+			var coord = coordNode.getAttribute('value');
+			if (coord != null) {
+				if (units == 'mm') {
+					textNode = document.createTextNode(coordToMM(coord));
+					coordNode.appendChild(textNode);
+				} else if (units == 'mil') {
+					textNode = document.createTextNode(coordToMils(coord));		
+					coordNode.appendChild(textNode);	
+				}
+			}
+		}
+	
+		function convertUnits(unitNode, units) {
+			for (var i = 0; i < unitNode.childNodes.length; i++) {
+				unitNode.removeChild(unitNode.childNodes[i]);		
+			}
+		
+			textNode = document.createTextNode(units); 
+			unitNode.appendChild(textNode);
+		}
+	
+		function changeUnits(radio_input, units) {
+			if (radio_input.checked) {
+			
+				var elements = document.getElementsByName('coordinate');
+				if (elements) {
+					for (var i = 0; i < elements.length; i++) {
+						convertCoord(elements[i], units);
+					}
+				}
+	
+				var elements = document.getElementsByName('units');
+				if (elements) {
+					for (var i = 0; i < elements.length; i++) {
+						convertUnits(elements[i], units);
+					}
+				}
+			}
+		}
+	</script><title>Design Rule Verification Report</title>
+</head>
+<body onload=""><img ALT="Altium" src="
+			file://C:\Users\Public\Documents\Altium\AD17\Templates\AD_logo.png
+		"><h1>Design Rule Verification Report</h1>
+<table class="header_holder">
+<td class="column1">
+<table class="front_matter">
+<tr class="front_matter">
+<td class="front_matter_column1">Date:</td>
+<td class="front_matter_column2"></td>
+<td class="front_matter_column3">24.09.2017</td>
+</tr>
+<tr class="front_matter">
+<td class="front_matter_column1">Time:</td>
+<td class="front_matter_column2"></td>
+<td class="front_matter_column3">18:55:51</td>
+</tr>
+<tr class="front_matter">
+<td class="front_matter_column1">Elapsed Time:</td>
+<td class="front_matter_column2"></td>
+<td class="front_matter_column3">00:00:02</td>
+</tr>
+<tr class="front_matter">
+<td class="front_matter_column1">Filename:</td>
+<td class="front_matter_column2"></td>
+<td class="front_matter_column3"><a href="file:///C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc" class="file"><acronym title="C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc">C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc</acronym></a></td>
+</tr>
+</table>
+</td>
+<td class="column2">
+<table class="DRC_summary_header">
+<tr>
+<td class="DRC_summary_header_col1">Warnings:</td>
+<td class="DRC_summary_header_col2"></td>
+<td class="DRC_summary_header_col3">0</td></tr>
+<tr>
+<td class="DRC_summary_header_col1">Rule Violations:</td>
+<td class="DRC_summary_header_col2"></td>
+<td class="DRC_summary_header_col3" style="color : red">69</td></tr>
+</table>
+</td>
+</table><a name="ID5RHDYKYGD02PHIN2YIMUOPC3VHVHCNFBGP3B02HKDIAHC44RJHP"><h2>Summary</h2></a><table>
+<tr>
+<th class="column1">Warnings</th>
+<th class="column2">Count</th>
+</tr>
+<tr>
+<td style="font-weight : bold; text-align : right" class="column1">Total</td>
+<td style="font-weight : bold" class="column2">0</td>
+</tr>
+</table><br><table>
+<tr>
+<th class="column1">Rule Violations</th>
+<th class="column2">Count</th>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#ID2ZIPGXGNWSW3IHDRZ51ZQWTLHEQRHW2WQKQDWKKENPWIPTMKB1LG">Clearance Constraint (Gap=0.157mm) (InNet('RF_IN')),(All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#IDGLHHXGJT0OLVO0VXRNKYVWZA2KDQTRP0JKPMFSB02MCSII4YLMGN">Clearance Constraint (Gap=0.15mm) (All),(All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#IDYZSAFNPZVZ54CPOFUU3DGTMYVBRWPVFB4XMLR4LGI201BMSB2SKC">Short-Circuit Constraint (Allowed=No) (All),(All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#IDMUTDEUKZY5ZTIOFGZBOJOTRA4D2430YVHBXYFIGZMGVRGUXHAZTD">Un-Routed Net Constraint ( (All) )</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#IDZQ2N0TEIM4LOGNF0LOSVSZY0HRBWSH4IVELPGGJL1YPH0REVXJN">Modified Polygon (Allow modified: No), (Allow shelved: No)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#IDSW1V3VKYISITKH3N3E4LLSXTZEWE511T1GPEM1P3LZ0V1JWOKRTH">Width Constraint (Min=89.00ohms) (Max=91.00ohms) (Preferred=90.00ohms) (InNetClass('USB_90R'))</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#IDGN1KX2GMHGZHIMKKLO1LGC4CQIAXNBHBXVH4A4NKVU1M5OJQNJ5C">Width Constraint (Min=0.1mm) (Max=2mm) (Preferred=0.2mm) (All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#IDJYYWNLTIF1FBGT1DSR1SVRUVJF1UCZZPLWXC1EEGAWN4N5VRFW1H">Width Constraint (Min=49.00ohms) (Max=51.00ohms) (Preferred=50.00ohms) (InNetClass('50R'))</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#IDMMMRUAVTCNWUNWZNGWPC15UFZEHEDGU0NP51UWH3N3C3Y2ICVFVB">Power Plane Connect Rule(Relief Connect )(Expansion=0.5mm) (Conductor Width=0.2mm) (Air Gap=0.2mm) (Entries=4) (All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#ID4LO2RIIMJX20DW3RDMK1BW5OLFAXO4PIL3MIP2JKBLBUUI5S3BCP">Hole Size Constraint (Min=0.025mm) (Max=10mm) (All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#IDGMZ5STBCQBWZGUZLPFZTNCDVGNF52WNRPE15DLPHNUAHXZMSJD2J">Hole To Hole Clearance (Gap=0.254mm) (All),(All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#IDHSLIRRSOMDXCOYTXV5ZAXOHFYJHGE2WHTXEIX3MIWKJ4J55UU4RJ">Minimum Solder Mask Sliver (Gap=0.2mm) (All),(All)</a></td>
+<td class="column2">4</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#IDGBQAMCLVAKQXNJRETDOCG5KJ4GZTWWY52HEHA2IKCQXCLIXI0TOG">Silk To Solder Mask (Clearance=0.1mm) (IsPad),(All)</a></td>
+<td class="column2">56</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#ID3TJOVR1YXMW2MMP3UT0LXZ3MDE4DQSNS4WSZEOOROCY1J0CUL4IP">Silk to Silk (Clearance=0.2mm) (All),(All)</a></td>
+<td class="column2">9</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#IDWG4W2A11LGYQMCJB1024GRXSWCBZVFLC3UGX1UG0TMZLJ1P1X4E">Net Antennae (Tolerance=0mm) (All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#IDQ1V2JFVQBNHCGREANSLKE4HUTCIK5BSNY00HITKHEOMTICHBXULP">Height Constraint (Min=0mm) (Max=30mm) (Prefered=12.7mm) (All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr>
+<td style="font-weight : bold; text-align : right" class="column1">Total</td>
+<td style="font-weight : bold" class="column2">69</td>
+</tr>
+</table><br><a name="IDHSLIRRSOMDXCOYTXV5ZAXOHFYJHGE2WHTXEIX3MIWKJ4J55UU4RJ"><table>
+<tr>
+<th style="text-align : left" colspan="1" class="rule">Minimum Solder Mask Sliver (Gap=0.2mm) (All),(All)</th>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=17894.209mil|Location2.X=17903.333mil|Location1.Y=17208.458mil|Location2.Y=17217.582mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=17894.209mil|Location2.X=17903.333mil|Location1.Y=17208.458mil|Location2.Y=17217.582mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.178mm &lt; 0.2mm) Between Pad U7-2(13.634mm,55.817mm) on Solder Side And Pad U7-1(13.634mm,55.334mm) on Solder Side [Bottom Solder] Mask Sliver [0.178mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=17894.209mil|Location2.X=17903.333mil|Location1.Y=17267.458mil|Location2.Y=17276.582mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=17894.209mil|Location2.X=17903.333mil|Location1.Y=17267.458mil|Location2.Y=17276.582mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.178mm &lt; 0.2mm) Between Pad U7-5(13.634mm,57.316mm) on Solder Side And Pad U7-4(13.634mm,56.833mm) on Solder Side [Bottom Solder] Mask Sliver [0.178mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=17974.209mil|Location2.X=17983.333mil|Location1.Y=17267.458mil|Location2.Y=17276.582mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=17974.209mil|Location2.X=17983.333mil|Location1.Y=17267.458mil|Location2.Y=17276.582mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.178mm &lt; 0.2mm) Between Pad U7-7(15.666mm,56.833mm) on Solder Side And Pad U7-6(15.666mm,57.316mm) on Solder Side [Bottom Solder] Mask Sliver [0.178mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=17974.209mil|Location2.X=17983.333mil|Location1.Y=17208.458mil|Location2.Y=17217.582mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=17974.209mil|Location2.X=17983.333mil|Location1.Y=17208.458mil|Location2.Y=17217.582mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.178mm &lt; 0.2mm) Between Pad U7-10(15.666mm,55.334mm) on Solder Side And Pad U7-9(15.666mm,55.817mm) on Solder Side [Bottom Solder] Mask Sliver [0.178mm]</acronym></a><br></td>
+</tr>
+</table></a><hr color="#EEEEEE"><a href="#top" style="font-size: 0.9em">Back to top</a><br><br><a name="IDGBQAMCLVAKQXNJRETDOCG5KJ4GZTWWY52HEHA2IKCQXCLIXI0TOG"><table>
+<tr>
+<th style="text-align : left" colspan="1" class="rule">Silk To Solder Mask (Clearance=0.1mm) (IsPad),(All)</th>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=18898.588mil|Location2.X=18903.775mil|Location1.Y=16808.706mil|Location2.Y=16813.893mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=18898.588mil|Location2.X=18903.775mil|Location1.Y=16808.706mil|Location2.Y=16813.893mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (38.595mm,45.284mm)(42.405mm,45.284mm) on Top Overlay And Pad TP16-1(40.5mm,46.3mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=18898.588mil|Location2.X=18903.775mil|Location1.Y=16881.776mil|Location2.Y=16886.964mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=18898.588mil|Location2.X=18903.775mil|Location1.Y=16881.776mil|Location2.Y=16886.964mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (38.595mm,47.316mm)(42.405mm,47.316mm) on Top Overlay And Pad TP16-1(40.5mm,46.3mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=17877.21mil|Location2.X=17882.397mil|Location1.Y=16765.123mil|Location2.Y=16770.31mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=17877.21mil|Location2.X=17882.397mil|Location1.Y=16765.123mil|Location2.Y=16770.31mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (12.734mm,44.095mm)(12.734mm,47.905mm) on Top Overlay And Pad TP15-1(13.75mm,46mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=17950.28mil|Location2.X=17955.467mil|Location1.Y=16765.123mil|Location2.Y=16770.31mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=17950.28mil|Location2.X=17955.467mil|Location1.Y=16765.123mil|Location2.Y=16770.31mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (14.766mm,44.095mm)(14.766mm,47.905mm) on Top Overlay And Pad TP15-1(13.75mm,46mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=18898.588mil|Location2.X=18903.775mil|Location1.Y=17005.556mil|Location2.Y=17010.743mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=18898.588mil|Location2.X=18903.775mil|Location1.Y=17005.556mil|Location2.Y=17010.743mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (38.595mm,50.284mm)(42.405mm,50.284mm) on Top Overlay And Pad TP14-1(40.5mm,51.3mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=18898.588mil|Location2.X=18903.775mil|Location1.Y=17078.627mil|Location2.Y=17083.814mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=18898.588mil|Location2.X=18903.775mil|Location1.Y=17078.627mil|Location2.Y=17083.814mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (38.595mm,52.316mm)(42.405mm,52.316mm) on Top Overlay And Pad TP14-1(40.5mm,51.3mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=17739.729mil|Location2.X=17744.916mil|Location1.Y=17287.446mil|Location2.Y=17292.633mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=17739.729mil|Location2.X=17744.916mil|Location1.Y=17287.446mil|Location2.Y=17292.633mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (9.16mm,57.444mm)(12.97mm,57.444mm) on Top Overlay And Pad TP13-1(11.065mm,58.46mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=17739.729mil|Location2.X=17744.916mil|Location1.Y=17360.517mil|Location2.Y=17365.704mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=17739.729mil|Location2.X=17744.916mil|Location1.Y=17360.517mil|Location2.Y=17365.704mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (9.16mm,59.476mm)(12.97mm,59.476mm) on Top Overlay And Pad TP13-1(11.065mm,58.46mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=17877.21mil|Location2.X=17882.397mil|Location1.Y=16952.131mil|Location2.Y=16957.318mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=17877.21mil|Location2.X=17882.397mil|Location1.Y=16952.131mil|Location2.Y=16957.318mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (12.734mm,48.845mm)(12.734mm,52.655mm) on Top Overlay And Pad TP12-1(13.75mm,50.75mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=17950.281mil|Location2.X=17955.467mil|Location1.Y=16952.131mil|Location2.Y=16957.318mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=17950.281mil|Location2.X=17955.467mil|Location1.Y=16952.131mil|Location2.Y=16957.318mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (14.766mm,48.845mm)(14.766mm,52.655mm) on Top Overlay And Pad TP12-1(13.75mm,50.75mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19101.343mil|Location2.X=19106.531mil|Location1.Y=17084.296mil|Location2.Y=17089.483mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19101.343mil|Location2.X=19106.531mil|Location1.Y=17084.296mil|Location2.Y=17089.483mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (43.745mm,52.284mm)(47.555mm,52.284mm) on Top Overlay And Pad TP11-1(45.65mm,53.3mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19101.343mil|Location2.X=19106.531mil|Location1.Y=17157.367mil|Location2.Y=17162.554mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19101.343mil|Location2.X=19106.531mil|Location1.Y=17157.367mil|Location2.Y=17162.554mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (43.745mm,54.316mm)(47.555mm,54.316mm) on Top Overlay And Pad TP11-1(45.65mm,53.3mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19101.343mil|Location2.X=19106.531mil|Location1.Y=16789.02mil|Location2.Y=16794.208mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19101.343mil|Location2.X=19106.531mil|Location1.Y=16789.02mil|Location2.Y=16794.208mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (43.745mm,44.784mm)(47.555mm,44.784mm) on Top Overlay And Pad TP10-1(45.65mm,45.8mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19101.343mil|Location2.X=19106.531mil|Location1.Y=16862.091mil|Location2.Y=16867.278mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19101.343mil|Location2.X=19106.531mil|Location1.Y=16862.091mil|Location2.Y=16867.278mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (43.745mm,46.816mm)(47.555mm,46.816mm) on Top Overlay And Pad TP10-1(45.65mm,45.8mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=18733.509mil|Location2.X=18738.696mil|Location1.Y=16420.635mil|Location2.Y=16425.822mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=18733.509mil|Location2.X=18738.696mil|Location1.Y=16420.635mil|Location2.Y=16425.822mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (34.484mm,35.345mm)(34.484mm,39.155mm) on Top Overlay And Pad TP9-1(35.5mm,37.25mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=18806.58mil|Location2.X=18811.767mil|Location1.Y=16420.635mil|Location2.Y=16425.822mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=18806.58mil|Location2.X=18811.767mil|Location1.Y=16420.635mil|Location2.Y=16425.822mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (36.516mm,35.345mm)(36.516mm,39.155mm) on Top Overlay And Pad TP9-1(35.5mm,37.25mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=18733.509mil|Location2.X=18738.696mil|Location1.Y=16204.1mil|Location2.Y=16209.287mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=18733.509mil|Location2.X=18738.696mil|Location1.Y=16204.1mil|Location2.Y=16209.287mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (34.484mm,29.845mm)(34.484mm,33.655mm) on Top Overlay And Pad TP8-1(35.5mm,31.75mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=18806.58mil|Location2.X=18811.767mil|Location1.Y=16204.1mil|Location2.Y=16209.287mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=18806.58mil|Location2.X=18811.767mil|Location1.Y=16204.1mil|Location2.Y=16209.287mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (36.516mm,29.845mm)(36.516mm,33.655mm) on Top Overlay And Pad TP8-1(35.5mm,31.75mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=18647.879mil|Location2.X=18653.066mil|Location1.Y=15989.532mil|Location2.Y=15994.719mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=18647.879mil|Location2.X=18653.066mil|Location1.Y=15989.532mil|Location2.Y=15994.719mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (32.309mm,24.395mm)(32.309mm,28.205mm) on Top Overlay And Pad TP7-1(33.325mm,26.3mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=18720.95mil|Location2.X=18726.137mil|Location1.Y=15989.532mil|Location2.Y=15994.719mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=18720.95mil|Location2.X=18726.137mil|Location1.Y=15989.532mil|Location2.Y=15994.719mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (34.341mm,24.395mm)(34.341mm,28.205mm) on Top Overlay And Pad TP7-1(33.325mm,26.3mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=18831.934mil|Location2.X=18837.121mil|Location1.Y=15987.564mil|Location2.Y=15992.751mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=18831.934mil|Location2.X=18837.121mil|Location1.Y=15987.564mil|Location2.Y=15992.751mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (36.984mm,24.345mm)(36.984mm,28.155mm) on Top Overlay And Pad TP6-1(38mm,26.25mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=18905.005mil|Location2.X=18910.192mil|Location1.Y=15987.564mil|Location2.Y=15992.751mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=18905.005mil|Location2.X=18910.192mil|Location1.Y=15987.564mil|Location2.Y=15992.751mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (39.016mm,24.345mm)(39.016mm,28.155mm) on Top Overlay And Pad TP6-1(38mm,26.25mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19101.343mil|Location2.X=19106.531mil|Location1.Y=17182.721mil|Location2.Y=17187.908mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19101.343mil|Location2.X=19106.531mil|Location1.Y=17182.721mil|Location2.Y=17187.908mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (43.745mm,54.784mm)(47.555mm,54.784mm) on Top Overlay And Pad TP5-1(45.65mm,55.8mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19101.343mil|Location2.X=19106.531mil|Location1.Y=17255.792mil|Location2.Y=17260.979mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19101.343mil|Location2.X=19106.531mil|Location1.Y=17255.792mil|Location2.Y=17260.979mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (43.745mm,56.816mm)(47.555mm,56.816mm) on Top Overlay And Pad TP5-1(45.65mm,55.8mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19101.343mil|Location2.X=19106.531mil|Location1.Y=16985.871mil|Location2.Y=16991.058mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19101.343mil|Location2.X=19106.531mil|Location1.Y=16985.871mil|Location2.Y=16991.058mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (43.745mm,49.784mm)(47.555mm,49.784mm) on Top Overlay And Pad TP4-1(45.65mm,50.8mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19101.343mil|Location2.X=19106.531mil|Location1.Y=17058.942mil|Location2.Y=17064.128mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19101.343mil|Location2.X=19106.531mil|Location1.Y=17058.942mil|Location2.Y=17064.128mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (43.745mm,51.816mm)(47.555mm,51.816mm) on Top Overlay And Pad TP4-1(45.65mm,50.8mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19101.343mil|Location2.X=19106.531mil|Location1.Y=16887.446mil|Location2.Y=16892.633mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19101.343mil|Location2.X=19106.531mil|Location1.Y=16887.446mil|Location2.Y=16892.633mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (43.745mm,47.284mm)(47.555mm,47.284mm) on Top Overlay And Pad TP3-1(45.65mm,48.3mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19101.343mil|Location2.X=19106.531mil|Location1.Y=16960.517mil|Location2.Y=16965.703mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19101.343mil|Location2.X=19106.531mil|Location1.Y=16960.517mil|Location2.Y=16965.703mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (43.745mm,49.316mm)(47.555mm,49.316mm) on Top Overlay And Pad TP3-1(45.65mm,48.3mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=18713.824mil|Location2.X=18719.011mil|Location1.Y=17631.265mil|Location2.Y=17636.452mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=18713.824mil|Location2.X=18719.011mil|Location1.Y=17631.265mil|Location2.Y=17636.452mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (33.984mm,66.095mm)(33.984mm,69.905mm) on Top Overlay And Pad TP2-1(35mm,68mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=18786.895mil|Location2.X=18792.082mil|Location1.Y=17631.265mil|Location2.Y=17636.452mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=18786.895mil|Location2.X=18792.082mil|Location1.Y=17631.265mil|Location2.Y=17636.452mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (36.016mm,66.095mm)(36.016mm,69.905mm) on Top Overlay And Pad TP2-1(35mm,68mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19101.343mil|Location2.X=19106.531mil|Location1.Y=17281.146mil|Location2.Y=17286.333mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19101.343mil|Location2.X=19106.531mil|Location1.Y=17281.146mil|Location2.Y=17286.333mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (43.745mm,57.284mm)(47.555mm,57.284mm) on Top Overlay And Pad TP1-1(45.65mm,58.3mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19101.343mil|Location2.X=19106.531mil|Location1.Y=17354.217mil|Location2.Y=17359.404mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19101.343mil|Location2.X=19106.531mil|Location1.Y=17354.217mil|Location2.Y=17359.404mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (43.745mm,59.316mm)(47.555mm,59.316mm) on Top Overlay And Pad TP1-1(45.65mm,58.3mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=18675.353mil|Location2.X=18678.978mil|Location1.Y=16746.613mil|Location2.Y=16750.237mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=18675.353mil|Location2.X=18678.978mil|Location1.Y=16746.613mil|Location2.Y=16750.237mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.1mm) Between Track (32.25mm,43.775mm)(34.75mm,43.775mm) on Top Overlay And Pad B6-1(33.5mm,43.575mm) on Component Side [Top Overlay] to [Top Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=18708.818mil|Location2.X=18712.442mil|Location1.Y=16864.723mil|Location2.Y=16868.348mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=18708.818mil|Location2.X=18712.442mil|Location1.Y=16864.723mil|Location2.Y=16868.348mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.1mm) Between Track (32.25mm,46.775mm)(34.75mm,46.775mm) on Top Overlay And Pad B6-2(33.5mm,46.975mm) on Component Side [Top Overlay] to [Top Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=18372.203mil|Location2.X=18375.828mil|Location1.Y=15245.629mil|Location2.Y=15249.253mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=18372.203mil|Location2.X=18375.828mil|Location1.Y=15245.629mil|Location2.Y=15249.253mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.1mm) Between Track (24.55mm,5.65mm)(27.05mm,5.65mm) on Top Overlay And Pad B5-1(25.8mm,5.45mm) on Component Side [Top Overlay] to [Top Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=18405.668mil|Location2.X=18409.292mil|Location1.Y=15363.739mil|Location2.Y=15367.363mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=18405.668mil|Location2.X=18409.292mil|Location1.Y=15363.739mil|Location2.Y=15367.363mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.1mm) Between Track (24.55mm,8.65mm)(27.05mm,8.65mm) on Top Overlay And Pad B5-2(25.8mm,8.85mm) on Component Side [Top Overlay] to [Top Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19571.022mil|Location2.X=19574.647mil|Location1.Y=16409.015mil|Location2.Y=16412.639mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19571.022mil|Location2.X=19574.647mil|Location1.Y=16409.015mil|Location2.Y=16412.639mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.1mm) Between Track (55.825mm,34.8mm)(55.825mm,37.3mm) on Top Overlay And Pad B4-1(56.025mm,36.05mm) on Component Side [Top Overlay] to [Top Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19452.912mil|Location2.X=19456.537mil|Location1.Y=16409.015mil|Location2.Y=16412.639mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19452.912mil|Location2.X=19456.537mil|Location1.Y=16409.015mil|Location2.Y=16412.639mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.1mm) Between Track (52.825mm,34.8mm)(52.825mm,37.3mm) on Top Overlay And Pad B4-2(52.625mm,36.05mm) on Component Side [Top Overlay] to [Top Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19571.022mil|Location2.X=19574.647mil|Location1.Y=16281.062mil|Location2.Y=16284.686mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19571.022mil|Location2.X=19574.647mil|Location1.Y=16281.062mil|Location2.Y=16284.686mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.1mm) Between Track (55.825mm,31.55mm)(55.825mm,34.05mm) on Top Overlay And Pad B3-1(56.025mm,32.8mm) on Component Side [Top Overlay] to [Top Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19452.912mil|Location2.X=19456.537mil|Location1.Y=16281.062mil|Location2.Y=16284.686mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19452.912mil|Location2.X=19456.537mil|Location1.Y=16281.062mil|Location2.Y=16284.686mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.1mm) Between Track (52.825mm,31.55mm)(52.825mm,34.05mm) on Top Overlay And Pad B3-2(52.625mm,32.8mm) on Component Side [Top Overlay] to [Top Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19571.022mil|Location2.X=19574.647mil|Location1.Y=16153.109mil|Location2.Y=16156.734mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19571.022mil|Location2.X=19574.647mil|Location1.Y=16153.109mil|Location2.Y=16156.734mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.1mm) Between Track (55.825mm,28.3mm)(55.825mm,30.8mm) on Top Overlay And Pad B2-1(56.025mm,29.55mm) on Component Side [Top Overlay] to [Top Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19452.912mil|Location2.X=19456.537mil|Location1.Y=16153.109mil|Location2.Y=16156.734mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19452.912mil|Location2.X=19456.537mil|Location1.Y=16153.109mil|Location2.Y=16156.734mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.1mm) Between Track (52.825mm,28.3mm)(52.825mm,30.8mm) on Top Overlay And Pad B2-2(52.625mm,29.55mm) on Component Side [Top Overlay] to [Top Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19571.022mil|Location2.X=19574.647mil|Location1.Y=16025.156mil|Location2.Y=16028.781mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19571.022mil|Location2.X=19574.647mil|Location1.Y=16025.156mil|Location2.Y=16028.781mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.1mm) Between Track (55.825mm,25.05mm)(55.825mm,27.55mm) on Top Overlay And Pad B1-1(56.025mm,26.3mm) on Component Side [Top Overlay] to [Top Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19452.912mil|Location2.X=19456.537mil|Location1.Y=16025.156mil|Location2.Y=16028.781mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19452.912mil|Location2.X=19456.537mil|Location1.Y=16025.156mil|Location2.Y=16028.781mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.1mm) Between Track (52.825mm,25.05mm)(52.825mm,27.55mm) on Top Overlay And Pad B1-2(52.625mm,26.3mm) on Component Side [Top Overlay] to [Top Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19757.131mil|Location2.X=19762.318mil|Location1.Y=15702.131mil|Location2.Y=15707.318mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19757.131mil|Location2.X=19762.318mil|Location1.Y=15702.131mil|Location2.Y=15707.318mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (60.484mm,17.095mm)(60.484mm,20.905mm) on Top Overlay And Pad TP17-1(61.5mm,19mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19830.202mil|Location2.X=19835.389mil|Location1.Y=15702.131mil|Location2.Y=15707.318mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19830.202mil|Location2.X=19835.389mil|Location1.Y=15702.131mil|Location2.Y=15707.318mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (62.516mm,17.095mm)(62.516mm,20.905mm) on Top Overlay And Pad TP17-1(61.5mm,19mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19265.005mil|Location2.X=19270.192mil|Location1.Y=15702.131mil|Location2.Y=15707.318mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19265.005mil|Location2.X=19270.192mil|Location1.Y=15702.131mil|Location2.Y=15707.318mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (47.984mm,17.095mm)(47.984mm,20.905mm) on Top Overlay And Pad TP18-1(49mm,19mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19338.076mil|Location2.X=19343.263mil|Location1.Y=15702.131mil|Location2.Y=15707.318mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19338.076mil|Location2.X=19343.263mil|Location1.Y=15702.131mil|Location2.Y=15707.318mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (50.016mm,17.095mm)(50.016mm,20.905mm) on Top Overlay And Pad TP18-1(49mm,19mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19363.43mil|Location2.X=19368.617mil|Location1.Y=15702.131mil|Location2.Y=15707.318mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19363.43mil|Location2.X=19368.617mil|Location1.Y=15702.131mil|Location2.Y=15707.318mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (50.484mm,17.095mm)(50.484mm,20.905mm) on Top Overlay And Pad TP19-1(51.5mm,19mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19436.501mil|Location2.X=19441.688mil|Location1.Y=15702.131mil|Location2.Y=15707.318mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19436.501mil|Location2.X=19441.688mil|Location1.Y=15702.131mil|Location2.Y=15707.318mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (52.516mm,17.095mm)(52.516mm,20.905mm) on Top Overlay And Pad TP19-1(51.5mm,19mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19560.281mil|Location2.X=19565.468mil|Location1.Y=15702.131mil|Location2.Y=15707.318mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19560.281mil|Location2.X=19565.468mil|Location1.Y=15702.131mil|Location2.Y=15707.318mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (55.484mm,17.095mm)(55.484mm,20.905mm) on Top Overlay And Pad TP20-1(56.5mm,19mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19633.352mil|Location2.X=19638.538mil|Location1.Y=15702.131mil|Location2.Y=15707.318mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19633.352mil|Location2.X=19638.538mil|Location1.Y=15702.131mil|Location2.Y=15707.318mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (57.516mm,17.095mm)(57.516mm,20.905mm) on Top Overlay And Pad TP20-1(56.5mm,19mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19461.856mil|Location2.X=19467.042mil|Location1.Y=15702.131mil|Location2.Y=15707.318mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19461.856mil|Location2.X=19467.042mil|Location1.Y=15702.131mil|Location2.Y=15707.318mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (52.984mm,17.095mm)(52.984mm,20.905mm) on Top Overlay And Pad TP21-1(54mm,19mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19534.926mil|Location2.X=19540.113mil|Location1.Y=15702.131mil|Location2.Y=15707.318mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19534.926mil|Location2.X=19540.113mil|Location1.Y=15702.131mil|Location2.Y=15707.318mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (55.016mm,17.095mm)(55.016mm,20.905mm) on Top Overlay And Pad TP21-1(54mm,19mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19658.706mil|Location2.X=19663.893mil|Location1.Y=15702.131mil|Location2.Y=15707.318mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19658.706mil|Location2.X=19663.893mil|Location1.Y=15702.131mil|Location2.Y=15707.318mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (57.984mm,17.095mm)(57.984mm,20.905mm) on Top Overlay And Pad TP22-1(59mm,19mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19731.777mil|Location2.X=19736.964mil|Location1.Y=15702.131mil|Location2.Y=15707.318mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19731.777mil|Location2.X=19736.964mil|Location1.Y=15702.131mil|Location2.Y=15707.318mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.076mm &lt; 0.1mm) Between Track (60.016mm,17.095mm)(60.016mm,20.905mm) on Top Overlay And Pad TP22-1(59mm,19mm) on Component Side [Top Overlay] to [Top Solder] clearance [0.076mm]</acronym></a><br></td>
+</tr>
+</table></a><hr color="#EEEEEE"><a href="#top" style="font-size: 0.9em">Back to top</a><br><br><a name="ID3TJOVR1YXMW2MMP3UT0LXZ3MDE4DQSNS4WSZEOOROCY1J0CUL4IP"><table>
+<tr>
+<th style="text-align : left" colspan="1" class="rule">Silk to Silk (Clearance=0.2mm) (All),(All)</th>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=18901.904mil|Location2.X=18911.028mil|Location1.Y=16888.7mil|Location2.Y=16897.824mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=18901.904mil|Location2.X=18911.028mil|Location1.Y=16888.7mil|Location2.Y=16897.824mil|Absolute=True">Silk To Silk Clearance Constraint: (0.176mm &lt; 0.2mm) Between Text "VCC_3.3" (36.5mm,47.75mm) on Top Overlay And Track (38.595mm,47.316mm)(42.405mm,47.316mm) on Top Overlay Silk Text to Silk Clearance [0.176mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=17955.41mil|Location2.X=17965.334mil|Location1.Y=16629.221mil|Location2.Y=16638.345mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=17955.41mil|Location2.X=17965.334mil|Location1.Y=16629.221mil|Location2.Y=16638.345mil|Absolute=True">Silk To Silk Clearance Constraint: (0.197mm &lt; 0.2mm) Between Text "U8" (14.8mm,39.9mm) on Bottom Overlay And Track (14.925mm,41.05mm)(15.175mm,41.05mm) on Bottom Overlay Silk Text to Silk Clearance [0.197mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=17916.382mil|Location2.X=17925.506mil|Location1.Y=16629.193mil|Location2.Y=16638.317mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=17916.382mil|Location2.X=17925.506mil|Location1.Y=16629.193mil|Location2.Y=16638.317mil|Absolute=True">Silk To Silk Clearance Constraint: (0.175mm &lt; 0.2mm) Between Text "U8" (14.8mm,39.9mm) on Bottom Overlay And Track (13.075mm,41.05mm)(13.925mm,41.05mm) on Bottom Overlay Silk Text to Silk Clearance [0.175mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=17730.032mil|Location2.X=17739.156mil|Location1.Y=16880.182mil|Location2.Y=16889.306mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=17730.032mil|Location2.X=17739.156mil|Location1.Y=16880.182mil|Location2.Y=16889.306mil|Absolute=True">Silk To Silk Clearance Constraint: (0.175mm &lt; 0.2mm) Between Text "D1" (10.2mm,47.4mm) on Bottom Overlay And Track (9.1mm,47.05mm)(9.4mm,47.05mm) on Bottom Overlay Silk Text to Silk Clearance [0.175mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=17729.416mil|Location2.X=17738.54mil|Location1.Y=16880.18mil|Location2.Y=16889.304mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=17729.416mil|Location2.X=17738.54mil|Location1.Y=16880.18mil|Location2.Y=16889.304mil|Absolute=True">Silk To Silk Clearance Constraint: (0.177mm &lt; 0.2mm) Between Text "D1" (10.2mm,47.4mm) on Bottom Overlay And Track (9.1mm,43.95mm)(9.1mm,47.05mm) on Bottom Overlay Silk Text to Silk Clearance [0.177mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=17740.517mil|Location2.X=17749.641mil|Location1.Y=16880.182mil|Location2.Y=16889.306mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=17740.517mil|Location2.X=17749.641mil|Location1.Y=16880.182mil|Location2.Y=16889.306mil|Absolute=True">Silk To Silk Clearance Constraint: (0.175mm &lt; 0.2mm) Between Text "D1" (10.2mm,47.4mm) on Bottom Overlay And Track (9.4mm,43.95mm)(9.4mm,47.05mm) on Bottom Overlay Silk Text to Silk Clearance [0.175mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19798.904mil|Location2.X=19808.028mil|Location1.Y=15978.753mil|Location2.Y=15987.877mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=19798.904mil|Location2.X=19808.028mil|Location1.Y=15978.753mil|Location2.Y=15987.877mil|Absolute=True">Silk To Silk Clearance Constraint: (0.195mm &lt; 0.2mm) Between Text "SSEL" (61.75mm,21.25mm) on Top Overlay And Text "R10" (59.75mm,24.5mm) on Top Overlay Silk Text to Silk Clearance [0.195mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=18058.109mil|Location2.X=18067.233mil|Location1.Y=17376.732mil|Location2.Y=17385.856mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=18058.109mil|Location2.X=18067.233mil|Location1.Y=17376.732mil|Location2.Y=17385.856mil|Absolute=True">Silk To Silk Clearance Constraint: (0.15mm &lt; 0.2mm) Between Text "DS10" (18.6mm,58.9mm) on Bottom Overlay And Text "R34" (18mm,60mm) on Bottom Overlay Silk Text to Silk Clearance [0.15mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=17806.14mil|Location2.X=17815.917mil|Location1.Y=17065.709mil|Location2.Y=17074.833mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=17806.14mil|Location2.X=17815.917mil|Location1.Y=17065.709mil|Location2.Y=17074.833mil|Absolute=True">Silk To Silk Clearance Constraint: (0.178mm &lt; 0.2mm) Between Text "C42" (12.2mm,51mm) on Bottom Overlay And Text "C44" (11mm,52.1mm) on Bottom Overlay Silk Text to Silk Clearance [0.178mm]</acronym></a><br></td>
+</tr>
+</table></a><hr color="#EEEEEE"><a href="#top" style="font-size: 0.9em">Back to top</a><br><br></body>
+</html>

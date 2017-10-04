@@ -1,0 +1,517 @@
+*************************************************************
+FileName = SmartCantonDevBox.GBR
+AutoAperture = True
+*************************************************************
+Generating : Component Side
+      File : SmartCantonDevBox.GTL
+
+    Adding Layer      : Component Side
+
+    Adding Layer      : Mechanical 2
+
+    Adding Layer      : Multi-Layer
+
+
+Used DCodes :
+    D10
+    D11
+    D12
+    D13
+    D14
+    D15
+    D16
+    D17
+    D18
+    D19
+    D20
+    D21
+    D22
+    D23
+    D24
+    D25
+    D26
+    D27
+    D28
+    D29
+    D30
+    D31
+    D32
+    D33
+    D34
+    D35
+    D36
+    D37
+    D38
+    D39
+    D40
+    D41
+    D42
+    D43
+    D44
+    D45
+    D46
+    D47
+    D48
+    D49
+    D50
+    D51
+    D52
+    D53
+    D54
+    D55
+    D56
+    D57
+    D58
+    D59
+    D60
+    D61
+    D62
+    D63
+    D64
+    D65
+*************************************************************
+
+*************************************************************
+Generating : Ground Plane
+      File : SmartCantonDevBox.GP1
+
+    Adding Layer      : Ground Plane
+
+    Adding Layer      : Mechanical 2
+
+    Adding Layer      : Multi-Layer
+
+
+Used DCodes :
+    D46
+    D48
+    D49
+    D66
+    D67
+    D68
+    D69
+    D70
+    D71
+    D72
+    D73
+    D74
+    D75
+    D76
+    D77
+    D78
+    D79
+    D80
+    D81
+    D82
+*************************************************************
+
+*************************************************************
+Generating : Power Plane
+      File : SmartCantonDevBox.GP2
+
+    Adding Layer      : Power Plane
+
+    Adding Layer      : Mechanical 2
+
+    Adding Layer      : Multi-Layer
+
+
+Used DCodes :
+    D46
+    D48
+    D49
+    D66
+    D67
+    D68
+    D69
+    D70
+    D72
+    D76
+    D77
+    D78
+    D81
+    D82
+    D83
+    D84
+    D85
+    D86
+*************************************************************
+
+*************************************************************
+Generating : Solder Side
+      File : SmartCantonDevBox.GBL
+
+    Adding Layer      : Solder Side
+
+    Adding Layer      : Mechanical 2
+
+    Adding Layer      : Multi-Layer
+
+
+Used DCodes :
+    D25
+    D26
+    D34
+    D35
+    D42
+    D46
+    D47
+    D48
+    D49
+    D51
+    D52
+    D55
+    D56
+    D57
+    D58
+    D59
+    D60
+    D61
+    D62
+    D63
+    D64
+    D65
+    D87
+    D88
+    D89
+    D90
+    D91
+    D92
+    D93
+    D94
+    D95
+    D96
+*************************************************************
+
+*************************************************************
+Generating : Bottom Pad Master
+      File : SmartCantonDevBox.GPB
+
+    Adding Layer      : Solder Side
+
+    Adding Layer      : Multi-Layer
+
+    Adding Layer      : Mechanical 2
+
+
+Used DCodes :
+    D25
+    D26
+    D34
+    D35
+    D42
+    D49
+    D55
+    D56
+    D57
+    D58
+    D59
+    D60
+    D87
+    D88
+    D89
+    D90
+    D91
+    D92
+    D93
+    D94
+    D95
+    D96
+*************************************************************
+
+*************************************************************
+Generating : Top Pad Master
+      File : SmartCantonDevBox.GPT
+
+    Adding Layer      : Component Side
+
+    Adding Layer      : Multi-Layer
+
+    Adding Layer      : Mechanical 2
+
+
+Used DCodes :
+    D11
+    D12
+    D13
+    D14
+    D15
+    D16
+    D17
+    D18
+    D19
+    D20
+    D21
+    D22
+    D23
+    D24
+    D25
+    D26
+    D27
+    D28
+    D29
+    D30
+    D31
+    D32
+    D33
+    D34
+    D35
+    D36
+    D37
+    D38
+    D39
+    D40
+    D41
+    D42
+    D43
+    D44
+    D45
+    D49
+    D55
+    D56
+    D57
+    D58
+    D59
+    D60
+*************************************************************
+
+*************************************************************
+Generating : Top Overlay
+      File : SmartCantonDevBox.GTO
+
+    Adding Layer      : Top Overlay
+
+    Adding Layer      : Mechanical 2
+
+
+Used DCodes :
+    D46
+    D47
+    D48
+    D49
+    D51
+    D53
+    D97
+    D98
+    D99
+    D100
+    D101
+    D102
+    D103
+    D104
+*************************************************************
+
+*************************************************************
+Generating : Top Paste
+      File : SmartCantonDevBox.GTP
+
+    Adding Layer      : Top Paste
+
+    Adding Layer      : Mechanical 2
+
+    Adding Layer      : Component Side
+
+    Adding Layer      : Multi-Layer
+
+
+Used DCodes :
+    D11
+    D12
+    D13
+    D14
+    D15
+    D16
+    D17
+    D18
+    D20
+    D21
+    D22
+    D23
+    D24
+    D25
+    D26
+    D27
+    D28
+    D29
+    D30
+    D31
+    D32
+    D34
+    D35
+    D36
+    D37
+    D38
+    D39
+    D40
+    D41
+    D42
+    D43
+    D44
+    D45
+    D49
+    D105
+    D106
+*************************************************************
+
+*************************************************************
+Generating : Top Solder
+      File : SmartCantonDevBox.GTS
+
+    Adding Layer      : Top Solder
+
+    Adding Layer      : Mechanical 2
+
+    Adding Layer      : Component Side
+
+    Adding Layer      : Multi-Layer
+
+
+Used DCodes :
+    D11
+    D12
+    D13
+    D14
+    D15
+    D16
+    D17
+    D18
+    D19
+    D20
+    D21
+    D22
+    D23
+    D24
+    D25
+    D26
+    D27
+    D28
+    D29
+    D30
+    D31
+    D32
+    D34
+    D35
+    D36
+    D37
+    D38
+    D39
+    D40
+    D41
+    D42
+    D43
+    D44
+    D45
+    D49
+    D55
+    D56
+    D57
+    D58
+    D59
+    D60
+    D63
+    D107
+*************************************************************
+
+*************************************************************
+Generating : Bottom Solder
+      File : SmartCantonDevBox.GBS
+
+    Adding Layer      : Bottom Solder
+
+    Adding Layer      : Mechanical 2
+
+    Adding Layer      : Solder Side
+
+    Adding Layer      : Multi-Layer
+
+
+Used DCodes :
+    D25
+    D26
+    D34
+    D35
+    D42
+    D49
+    D55
+    D56
+    D57
+    D58
+    D59
+    D60
+    D63
+    D88
+    D89
+    D90
+    D91
+    D92
+    D93
+    D94
+    D95
+    D96
+    D108
+*************************************************************
+
+*************************************************************
+Generating : Bottom Paste
+      File : SmartCantonDevBox.GBP
+
+    Adding Layer      : Bottom Paste
+
+    Adding Layer      : Mechanical 2
+
+    Adding Layer      : Solder Side
+
+    Adding Layer      : Multi-Layer
+
+
+Used DCodes :
+    D25
+    D26
+    D34
+    D35
+    D42
+    D49
+    D88
+    D90
+    D91
+    D92
+    D93
+    D94
+    D95
+    D96
+    D109
+*************************************************************
+
+*************************************************************
+Generating : Bottom Overlay
+      File : SmartCantonDevBox.GBO
+
+    Adding Layer      : Bottom Overlay
+
+    Adding Layer      : Mechanical 2
+
+
+Used DCodes :
+    D46
+    D48
+    D49
+    D51
+    D53
+    D101
+    D102
+    D110
+*************************************************************
+
+*************************************************************
+Generating : Mechanical 2
+      File : SmartCantonDevBox.GM2
+
+    Adding Layer      : Mechanical 2
+
+    Adding Layer      : Mechanical 2
+
+
+Used DCodes :
+    D49
+*************************************************************
+

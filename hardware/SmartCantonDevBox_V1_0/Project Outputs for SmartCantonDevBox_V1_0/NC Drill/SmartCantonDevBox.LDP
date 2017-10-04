@@ -1,0 +1,4 @@
+Layer Pairs Export File for PCB: C:\Users\David\Dropbox\SmartCanton\hardware\SmartCantonDevBox_V1_0\SmartCantonDevBox.PcbDoc
+LayersSetName=Top_Bot_Plated_Thru_Holes|DrillFile=smartcantondevbox-roundholes-plated.txt|DrillLayers=gtl,gp1,gp2,gbl
+LayersSetName=Top_Bot_Plated_Slot_Holes|DrillFile=smartcantondevbox-slotholes-plated.txt|DrillLayers=gtl,gp1,gp2,gbl
+LayersSetName=Top_Bot_NonPlated_Thru_Holes|DrillFile=smartcantondevbox-roundholes-nonplated.txt|DrillLayers=gtl,gp1,gp2,gbl

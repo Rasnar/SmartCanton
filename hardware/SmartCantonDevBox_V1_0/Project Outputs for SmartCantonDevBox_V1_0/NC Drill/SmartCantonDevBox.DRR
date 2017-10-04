@@ -1,0 +1,25 @@
+----------------------------------------------------------------------------------------------------------------------------------
+NCDrill File Report For: SmartCantonDevBox.PcbDoc   26.09.2017  14:03:26
+----------------------------------------------------------------------------------------------------------------------------------
+
+Layer Pair : Component Side to Solder Side
+ASCII Plated RoundHoles File : SmartCantonDevBox-RoundHoles-Plated.TXT
+ASCII Non-Plated RoundHoles File : SmartCantonDevBox-RoundHoles-NonPlated.TXT
+ASCII Plated SlotHoles File : SmartCantonDevBox-SlotHoles-Plated.TXT
+
+Tool       Hole Size               Hole Tolerance               Hole Type       Hole Count   Plated         Tool Travel
+----------------------------------------------------------------------------------------------------------------------------------
+T1      0.2mm (8mil)                                              Round             2         PTH        1.10mm (0.04inch)
+T2      0.25mm (10mil)                                            Round             142       PTH        583.53mm (22.97inch)
+T3      0.35mm (14mil)                                            Round             67        PTH        233.32mm (9.19inch)
+T4      0.5mm (20mil)                                             Round             1         PTH        0.00mm (0.00inch)
+T5      0.5mm (20mil)                                             Slot              2         PTH        15.31mm (0.60inch)
+T6      0.55mm (22mil)                                            Slot              2         PTH        10.90mm (0.43inch)
+T7      0.711mm (28mil)                                           Round             1         PTH        0.00mm (0.00inch)
+T8      0.9mm (35mil)                                             Round             10        PTH        83.35mm (3.28inch)
+T9      1.4mm (55mil)                                             Round             4         NPTH       60.22mm (2.37inch)
+T10     3.2mm (126mil)                                            Round             4         NPTH       171.60mm (6.76inch)
+----------------------------------------------------------------------------------------------------------------------------------
+Totals                                                                              235
+
+Total Processing Time (hh:mm:ss) : 00:00:01
