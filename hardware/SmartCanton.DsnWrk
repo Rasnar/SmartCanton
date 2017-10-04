@@ -4,5 +4,3 @@ Version=1.0
 ProjectPath=SmartCantonDevBox_V1_0\SmartCantonDevBox_V1_0.PrjPCB
 [Project2]
 ProjectPath=..\..\..\Desktop\en.b-l072z-lrwan1_sch\MB1296-STM32_LRA_Disco.PrjPcb
-[Project3]
-ProjectPath=..\..\..\Downloads\Imported BQ24210DQCT.lia\BQ24210DQCT.LibPkg
