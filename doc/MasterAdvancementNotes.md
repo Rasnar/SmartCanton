@@ -30,3 +30,129 @@ Notes prises durant l'entretient :
 
 
 
+
+## 18.09.2017
+
+### Keil license 
+
+http://www2.keil.com/stmicroelectronics-stm32/mdk
+
+
+
+### Bug debuggage EndNode st project : 
+
+```
+Error: jtag status contains invalid mode value - communication failure
+Polling target stm32f1x.cpu failed, GDB will be halted. Polling again in 100ms
+```
+
+
+
+Solution :
+
+http://www.jsykora.info/2014/10/error-jtag-status-contains-invalid-mode-value-communication-failure-solved/
+
+Enable DBGMCU sleep, stop and standby. 
+
+
+
+Pour ce faire : 
+
+````
+#define DEBUG 										1	
+````
+
+Dans le fichier debug.c
+
+
+
+### Deuxième bug :  Hardfault 
+
+C'est à cause d'une fonction qui n'est pas mappée lorsque l'on est en mode debug. Pour cela il faut mettre le flag 
+
+````
+#define LOW_POWER_DISABLE 							1
+````
+
+
+
+### Enable PRINTF functions in STM32 workbench
+
+http://alphaloewe.com/2017/01/24/enable-semi-hosting-with-openstm32-system-workbench/
+
+
+
+##### Install serial terminal inside eclipse
+
+Help -> Eclipse Marketplace -> Search "terminal" 
+
+Help -> Install new software -> "http://rxtx.qbang.org/eclipse"
+
+CTRL-ALT-T to open terminal
+
+To start new terminal : 
+
+https://github.com/theolind/mahm3lib/wiki/Integrating-a-serial-output-window-with-Eclipse
+
+
+
+# 19.09.2017
+
+### Debug unconfirmed messages End Node
+
+Perfectly working with confirmed messages but not with unconfirmed.
+
+![bug_unconfirmed_ttn](C:\Users\David\Dropbox\SmartCanton\doc\bug_unconfirmed_ttn.PNG)
+
+This image show a delay of almost 3 minutes beetween the frame 1 and 2.
+
+
+
+
+
+### Install Zephyr dependencies
+
+Windows step by step : https://www.zephyrproject.org/doc/getting_started/installation_win.html 
+
+More precise step by step instructions : https://mcuoneclipse.com/2017/01/22/zephyr-thoughts-and-first-steps-on-the-arm-cortex-m4f-with-gcc-gdb-and-eclipse/#more-20446 
+
+
+
+<u>**Note**</u> : with ubuntu bash... everything is easier...
+
+
+
+
+
+
+
+# 20.09.2017
+
+
+
+### Build Zephyr on Eclipse
+
+https://github.com/crops/crops/wiki/Building-Zephyr-applications-with-Eclipse
+
+https://github.com/crops/crops/wiki/how-to-use-plugin-on-windows
+
+
+
+
+
+
+
+# 25.09.2017
+
+http://www.contiki-os.org/download.html
+
+
+
+http://www.freertos.org/FreeRTOS-Plus/Nabto/Nabto.shtml
+
+
+
+# 30.09.2017
+
+
+
