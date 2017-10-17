@@ -152,7 +152,57 @@ http://www.freertos.org/FreeRTOS-Plus/Nabto/Nabto.shtml
 
 
 
-# 30.09.2017
+# 07.10.2017
+
+LoRa Geolocalisation : https://www.link-labs.com/blog/lora-localization
 
 
 
+IEEE 802.15.4 Security :
+
+https://people.eecs.berkeley.edu/~daw/papers/15.4-wise04.pdf
+
+ http://www.libelium.com/security-802-15-4-zigbee/
+
+
+
+BLE Security : https://eewiki.net/display/Wireless/A+Basic+Introduction+to+BLE+Security
+
+
+
+# 11.10.2017
+
+## Errors PCB
+
+### LoRa
+
+- Pin TCX0 not connected to VCC nor PA12.  
+
+  - TODO : 
+
+    for VDD_TCXO connection
+    Option1: Connect VDD_TCXO to VDD
+    Option2: Connect VDD_TCXO to PA12
+    to make sure MCU can control TCXO on/off 
+
+- VREF not connected to VCC3.3V
+
+- VDD_USB should be connected to VCC3.3V not 5V
+
+
+
+### MCU 
+
+(**Not critical**) Move reset button to the right prevent accidental press when plugging the JTAG
+
+
+
+### Power Supply
+
+(**Not critical**) Move connection Solar panel and Battery to contain the connector inside the board
+
+### GPS
+
+Put and active circuit possible (cf. hardware integration PDF, page 15 and 16)
+
+(**Not critical**) put GPS_nCS on a pin directly drived by the DSPI peripheral
