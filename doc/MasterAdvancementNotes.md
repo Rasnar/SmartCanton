@@ -189,6 +189,8 @@ BLE Security : https://eewiki.net/display/Wireless/A+Basic+Introduction+to+BLE+S
 
 - VDD_USB should be connected to VCC3.3V not 5V
 
+- RX and TX inversed....
+
 
 
 ### MCU 
@@ -206,3 +208,57 @@ BLE Security : https://eewiki.net/display/Wireless/A+Basic+Introduction+to+BLE+S
 Put and active circuit possible (cf. hardware integration PDF, page 15 and 16)
 
 (**Not critical**) put GPS_nCS on a pin directly drived by the DSPI peripheral
+
+
+
+
+
+# 21.10.2017
+
+Found problem with frame missin. It's because of the module that support the ETSI duty cycle settng!
+
+In file "command" of the project "AT_Slave" of the LRWAN card we can find this help command :
+
+````
+  {
+    .string = AT_DCS,
+    .size_string = sizeof(AT_DCS) - 1,
+#ifndef NO_HELP
+    .help_string = "AT"AT_DCS ": Get or Set the ETSI Duty Cycle setting - 0=disable, 1=enable - Only for testing\r\n",
+#endif
+    .get = at_DutyCycle_get,
+    .set = at_DutyCycle_set,
+    .run = at_return_error,
+  },
+````
+
+
+
+##### Maximum Duty Cycle
+
+The duty cycle of radio devices is often regulated by government. If this is the case, the duty cycle is commonly set to 1%, but make sure to check the regulations of your local government to be sure.
+
+In Europe, duty cycles are regulated by section 7.2.3 of the ETSI EN300.220 standard. This standard defines the following sub-bands and their duty cycles:
+
+- **g** (863.0 – 868.0 MHz): 1%
+- **g1** (868.0 – 868.6 MHz): 1%
+- **g2** (868.7 – 869.2 MHz): 0.1%
+- **g3** (869.4 – 869.65 MHz): 10%
+- **g4** (869.7 – 870.0 MHz): 1%
+
+Additionally, the LoRaWAN specification dictates duty cycles for the *join frequencies*, the frequencies devices of all LoRaWAN-compliant networks use for over-the-air activations (OTAA) of devices. In most regions this duty cycle is set to **1%**.
+
+Finally, on The Things Network's public community network, we have a **Fair Access Policy** that limits the **uplink airtime** to **30 seconds per day (24 hours) per node** and the **downlink messages** to **10 messages per day (24 hours) per node**. If you use a private network, these limits do not apply, but you still have to be compliant with the governmental and LoRaWAN limits.
+
+
+
+https://www.thethingsnetwork.org/wiki/LoRaWAN/Duty-Cycle
+
+
+
+# 23.10.2017
+
+
+
+
+
