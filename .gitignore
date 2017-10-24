@@ -4,3 +4,7 @@ hardware/__Previews/
 hardware/SmartCantonDevBox_V1_0/History/
 
 hardware/SmartCantonDevBox_V1_0/__Previews/
+
+dev/STM32CubeExpansion_LRWAN_V1\.1\.2/\.metadata/
+
+dev/STM32CubeExpansion_LRWAN_V1\.1\.2/Projects/Multi/Applications/LoRa/AT_Slave/SW4STM32/B-L072Z-LRWAN1/mlm32l07x01/\.settings/
