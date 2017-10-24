@@ -141,23 +141,6 @@ GenerateClassCluster=0
 DocumentUniqueId=
 
 [Document7]
-DocumentPath=SmartCantonDevBox.PCBDwf
-AnnotationEnabled=1
-AnnotateStartValue=1
-AnnotationIndexControlEnabled=0
-AnnotateSuffix=
-AnnotateScope=All
-AnnotateOrder=-1
-DoLibraryUpdate=1
-DoDatabaseUpdate=1
-ClassGenCCAutoEnabled=1
-ClassGenCCAutoRoomEnabled=1
-ClassGenNCAutoScope=None
-DItemRevisionGUID=
-GenerateClassCluster=0
-DocumentUniqueId=
-
-[Document8]
 DocumentPath=SmartCantonDevBox.OutJob
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -174,7 +157,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=
 
-[Document9]
+[Document8]
 DocumentPath=..\libs\CMWX1ZZABZ-078.PcbLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -191,7 +174,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=GSVVDWWO
 
-[Document10]
+[Document9]
 DocumentPath=..\libs\CMWX1ZZABZ-078.SchLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -208,7 +191,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=ACYKQJDY
 
-[Document11]
+[Document10]
 DocumentPath=..\libs\eSurf_board.PcbLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -225,7 +208,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=
 
-[Document12]
+[Document11]
 DocumentPath=..\libs\eSurf_board.SchLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -242,7 +225,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=
 
-[Document13]
+[Document12]
 DocumentPath=..\libs\eSurf_handle.PcbLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -259,7 +242,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=
 
-[Document14]
+[Document13]
 DocumentPath=..\libs\eSurf_handle.SchLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -276,7 +259,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=AKFQSITF
 
-[Document15]
+[Document14]
 DocumentPath=LoRaAntenna.SchDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -293,7 +276,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=IWNUHTHY
 
-[Document16]
+[Document15]
 DocumentPath=MCUAntenna.SchDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -310,7 +293,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=HVTQGTEC
 
-[Document17]
+[Document16]
 DocumentPath=EmbeddedPeripherals.SchDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -327,7 +310,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=JAFMMUAA
 
-[Document18]
+[Document17]
 DocumentPath=PowerSupply.SchDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -344,7 +327,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=JLVBKSNK
 
-[Document19]
+[Document18]
 DocumentPath=GPS.Harness
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -361,7 +344,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=
 
-[Document20]
+[Document19]
 DocumentPath=LoRa.Harness
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -378,7 +361,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=
 
-[Document21]
+[Document20]
 DocumentPath=MCU.Harness
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -395,7 +378,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=
 
-[Document22]
+[Document21]
 DocumentPath=EmbeddedPeripherals.Harness
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -412,7 +395,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=
 
-[Document23]
+[Document22]
 DocumentPath=PMOD.SchDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -429,7 +412,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=NOOSFHPS
 
-[Document24]
+[Document23]
 DocumentPath=PMOD.Harness
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -446,8 +429,25 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=
 
-[Document25]
+[Document24]
 DocumentPath=PowerSupply.Harness
+AnnotationEnabled=1
+AnnotateStartValue=1
+AnnotationIndexControlEnabled=0
+AnnotateSuffix=
+AnnotateScope=All
+AnnotateOrder=-1
+DoLibraryUpdate=1
+DoDatabaseUpdate=1
+ClassGenCCAutoEnabled=1
+ClassGenCCAutoRoomEnabled=1
+ClassGenNCAutoScope=None
+DItemRevisionGUID=
+GenerateClassCluster=0
+DocumentUniqueId=
+
+[Document25]
+DocumentPath=SmartCantonDevBox_1.PCBDwf
 AnnotationEnabled=1
 AnnotateStartValue=1
 AnnotationIndexControlEnabled=0
@@ -568,6 +568,9 @@ Variant=[No Variations]
 OutputJobsCount=0
 ContentTypeGUID=
 ConfigurationType=
+
+[Generic_EDE]
+OutputDir=
 
 [OutputGroup1]
 Name=Netlist Outputs
@@ -1169,46 +1172,6 @@ OutputName9=Specctra Design PCB
 OutputDocumentPath9=
 OutputVariantName9=
 OutputDefault9=0
-OutputType10=Ansoft Neutral
-OutputName10=Ansoft Neutral (AutoPCB)
-OutputDocumentPath10=
-OutputVariantName10=
-OutputDefault10=0
-OutputType11=HyperLynx
-OutputName11=HyperLynx (AutoPCB)
-OutputDocumentPath11=
-OutputVariantName11=
-OutputDefault11=0
-OutputType12=Orcad SDT Schematic
-OutputName12=Orcad SDT Schematic (AutoSCH)
-OutputDocumentPath12=
-OutputVariantName12=
-OutputDefault12=0
-OutputType13=Orcad v7 Capture Design
-OutputName13=Orcad v7 Capture Design (AutoSCH)
-OutputDocumentPath13=
-OutputVariantName13=
-OutputDefault13=0
-OutputType14=P-CAD ASCII
-OutputName14=P-CAD ASCII (AutoPCB)
-OutputDocumentPath14=
-OutputVariantName14=
-OutputDefault14=0
-OutputType15=P-CAD V16 Schematic Design
-OutputName15=P-CAD V16 Schematic Design (AutoSCH)
-OutputDocumentPath15=
-OutputVariantName15=
-OutputDefault15=0
-OutputType16=Protel PCB 2.8 ASCII
-OutputName16=Protel PCB 2.8 ASCII (AutoPCB)
-OutputDocumentPath16=
-OutputVariantName16=
-OutputDefault16=0
-OutputType17=SiSoft
-OutputName17=SiSoft (AutoPCB)
-OutputDocumentPath17=
-OutputVariantName17=
-OutputDefault17=0
 
 [OutputGroup10]
 Name=PostProcess Outputs
