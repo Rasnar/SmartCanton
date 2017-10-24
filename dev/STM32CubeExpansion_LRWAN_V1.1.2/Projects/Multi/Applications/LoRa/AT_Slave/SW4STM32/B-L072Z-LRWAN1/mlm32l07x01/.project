@@ -66,6 +66,11 @@
 			<locationURI>PARENT-8-PROJECT_LOC/Drivers/STM32L0xx_HAL_Driver/Src/stm32l0xx_ll_spi.c</locationURI>
 		</link>
 		<link>
+			<name>Drivers/STM32L0xx_HAL_Driver/stm32l0xx_ll_usart.c</name>
+			<type>1</type>
+			<locationURI>PARENT-8-PROJECT_LOC/Drivers/STM32L0xx_HAL_Driver/Src/stm32l0xx_ll_usart.c</locationURI>
+		</link>
+		<link>
 			<name>Projects/AT_Slave/at.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/src/at.c</locationURI>

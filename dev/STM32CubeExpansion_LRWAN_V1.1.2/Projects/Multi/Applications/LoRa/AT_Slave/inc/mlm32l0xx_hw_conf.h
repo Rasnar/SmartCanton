@@ -141,24 +141,48 @@ extern "C" {
 /* --------------------------- UART HW definition -------------------------------*/
 
 /* Definition for UARTx clock resources */
-#define UARTX                           LPUART1
-#define UARTX_CLK_ENABLE()              LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_LPUART1)
-#define UARTX_RX_GPIO_CLK_ENABLE()      LL_IOP_GRP1_EnableClock(RCC_IOPENR_GPIOBEN)
-#define UARTX_TX_GPIO_CLK_ENABLE()      LL_IOP_GRP1_EnableClock(RCC_IOPENR_GPIOBEN)
+#define UARTX                           USART1
+#define UARTX_CLK_ENABLE()              LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_USART1)
+#define UARTX_RX_GPIO_CLK_ENABLE()      LL_IOP_GRP1_EnableClock(RCC_IOPENR_GPIOAEN)
+#define UARTX_TX_GPIO_CLK_ENABLE()      LL_IOP_GRP1_EnableClock(RCC_IOPENR_GPIOAEN)
 
-#define UARTX_FORCE_RESET()             LL_APB1_GRP1_ForceReset(LL_APB1_GRP1_PERIPH_LPUART1)
-#define UARTX_RELEASE_RESET()           LL_APB1_GRP1_ReleaseReset(LL_APB1_GRP1_PERIPH_LPUART1)
+#define UARTX_FORCE_RESET()             LL_APB1_GRP1_ForceReset(LL_APB2_GRP1_PERIPH_USART1)
+#define UARTX_RELEASE_RESET()           LL_APB1_GRP1_ReleaseReset(RCC_IOPENR_GPIOAEN)
 
-#define UARTX_TX_PIN                    GPIO_PIN_2
+#define UARTX_TX_PIN                    GPIO_PIN_9
 #define UARTX_TX_GPIO_PORT              GPIOA
-#define UARTX_TX_AF                     GPIO_AF6_LPUART1
-#define UARTX_RX_PIN                    GPIO_PIN_3
+#define UARTX_TX_AF                     GPIO_AF4_USART1
+#define UARTX_RX_PIN                    GPIO_PIN_10
 #define UARTX_RX_GPIO_PORT              GPIOA
-#define UARTX_RX_AF                     GPIO_AF6_LPUART1
+#define UARTX_RX_AF                     GPIO_AF4_USART1
 
 /* Definition for USARTx's NVIC */
-#define UARTX_IRQn                      LPUART1_IRQn
-#define UARTX_IRQHandler                LPUART1_IRQHandler
+#define UARTX_IRQn                      USART1_IRQn
+#define UARTX_IRQHandler                USART1_IRQHandler
+
+/* --------------------------- USART HW definition -------------------------------*/
+
+
+#define USARTX                           USART2
+#define USARTX_CLK_ENABLE()              __USART2_CLK_ENABLE();
+#define USARTX_RX_GPIO_CLK_ENABLE()      __GPIOA_CLK_ENABLE()
+#define USARTX_TX_GPIO_CLK_ENABLE()      __GPIOA_CLK_ENABLE()
+
+#define USARTX_FORCE_RESET()             __USART2_FORCE_RESET()
+#define USARTX_RELEASE_RESET()           __USART2_RELEASE_RESET()
+
+
+#define USARTX_TX_PIN                  GPIO_PIN_2
+#define USARTX_TX_GPIO_PORT            GPIOA
+#define USARTX_TX_AF                   GPIO_AF4_USART2
+#define USARTX_RX_PIN                  GPIO_PIN_3
+#define USARTX_RX_GPIO_PORT            GPIOA
+#define USARTX_RX_AF                   GPIO_AF4_USART2
+
+/* Definition for USARTx's NVIC */
+#define USARTX_IRQn                      USART2_IRQn
+#define USARTX_IRQHandler                USART2_IRQHandler
+
 
 #ifdef __cplusplus
 }

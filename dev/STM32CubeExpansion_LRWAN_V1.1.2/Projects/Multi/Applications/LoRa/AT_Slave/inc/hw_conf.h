@@ -86,6 +86,13 @@ extern "C" {
 #include "stm32l0xx_ll_spi.h"
 #include "stm32l0xx_ll_system.h"
 #include "stm32l0xx_ll_lpuart.h"
+
+
+#include "stm32l0xx_hal.h"
+#include "b-l072z-lrwan1.h"
+#include "stm32l0xx_hal_conf.h"
+
+
 #include "mlm32l0xx_hw_conf.h"
 #ifdef  USE_FULL_ASSERT
 #include "stm32_assert.h"
@@ -93,14 +100,15 @@ extern "C" {
 #define assert_param(expr) ((void)0U)
 #endif
 
+
 /* --------Preprocessor compile swicth------------ */
 
 /* debug swicthes in debug.h */
-/* #define DEBUG */
+#define DEBUG
 /* #define TRACE */
 
 /* uncomment below line to never enter lowpower modes in main.c*/
-/* #define LOW_POWER_DISABLE */
+#define LOW_POWER_DISABLE
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/

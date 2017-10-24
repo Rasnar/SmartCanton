@@ -411,7 +411,8 @@ void HW_EnterStopMode(void)
   LL_PWR_ClearFlag_WU();
 
   /* Disable the UART Data Register not empty Interrupt */
-  LL_LPUART_DisableIT_RXNE(UARTX);
+  //LL_LPUART_DisableIT_RXNE(UARTX);
+  LL_USART_DisableIT_RXNE(USART1);
 
   RESTORE_PRIMASK();
 

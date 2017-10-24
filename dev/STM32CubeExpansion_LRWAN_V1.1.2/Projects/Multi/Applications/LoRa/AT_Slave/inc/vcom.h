@@ -138,7 +138,7 @@ uint8_t GetNewChar(void);
 void vcom_IRQHandler(void);
 
 /* Exported macros -----------------------------------------------------------*/
-#if 1
+#if 0
 #define PRINTF(...)     vcom_Send(__VA_ARGS__)
 #else
 #define PRINTF(...)

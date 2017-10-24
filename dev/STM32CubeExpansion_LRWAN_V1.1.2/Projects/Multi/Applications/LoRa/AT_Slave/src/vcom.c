@@ -52,6 +52,9 @@
 #include "low_power.h"
 #include "command.h"
 
+
+#include "stm32l0xx_ll_usart.h"
+
 /* Force include of hal uart in order to inherite HAL_UART_StateTypeDef definition */
 #include "stm32l0xx_hal_dma.h"
 #include "stm32l0xx_hal_uart.h"
@@ -93,7 +96,7 @@ static void receive(char rx);
 
 void vcom_Init(void)
 {
-  LL_LPUART_InitTypeDef LPUART_InitStruct;
+  LL_USART_InitTypeDef LPUART_InitStruct;
 
   /*## Configure the UART peripheral ######################################*/
   /* Put the UART peripheral in the Asynchronous mode (UART Mode) */
@@ -110,36 +113,36 @@ void vcom_Init(void)
    * - LPUART clock enable
    * - GPIO clocks are enabled in vcom_IoInit()
    */
-  LL_RCC_SetLPUARTClockSource(LL_RCC_LPUART1_CLKSOURCE_HSI);
+  LL_RCC_SetUSARTClockSource(LL_RCC_USART1_CLKSOURCE_HSI);
   UARTX_CLK_ENABLE();
   vcom_IoInit();
 
   LPUART_InitStruct.BaudRate = 9600;
-  LPUART_InitStruct.DataWidth = LL_LPUART_DATAWIDTH_8B;
-  LPUART_InitStruct.StopBits = LL_LPUART_STOPBITS_1;
-  LPUART_InitStruct.Parity = LL_LPUART_PARITY_NONE;
-  LPUART_InitStruct.TransferDirection = LL_LPUART_DIRECTION_TX_RX;
-  LPUART_InitStruct.HardwareFlowControl = LL_LPUART_HWCONTROL_NONE;
+  LPUART_InitStruct.DataWidth = LL_USART_DATAWIDTH_8B;
+  LPUART_InitStruct.StopBits = LL_USART_STOPBITS_1;
+  LPUART_InitStruct.Parity = LL_USART_PARITY_NONE;
+  LPUART_InitStruct.TransferDirection = LL_USART_DIRECTION_TX_RX;
+  LPUART_InitStruct.HardwareFlowControl = LL_USART_HWCONTROL_NONE;
 
-  if (LL_LPUART_Init(UARTX, &LPUART_InitStruct) != SUCCESS)
+  if (LL_USART_Init(UARTX, &LPUART_InitStruct) != SUCCESS)
   {
     Error_Handler();
   }
 
   /* Configuring the LPUART specific LP feature - the wakeup from STOP */
-  LL_LPUART_EnableInStopMode(UARTX);
+  LL_USART_EnableInStopMode(UARTX);
 
   /* WakeUp from stop mode on start bit detection*/
-  LL_LPUART_SetWKUPType(UARTX, LL_LPUART_WAKEUP_ON_STARTBIT);
-  //LL_LPUART_SetWKUPType(UARTX, LL_LPUART_WAKEUP_ON_RXNE);
-  LL_LPUART_EnableIT_WKUP(UARTX);
+  LL_USART_SetWKUPType(UARTX, LL_USART_WAKEUP_ON_STARTBIT);
+  //LL_USART_SetWKUPType(UARTX, LL_USART_WAKEUP_ON_RXNE);
+  LL_USART_EnableIT_WKUP(UARTX);
 
-  LL_LPUART_Enable(UARTX);
-  while (LL_LPUART_IsActiveFlag_TEACK(UARTX) == RESET)
+  LL_USART_Enable(UARTX);
+  while (LL_USART_IsActiveFlag_TEACK(UARTX) == RESET)
   {
     ;
   }
-  while (LL_LPUART_IsActiveFlag_REACK(UARTX) == RESET)
+  while (LL_USART_IsActiveFlag_REACK(UARTX) == RESET)
   {
     ;
   }
@@ -150,7 +153,7 @@ void vcom_Init(void)
 
 void vcom_DeInit(void)
 {
-  LL_LPUART_DeInit(UARTX);
+  LL_USART_DeInit(UARTX);
 
   /*##-1- Reset peripherals ##################################################*/
   UARTX_FORCE_RESET();
@@ -199,12 +202,12 @@ void vcom_Send(const char *format, ...)
   RESTORE_PRIMASK();
 
   start = 0;
-  
+
   do
   {
     stop = buffer_transmit(start, current_len);
 
-    {  
+    {
       BACKUP_PRIMASK();
       DISABLE_IRQ();
       if (len == stop)
@@ -237,10 +240,10 @@ void vcom_ReceiveInit(void)
   uart_context.RxState = HAL_UART_STATE_BUSY_RX;
 
   /* Enable the UART Parity Error Interrupt */
-  LL_LPUART_EnableIT_PE(UARTX);
+  LL_USART_EnableIT_PE(UARTX);
 
   /* Enable the UART Error Interrupt: (Frame error, noise error, overrun error) */
-  LL_LPUART_EnableIT_ERROR(UARTX);
+  LL_USART_EnableIT_ERROR(UARTX);
 
   /* Process Unlocked */
   HW_UNLOCK(&uart_context);
@@ -269,7 +272,7 @@ void vcom_IoInit(void)
   NVIC_EnableIRQ(UARTX_IRQn);
   
   /* enable RXNE */
-  LL_LPUART_EnableIT_RXNE(UARTX);
+  LL_USART_EnableIT_RXNE(UARTX);
 
 }
 
@@ -288,12 +291,12 @@ void vcom_IoDeInit(void)
 FlagStatus IsNewCharReceived(void)
 {
   FlagStatus status;
-  
+
   BACKUP_PRIMASK();
   DISABLE_IRQ();
-  
+
   status = ((uart_context.rx_idx_toread == uart_context.rx_idx_free) ? RESET : SET);
-  
+
   RESTORE_PRIMASK();
   return status;
 }
@@ -316,38 +319,38 @@ void vcom_IRQHandler(void)
 {
   int rx_ready = 0;
   char rx;
-  
+
   /* UART Wake Up interrupt occured ------------------------------------------*/
-  if (LL_LPUART_IsActiveFlag_WKUP(UARTX) && (LL_LPUART_IsEnabledIT_WKUP(UARTX) != RESET))
+  if (LL_USART_IsActiveFlag_WKUP(UARTX) && (LL_USART_IsEnabledIT_WKUP(UARTX) != RESET))
   {
-    LL_LPUART_ClearFlag_WKUP(UARTX);
+    LL_USART_ClearFlag_WKUP(UARTX);
 
     /* forbid stop mode */
     LowPower_Disable(e_LOW_POWER_UART);
 
     /* Enable the UART Data Register not empty Interrupt */
-    LL_LPUART_EnableIT_RXNE(UARTX);
+    LL_USART_EnableIT_RXNE(UARTX);
   }
 
-  if (LL_LPUART_IsActiveFlag_RXNE(UARTX) && (LL_LPUART_IsEnabledIT_RXNE(UARTX) != RESET))
+  if (LL_USART_IsActiveFlag_RXNE(UARTX) && (LL_USART_IsEnabledIT_RXNE(UARTX) != RESET))
   {
     /* no need to clear the RXNE flag because it is auto cleared by reading the data*/
-    rx = LL_LPUART_ReceiveData8(UARTX);
+    rx = LL_USART_ReceiveData8(UARTX);
     rx_ready = 1;
-    
+
     /* allow stop mode*/
     LowPower_Enable(e_LOW_POWER_UART);
   }
 
-  if (LL_LPUART_IsActiveFlag_PE(UARTX) || LL_LPUART_IsActiveFlag_FE(UARTX) || LL_LPUART_IsActiveFlag_ORE(UARTX) || LL_LPUART_IsActiveFlag_NE(UARTX))
+  if (LL_USART_IsActiveFlag_PE(UARTX) || LL_USART_IsActiveFlag_FE(UARTX) || LL_USART_IsActiveFlag_ORE(UARTX) || LL_USART_IsActiveFlag_NE(UARTX))
   {
     PRINTF("Error when receiving\n");
     /* clear error IT */
-    LL_LPUART_ClearFlag_PE(UARTX);
-    LL_LPUART_ClearFlag_FE(UARTX);
-    LL_LPUART_ClearFlag_ORE(UARTX);
-    LL_LPUART_ClearFlag_NE(UARTX);
-    
+    LL_USART_ClearFlag_PE(UARTX);
+    LL_USART_ClearFlag_FE(UARTX);
+    LL_USART_ClearFlag_ORE(UARTX);
+    LL_USART_ClearFlag_NE(UARTX);
+
     rx = AT_ERROR_RX_CHAR;
     rx_ready = 1;
   }
@@ -365,15 +368,15 @@ static int buffer_transmit(int start, int len)
   int i;
   for (i = start; i < len; i++)
   {
-    LL_LPUART_ClearFlag_TC(UARTX);
-    LL_LPUART_TransmitData8(UARTX, uart_context.buffTx[i]);
+    LL_USART_ClearFlag_TC(UARTX);
+    LL_USART_TransmitData8(UARTX, uart_context.buffTx[i]);
 
-    while (LL_LPUART_IsActiveFlag_TC(UARTX) != SET)
+    while (LL_USART_IsActiveFlag_TC(UARTX) != SET)
     {
       ;
     }
   }
-  LL_LPUART_ClearFlag_TC(UARTX);
+  LL_USART_ClearFlag_TC(UARTX);
   return len;
 }
 

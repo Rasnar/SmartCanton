@@ -116,6 +116,12 @@ static LoRaParam_t LoRaParamInit = {TX_ON_EVENT,
                                     LORAWAN_PUBLIC_NETWORK,
                                     JOINREQ_NBTRIALS};
 
+/* debug swicthes in debug.h */
+#define DEBUG
+
+/* uncomment below line to never enter lowpower modes in main.c*/
+#define LOW_POWER_DISABLE
+
 /* Private functions ---------------------------------------------------------*/
 
 /**
@@ -193,6 +199,7 @@ int main(void)
   lora_Init(&LoRaMainCallbacks, &LoRaParamInit);
 
   /* main loop*/
+  uint64_t var;
   while (1)
   {
     /* run the LoRa class A state machine*/
