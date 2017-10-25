@@ -256,7 +256,17 @@ https://www.thethingsnetwork.org/wiki/LoRaWAN/Duty-Cycle
 
 
 
-# 23.10.2017
+# 25.10.2017
+
+### New project with existing board folder
+
+1. Delete existing `board` folder
+2. File New -> Other -> Folder
+3. Folder name : `board`
+4. Advanced -> Link to alteranate location (Linked Folder) -> `C:\Users\David\Dropbox\SmartCanton\dev\MKW41z\smartcanton_devbox_board`
+5. Right click on the `board`project -> Ressource Configurations --> Exclude from Build... 
+6. Deselect Debug and Release from the menu 
+7. Ready to compile
 
 
 
