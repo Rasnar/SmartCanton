@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>frdmkw41z_wireless_examples_bluetooth_heart_rate_sensor_freertos</name>
+	<name>devbox_bluetooth_heart_rate_sensor_freertos</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -24,11 +24,4 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>board/smartcanton_devbox_board</name>
-			<type>2</type>
-			<location>C:/Users/David/Dropbox/SmartCanton/dev/MKW41z/smartcanton_devbox_hardware</location>
-		</link>
-	</linkedResources>
 </projectDescription>
