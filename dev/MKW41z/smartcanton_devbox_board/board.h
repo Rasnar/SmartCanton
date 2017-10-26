@@ -39,7 +39,7 @@
 
 /* The board name */
 #define MANUFACTURER_NAME               "NXP"
-#define BOARD_NAME                      "FRDM-KW41Z"
+#define BOARD_NAME                      "SmartCantonDevBox"
 
 #define BOARD_XTAL0_CLK_HZ    32000000U
 #define BOARD_XTAL32K_CLK_HZ  32768U
@@ -123,6 +123,7 @@
 #ifndef gBlueLedIdx_c
 #define gBlueLedIdx_c                   3
 #endif
+
 
 #define gADC16_ReferenceVoltageSource_d kADC16_ReferenceVoltageSourceValt
 
