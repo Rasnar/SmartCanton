@@ -38,14 +38,14 @@
 
 gpioInputPinConfig_t switchPins[] = {
     {
-        .gpioPort = gpioPort_C_c,
-        .gpioPin = 5,
+        .gpioPort = gpioPort_B_c,
+        .gpioPin = 2,
         .pullSelect = pinPull_Up_c,
         .interruptSelect = pinInt_FallingEdge_c
     },
     {
-        .gpioPort = gpioPort_C_c,
-        .gpioPin = 4,
+        .gpioPort = gpioPort_B_c,
+        .gpioPin = 3,
         .pullSelect = pinPull_Up_c,
         .interruptSelect = pinInt_FallingEdge_c
     }
@@ -54,39 +54,32 @@ gpioInputPinConfig_t switchPins[] = {
 /* Declare Output GPIO pins */
 gpioOutputPinConfig_t ledPins[] = {
     {
-        .gpioPort = gpioPort_B_c,
-        .gpioPin = 0,
-        .outputLogic = 1,
+        .gpioPort = gpioPort_A_c,
+        .gpioPin = 16,
+        .outputLogic = 0,
         .slewRate = pinSlewRate_Slow_c,
         .driveStrength = pinDriveStrength_Low_c
     },
     {
-        .gpioPort = gpioPort_C_c,
-        .gpioPin = 1,
-        .outputLogic = 1,
+        .gpioPort = gpioPort_A_c,
+        .gpioPin = 17,
+        .outputLogic = 0,
+        .slewRate = pinSlewRate_Slow_c,
+        .driveStrength = pinDriveStrength_Low_c
+    },
+    {
+        .gpioPort = gpioPort_A_c,
+        .gpioPin = 18,
+        .outputLogic = 0,
         .slewRate = pinSlewRate_Slow_c,
         .driveStrength = pinDriveStrength_Low_c
     },
     {
         .gpioPort = gpioPort_A_c,
         .gpioPin = 19,
-        .outputLogic = 1,
+        .outputLogic = 0,
         .slewRate = pinSlewRate_Slow_c,
         .driveStrength = pinDriveStrength_Low_c
-    },
-    {
-        .gpioPort = gpioPort_A_c,
-        .gpioPin = 18,
-        .outputLogic = 1,
-        .slewRate = pinSlewRate_Slow_c,
-        .driveStrength = pinDriveStrength_Low_c
-    },
-    {
-        .gpioPort = gpioPort_C_c,
-        .gpioPin = 18,
-        .outputLogic = 1,
-        .slewRate = pinSlewRate_Slow_c,
-        .driveStrength = pinDriveStrength_High_c
     }
 };
 
