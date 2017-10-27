@@ -46,18 +46,18 @@
 /*!*/ 
 /*! This should be defined according to board setting.*/
 
-/* SPI Master Data Available Pin */
-#define gSpiMasterDap_Port_d  gpioPort_B_c
-#define gSpiMasterDap_Pin_d   1
-/* SPI Slave Data Available Pin */
-#define gSpiSlaveDap_Port_d   gpioPort_B_c
-#define gSpiSlaveDap_Pin_d    1
-/* I2C Master Data Available Pin */
-#define gI2cMasterDap_Port_d  gpioPort_B_c
-#define gI2cMasterDap_Pin_d   1
-/* I2C Slave Data Available Pin */
-#define gI2cSlaveDap_Port_d   gpioPort_B_c
-#define gI2cSlaveDap_Pin_d    1
+///* SPI Master Data Available Pin */
+//#define gSpiMasterDap_Port_d  gpioPort_B_c
+//#define gSpiMasterDap_Pin_d   1
+///* SPI Slave Data Available Pin */
+//#define gSpiSlaveDap_Port_d   gpioPort_B_c
+//#define gSpiSlaveDap_Pin_d    1
+///* I2C Master Data Available Pin */
+//#define gI2cMasterDap_Port_d  gpioPort_B_c
+//#define gI2cMasterDap_Pin_d   1
+///* I2C Slave Data Available Pin */
+//#define gI2cSlaveDap_Port_d   gpioPort_B_c
+//#define gI2cSlaveDap_Pin_d    1
 
 /* switch pins to be initialized by the low power component if the keyboard isn't enabled*/
 /* 1<<n for sitchPins[n] */   

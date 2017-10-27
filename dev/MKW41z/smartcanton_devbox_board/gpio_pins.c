@@ -83,30 +83,4 @@ gpioOutputPinConfig_t ledPins[] = {
     }
 };
 
-/* RF_DENY Coexistence Pin */
-gpioInputPinConfig_t  gCoexistence_RfDeny = {
-    .gpioPort = gpioPort_A_c,
-    .gpioPin = 17,
-    .pullSelect = pinPull_Disabled_c,
-    .interruptSelect = pinInt_EitherEdge_c
-    //.interruptSelect = pinInt_Disabled_c
-};
-
-/* RF_ACTIVE Coexistence Pin - used only in SW mode (ex: 802.15.4) */
-gpioOutputPinConfig_t  gCoexistence_RfActive = {
-    .gpioPort = gpioPort_C_c,
-    .gpioPin = 1,
-    .outputLogic = 0,
-    .slewRate = pinSlewRate_Fast_c,
-    .driveStrength = pinDriveStrength_Low_c
-};
-
-/* RF_STATUS Coexistence Pin - used only in SW mode (ex: 802.15.4) */
-gpioOutputPinConfig_t  gCoexistence_RfStatus = {
-    .gpioPort = gpioPort_C_c,
-    .gpioPin = 3,
-    .outputLogic = 0,
-    .slewRate = pinSlewRate_Fast_c,
-    .driveStrength = pinDriveStrength_Low_c
-};
 
