@@ -84,13 +84,6 @@ void BOARD_InitLEDs(void);
  * @brief Configures pin routing and optionally pin electrical features.
  *
  */
-void BOARD_InitRGB(void);
-
-
-/*!
- * @brief Configures pin routing and optionally pin electrical features.
- *
- */
 void BOARD_InitSPI(void);
 
 
