@@ -197,6 +197,8 @@ BLE Security : https://eewiki.net/display/Wireless/A+Basic+Introduction+to+BLE+S
 
 (**Not critical**) Move reset button to the right prevent accidental press when plugging the JTAG
 
+(**Swap buttons**) Reorder buttons to have the same organisation that the LEDs
+
 
 
 ### Power Supply
