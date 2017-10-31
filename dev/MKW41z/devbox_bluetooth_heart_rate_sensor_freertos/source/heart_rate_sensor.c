@@ -160,6 +160,7 @@ static void BleApp_Advertise(void);
 void BleApp_Init(void)
 {
     /* Initialize application support for drivers */
+    BOARD_InitPins();
     BOARD_InitAdc();
 }
 

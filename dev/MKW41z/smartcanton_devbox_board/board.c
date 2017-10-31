@@ -87,7 +87,8 @@ uint8_t      gpioPin;
 #define ADC16_INSTANCE                (0)   /* ADC instance */
 #define ADC16_CHN_GROUP               (0)   /* ADC group configuration selection */
 
-#define ADC16_BATLVL_CHN              (23) /* Potentiometer channel */
+#define ADC16_BATLVL_DCDC_CHN         (23) /* Battery intern channel */
+#define ADC16_BATLVL_CHN              (4) /* External battery */
 #define ADC16_BL_LOWER_LIMIT          (0) /* min percentage of battery charge */
 #define ADC16_BL_UPPER_LIMIT          (100) /* max percentage of battery charge */
 #define ADC16_BL_DYNAMIC_RANGE        (ADC16_BL_UPPER_LIMIT - ADC16_BL_LOWER_LIMIT) /* Range = [ADC16_HB_LOWER_LIMIT .. ADC16_HB_LOWER_LIMIT + ADC16_HB_DYNAMIC_RANGE] */
@@ -97,6 +98,9 @@ uint8_t      gpioPin;
 
 #define MIN_VOLT_BUCK                 (180)
 #define MAX_VOLT_BUCK                 (310)
+#define MIN_VOLT_LI_ION_BAT           (330)
+#define MAX_VOLT_LI_ION_BAT           (400)
+#define VREF_REG           			  (330)
 #define FULL_BAT                      (100)
 #define EMPTY_BAT                     (0)
 
@@ -165,6 +169,7 @@ static const uint8_t mXtalTrimDefault = 0x30;
 *************************************************************************************
 ************************************************************************************/
 static void ADC16_CalibrateParams(void);
+static inline uint32_t ADC16_BatLvlDCDC(void);
 static inline uint32_t ADC16_BatLvl(void);
 static inline uint32_t ADC16_BgLvl(void);
 static uint16_t ADC16_ReadValue(uint32_t chnIdx, uint8_t diffMode);
@@ -278,22 +283,35 @@ void BOARD_InitAdc(void)
         ADC16_GetDefaultConfig(&adcUserConfig);
         adcUserConfig.resolution = kADC16_ResolutionSE12Bit;
         adcUserConfig.referenceVoltageSource = kADC16_ReferenceVoltageSourceValt;
-        ADC16_Init(ADC0, &adcUserConfig);  
+        ADC16_Init(ADC0, &adcUserConfig);
+        ADC16_EnableHardwareTrigger(ADC0, false); /* Make sure the software trigger is used. */
         ADC16_CalibrateParams();
 #endif     
 }
-uint8_t BOARD_GetBatteryLevel(void)
+uint8_t BOARD_GetBatteryLevelDCDC(void)
 {
     uint16_t batVal, bandgapValue, batLvl, batVolt, bgVolt = 100; /*cV*/
     
     bandgapValue = ADC16_BgLvl();
     DCDC_AdjustVbatDiv4(); /* Bat voltage  divided by 4 */
-    batVal = ADC16_BatLvl() * 4; /* Need to multiply the value by 4 because the measured voltage is divided by 4*/
+    batVal = ADC16_BatLvlDCDC() * 4; /* Need to multiply the value by 4 because the measured voltage is divided by 4*/
     
     batVolt = bgVolt * batVal / bandgapValue;
     
     batLvl = (batVolt - MIN_VOLT_BUCK) * (FULL_BAT - EMPTY_BAT) / (MAX_VOLT_BUCK - MIN_VOLT_BUCK);
     return ((batLvl <= 100) ? batLvl:100);    
+}
+
+uint8_t BOARD_GetBatteryLevel(void)
+{
+    uint32_t batVal, batLvl, batVolt;
+
+	batVal = ADC16_BatLvl() * 2; /* Need to multiply the value by 2 because the measured voltage is divided by 2*/
+	batVolt = VREF_REG * batVal / ADCR_VDD;
+
+	batLvl = (batVolt - MIN_VOLT_LI_ION_BAT) *(FULL_BAT - EMPTY_BAT) / (MAX_VOLT_LI_ION_BAT - MIN_VOLT_LI_ION_BAT);
+
+    return ((batLvl <= 100) ? batLvl:100);
 }
 
 uint16_t BOARD_GetPotentiometerLevel(void)
@@ -390,6 +408,18 @@ void ADC16_CalibrateParams(void)
     
     // Enable BANDGAP reference voltage
     PMC_ConfigureBandgapBuffer(PMC, &pmcBandgapConfig);
+}
+
+/*!
+ * @brief Gets the current voltage of the battery
+ *
+ * This function measure the ADC channel corresponding to the battery
+ */
+
+static inline uint32_t ADC16_BatLvlDCDC(void)
+{
+      adcValue = ADC16_ReadValue(ADC16_BATLVL_DCDC_CHN, false);
+      return adcValue;
 }
 
 /*!

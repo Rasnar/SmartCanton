@@ -146,10 +146,10 @@ void BOARD_InitAdc(void);
 void BOARD_DCDCInit(void);
 
 /* Function to read battery level on board configuration. */
-uint8_t BOARD_GetBatteryLevel(void);
+uint8_t BOARD_GetBatteryLevelDCDC(void);
 
-/* Function to read potentiometer level on board configuration. */
-uint16_t BOARD_GetPotentiometerLevel(void);
+/* Function to read battery level on board configuration. */
+uint8_t BOARD_GetBatteryLevel(void);
 
 /* Function to read temperature level on board configuration. */
 int32_t BOARD_GetTemperature(void);
