@@ -73,7 +73,7 @@
 #define gAppUseNvm_d                    0
 
 /* Defines Num of Serial Manager interfaces */
-#define gSerialManagerMaxInterfaces_c   0
+#define gSerialManagerMaxInterfaces_c   1
 
 /* Defines Size for Timer Task*/
 #define gTmrTaskStackSize_c  500
@@ -146,7 +146,7 @@
 #define gMainThreadStackSize_c  1024
            
 /* Defines total heap size used by the OS */
-#define gTotalHeapSize_c        8000
+#define gTotalHeapSize_c        16000
            
 /*! *********************************************************************************
  * 	BLE Stack Configuration

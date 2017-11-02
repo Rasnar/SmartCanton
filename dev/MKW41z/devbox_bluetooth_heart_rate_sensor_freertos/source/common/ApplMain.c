@@ -79,6 +79,8 @@
 
 #include "ApplMain.h"
 
+#include "lorawan_controller_task.h"
+
 
 #if gAppUseNvm_d
 /* include NVM interface */
@@ -360,6 +362,8 @@ void main_task(uint32_t param)
         
         hardware_init();
         
+        BOARD_InitPins();
+
         /* Framework init */
         MEM_Init();
         TMR_Init();       
@@ -404,6 +408,16 @@ void main_task(uint32_t param)
        
         /* Initialize peripheral drivers specific to the application */
         BleApp_Init();
+
+        /* Initialize Serial Task */
+        SerialManager_Init();
+
+        /* Initialize Lorawan Controller Task */
+	   if (osaStatus_Success != LorawanController_TaskInit())
+	   {
+		   panic(0,0,0,0);
+		   return;
+	   }
             
         /* Create application event */
         mAppEvent = OSA_EventCreate(TRUE);
@@ -425,6 +439,8 @@ void main_task(uint32_t param)
             panic(0,0,0,0);
             return;
         }
+
+
     }
     
     /* Call application task */
