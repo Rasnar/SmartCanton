@@ -8,10 +8,10 @@
 
 
 #if !defined(HAVE_STRUCT_TIMESPEC)
-struct timespec {
-    time_t tv_sec;
-    long tv_nsec;
-};
+//struct timespec {
+//    time_t tv_sec;
+//    long tv_nsec;
+//};
 #endif
 
 #define inline __inline
