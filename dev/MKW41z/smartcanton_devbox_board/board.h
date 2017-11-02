@@ -154,6 +154,9 @@ uint8_t BOARD_GetBatteryLevel(void);
 /* Function to read temperature level on board configuration. */
 int32_t BOARD_GetTemperature(void);
 
+/* Function to generate a random number if no potentiometer is present on the board. */
+uint16_t BOARD_GetPotentiometerLevel(void);
+
 /* Function to install callbacks for actions before and after entering low power. */
 extern void BOARD_InstallLowPowerCallbacks(void);
 
