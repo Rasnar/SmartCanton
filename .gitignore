@@ -60,3 +60,4 @@ local.properties
 .cache-main
 .scala_dependencies
 .worksheet
+dev/STM32CubeExpansion_LRWAN_V1\.1\.2/Projects/Multi/Applications/LoRa/AT_Slave/SW4STM32/B-L072Z-LRWAN1/mlm32l07x01/Debug/
