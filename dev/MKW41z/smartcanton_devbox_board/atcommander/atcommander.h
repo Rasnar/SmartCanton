@@ -160,8 +160,6 @@ int at_commander_get(AtCommanderConfig* config, AtCommand* command,
 bool at_commander_set(AtCommanderConfig* config, AtCommand* command,
         ...);
 
-int rn42_baud_rate_mapper(int baud);
-int xbee_baud_rate_mapper(int baud);
 
 #ifdef __cplusplus
 }

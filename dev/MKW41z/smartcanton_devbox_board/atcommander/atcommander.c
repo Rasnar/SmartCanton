@@ -18,33 +18,19 @@
         config->log_function("\r\n"); \
     }
 
-const AtCommanderPlatform AT_PLATFORM_RN42 = {
+const AtCommanderPlatform AT_PLATFORM_I_CUBE_LRWAN = {
     AT_COMMANDER_DEFAULT_RESPONSE_DELAY_MS,
-    rn42_baud_rate_mapper,
-    { "$$$", "CMD" },
-    { "---\r", "END" },
-    { "SU,%d\r", "AOK" },
-    { "ST,%d\r", "AOK" },
+    NULL,
+	{ NULL, NULL },
+	{ NULL, NULL },
+	{ NULL, NULL },
+	{ NULL, NULL },
     { NULL, NULL },
-    { "R,1\r", "Reboot!" },
-    { "SN,%s\r", "AOK" },
-    { "S-,%s\r", "AOK" },
-    { "GN\r", NULL, "ERR" },
-    { "GB\r", NULL, "ERR" },
-};
-
-const AtCommanderPlatform AT_PLATFORM_XBEE = {
-    3000,
-    xbee_baud_rate_mapper,
-    { "+++", "OK" },
-    { NULL, NULL },
-    { "ATBD %d\r\n", "OK" },
-    { "ATWR\r\n", "OK" },
-    { NULL, NULL },
-    { NULL, NULL },
-    { NULL, NULL },
-    { NULL, NULL },
-    { NULL, NULL },
+	{ NULL, NULL },
+	{ NULL, NULL },
+	{ NULL, NULL },
+	{ NULL, NULL },
+    { "AT+DEUI=?\r", NULL, "\r\nAT_ERROR\r\n" },
 };
 
 /** Private: Send an array of bytes to the AT device.
@@ -369,75 +355,4 @@ int at_commander_get_name(AtCommanderConfig* config, char* buffer,
         int buflen) {
     return at_commander_get(config, &config->platform.get_name_command,
             buffer, buflen);
-}
-
-int rn42_baud_rate_mapper(int baud) {
-    int value;
-    switch(baud) {
-        case 1200:
-            value = 12;
-            break;
-        case 2300:
-            value = 23;
-            break;
-        case 4800:
-            value = 48;
-            break;
-        case 9600:
-            value = 96;
-            break;
-        case 19200:
-            value = 19;
-            break;
-        case 38400:
-            value = 28;
-            break;
-        case 57600:
-            value = 57;
-            break;
-        case 115200:
-            value = 11;
-            break;
-        case 230400:
-            value = 23;
-            break;
-        case 460800:
-            value = 46;
-            break;
-        case 921600:
-            value = 92;
-            break;
-    }
-    return value;
-}
-
-int xbee_baud_rate_mapper(int baud) {
-    int value;
-    switch(baud) {
-        case 1200:
-            value = 0;
-            break;
-        case 2300:
-            value = 1;
-            break;
-        case 4800:
-            value = 2;
-            break;
-        case 9600:
-            value = 3;
-            break;
-        case 19200:
-            value = 4;
-            break;
-        case 38400:
-            value = 5;
-            break;
-        case 57600:
-            value = 6;
-            break;
-        case 115200:
-            value = 7;
-            break;
-    }
-    return value;
 }
