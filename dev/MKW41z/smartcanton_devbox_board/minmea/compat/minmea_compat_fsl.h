@@ -6,16 +6,7 @@
  * published by Sam Hocevar. See the COPYING file for more details.
  */
 
-
-#if !defined(HAVE_STRUCT_TIMESPEC)
-//struct timespec {
-//    time_t tv_sec;
-//    long tv_nsec;
-//};
-#endif
-
 #define inline __inline
 #define timegm mktime
-
 
 /* vim: set ts=4 sw=4 et: */

@@ -694,24 +694,9 @@
 		</cconfiguration>
 	</storageModule>
 	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-		<project id="frdmkw41z_wireless_examples_bluetooth_heart_rate_sensor_freertos_3.null.1057049279" name="frdmkw41z_wireless_examples_bluetooth_heart_rate_sensor_freertos_3" projectType="com.crt.advproject.projecttype.exe"/>
+		<project id="frdmkw41z_wireless_examples_bluetooth_heart_rate_sensor_freertos_3.null.1586671731" name="frdmkw41z_wireless_examples_bluetooth_heart_rate_sensor_freertos_3" projectType="com.crt.advproject.projecttype.exe"/>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
-	<storageModule moduleId="scannerConfiguration">
-		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-		<scannerConfigBuildInfo instanceId="com.crt.advproject.config.exe.debug.1069306926;com.crt.advproject.config.exe.debug.1069306926.;com.crt.advproject.gcc.exe.debug.873819846;com.crt.advproject.compiler.input.1102527487">
-			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.crt.advproject.GCCManagedMakePerProjectProfile"/>
-		</scannerConfigBuildInfo>
-		<scannerConfigBuildInfo instanceId="com.crt.advproject.config.exe.release.892155885;com.crt.advproject.config.exe.release.892155885.;com.crt.advproject.gas.exe.release.907234029;com.crt.advproject.assembler.input.1181520729">
-			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.crt.advproject.GCCManagedMakePerProjectProfile"/>
-		</scannerConfigBuildInfo>
-		<scannerConfigBuildInfo instanceId="com.crt.advproject.config.exe.release.892155885;com.crt.advproject.config.exe.release.892155885.;com.crt.advproject.gcc.exe.release.1506100371;com.crt.advproject.compiler.input.430945879">
-			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.crt.advproject.GCCManagedMakePerProjectProfile"/>
-		</scannerConfigBuildInfo>
-		<scannerConfigBuildInfo instanceId="com.crt.advproject.config.exe.debug.1069306926;com.crt.advproject.config.exe.debug.1069306926.;com.crt.advproject.gas.exe.debug.2004161383;com.crt.advproject.assembler.input.378928178">
-			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.crt.advproject.GCCManagedMakePerProjectProfile"/>
-		</scannerConfigBuildInfo>
-	</storageModule>
 	<storageModule moduleId="com.crt.config">
 		<projectStorage>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#13;
 &lt;TargetConfig&gt;&#13;
@@ -804,4 +789,6 @@
 		<boardId>frdmkw41z</boardId>
 		<core>cm0plus</core>
 	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
+	<storageModule moduleId="scannerConfiguration"/>
 </cproject>
