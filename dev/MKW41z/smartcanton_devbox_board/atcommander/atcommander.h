@@ -36,8 +36,7 @@ typedef struct {
     AtCommand get_device_id_command;
 } AtCommanderPlatform;
 
-extern const AtCommanderPlatform AT_PLATFORM_RN42;
-extern const AtCommanderPlatform AT_PLATFORM_XBEE;
+extern const AtCommanderPlatform AT_PLATFORM_I_CUBE_LRWAN;
 
 typedef struct {
     AtCommanderPlatform platform;
