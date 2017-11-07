@@ -62,6 +62,9 @@
 
 #define gPasskeyValue_c                999999
 
+#define gSerialMgrRxBufSize_c               (128)
+#define gSerialTaskPriority_c               (16)
+
 #if (gAppUseBonding_d) && (!gAppUsePairing_d)
   #error "Enable pairing to make use of bonding"
 #endif
