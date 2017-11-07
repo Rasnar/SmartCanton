@@ -273,4 +273,126 @@ https://www.thethingsnetwork.org/wiki/LoRaWAN/Duty-Cycle
 
 
 
+# 03.11.2017
+
+Change C library :
+
+http://www.support.code-red-tech.com/CodeRedWiki/SwitchingCLibrary
+
+https://community.nxp.com/thread/389104
+
+
+
+The easier method : Create a new project with the SDK and copy .cproject file to the old project
+
+
+
+
+
+# 06.11.2017
+
+AT Commander modification :
+
+
+
+The problem with the AT commander is that when you read a command it will stop when finding the first "\r\n" combinaison. When you use a get request, you will be confronted with 2 of theses. The get_request function had to be modified to accept this case.
+
+For exemple, the AT+DEUI=? give us : 
+
+````
+11:22:33:44:55:66:77:88\r\n\r\nOK\r\n
+````
+
+
+
+From 
+
+````c
+int get_request(AtCommanderConfig* config, AtCommand* command,
+        char* response_buffer, int response_buffer_length) {
+    at_commander_write(config, command->request_format,
+            strlen(command->request_format));
+    at_commander_delay_ms(config, config->platform.response_delay_ms);
+
+    int bytes_read = at_commander_read(config, response_buffer,
+            response_buffer_length - 1, AT_COMMANDER_MAX_RETRIES);
+    response_buffer[bytes_read] = '\0';
+
+    if(strncmp(response_buffer, command->error_response, strlen(command->error_response))) {
+        return bytes_read;
+    }
+    return -1;
+}
+````
+
+To 
+
+````c
+int get_request(AtCommanderConfig* config, AtCommand* command,
+        char* response_buffer, int response_buffer_length) {
+    at_commander_write(config, command->request_format,
+            strlen(command->request_format));
+    at_commander_delay_ms(config, config->platform.response_delay_ms);
+
+    int bytes_read = at_commander_read(config, response_buffer,
+            response_buffer_length - 1, AT_COMMANDER_MAX_RETRIES);
+    response_buffer[bytes_read] = '\0';
+
+    char status_cmd[16];
+    int status_bytes_read = at_commander_read(config, status_cmd,
+                sizeof(status_cmd) - 1, AT_COMMANDER_MAX_RETRIES);
+    status_cmd[status_bytes_read] = '\0';
+
+    if(strncmp(status_cmd, command->error_response, strlen(command->error_response))) {
+        return bytes_read;
+    }
+    return -1;
+}
+````
+
+
+
+Another modification is inside "at_commander_read" function. Before this modification it refused to accpet only one character response!
+
+Old : 
+
+````c
+int at_commander_read(AtCommanderConfig* config, char* buffer, int size,
+	...
+        if(bytes_read > 1) {
+            if(byte == '\r') {
+                sawCarraigeReturn = true;
+            } else if(sawCarraigeReturn && byte == '\n') {
+                break;
+            }
+        }
+    }
+    ...
+    return bytes_read;
+}
+````
+
+New:
+
+```c
+int at_commander_read(AtCommanderConfig* config, char* buffer, int size,
+	...
+        if(bytes_read > 0) {
+            if(byte == '\r') {
+                sawCarraigeReturn = true;
+            } else if(sawCarraigeReturn && byte == '\n') {
+                break;
+            }
+        }
+    }
+    ...
+    return bytes_read;
+}
+```
+
+
+
+
+
+
 
