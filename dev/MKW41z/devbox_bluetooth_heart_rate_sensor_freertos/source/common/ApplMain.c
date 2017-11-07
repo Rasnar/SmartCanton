@@ -79,6 +79,7 @@
 
 #include "ApplMain.h"
 
+#include "pin_mux.h"
 #include "lorawan_controller_task.h"
 
 
