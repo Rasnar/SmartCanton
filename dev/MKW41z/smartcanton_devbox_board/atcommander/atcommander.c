@@ -75,7 +75,7 @@ int at_commander_read(AtCommanderConfig* config, char* buffer, int size,
             buffer[bytes_read++] = byte;
         }
 
-        if(bytes_read > 1) {
+        if(bytes_read > 0) {
             if(byte == '\r') {
                 sawCarraigeReturn = true;
             } else if(sawCarraigeReturn && byte == '\n') {
@@ -130,7 +130,12 @@ int get_request(AtCommanderConfig* config, AtCommand* command,
             response_buffer_length - 1, AT_COMMANDER_MAX_RETRIES);
     response_buffer[bytes_read] = '\0';
 
-    if(strncmp(response_buffer, command->error_response, strlen(command->error_response))) {
+    char status_cmd[16];
+    int status_bytes_read = at_commander_read(config, status_cmd,
+                sizeof(status_cmd) - 1, AT_COMMANDER_MAX_RETRIES);
+    status_cmd[status_bytes_read] = '\0';
+
+    if(strncmp(status_cmd, command->error_response, strlen(command->error_response))) {
         return bytes_read;
     }
     return -1;
