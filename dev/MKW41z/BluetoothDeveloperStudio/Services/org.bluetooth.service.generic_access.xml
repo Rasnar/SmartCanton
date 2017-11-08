@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Service xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/service.xsd"
+  type="org.bluetooth.service.generic_access"
+  uuid="1800"
+  name="Generic Access">
+  <InformativeText>
+    <Abstract>The generic_access service contains generic information about the device. All available Characteristics are readonly.</Abstract>
+  </InformativeText>
+  <Characteristics>
+    <Characteristic
+      type="org.bluetooth.characteristic.gap.device_name"
+      name="Device Name">
+      <Requirement>Mandatory</Requirement>
+      <Properties>
+        <Read>Mandatory</Read>
+        <Write>Optional</Write>
+        <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+        <SignedWrite>Excluded</SignedWrite>
+        <ReliableWrite>Excluded</ReliableWrite>
+        <Notify>Excluded</Notify>
+        <Indicate>Excluded</Indicate>
+        <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+        <Broadcast>Excluded</Broadcast>
+      </Properties>
+    </Characteristic>
+    <Characteristic
+      type="org.bluetooth.characteristic.gap.appearance"
+      name="Appearance">
+      <Requirement>Mandatory</Requirement>
+      <Properties>
+        <Read>Mandatory</Read>
+        <Write>Excluded</Write>
+        <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+        <SignedWrite>Excluded</SignedWrite>
+        <ReliableWrite>Excluded</ReliableWrite>
+        <Notify>Excluded</Notify>
+        <Indicate>Excluded</Indicate>
+        <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+        <Broadcast>Excluded</Broadcast>
+      </Properties>
+    </Characteristic>
+    <Characteristic
+      type="org.bluetooth.characteristic.gap.peripheral_privacy_flag"
+      name="Peripheral Privacy Flag">
+      <Requirement>Optional</Requirement>
+      <Properties>
+        <InformationText>C1: Optional if supports only 1 bond, excluded if the device supports more than one bonding</InformationText>
+        <Read>Mandatory</Read>
+        <Write>C1</Write>
+        <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+        <SignedWrite>Excluded</SignedWrite>
+        <ReliableWrite>Excluded</ReliableWrite>
+        <Notify>Excluded</Notify>
+        <Indicate>Excluded</Indicate>
+        <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+        <Broadcast>Excluded</Broadcast>
+      </Properties>
+    </Characteristic>
+    <Characteristic
+      type="org.bluetooth.characteristic.gap.reconnection_address"
+      name="Reconnection Address">
+      <Requirement>Conditional</Requirement>
+      <Properties>
+        <Read>Excluded</Read>
+        <Write>Mandatory</Write>
+        <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+        <SignedWrite>Excluded</SignedWrite>
+        <ReliableWrite>Excluded</ReliableWrite>
+        <Notify>Excluded</Notify>
+        <Indicate>Excluded</Indicate>
+        <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+        <Broadcast>Excluded</Broadcast>
+      </Properties>
+    </Characteristic>
+    <Characteristic
+      type="org.bluetooth.characteristic.gap.peripheral_preferred_connection_parameters"
+      name="Peripheral Preferred Connection Parameters">
+      <Requirement>Optional</Requirement>
+      <Properties>
+        <Read>Mandatory</Read>
+        <Write>Excluded</Write>
+        <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+        <SignedWrite>Excluded</SignedWrite>
+        <ReliableWrite>Excluded</ReliableWrite>
+        <Notify>Excluded</Notify>
+        <Indicate>Excluded</Indicate>
+        <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+        <Broadcast>Excluded</Broadcast>
+      </Properties>
+    </Characteristic>
+  </Characteristics>
+  <Configurations>
+    <Configuration
+      option="must_support_target_if_supported">
+      <InformativeText>If the Peripheral Privacy Flag Characteristic is implemented, then the Reconnection Address Characteristic must also be implemented</InformativeText>
+      <CharacteristicType>org.bluetooth.characteristic.peripheral_privacy_flag</CharacteristicType>
+      <Target>Reconnection Address</Target>
+    </Configuration>
+  </Configurations>
+</Service>

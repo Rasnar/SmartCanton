@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Characteristic xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd"
+  type="com.hepia.characteristic.peripheral_preferred_connection_parameters"
+  uuid="1800"
+  name="Peripheral Preferred Connection Parameters"
+  last-modified="2013-05-29">
+  <InformativeText>
+    <Abstract />
+    <InformativeDisclaimer />
+  </InformativeText>
+  <Value />
+</Characteristic>

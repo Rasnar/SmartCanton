@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Service xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/service.xsd"
+  type="com.hepia.service.smartcanton_devbox1"
+  uuid="02ff5604-ba5e-f4ee-5ca1-eb1e5e4b1ce0"
+  name="SMARTCANTON DEVBOX">
+  <Characteristics>
+    <Characteristic
+      type="com.hepia.characteristic.lora_app_eui"
+      name="LoRa APP EUI">
+      <Requirement>Optional</Requirement>
+      <Properties>
+        <Read>Mandatory</Read>
+        <Write>Mandatory</Write>
+        <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+        <SignedWrite>Excluded</SignedWrite>
+        <ReliableWrite>Excluded</ReliableWrite>
+        <Notify>Excluded</Notify>
+        <Indicate>Excluded</Indicate>
+        <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+        <Broadcast>Excluded</Broadcast>
+        <ExtendedProperties>Excluded</ExtendedProperties>
+      </Properties>
+      <Descriptors>
+        <Descriptor
+          type="com.hepia.descriptor.characteristic_user_description"
+          name="Characteristic User Description">
+          <Properties>
+            <Read>Mandatory</Read>
+            <Write>Mandatory</Write>
+          </Properties>
+        </Descriptor>
+      </Descriptors>
+    </Characteristic>
+    <Characteristic
+      type="com.hepia.characteristic.lora_app_key"
+      name="LoRa APP KEY">
+      <Requirement>Optional</Requirement>
+      <Properties>
+        <Read>Mandatory</Read>
+        <Write>Mandatory</Write>
+        <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+        <SignedWrite>Excluded</SignedWrite>
+        <ReliableWrite>Excluded</ReliableWrite>
+        <Notify>Excluded</Notify>
+        <Indicate>Excluded</Indicate>
+        <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+        <Broadcast>Excluded</Broadcast>
+        <ExtendedProperties>Excluded</ExtendedProperties>
+      </Properties>
+      <Descriptors>
+        <Descriptor
+          type="com.hepia.descriptor.lora_app_key_new_descriptor"
+          name="LoRa APP KEY new descriptor">
+          <Properties>
+            <Read>Optional</Read>
+            <Write>Optional</Write>
+          </Properties>
+        </Descriptor>
+      </Descriptors>
+    </Characteristic>
+  </Characteristics>
+</Service>

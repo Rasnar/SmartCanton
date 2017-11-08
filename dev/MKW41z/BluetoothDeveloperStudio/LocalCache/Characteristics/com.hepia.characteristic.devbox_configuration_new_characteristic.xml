@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Characteristic xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd"
+  type="com.hepia.characteristic.devbox_configuration_new_characteristic"
+  uuid="01b2"
+  name="DEVBOX CONFIGURATION new characteristic">
+  <Value />
+</Characteristic>

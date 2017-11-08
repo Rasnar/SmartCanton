@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Characteristic xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd"
+  type="com.hepia.characteristic.lora_app_key"
+  uuid="02ff5804-ba5e-f4ee-5ca1-eb1e5e4b1ce0"
+  name="LoRa APP KEY">
+  <Value>
+    <Field
+      name="LORA_APP_KEY">
+      <Requirement>Mandatory</Requirement>
+      <Format>utf8s</Format>
+      <Unit>org.bluetooth.unit.unitless</Unit>
+      <Repeated>false</Repeated>
+    </Field>
+  </Value>
+</Characteristic>

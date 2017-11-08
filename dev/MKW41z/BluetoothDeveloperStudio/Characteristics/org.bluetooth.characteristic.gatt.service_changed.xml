@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Characteristic xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd"
+  type="org.bluetooth.characteristic.gatt.service_changed"
+  uuid="2A05"
+  name="Service Changed"
+  last-modified="2013-05-29">
+  <InformativeText>
+    <Abstract />
+    <InformativeDisclaimer />
+  </InformativeText>
+  <Value>
+    <Field
+      name="Start of Affected Attribute Handle Range">
+      <Requirement>Mandatory</Requirement>
+      <Format>uint16</Format>
+      <Minimum>1.00000000000</Minimum>
+      <Maximum>65535.00000000000</Maximum>
+    </Field>
+    <Field
+      name="End of Affected Attribute Handle Range">
+      <Requirement>Mandatory</Requirement>
+      <Format>uint16</Format>
+      <Minimum>1.00000000000</Minimum>
+      <Maximum>65535.00000000000</Maximum>
+    </Field>
+  </Value>
+</Characteristic>

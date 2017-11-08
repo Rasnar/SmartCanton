@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Characteristic xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd"
+  type="org.bluetooth.characteristic.gap.reconnection_address"
+  uuid="2A03"
+  name="Reconnection Address">
+  <InformativeText>
+    <Abstract>The Information included in this page is informative. The normative descriptions are contained in the applicable specification.</Abstract>
+  </InformativeText>
+  <Value>
+    <Field
+      name="Address">
+      <InformativeText>This is a non-resolvable private address</InformativeText>
+      <Requirement>Mandatory</Requirement>
+      <Format>uint48</Format>
+    </Field>
+  </Value>
+</Characteristic>

@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<GAPSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <DeviceName>SmartCantonDevBox</DeviceName>
+  <UseShortName>false</UseShortName>
+  <ShortNameBytes>0</ShortNameBytes>
+  <DiscoveryMode>1</DiscoveryMode>
+  <BDEDRNotSupported>true</BDEDRNotSupported>
+  <SimultaneousLEAndBDRController>false</SimultaneousLEAndBDRController>
+  <SimultaneousLEAndBDRHost>false</SimultaneousLEAndBDRHost>
+  <TXPower>0</TXPower>
+  <SlaveConnectionInterval>0000FFFF</SlaveConnectionInterval>
+  <Appearance>0000</Appearance>
+  <PublicTargetAddress>true</PublicTargetAddress>
+  <MinAdvertisingInterval>0</MinAdvertisingInterval>
+  <MaxAdvertisingInterval>255</MaxAdvertisingInterval>
+  <AdvertisingChannel37>true</AdvertisingChannel37>
+  <AdvertisingChannel38>true</AdvertisingChannel38>
+  <AdvertisingChannel39>true</AdvertisingChannel39>
+  <AdvertisingPolicy>0</AdvertisingPolicy>
+  <AssociationModel>0</AssociationModel>
+  <SecurityMode>2</SecurityMode>
+  <AddressType>0</AddressType>
+  <PeripheralPrivacy>false</PeripheralPrivacy>
+  <UriSchemeIndex>0</UriSchemeIndex>
+  <Packet>
+    <AppearanceResponse>false</AppearanceResponse>
+    <AppearanceAdvertise>false</AppearanceAdvertise>
+    <DeviceNameResponse>true</DeviceNameResponse>
+    <DeviceNameAdvertise>true</DeviceNameAdvertise>
+    <FlagsResponse>true</FlagsResponse>
+    <FlagsAdvertise>true</FlagsAdvertise>
+    <ManufacturerDataResponse>false</ManufacturerDataResponse>
+    <ManufacturerDataAdvertise>false</ManufacturerDataAdvertise>
+    <PublicTargetAddressResponse>false</PublicTargetAddressResponse>
+    <PublicTargetAddressAdvertise>false</PublicTargetAddressAdvertise>
+    <UriResponse>false</UriResponse>
+    <UriAdvertise>false</UriAdvertise>
+    <ServicesResponse>true</ServicesResponse>
+    <ServicesAdvertise>true</ServicesAdvertise>
+    <SlaveConnectionResponse>false</SlaveConnectionResponse>
+    <SlaveConnectionAdvertise>false</SlaveConnectionAdvertise>
+    <TXPowerResponse>false</TXPowerResponse>
+    <TXPowerAdvertise>false</TXPowerAdvertise>
+    <ServiceSolicitationResponse>false</ServiceSolicitationResponse>
+    <ServiceSolicitationAdvertise>false</ServiceSolicitationAdvertise>
+    <ServiceDataResponse>false</ServiceDataResponse>
+    <ServiceDataAdvertise>false</ServiceDataAdvertise>
+  </Packet>
+  <Services>
+    <GAPServiceSettings>
+      <SelectedAdvertise>false</SelectedAdvertise>
+      <SelectedData>false</SelectedData>
+      <SelectedSolicitation>false</SelectedSolicitation>
+      <Name>Device Information</Name>
+      <UUID>180A</UUID>
+    </GAPServiceSettings>
+    <GAPServiceSettings>
+      <SelectedAdvertise>true</SelectedAdvertise>
+      <SelectedData>false</SelectedData>
+      <SelectedSolicitation>true</SelectedSolicitation>
+      <Name>Heart Rate</Name>
+      <UUID>180D</UUID>
+    </GAPServiceSettings>
+    <GAPServiceSettings>
+      <SelectedAdvertise>false</SelectedAdvertise>
+      <SelectedData>false</SelectedData>
+      <SelectedSolicitation>true</SelectedSolicitation>
+      <Name>Battery Service</Name>
+      <UUID>180F</UUID>
+    </GAPServiceSettings>
+    <GAPServiceSettings>
+      <SelectedAdvertise>false</SelectedAdvertise>
+      <SelectedData>false</SelectedData>
+      <SelectedSolicitation>false</SelectedSolicitation>
+      <Name>SMARTCANTON DEVBOX</Name>
+      <UUID>02ff5604-ba5e-f4ee-5ca1-eb1e5e4b1ce0</UUID>
+    </GAPServiceSettings>
+    <GAPServiceSettings>
+      <SelectedAdvertise>false</SelectedAdvertise>
+      <SelectedData>false</SelectedData>
+      <SelectedSolicitation>false</SelectedSolicitation>
+      <Name>Generic Attribute</Name>
+      <UUID>1801</UUID>
+    </GAPServiceSettings>
+    <GAPServiceSettings>
+      <SelectedAdvertise>true</SelectedAdvertise>
+      <SelectedData>false</SelectedData>
+      <SelectedSolicitation>false</SelectedSolicitation>
+      <Name>Generic Access</Name>
+      <UUID>1800</UUID>
+    </GAPServiceSettings>
+  </Services>
+</GAPSettings>

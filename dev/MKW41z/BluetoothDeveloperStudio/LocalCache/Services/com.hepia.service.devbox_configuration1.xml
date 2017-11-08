@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Service xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/service.xsd"
+  type="com.hepia.service.devbox_configuration1"
+  uuid="8478"
+  name="DEVBOX CONFIGURATION">
+  <Characteristics>
+    <Characteristic
+      type="com.hepia.characteristic.devbox_configuration_new_characteristic"
+      name="DEVBOX CONFIGURATION new characteristic">
+      <Requirement>Optional</Requirement>
+      <Properties>
+        <Read>Excluded</Read>
+        <Write>Excluded</Write>
+        <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+        <SignedWrite>Excluded</SignedWrite>
+        <ReliableWrite>Excluded</ReliableWrite>
+        <Notify>Excluded</Notify>
+        <Indicate>Excluded</Indicate>
+        <Broadcast>Excluded</Broadcast>
+      </Properties>
+      <Descriptors />
+    </Characteristic>
+  </Characteristics>
+</Service>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Descriptor xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/descriptor.xsd"
+  type="com.hepia.descriptor.characteristic_user_description"
+  uuid="2901"
+  name="Characteristic User Description">
+  <InformativeText>
+    <Abstract>
+        The Characteristic User Description descriptor provides a textual user description for a characteristic value.
+		</Abstract>
+    <InformativeDisclaimer />
+    <Summary>
+        If the Writable Auxiliary bit of the Characteristics Properties is set then this descriptor is written.
+        Only one User Description descriptor exists in a characteristic definition.            
+		</Summary>
+  </InformativeText>
+  <Value>
+    <Field
+      name="User Description">
+      <InformativeText>LoRa APP EUI</InformativeText>
+      <Requirement>Mandatory</Requirement>
+      <Format>utf8s</Format>
+      <Unit>org.bluetooth.unit.unitless</Unit>
+      <Repeated>false</Repeated>
+    </Field>
+  </Value>
+</Descriptor>
