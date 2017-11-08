@@ -66,6 +66,7 @@
 #include "battery_interface.h"
 #include "device_info_interface.h"
 #include "heart_rate_interface.h"
+#include "potentiometer_interface.h"
 
 /* Connection Manager */
 #include "ble_conn_manager.h"
@@ -120,6 +121,7 @@ static deviceId_t  mPeerDeviceId = gInvalidDeviceId_c;
 static basConfig_t      basServiceConfig = {service_battery, 0};
 static hrsUserData_t    hrsUserData;
 static hrsConfig_t hrsServiceConfig = {service_heart_rate, TRUE, TRUE, TRUE, gHrs_BodySensorLocChest_c, &hrsUserData};
+static psConfig_t psServiceConfig = {service_potentiometer, 0};
 static uint16_t cpHandles[1] = { value_hr_ctrl_point };
 
 /* Application specific data*/
@@ -297,6 +299,8 @@ static void BleApp_Config()
     basServiceConfig.batteryLevel = BOARD_GetBatteryLevel();
     Bas_Start(&basServiceConfig);
     
+    Ps_Start(&psServiceConfig);
+
     /* Allocate application timers */
     mAdvTimerId = TMR_AllocateTimer();
     mMeasurementTimerId = TMR_AllocateTimer();
@@ -438,6 +442,7 @@ static void BleApp_ConnectionCallback (deviceId_t peerDeviceId, gapConnectionEve
             /* Subscribe client*/
             Bas_Subscribe(peerDeviceId);        
             Hrs_Subscribe(peerDeviceId);
+            Ps_Subscribe(peerDeviceId);
                                     
 #if (!cPWR_UsePowerDownMode)  
             /* UI */            
@@ -470,6 +475,7 @@ static void BleApp_ConnectionCallback (deviceId_t peerDeviceId, gapConnectionEve
             /* Unsubscribe client */
             Bas_Unsubscribe();
             Hrs_Unsubscribe();
+            Ps_Unsubscribe();
 
             mPeerDeviceId = gInvalidDeviceId_c;
             
@@ -516,6 +522,42 @@ static void BleApp_GattServerCallback (deviceId_t deviceId, gattServerEvent_t* p
     
     switch (pServerEvent->eventType)
     {
+
+    	case gEvtCharacteristicCccdWritten_c:
+		{
+			/*
+			Attribute CCCD write handler: Create a case for your registered attribute and
+			execute callback action accordingly
+			*/
+			switch(pServerEvent->eventData.charCccdWrittenEvent.handle)
+			{
+//			case cccd_input_report:{
+//			  //Determine if the timer must be started or stopped
+//			  if (pServerEvent->eventData.charCccdWrittenEvent.newCccd){
+//				// CCCD set, start timer
+//				TMR_StartTimer(tsiTimerId, gTmrIntervalTimer_c, gTsiUpdateTime_c ,BleApp_TsiSensorTimer, NULL);
+//			  }
+//			  else{
+//				// CCCD cleared, stop timer
+//				TMR_StopTimer(tsiTimerId);
+//			  }
+//			}
+//			  break;
+//
+//			case cccd_potentiometer:{
+//			  //Determine if the timer must be started or stopped
+//			  if (pServerEvent->eventData.charCccdWrittenEvent.newCccd){
+//				// CCCD set, start timer
+//				TMR_StartTimer(potTimerId, gTmrIntervalTimer_c, gPotentiometerUpdateTime_c ,BleApp_PotentiometerTimer, NULL);
+//			  }
+//			  else{
+//				// CCCD cleared, stop timer
+//				TMR_StopTimer(potTimerId);
+//			  }
+			}
+			  break;
+		}
+
         case gEvtAttributeWritten_c:
         {
             handle = pServerEvent->eventData.attributeWrittenEvent.handle;
@@ -527,6 +569,8 @@ static void BleApp_GattServerCallback (deviceId_t deviceId, gattServerEvent_t* p
             }
             
             GattServer_SendAttributeWrittenStatus(deviceId, handle, status);
+
+
         }
         break;
     default:
