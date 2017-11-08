@@ -122,7 +122,7 @@ static basConfig_t      basServiceConfig = {service_battery, 0};
 static hrsUserData_t    hrsUserData;
 static hrsConfig_t hrsServiceConfig = {service_heart_rate, TRUE, TRUE, TRUE, gHrs_BodySensorLocChest_c, &hrsUserData};
 static psConfig_t psServiceConfig = {service_potentiometer, 0};
-static uint16_t cpHandles[1] = { value_hr_ctrl_point };
+static uint16_t cpHandles[1] = { value_heart_rate_control_point };
 
 /* Application specific data*/
 static bool_t mToggle16BitHeartRate = FALSE;
@@ -563,7 +563,7 @@ static void BleApp_GattServerCallback (deviceId_t deviceId, gattServerEvent_t* p
             handle = pServerEvent->eventData.attributeWrittenEvent.handle;
             status = gAttErrCodeNoError_c;
             
-            if (handle == value_hr_ctrl_point)
+            if (handle == value_heart_rate_control_point)
             {
                 status = Hrs_ControlPointHandler(&hrsUserData, pServerEvent->eventData.attributeWrittenEvent.aValue[0]);
             }
