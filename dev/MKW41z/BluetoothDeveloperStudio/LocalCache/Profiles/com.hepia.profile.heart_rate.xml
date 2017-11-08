@@ -48,6 +48,11 @@
       <Declaration>Primary</Declaration>
       <Requirement>Mandatory</Requirement>
     </Service>
+    <Service
+      type="com.hepia.service.heart_rate_new_service">
+      <Declaration>Primary</Declaration>
+      <Requirement>Mandatory</Requirement>
+    </Service>
   </Role>
   <Role
     name="Collector">
@@ -77,6 +82,10 @@
     </Client>
     <Client
       type="org.bluetooth.service.generic_access">
+      <Requirement>Mandatory</Requirement>
+    </Client>
+    <Client
+      type="com.hepia.service.heart_rate_new_service">
       <Requirement>Mandatory</Requirement>
     </Client>
   </Role>

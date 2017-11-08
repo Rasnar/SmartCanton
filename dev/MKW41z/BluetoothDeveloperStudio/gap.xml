@@ -18,7 +18,7 @@
   <AdvertisingChannel39>true</AdvertisingChannel39>
   <AdvertisingPolicy>0</AdvertisingPolicy>
   <AssociationModel>0</AssociationModel>
-  <SecurityMode>2</SecurityMode>
+  <SecurityMode>0</SecurityMode>
   <AddressType>0</AddressType>
   <PeripheralPrivacy>false</PeripheralPrivacy>
   <UriSchemeIndex>0</UriSchemeIndex>
@@ -51,8 +51,15 @@
       <SelectedAdvertise>false</SelectedAdvertise>
       <SelectedData>false</SelectedData>
       <SelectedSolicitation>false</SelectedSolicitation>
-      <Name>Device Information</Name>
-      <UUID>180A</UUID>
+      <Name>Generic Attribute</Name>
+      <UUID>1801</UUID>
+    </GAPServiceSettings>
+    <GAPServiceSettings>
+      <SelectedAdvertise>true</SelectedAdvertise>
+      <SelectedData>false</SelectedData>
+      <SelectedSolicitation>false</SelectedSolicitation>
+      <Name>Generic Access</Name>
+      <UUID>1800</UUID>
     </GAPServiceSettings>
     <GAPServiceSettings>
       <SelectedAdvertise>true</SelectedAdvertise>
@@ -72,22 +79,15 @@
       <SelectedAdvertise>false</SelectedAdvertise>
       <SelectedData>false</SelectedData>
       <SelectedSolicitation>false</SelectedSolicitation>
-      <Name>SMARTCANTON DEVBOX</Name>
-      <UUID>02ff5604-ba5e-f4ee-5ca1-eb1e5e4b1ce0</UUID>
+      <Name>Device Information</Name>
+      <UUID>180A</UUID>
     </GAPServiceSettings>
     <GAPServiceSettings>
       <SelectedAdvertise>false</SelectedAdvertise>
       <SelectedData>false</SelectedData>
       <SelectedSolicitation>false</SelectedSolicitation>
-      <Name>Generic Attribute</Name>
-      <UUID>1801</UUID>
-    </GAPServiceSettings>
-    <GAPServiceSettings>
-      <SelectedAdvertise>true</SelectedAdvertise>
-      <SelectedData>false</SelectedData>
-      <SelectedSolicitation>false</SelectedSolicitation>
-      <Name>Generic Access</Name>
-      <UUID>1800</UUID>
+      <Name>SMARTCANTON DEVBOX</Name>
+      <UUID>02ff5604-ba5e-f4ee-5ca1-eb1e5e4b1ce0</UUID>
     </GAPServiceSettings>
   </Services>
 </GAPSettings>

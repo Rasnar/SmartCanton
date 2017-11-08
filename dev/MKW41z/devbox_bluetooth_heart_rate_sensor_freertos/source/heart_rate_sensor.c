@@ -523,14 +523,14 @@ static void BleApp_GattServerCallback (deviceId_t deviceId, gattServerEvent_t* p
     switch (pServerEvent->eventType)
     {
 
-    	case gEvtCharacteristicCccdWritten_c:
-		{
-			/*
-			Attribute CCCD write handler: Create a case for your registered attribute and
-			execute callback action accordingly
-			*/
-			switch(pServerEvent->eventData.charCccdWrittenEvent.handle)
-			{
+//    	case gEvtCharacteristicCccdWritten_c:
+//		{
+//			/*
+//			Attribute CCCD write handler: Create a case for your registered attribute and
+//			execute callback action accordingly
+//			*/
+//			switch(pServerEvent->eventData.charCccdWrittenEvent.handle)
+//			{
 //			case cccd_input_report:{
 //			  //Determine if the timer must be started or stopped
 //			  if (pServerEvent->eventData.charCccdWrittenEvent.newCccd){
@@ -554,9 +554,9 @@ static void BleApp_GattServerCallback (deviceId_t deviceId, gattServerEvent_t* p
 //				// CCCD cleared, stop timer
 //				TMR_StopTimer(potTimerId);
 //			  }
-			}
-			  break;
-		}
+//			}
+//			  break;
+//		}
 
         case gEvtAttributeWritten_c:
         {
