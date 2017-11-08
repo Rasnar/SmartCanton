@@ -36,8 +36,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _POTENTIOMETER_INTERFACE_H_
-#define _POTENTIOMETER_INTERFACE_H_
+#ifndef _SMARTCANTON_DEVBOX_INTERFACE_H_
+#define _SMARTCANTON_DEVBOX_INTERFACE_H_
 
 /************************************************************************************
 *************************************************************************************
@@ -52,6 +52,13 @@
 #include "gatt_server_interface.h"
 #include "gap_interface.h"
 
+/**
+ * This include is only used to be able to use the structure utf8s_t.
+ * TODO: Maybe we can implement a ifndef with on both file to define structure in both
+ * files.
+ */
+#include "device_info_interface.h"
+
 /************************************************************************************
 *************************************************************************************
 * Public constants & macros
@@ -64,12 +71,22 @@
 *************************************************************************************
 ************************************************************************************/
 
-/*! Potentiometer Service - Configuration */
+/*! Smart Canton Dev Box Service - User Data */
+typedef struct scdbUserData_tag
+{
+	/*! Smart Canton Dev Box Service - LoRa AppEUI*/
+    utf8s_t     appEui;
+
+    /*! Smart Canton Dev Box Service - LoRa AppKey*/
+    utf8s_t     appKey;
+}scdbUserData_t;
+
+/*! Smart Canton Dev Box Service - Configuration */
 typedef struct scdbConfig_tag
 {
-    uint16_t    serviceHandle;                 /*!<Service handle */
-    uint8_t     potentiometerValue;            /*!<Input report field */
-} scdbConfig_t;
+    uint16_t    serviceHandle;
+    scdbUserData_t        *pUserData;
+}scdbConfig_t;
 
 /************************************************************************************
 *************************************************************************************
@@ -88,7 +105,7 @@ extern "C" {
 #endif
 
 /*!**********************************************************************************
-* \brief        Starts Heart Rate Service functionality
+* \brief        Starts Smart Canton Dev Box Service functionality
 *
 * \param[in]    pServiceConfig  Pointer to structure that contains server 
 *                               configuration information.
@@ -98,7 +115,7 @@ extern "C" {
 bleResult_t ScDb_Start(scdbConfig_t  *pServiceConfig);
 
 /*!**********************************************************************************
-* \brief        Stops Heart Rate Service functionality
+* \brief        Stops Smart Canton Dev Box Service functionality
 *
 * \param[in]    pServiceConfig  Pointer to structure that contains server 
 *                               configuration information.
@@ -108,7 +125,7 @@ bleResult_t ScDb_Start(scdbConfig_t  *pServiceConfig);
 bleResult_t ScDb_Stop(scdbConfig_t  *pServiceConfig);
 
 /*!**********************************************************************************
-* \brief        Subscribes a GATT client to the Heart Rate service
+* \brief        Subscribes a GATT client to the Smart Canton Dev Box service
 *
 * \param[in]    clientDeviceId  Client Id in Device DB.
 *
@@ -117,28 +134,37 @@ bleResult_t ScDb_Stop(scdbConfig_t  *pServiceConfig);
 bleResult_t ScDb_Subscribe(deviceId_t clientDeviceId);
 
 /*!**********************************************************************************
-* \brief        Unsubscribes a GATT client from the Heart Rate service
+* \brief        Unsubscribes a GATT client from the Smart Canton Dev Box service
 *
 * \return       gBleSuccess_c or error.
 ************************************************************************************/
 bleResult_t ScDb_Unsubscribe();
 
 /*!**********************************************************************************
-* \brief        Records heart rate measurement on a specified service handle.
+* \brief        Handles command on the Smart Box Dev Box LoRa App Eui
 *
-* \param[in]    serviceHandle   Service handle.
-* \param[in]    newPotentiometerValue           Potentiometer Value.
+* \param[in]    pHrsUserData    Pointer to user data information structure.
+* \param[in]    value           Command Value.
 *
-* \return       gBleSuccess_c or error.
-************************************************************************************/
-bleResult_t ScDb_RecordPotentiometerMeasurement (uint16_t serviceHandle, uint8_t newPotentiometerValue);
+* \return       gAttErrCodeNoError_c or error.
+*************************************************************************************/
+uint8_t ScDb_AppEuiHandler (scdbConfig_t *pScdbUserData, utf8s_t value);
 
+/*!**********************************************************************************
+* \brief        Handles command on the Smart Box Dev Box LoRa App Key
+*
+* \param[in]    pHrsUserData    Pointer to user data information structure.
+* \param[in]    value           Command Value.
+*
+* \return       gAttErrCodeNoError_c or error.
+*************************************************************************************/
+uint8_t ScDb_AppKeyHandler (scdbConfig_t *pScdbUserData, utf8s_t value);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* _POTENTIOMETER_INTERFACE_H_ */
+#endif /* _SMARTCANTON_DEVBOX_INTERFACE_H_ */
 
 /*! **********************************************************************************
  * @}

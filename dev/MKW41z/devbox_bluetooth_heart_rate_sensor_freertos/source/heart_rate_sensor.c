@@ -67,6 +67,7 @@
 #include "device_info_interface.h"
 #include "heart_rate_interface.h"
 #include "potentiometer_interface.h"
+#include "smartcanton_devbox_interface.h"
 
 /* Connection Manager */
 #include "ble_conn_manager.h"
@@ -121,8 +122,11 @@ static deviceId_t  mPeerDeviceId = gInvalidDeviceId_c;
 static basConfig_t      basServiceConfig = {service_battery, 0};
 static hrsUserData_t    hrsUserData;
 static hrsConfig_t hrsServiceConfig = {service_heart_rate, TRUE, TRUE, TRUE, gHrs_BodySensorLocChest_c, &hrsUserData};
+static scdbUserData_t    scdbUserData;
+static scdbConfig_t scdbServiceConfig = {service_smartcanton_devbox, &scdbUserData};
 static psConfig_t psServiceConfig = {service_potentiometer, 0};
-static uint16_t cpHandles[1] = { value_heart_rate_control_point };
+
+static uint16_t cpHandles[3] = { value_heart_rate_control_point, value_lora_app_eui, value_lora_app_key };
 
 /* Application specific data*/
 static bool_t mToggle16BitHeartRate = FALSE;
@@ -301,6 +305,8 @@ static void BleApp_Config()
     
     Ps_Start(&psServiceConfig);
 
+    ScDb_Start(&scdbServiceConfig);
+
     /* Allocate application timers */
     mAdvTimerId = TMR_AllocateTimer();
     mMeasurementTimerId = TMR_AllocateTimer();
@@ -443,6 +449,7 @@ static void BleApp_ConnectionCallback (deviceId_t peerDeviceId, gapConnectionEve
             Bas_Subscribe(peerDeviceId);        
             Hrs_Subscribe(peerDeviceId);
             Ps_Subscribe(peerDeviceId);
+            ScDb_Subscribe(peerDeviceId);
                                     
 #if (!cPWR_UsePowerDownMode)  
             /* UI */            
@@ -476,6 +483,7 @@ static void BleApp_ConnectionCallback (deviceId_t peerDeviceId, gapConnectionEve
             Bas_Unsubscribe();
             Hrs_Unsubscribe();
             Ps_Unsubscribe();
+            ScDb_Unsubscribe();
 
             mPeerDeviceId = gInvalidDeviceId_c;
             
@@ -568,6 +576,20 @@ static void BleApp_GattServerCallback (deviceId_t deviceId, gattServerEvent_t* p
                 status = Hrs_ControlPointHandler(&hrsUserData, pServerEvent->eventData.attributeWrittenEvent.aValue[0]);
             }
             
+            if (handle == value_lora_app_eui)
+			{
+				status = ScDb_AppEuiHandler(&scdbServiceConfig,
+						(utf8s_t){pServerEvent->eventData.attributeWrittenEvent.cValueLength,
+						(char*)pServerEvent->eventData.attributeWrittenEvent.aValue});
+			}
+
+            if (handle == value_lora_app_key)
+			{
+				status = ScDb_AppKeyHandler(&scdbServiceConfig,
+						(utf8s_t){pServerEvent->eventData.attributeWrittenEvent.cValueLength,
+						(char*)pServerEvent->eventData.attributeWrittenEvent.aValue});
+			}
+
             GattServer_SendAttributeWrittenStatus(deviceId, handle, status);
 
 

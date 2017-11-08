@@ -43,12 +43,16 @@ static deviceId_t mScDb_SubscribedClientId;
 ************************************************************************************/
 bleResult_t ScDb_Start (scdbConfig_t *pServiceConfig)
 {
+    bleResult_t result;
+
     /* Clear subscibed clien ID (if any) */
     mScDb_SubscribedClientId = gInvalidDeviceId_c;
     
-    /* Set the initial value defined in pServiceConfig to the characteristic values */
-    return ScDb_RecordPotentiometerMeasurement (pServiceConfig->serviceHandle,
-                                             pServiceConfig->potentiometerValue);
+//    /* Set the initial value defined in pServiceConfig to the characteristic values */
+//    return ScDb_RecordPotentiometerMeasurement (pServiceConfig->serviceHandle,
+//                                             pServiceConfig->potentiometerValue);
+
+    return gBleSuccess_c;
 }
 
 bleResult_t ScDb_Stop (scdbConfig_t *pServiceConfig)
@@ -77,49 +81,51 @@ bleResult_t ScDb_Unsubscribe()
 * Private functions
 *************************************************************************************
 ************************************************************************************/
-static void ScDb_SendPotentiometerMeasurementNotification
-(
-  uint16_t handle
-)
+
+uint8_t ScDb_AppEuiHandler (scdbConfig_t *pScdbUserData, utf8s_t value)
 {
-    uint16_t  hCccd;
-    bool_t isNotificationActive;
+    uint8_t retStatus = gAttErrCodeNoError_c;
 
-    /* Get handle of CCCD */
-    if (GattDb_FindCccdHandleForCharValueHandle(handle, &hCccd) != gBleSuccess_c)
-        return;
-
-    if (gBleSuccess_c == Gap_CheckNotificationStatus
-        (mScDb_SubscribedClientId, hCccd, &isNotificationActive) &&
-        TRUE == isNotificationActive)
-    {
-        GattServer_SendNotification(mScDb_SubscribedClientId, handle);
-    }
+//    switch (value)
+//    {
+//        case gHrs_CpResetEnergyExpended_c:
+//        {
+//            Hrs_ResetExpendedEnergy(pHrsUserData);
+//            retStatus = gAttErrCodeNoError_c;
+//        }
+//        break;
+//
+//        default:
+//        {
+//            retStatus = gAttErrCodeCtrlPointValueNotSupported_c;
+//        }
+//        break;
+//    }
+    return retStatus;
 }
 
-bleResult_t ScDb_RecordPotentiometerMeasurement (uint16_t serviceHandle, uint8_t newPotentiometerValue)
+uint8_t ScDb_AppKeyHandler (scdbConfig_t *pScdbUserData, utf8s_t value)
 {
-    uint16_t  handle;
-    bleResult_t result;
+    uint8_t retStatus = gAttErrCodeNoError_c;
 
-
-    /* Get handle of Potentiometer characteristic */
-    result = GattDb_FindCharValueHandleInService(serviceHandle,
-        gBleUuidType128_c, (bleUuid_t*)&uuid_characteristic_potentiometer_relative_value, &handle);
-
-    if (result != gBleSuccess_c)
-        return result;
-
-    /* Update characteristic value */
-    result = GattDb_WriteAttribute(handle, sizeof(uint8_t), (uint8_t*)&newPotentiometerValue);
-
-    if (result != gBleSuccess_c)
-        return result;
-
-    ScDb_SendPotentiometerMeasurementNotification(handle);
-
-    return gBleSuccess_c;
+//    switch (value)
+//    {
+//        case gHrs_CpResetEnergyExpended_c:
+//        {
+//            Hrs_ResetExpendedEnergy(pHrsUserData);
+//            retStatus = gAttErrCodeNoError_c;
+//        }
+//        break;
+//
+//        default:
+//        {
+//            retStatus = gAttErrCodeCtrlPointValueNotSupported_c;
+//        }
+//        break;
+//    }
+    return retStatus;
 }
+
 
 /*! *********************************************************************************
  * @}
