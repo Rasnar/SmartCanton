@@ -291,7 +291,7 @@ The easier method : Create a new project with the SDK and copy .cproject file to
 
 # 06.11.2017
 
-AT Commander modification :
+## AT Commander modifications
 
 
 
@@ -392,7 +392,41 @@ int at_commander_read(AtCommanderConfig* config, char* buffer, int size,
 
 
 
+## Using the Bluetooth Developer Studio and the Kinetis BLE Stack
+
+All procedure : https://community.nxp.com/docs/DOC-333103
 
 
 
+Download plugin (end of the page) : https://www.bluetooth.com/develop-with-bluetooth/developer-resources-tools/developer-kits/bluetooth-developer-plugins
+
+
+
+The installation intructions can be found inside the plugin folder:
+
+````
+Installing
+------------------------------------
+
+To install the NXP Semiconductors Kinetis Plug-in, copy the "Plugins\NXP Kinetis v1.0.0" folder and its contents inside the "<BDS installation folder>\Plugins\" folder.
+
+To install the Kinetis SDK 2.0 add-on for BDS, append the contents of the "Kinetis SDK 2.0 add-on" folder inside the Kinetis SDK 2.0 installation folder.
+
+Testing 
+------------------------------------
+
+Open any Bluetooth Developer Studio projects and click on "Tools->Generate Code". Select the NXP Kinetis v1.0.0 item in the list and press the "Generate" button. Verify is there are warnings or errors in the output log. If the geration succeded, check the "Open output location when finished" option and click on "Finish".
+
+The plug-in output folder will contain the following files:
+
+ - app.c : contains application code and service intializations.
+ - app.h : contains application configuration macros.
+ - app_config.c: contains configuration structures for advertising, pairing or security requirements.
+ - gatt_db.h : contains the mark-up of the GATT Database.
+ - gatt_uuid128.h (optional): contains custom 128-bit UUIDs created in BDS.
+ 
+Copy the contents of the folder inside "<SDK 2.0 installation folder>\middleware\wireless\bluetooth_1.2.2\examples\bds_template_app"
+
+To generate the embedded project and test it, follow the instructions detailed in the Bluetooth Quick Start Guide document from the SDK.
+````
 
