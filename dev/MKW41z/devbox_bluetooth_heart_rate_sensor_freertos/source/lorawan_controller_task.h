@@ -6,11 +6,8 @@
  * @brief
  */
 
-#ifndef __LORAWAN_CONTROLLER_AT_H__
-#define __LORAWAN_CONTROLLER_AT_H__
-
-/* KSDK */
-#include "board.h"
+#ifndef __LORAWAN_CONTROLLER_TASK_H__
+#define __LORAWAN_CONTROLLER_TASK_H__
 
 /* Fwk */
 #include "fsl_os_abstraction.h"
@@ -22,25 +19,7 @@
 #include "SecLib.h"
 #include "Panic.h"
 
-#include "lorawan_at.h"
-
-/**
- * AT commands to communicate with the LoRa MCU
- */
-#define CMD_AT 						(AtCommand){"AT\n", "OK", "AT_ERROR"}
-#define CMD_MCURESET 				(AtCommand){"ATZ\n", "", ""}
-#define CMD_GET_DEVEUI 				(AtCommand){"AT+DEUI=?\n", "OK", "AT_PARAM_ERROR"}
-#define CMD_SET_APP_EUI 			(AtCommand){"AT+APPEUI=%s\n", "OK", "AT_PARAM_ERROR"}
-#define CMD_SET_APP_KEY 			(AtCommand){"AT+APPKEY=%s\n", "OK", "AT_PARAM_ERROR"}
-#define CMD_GET_APP_KEY				(AtCommand){"AT+APPKEY=?\n", "OK", "AT_PARAM_ERROR"
-#define CMD_SET_CONFIRM_MODE 		(AtCommand){"AT+CFM=%s\n", "OK", "AT_PARAM_ERROR"} // 0 : unconfirmed, 1 : confirmed messages
-#define CMD_SET_CONFIRM_STATUS 		(AtCommand){"AT+CFS=?\n", "OK"}
-#define CMD_NETWORK_JOIN 			(AtCommand){"AT+JOIN\n", "OK", "AT_BUSY_ERROR"}
-#define CMD_SET_NETWORK_JOIN_MODE 	(AtCommand){"AT+NJM=%s\n", "OK", "AT_PARAM_ERROR"} // 0 : ABP, 1 : OTAA
-#define CMD_GET_NETWORK_JOIN_STATUS (AtCommand){"AT+NJS=?\n", "OK", " "}
-#define CMD_SET_DUTYCYCLE_SETTINGS 	(AtCommand){"AT+DCS=%s\n", "OK"}  // 0 : ETSI duty cycle disable, 1 : enable
-#define CMD_SEND_TEXTDATA 			(AtCommand){"AT+SEND=%s:%s\n", "OK"}
-#define CMD_SEND_BINARYDATA 		(AtCommand){"AT+SENDB=%s:%s\n", "OK"}
+#include "lorawan_controller.h"
 
 /*
  * These values should be modified by the application as necessary.
@@ -55,4 +34,4 @@
 void Lorawan_Controller_Task(osaTaskParam_t argument);
 osaStatus_t LorawanController_TaskInit(void);
 
-#endif /* __LORAWAN_CONTROLLER_AT_H__ */
+#endif /* __LORAWAN_CONTROLLER_TASK_H__ */
