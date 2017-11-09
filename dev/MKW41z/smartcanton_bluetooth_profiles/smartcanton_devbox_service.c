@@ -43,7 +43,7 @@ static deviceId_t mScDb_SubscribedClientId;
 ************************************************************************************/
 bleResult_t ScDb_Start (scdbConfig_t *pServiceConfig)
 {
-    bleResult_t result;
+//    bleResult_t result;
 
     /* Clear subscibed clien ID (if any) */
     mScDb_SubscribedClientId = gInvalidDeviceId_c;
@@ -82,48 +82,41 @@ bleResult_t ScDb_Unsubscribe()
 *************************************************************************************
 ************************************************************************************/
 
-uint8_t ScDb_AppEuiHandler (scdbConfig_t *pScdbUserData, utf8s_t value)
+uint8_t ScDb_SetAppEui (scdbConfig_t *pScdbConfig, utf8s_t appEui)
 {
-    uint8_t retStatus = gAttErrCodeNoError_c;
+    uint16_t  handle;
+    bleResult_t result;
 
-//    switch (value)
-//    {
-//        case gHrs_CpResetEnergyExpended_c:
-//        {
-//            Hrs_ResetExpendedEnergy(pHrsUserData);
-//            retStatus = gAttErrCodeNoError_c;
-//        }
-//        break;
-//
-//        default:
-//        {
-//            retStatus = gAttErrCodeCtrlPointValueNotSupported_c;
-//        }
-//        break;
-//    }
-    return retStatus;
+    /* Get handle of characteristic */
+    result = GattDb_FindCharValueHandleInService(pScdbConfig->serviceHandle,
+        gBleUuidType128_c, (bleUuid_t*)&uuid_lora_app_eui, &handle);
+
+    if (result != gBleSuccess_c)
+        return result;
+
+    /* Update characteristic value*/
+    return GattDb_WriteAttribute(handle, appEui.stringLength, (void*)appEui.pUtf8s);
 }
 
-uint8_t ScDb_AppKeyHandler (scdbConfig_t *pScdbUserData, utf8s_t value)
+uint8_t ScDb_SetAppKey (scdbConfig_t *pScdbConfig, utf8s_t appKey)
 {
-    uint8_t retStatus = gAttErrCodeNoError_c;
+    uint16_t  handle;
+    bleResult_t result;
 
-//    switch (value)
-//    {
-//        case gHrs_CpResetEnergyExpended_c:
-//        {
-//            Hrs_ResetExpendedEnergy(pHrsUserData);
-//            retStatus = gAttErrCodeNoError_c;
-//        }
-//        break;
-//
-//        default:
-//        {
-//            retStatus = gAttErrCodeCtrlPointValueNotSupported_c;
-//        }
-//        break;
-//    }
-    return retStatus;
+    /* Get handle of characteristic */
+    result = GattDb_FindCharValueHandleInService(pScdbConfig->serviceHandle,
+        gBleUuidType128_c, (bleUuid_t*)&uuid_lora_app_key, &handle);
+
+    if (result != gBleSuccess_c)
+        return result;
+
+    /**
+     * TODO: Sent data to LoRa MCU and check response.
+     */
+    return gBleInvalidParameter_c;
+
+    /* Update characteristic value*/
+    return GattDb_WriteAttribute(handle, appKey.stringLength, (void*)appKey.pUtf8s);
 }
 
 

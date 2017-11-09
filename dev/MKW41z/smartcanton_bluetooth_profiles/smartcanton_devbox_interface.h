@@ -148,7 +148,7 @@ bleResult_t ScDb_Unsubscribe();
 *
 * \return       gAttErrCodeNoError_c or error.
 *************************************************************************************/
-uint8_t ScDb_AppEuiHandler (scdbConfig_t *pScdbUserData, utf8s_t value);
+uint8_t ScDb_SetAppEui (scdbConfig_t *pScdbUserData, utf8s_t value);
 
 /*!**********************************************************************************
 * \brief        Handles command on the Smart Box Dev Box LoRa App Key
@@ -158,7 +158,7 @@ uint8_t ScDb_AppEuiHandler (scdbConfig_t *pScdbUserData, utf8s_t value);
 *
 * \return       gAttErrCodeNoError_c or error.
 *************************************************************************************/
-uint8_t ScDb_AppKeyHandler (scdbConfig_t *pScdbUserData, utf8s_t value);
+uint8_t ScDb_SetAppKey (scdbConfig_t *pScdbUserData, utf8s_t value);
 
 #ifdef __cplusplus
 }
