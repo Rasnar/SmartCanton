@@ -1,5 +1,5 @@
 /**
- * @file    lorawan_controller_task.h
+ * @file    lorawan_controller.h
  * @author  Da Silva Andrade David
  * @version V1.0
  * @date    25-10-2017
@@ -8,6 +8,7 @@
 
 #include <lorawan_controller.h>
 #include "fsl_lpuart.h"
+#include "LED.h"
 #include <stdio.h>
 
 /**
@@ -110,6 +111,8 @@ lorawanControllerStatus_t lorawan_controller_init_module(){
 	char data[16];
 	uint16_t bytesRead;
 
+	Led4Flashing();
+
 	/* RESET LoRa MCU to start with a clean state */
 	lorawan_controller_set_cmd(CMD_MCURESET); // Reset LoRa MCU to be sure to have a new configuration
 	OSA_TimeDelay(20); // Wait a bit to be sure that the LoRa MCU is reset
@@ -150,6 +153,10 @@ lorawanControllerStatus_t lorawan_controller_init_module(){
 		bytesRead = lorawan_controller_get_cmd(CMD_GET_NETWORK_JOIN_STATUS, data, sizeof(data));
 		OSA_TimeDelay(100);
 	} while (strcmp(data, LORA_NETWORK_JOINED_STATUS) != 0);
+
+
+	StopLed4Flashing();
+	Led4On();
 
 	return lorawanController_Success;
 }

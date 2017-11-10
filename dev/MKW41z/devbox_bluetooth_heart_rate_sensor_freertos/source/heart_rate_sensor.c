@@ -396,17 +396,11 @@ static void BleApp_AdvertisingCallback (gapAdvertisingEvent_t* pAdvertisingEvent
                 Led1On();
             }
 #else
-            LED_StopFlashingAllLeds();
-            Led1Flashing();
+            //LED_StopFlashingAllLeds();
 
-            if(!mAdvState.advOn)
+            if(mAdvState.advOn)
             {
-                Led2Flashing();
-                Led3Flashing();
-                Led4Flashing();
-            }
-            else
-            {
+                Led1Flashing();
                 TMR_StartLowPowerTimer(mAdvTimerId,gTmrLowPowerSecondTimer_c,
                         TmrSeconds(mAdvTimeout), AdvertisingTimerCallback, NULL);  
             }
@@ -530,42 +524,6 @@ static void BleApp_GattServerCallback (deviceId_t deviceId, gattServerEvent_t* p
     
     switch (pServerEvent->eventType)
     {
-
-//    	case gEvtCharacteristicCccdWritten_c:
-//		{
-//			/*
-//			Attribute CCCD write handler: Create a case for your registered attribute and
-//			execute callback action accordingly
-//			*/
-//			switch(pServerEvent->eventData.charCccdWrittenEvent.handle)
-//			{
-//			case cccd_input_report:{
-//			  //Determine if the timer must be started or stopped
-//			  if (pServerEvent->eventData.charCccdWrittenEvent.newCccd){
-//				// CCCD set, start timer
-//				TMR_StartTimer(tsiTimerId, gTmrIntervalTimer_c, gTsiUpdateTime_c ,BleApp_TsiSensorTimer, NULL);
-//			  }
-//			  else{
-//				// CCCD cleared, stop timer
-//				TMR_StopTimer(tsiTimerId);
-//			  }
-//			}
-//			  break;
-//
-//			case cccd_potentiometer:{
-//			  //Determine if the timer must be started or stopped
-//			  if (pServerEvent->eventData.charCccdWrittenEvent.newCccd){
-//				// CCCD set, start timer
-//				TMR_StartTimer(potTimerId, gTmrIntervalTimer_c, gPotentiometerUpdateTime_c ,BleApp_PotentiometerTimer, NULL);
-//			  }
-//			  else{
-//				// CCCD cleared, stop timer
-//				TMR_StopTimer(potTimerId);
-//			  }
-//			}
-//			  break;
-//		}
-
         case gEvtAttributeWritten_c:
         {
             handle = pServerEvent->eventData.attributeWrittenEvent.handle;
@@ -578,21 +536,19 @@ static void BleApp_GattServerCallback (deviceId_t deviceId, gattServerEvent_t* p
             
             if (handle == value_lora_app_eui)
 			{
-				status = ScDb_AppEuiHandler(&scdbServiceConfig,
+				status = ScDb_SetAppEui(&scdbServiceConfig,
 						(utf8s_t){pServerEvent->eventData.attributeWrittenEvent.cValueLength,
 						(char*)pServerEvent->eventData.attributeWrittenEvent.aValue});
 			}
 
             if (handle == value_lora_app_key)
 			{
-				status = ScDb_AppKeyHandler(&scdbServiceConfig,
+				status = ScDb_SetAppKey(&scdbServiceConfig,
 						(utf8s_t){pServerEvent->eventData.attributeWrittenEvent.cValueLength,
 						(char*)pServerEvent->eventData.attributeWrittenEvent.aValue});
 			}
 
             GattServer_SendAttributeWrittenStatus(deviceId, handle, status);
-
-
         }
         break;
     default:

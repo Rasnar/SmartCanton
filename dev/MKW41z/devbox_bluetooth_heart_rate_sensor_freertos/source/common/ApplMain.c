@@ -401,10 +401,10 @@ void main_task(uint32_t param)
         PWR_Init();
         PWR_DisallowDeviceToSleep();
 #else    
-        Led1Flashing();
-        Led2Flashing();
-        Led3Flashing();
-        Led4Flashing();           
+        Led1Off();
+        Led2Off();
+        Led3Off();
+        Led4Off();
 #endif    
        
         /* Initialize peripheral drivers specific to the application */

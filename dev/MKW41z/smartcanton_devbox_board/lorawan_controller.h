@@ -1,5 +1,5 @@
 /**
- * @file    lorawan_controller_task.h
+ * @file    lorawan_controller.h
  * @author  Da Silva Andrade David
  * @version V1.0
  * @date    25-10-2017
@@ -19,6 +19,18 @@
 #include "SerialManager.h"
 #include "atcommander/atcommander.h"
 
+//typedef struct lorawanControllerConfiguration_tag{
+//	char appEui[24];
+//	char appKey[48];
+//	char appSKey[48];
+//	char devAddr[12];
+//	char devEui[24];
+//	char nwkId[12];
+//	char nwkskey[48];
+//
+//	char confirmMode[2];
+//	char confirmMode[2];
+//}lorawanControllerConfiguration_t;
 
 typedef enum lorawanControllerStatus_tag
 {
@@ -42,8 +54,8 @@ typedef enum lorawanControllerStatus_tag
 #define CMD_SET_NETWORK_JOIN_MODE 	(AtCommand){"AT+NJM=%s\n", "OK", "AT_PARAM_ERROR"} // 0 : ABP, 1 : OTAA
 #define CMD_GET_NETWORK_JOIN_STATUS (AtCommand){"AT+NJS=?\n", "OK", " "}
 #define CMD_SET_DUTYCYCLE_SETTINGS 	(AtCommand){"AT+DCS=%s\n", "OK"}  // 0 : ETSI duty cycle disable, 1 : enable
-#define CMD_SEND_TEXTDATA 			(AtCommand){"AT+SEND=%s:%s\n", "OK"}
-#define CMD_SEND_BINARYDATA 		(AtCommand){"AT+SENDB=%s:%s\n", "OK"}
+#define CMD_SEND_TEXTDATA 			(AtCommand){"AT+SEND=%s:%s\n", "OK", "AT_BUSY_ERROR"}
+#define CMD_SEND_BINARYDATA 		(AtCommand){"AT+SENDB=%s:%s\n", "OK", "AT_BUSY_ERROR"}
 
 osaStatus_t lorawan_controller_init(void);
 
