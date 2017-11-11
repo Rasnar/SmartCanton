@@ -146,7 +146,7 @@
 #define osNumberOfEvents        5
 
 /* Defines main task stack size */
-#define gMainThreadStackSize_c  1024
+#define gMainThreadStackSize_c  2048
            
 /* Defines total heap size used by the OS */
 #define gTotalHeapSize_c        16000

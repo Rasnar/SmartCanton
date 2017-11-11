@@ -264,7 +264,16 @@ void BleApp_GenericCallback (gapGenericEvent_t* pGenericEvent)
         {
             App_StartAdvertising(BleApp_AdvertisingCallback, BleApp_ConnectionCallback);
         }
-        break;         
+        break;
+
+        /**
+         * TODO : Only here for developpement. No need to press button to start advertissements
+         */
+        case gAdvertisingDataSetupComplete_c:
+		{
+            BleApp_Start();
+		}
+		break;
 
         default: 
             break;
@@ -396,7 +405,7 @@ static void BleApp_AdvertisingCallback (gapAdvertisingEvent_t* pAdvertisingEvent
                 Led1On();
             }
 #else
-            //LED_StopFlashingAllLeds();
+            StopLed1Flashing();
 
             if(mAdvState.advOn)
             {
@@ -447,7 +456,7 @@ static void BleApp_ConnectionCallback (deviceId_t peerDeviceId, gapConnectionEve
                                     
 #if (!cPWR_UsePowerDownMode)  
             /* UI */            
-            LED_StopFlashingAllLeds();
+            StopLed1Flashing();
             Led1On();            
 #endif            
             
@@ -537,15 +546,15 @@ static void BleApp_GattServerCallback (deviceId_t deviceId, gattServerEvent_t* p
             if (handle == value_lora_app_eui)
 			{
 				status = ScDb_SetAppEui(&scdbServiceConfig,
-						(utf8s_t){pServerEvent->eventData.attributeWrittenEvent.cValueLength,
-						(char*)pServerEvent->eventData.attributeWrittenEvent.aValue});
+						(uint8_array_t){pServerEvent->eventData.attributeWrittenEvent.cValueLength,
+						pServerEvent->eventData.attributeWrittenEvent.aValue});
 			}
 
             if (handle == value_lora_app_key)
 			{
 				status = ScDb_SetAppKey(&scdbServiceConfig,
-						(utf8s_t){pServerEvent->eventData.attributeWrittenEvent.cValueLength,
-						(char*)pServerEvent->eventData.attributeWrittenEvent.aValue});
+						(uint8_array_t){pServerEvent->eventData.attributeWrittenEvent.cValueLength,
+						pServerEvent->eventData.attributeWrittenEvent.aValue});
 			}
 
             GattServer_SendAttributeWrittenStatus(deviceId, handle, status);

@@ -7,6 +7,8 @@
 ************************************************************************************/
 #include "smartcanton_devbox_interface.h"
 #include "gatt_uuid_decl_x.h"
+#include "lorawan_controller.h"
+#include "stdio.h"
 
 /************************************************************************************
 *************************************************************************************
@@ -82,7 +84,21 @@ bleResult_t ScDb_Unsubscribe()
 *************************************************************************************
 ************************************************************************************/
 
-uint8_t ScDb_SetAppEui (scdbConfig_t *pScdbConfig, utf8s_t appEui)
+int convertBytesArrayToHexString(uint8_t *buffer, uint16_t bufferLength, char* str){
+
+	int i;
+
+	if (bufferLength > 1) {
+		for (i = 0; i < bufferLength - 1; i++) {
+			sprintf(&str[3*i], "%02X:", buffer[i]);
+		};
+	}
+
+	sprintf(&str[3*i], "%02X", buffer[i]);
+    return 3*i + 2; // String length
+}
+
+uint8_t ScDb_SetAppEui (scdbConfig_t *pScdbConfig, uint8_array_t appEui)
 {
     uint16_t  handle;
     bleResult_t result;
@@ -94,11 +110,21 @@ uint8_t ScDb_SetAppEui (scdbConfig_t *pScdbConfig, utf8s_t appEui)
     if (result != gBleSuccess_c)
         return result;
 
-    /* Update characteristic value*/
-    return GattDb_WriteAttribute(handle, appEui.stringLength, (void*)appEui.pUtf8s);
+    // The size is tripled because we write 1 byte with 2
+    char strAppEui[appEui.arrayLength*3];
+    strAppEui[0] = '\0';
+
+    convertBytesArrayToHexString(appEui.pUint8_array, appEui.arrayLength, strAppEui);
+
+    if (lorawan_controller_set_cmd(CMD_SET_APP_EUI, strAppEui) == lorawanController_Success) {
+		/* Update characteristic value*/
+		return GattDb_WriteAttribute(handle, appEui.arrayLength, (void*) appEui.pUint8_array);
+	} else {
+		return gBleInvalidParameter_c;
+	}
 }
 
-uint8_t ScDb_SetAppKey (scdbConfig_t *pScdbConfig, utf8s_t appKey)
+uint8_t ScDb_SetAppKey (scdbConfig_t *pScdbConfig, uint8_array_t appKey)
 {
     uint16_t  handle;
     bleResult_t result;
@@ -110,13 +136,19 @@ uint8_t ScDb_SetAppKey (scdbConfig_t *pScdbConfig, utf8s_t appKey)
     if (result != gBleSuccess_c)
         return result;
 
-    /**
-     * TODO: Sent data to LoRa MCU and check response.
-     */
-    return gBleInvalidParameter_c;
+    // The size is tripled because we write 1 byte with 2
+    char strAppKey[appKey.arrayLength*3];
+    strAppKey[0] = '\0';
 
-    /* Update characteristic value*/
-    return GattDb_WriteAttribute(handle, appKey.stringLength, (void*)appKey.pUtf8s);
+	convertBytesArrayToHexString(appKey.pUint8_array, appKey.arrayLength, strAppKey);
+
+	if (lorawan_controller_set_cmd(CMD_SET_APP_KEY, strAppKey) == lorawanController_Success) {
+		/* Update characteristic value*/
+		return GattDb_WriteAttribute(handle, appKey.arrayLength, (void*) appKey.pUint8_array);
+	} else {
+		return gBleInvalidParameter_c;
+	}
+
 }
 
 

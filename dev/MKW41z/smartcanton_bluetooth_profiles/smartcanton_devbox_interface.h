@@ -71,6 +71,13 @@
 *************************************************************************************
 ************************************************************************************/
 
+typedef struct uint8_array_tag
+{
+    uint16_t    arrayLength;
+    uint8_t     *pUint8_array;
+}uint8_array_t;
+
+
 /*! Smart Canton Dev Box Service - User Data */
 typedef struct scdbUserData_tag
 {
@@ -148,7 +155,7 @@ bleResult_t ScDb_Unsubscribe();
 *
 * \return       gAttErrCodeNoError_c or error.
 *************************************************************************************/
-uint8_t ScDb_SetAppEui (scdbConfig_t *pScdbUserData, utf8s_t value);
+uint8_t ScDb_SetAppEui (scdbConfig_t *pScdbConfig, uint8_array_t appEui);
 
 /*!**********************************************************************************
 * \brief        Handles command on the Smart Box Dev Box LoRa App Key
@@ -158,7 +165,7 @@ uint8_t ScDb_SetAppEui (scdbConfig_t *pScdbUserData, utf8s_t value);
 *
 * \return       gAttErrCodeNoError_c or error.
 *************************************************************************************/
-uint8_t ScDb_SetAppKey (scdbConfig_t *pScdbUserData, utf8s_t value);
+uint8_t ScDb_SetAppKey (scdbConfig_t *pScdbConfig, uint8_array_t appKey);
 
 #ifdef __cplusplus
 }
