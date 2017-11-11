@@ -32,6 +32,18 @@
         type="com.hepia.characteristic.lora_app_key">
         <Requirement>Mandatory</Requirement>
       </Characteristic>
+      <Characteristic
+        type="com.hepia.characteristic.lora_device_eui">
+        <Requirement>Mandatory</Requirement>
+      </Characteristic>
+      <Characteristic
+        type="com.hepia.characteristic.lora_confirm_mode">
+        <Requirement>Mandatory</Requirement>
+      </Characteristic>
+      <Characteristic
+        type="com.hepia.characteristic.smartcanton_devbox_new_characteristic">
+        <Requirement>Mandatory</Requirement>
+      </Characteristic>
     </Service>
     <Service
       type="org.bluetooth.service.generic_attribute">

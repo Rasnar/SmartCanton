@@ -8,8 +8,9 @@
     <Field
       name="LORA_APP_KEY">
       <Requirement>Mandatory</Requirement>
-      <Format>utf8s</Format>
+      <Format>uint8[]</Format>
       <Unit>org.bluetooth.unit.unitless</Unit>
+      <AdditionalValues />
       <Repeated>false</Repeated>
     </Field>
   </Value>

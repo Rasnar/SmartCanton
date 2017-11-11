@@ -10,7 +10,7 @@
       <InformativeText>LoRa APP EUI to connect to a LoRa Network</InformativeText>
       <Requirement>Mandatory</Requirement>
       <Unit>org.bluetooth.unit.unitless</Unit>
-      <Format>utf8s</Format>
+      <Format>uint8[]</Format>
       <Repeated>false</Repeated>
     </Field>
   </Value>

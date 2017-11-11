@@ -16,8 +16,8 @@
   </InformativeText>
   <Value>
     <Field
-      name="User Description">
-      <InformativeText>LoRa APP EUI</InformativeText>
+      name="user description">
+      <InformativeText>TEST</InformativeText>
       <Requirement>Mandatory</Requirement>
       <Format>utf8s</Format>
       <Unit>org.bluetooth.unit.unitless</Unit>

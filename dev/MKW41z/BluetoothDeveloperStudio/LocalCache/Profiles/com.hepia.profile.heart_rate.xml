@@ -32,6 +32,18 @@
         type="com.hepia.characteristic.lora_app_key">
         <Requirement>Mandatory</Requirement>
       </Characteristic>
+      <Characteristic
+        type="com.hepia.characteristic.lora_device_eui">
+        <Requirement>Mandatory</Requirement>
+      </Characteristic>
+      <Characteristic
+        type="com.hepia.characteristic.lora_confirm_mode">
+        <Requirement>Mandatory</Requirement>
+      </Characteristic>
+      <Characteristic
+        type="com.hepia.characteristic.smartcanton_devbox_new_characteristic">
+        <Requirement>Mandatory</Requirement>
+      </Characteristic>
     </Service>
     <Service
       type="org.bluetooth.service.generic_attribute">
@@ -45,11 +57,6 @@
     </Service>
     <Service
       type="org.bluetooth.service.generic_access">
-      <Declaration>Primary</Declaration>
-      <Requirement>Mandatory</Requirement>
-    </Service>
-    <Service
-      type="com.hepia.service.heart_rate_new_service">
       <Declaration>Primary</Declaration>
       <Requirement>Mandatory</Requirement>
     </Service>
@@ -82,10 +89,6 @@
     </Client>
     <Client
       type="org.bluetooth.service.generic_access">
-      <Requirement>Mandatory</Requirement>
-    </Client>
-    <Client
-      type="com.hepia.service.heart_rate_new_service">
       <Requirement>Mandatory</Requirement>
     </Client>
   </Role>

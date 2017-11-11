@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Descriptor xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/descriptor.xsd"
-  type="com.hepia.descriptor.lora_app_key_new_descriptor"
-  uuid="0117"
-  name="LoRa APP KEY new descriptor">
+  type="com.hepia.descriptor.smartcanton_devbox_new_characteristic_new_descriptor1"
+  uuid="7535"
+  name="SMARTCANTON DEVBOX new characteristic new descriptor">
   <InformativeText>
     <Examples />
   </InformativeText>
@@ -11,7 +11,8 @@
     <Field
       name="New Field">
       <Requirement>Mandatory</Requirement>
-      <Reference>"TESTTTTT"</Reference>
+      <Format>utf8s</Format>
+      <Unit>org.bluetooth.unit.unitless</Unit>
       <Repeated>false</Repeated>
     </Field>
   </Value>
