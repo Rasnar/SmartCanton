@@ -8,7 +8,6 @@
 
 #include <lorawan_controller.h>
 #include "fsl_lpuart.h"
-#include "LED.h"
 #include <stdio.h>
 
 /**
@@ -25,6 +24,11 @@
 #define LORA_NETWORK_JOIN_MODE		"1" 	// 0 : ABP, 1 : OTAA
 #define LORA_DUTYCYCLE_SETTINGS		"0" 	// 0 : ETSI duty cycle disable, 1 : Enable
 #define LORA_NETWORK_JOINED_STATUS	"1"		// 0 : Network not yet joined, 1 : Network joined
+
+
+#define DELAY_BEETWEEN_ATTEMPTS_MS 	100		// Try 100 Attempts
+#define MAX_ATTEMPTS_TO_CONFIGURE 	100		// Try 100 Attempts
+
 
 
 /**
@@ -48,6 +52,9 @@ AtCommanderConfig config;
 uint8_t interfaceId;
 void *pRxParam;
 void *pTxParam;
+
+
+bool lorawan_configuration_valid = false;
 
 /**
  * Callback called by the ATCommander library to write bytes
@@ -111,7 +118,7 @@ lorawanControllerStatus_t lorawan_controller_init_module(){
 	char data[16];
 	uint16_t bytesRead;
 
-	Led4Flashing();
+	lorawan_configuration_valid = false;
 
 	/* RESET LoRa MCU to start with a clean state */
 	lorawan_controller_set_cmd(CMD_MCURESET); // Reset LoRa MCU to be sure to have a new configuration
@@ -148,17 +155,28 @@ lorawanControllerStatus_t lorawan_controller_init_module(){
 			!= lorawanController_Success)
 		return lorawanController_Error;
 
+	uint8_t nb_attempts = 0;
+
 	/* Waiting to receive a join Accept from the server */
 	do {
 		bytesRead = lorawan_controller_get_cmd(CMD_GET_NETWORK_JOIN_STATUS, data, sizeof(data));
 		OSA_TimeDelay(100);
+
+		if((nb_attempts++) > MAX_ATTEMPTS_TO_CONFIGURE)
+			return lorawanController_Error;
 	} while (strcmp(data, LORA_NETWORK_JOINED_STATUS) != 0);
 
-
-	StopLed4Flashing();
-	Led4On();
+	lorawan_configuration_valid = true;
 
 	return lorawanController_Success;
+}
+
+lorawanControllerStatus_t lorawan_controller_get_configuration_validity(){
+	if(lorawan_configuration_valid == true) {
+		return lorawanController_Success;
+	} else {
+		return lorawanController_Error;
+	}
 }
 
 osaStatus_t lorawan_controller_init(void)
@@ -176,7 +194,6 @@ osaStatus_t lorawan_controller_init(void)
 		panic(0, 0, 0, 0);
 		return osaStatus_Error;
 	}
-
 
 	/* AT Commander configuration */
 	config.platform = AT_PLATFORM_I_CUBE_LRWAN;

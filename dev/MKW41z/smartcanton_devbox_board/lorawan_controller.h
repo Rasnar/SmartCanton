@@ -65,4 +65,5 @@ int lorawan_controller_get_cmd(AtCommand cmd, char* response_buffer, int respons
 
 lorawanControllerStatus_t lorawan_controller_set_cmd(AtCommand cmd, ...);
 
+lorawanControllerStatus_t lorawan_controller_get_configuration_validity();
 #endif /* __LORAWAN_CONTROLLER_H__ */
