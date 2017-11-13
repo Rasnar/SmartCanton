@@ -68,6 +68,7 @@
 #include "heart_rate_interface.h"
 #include "potentiometer_interface.h"
 #include "smartcanton_devbox_interface.h"
+#include "lorawan_controller.h"
 
 /* Connection Manager */
 #include "ble_conn_manager.h"
@@ -314,7 +315,14 @@ static void BleApp_Config()
     
     Ps_Start(&psServiceConfig);
 
-    ScDb_Start(&scdbServiceConfig);
+    /**
+     * Get last configuration store in the flash memory
+     * /!\ Be sure that the function lorawan_controller_init(void)
+     * as been called before (eg. from another task)
+     */
+    lorawanControllerConfiguration_t loraConfig;
+	loraConfig = lorawan_controller_get_current_configuration();
+    ScDb_Start(&scdbServiceConfig, &loraConfig);
 
     /* Allocate application timers */
     mAdvTimerId = TMR_AllocateTimer();

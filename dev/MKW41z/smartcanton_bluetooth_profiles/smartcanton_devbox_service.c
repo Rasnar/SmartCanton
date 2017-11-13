@@ -9,6 +9,7 @@
 #include "gatt_uuid_decl_x.h"
 #include "lorawan_controller.h"
 #include "stdio.h"
+#include "string_utils.h"
 
 /************************************************************************************
 *************************************************************************************
@@ -43,16 +44,49 @@ static deviceId_t mScDb_SubscribedClientId;
 * Public functions
 *************************************************************************************
 ************************************************************************************/
-bleResult_t ScDb_Start (scdbConfig_t *pServiceConfig)
+bleResult_t ScDb_Start (scdbConfig_t *pServiceConfig, lorawanControllerConfiguration_t* loraConfig)
 {
-//    bleResult_t result;
+    bleResult_t result;
+    uint16_t  handle;
+    uint8_t data[32];
+    int arrayLength = 0;
 
     /* Clear subscibed clien ID (if any) */
     mScDb_SubscribedClientId = gInvalidDeviceId_c;
     
-//    /* Set the initial value defined in pServiceConfig to the characteristic values */
-//    return ScDb_RecordPotentiometerMeasurement (pServiceConfig->serviceHandle,
-//                                             pServiceConfig->potentiometerValue);
+    /**
+     *  AppEUI
+     */
+	result = GattDb_FindCharValueHandleInService(pServiceConfig->serviceHandle,
+		gBleUuidType128_c, (bleUuid_t*)&uuid_lora_app_eui, &handle);
+
+	if (result != gBleSuccess_c)
+		return result;
+
+	arrayLength = convertHexStringToBytesArray(loraConfig->appEui, data);
+
+	/* Update characteristic value */
+	result = GattDb_WriteAttribute(handle, arrayLength, data);
+
+	if (result != gBleSuccess_c)
+		return result;
+
+	/**
+	 *  AppEUI
+	 */
+	result = GattDb_FindCharValueHandleInService(pServiceConfig->serviceHandle,
+		gBleUuidType128_c, (bleUuid_t*)&uuid_lora_app_key, &handle);
+
+	if (result != gBleSuccess_c)
+		return result;
+
+	arrayLength = convertHexStringToBytesArray(loraConfig->appKey, data);
+
+	/* Update characteristic value */
+	result = GattDb_WriteAttribute(handle, arrayLength, data);
+
+	if (result != gBleSuccess_c)
+		return result;
 
     return gBleSuccess_c;
 }
@@ -83,20 +117,6 @@ bleResult_t ScDb_Unsubscribe()
 * Private functions
 *************************************************************************************
 ************************************************************************************/
-
-int convertBytesArrayToHexString(uint8_t *buffer, uint16_t bufferLength, char* str){
-
-	int i;
-
-	if (bufferLength > 1) {
-		for (i = 0; i < bufferLength - 1; i++) {
-			sprintf(&str[3*i], "%02X:", buffer[i]);
-		};
-	}
-
-	sprintf(&str[3*i], "%02X", buffer[i]);
-    return 3*i + 2; // String length
-}
 
 uint8_t ScDb_SetAppEui (scdbConfig_t *pScdbConfig, uint8_array_t appEui)
 {

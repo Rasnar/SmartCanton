@@ -19,18 +19,21 @@
 #include "SerialManager.h"
 #include "atcommander/atcommander.h"
 
-//typedef struct lorawanControllerConfiguration_tag{
-//	char appEui[24];
-//	char appKey[48];
-//	char appSKey[48];
-//	char devAddr[12];
-//	char devEui[24];
-//	char nwkId[12];
-//	char nwkskey[48];
-//
-//	char confirmMode[2];
-//	char confirmMode[2];
-//}lorawanControllerConfiguration_t;
+#define LORAWAN_CONTROLLER_MAGIC_WORD	0x2211
+
+typedef struct lorawanControllerConfiguration_tag{
+	char appEui[24];
+	char appKey[48];
+	char devEui[24];
+
+	//	char appSKey[48];
+	//	char devAddr[12];
+
+	char networkJoinMode[2];
+	char confirmMode[2];
+	char etsiDutyCycleEnable[2];
+	uint16_t magicWord; // Used to make it a multiple of 4
+}lorawanControllerConfiguration_t;
 
 typedef enum lorawanControllerStatus_tag
 {
@@ -44,16 +47,29 @@ typedef enum lorawanControllerStatus_tag
  */
 #define CMD_AT 						(AtCommand){"AT\n", "OK", "AT_ERROR"}
 #define CMD_MCURESET 				(AtCommand){"ATZ\n", "", ""}
+
 #define CMD_GET_DEVEUI 				(AtCommand){"AT+DEUI=?\n", "OK", "AT_PARAM_ERROR"}
+
 #define CMD_SET_APP_EUI 			(AtCommand){"AT+APPEUI=%s\n", "OK", "AT_PARAM_ERROR"}
+#define CMD_GET_APP_EUI 			(AtCommand){"AT+APPEUI=?\n", "OK", " "}
+
 #define CMD_SET_APP_KEY 			(AtCommand){"AT+APPKEY=%s\n", "OK", "AT_PARAM_ERROR"}
 #define CMD_GET_APP_KEY				(AtCommand){"AT+APPKEY=?\n", "OK", "AT_PARAM_ERROR"}
+
 #define CMD_SET_CONFIRM_MODE 		(AtCommand){"AT+CFM=%s\n", "OK", "AT_PARAM_ERROR"} // 0 : unconfirmed, 1 : confirmed messages
-#define CMD_SET_CONFIRM_STATUS 		(AtCommand){"AT+CFS=?\n", "OK"}
-#define CMD_NETWORK_JOIN 			(AtCommand){"AT+JOIN\n", "OK", "AT_BUSY_ERROR"}
+#define CMD_GET_CONFIRM_MODE 		(AtCommand){"AT+CFM=?\n", "OK", " "} // 0 : unconfirmed, 1 : confirmed messages
+
+#define CMD_GET_CONFIRM_STATUS 		(AtCommand){"AT+CFS=?\n", "OK", " "} // Get status of last AT+SEND, 0 : message not yet confirmed
+
 #define CMD_SET_NETWORK_JOIN_MODE 	(AtCommand){"AT+NJM=%s\n", "OK", "AT_PARAM_ERROR"} // 0 : ABP, 1 : OTAA
+#define CMD_GET_NETWORK_JOIN_MODE 	(AtCommand){"AT+NJM=?\n", "OK", " "} // 0 : ABP, 1 : OTAA
+
+#define CMD_NETWORK_JOIN 			(AtCommand){"AT+JOIN\n", "OK", "AT_BUSY_ERROR"}
 #define CMD_GET_NETWORK_JOIN_STATUS (AtCommand){"AT+NJS=?\n", "OK", " "}
+
 #define CMD_SET_DUTYCYCLE_SETTINGS 	(AtCommand){"AT+DCS=%s\n", "OK"}  // 0 : ETSI duty cycle disable, 1 : enable
+#define CMD_GET_DUTYCYCLE_SETTINGS 	(AtCommand){"AT+DCS=?\n", "OK", " "}  // 0 : ETSI duty cycle disable, 1 : enable
+
 #define CMD_SEND_TEXTDATA 			(AtCommand){"AT+SEND=%s:%s\n", "OK", "AT_BUSY_ERROR"}
 #define CMD_SEND_BINARYDATA 		(AtCommand){"AT+SENDB=%s:%s\n", "OK", "AT_BUSY_ERROR"}
 
@@ -66,4 +82,6 @@ int lorawan_controller_get_cmd(AtCommand cmd, char* response_buffer, int respons
 lorawanControllerStatus_t lorawan_controller_set_cmd(AtCommand cmd, ...);
 
 lorawanControllerStatus_t lorawan_controller_get_configuration_validity();
+
+lorawanControllerConfiguration_t lorawan_controller_get_current_configuration(void);
 #endif /* __LORAWAN_CONTROLLER_H__ */

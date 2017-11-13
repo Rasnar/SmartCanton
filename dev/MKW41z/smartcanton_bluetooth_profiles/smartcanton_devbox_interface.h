@@ -51,6 +51,7 @@
 #include "gatt_db_app_interface.h"
 #include "gatt_server_interface.h"
 #include "gap_interface.h"
+#include "lorawan_controller.h"
 
 /**
  * This include is only used to be able to use the structure utf8s_t.
@@ -116,10 +117,12 @@ extern "C" {
 *
 * \param[in]    pServiceConfig  Pointer to structure that contains server 
 *                               configuration information.
+* \param[in]    pServiceConfig  Pointer to structure that contains server
+*                               configuration information.
 *
 * \return       gBleSuccess_c or error.
 ************************************************************************************/
-bleResult_t ScDb_Start(scdbConfig_t  *pServiceConfig);
+bleResult_t ScDb_Start (scdbConfig_t *pServiceConfig, lorawanControllerConfiguration_t* loraConfig);
 
 /*!**********************************************************************************
 * \brief        Stops Smart Canton Dev Box Service functionality
