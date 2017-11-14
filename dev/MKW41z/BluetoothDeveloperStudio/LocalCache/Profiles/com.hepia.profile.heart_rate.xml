@@ -41,7 +41,23 @@
         <Requirement>Mandatory</Requirement>
       </Characteristic>
       <Characteristic
-        type="com.hepia.characteristic.smartcanton_devbox_new_characteristic">
+        type="com.hepia.characteristic.lora_network_join_status">
+        <Requirement>Mandatory</Requirement>
+      </Characteristic>
+      <Characteristic
+        type="com.hepia.characteristic.lora_device_address">
+        <Requirement>Mandatory</Requirement>
+      </Characteristic>
+      <Characteristic
+        type="com.hepia.characteristic.lora_network_session_key">
+        <Requirement>Mandatory</Requirement>
+      </Characteristic>
+      <Characteristic
+        type="com.hepia.characteristic.lora_app_session_key">
+        <Requirement>Mandatory</Requirement>
+      </Characteristic>
+      <Characteristic
+        type="com.hepia.characteristic.lora_validate_new_configuration">
         <Requirement>Mandatory</Requirement>
       </Characteristic>
     </Service>

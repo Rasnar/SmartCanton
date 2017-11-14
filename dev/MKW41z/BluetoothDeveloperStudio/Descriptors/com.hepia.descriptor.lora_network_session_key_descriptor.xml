@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Descriptor xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/descriptor.xsd"
-  type="com.hepia.descriptor.smartcanton_devbox_new_characteristic_new_descriptor2"
-  uuid="abbc"
-  name="SMARTCANTON DEVBOX new characteristic new descriptor">
+  type="com.hepia.descriptor.lora_network_session_key_descriptor"
+  uuid="7ded"
+  name="LoRa Network Session Key Descriptor">
   <InformativeText>
     <Examples />
   </InformativeText>

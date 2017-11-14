@@ -19,15 +19,16 @@
 #include "SerialManager.h"
 #include "atcommander/atcommander.h"
 
-#define LORAWAN_CONTROLLER_MAGIC_WORD	0x2211
+#define LORAWAN_CONTROLLER_MAGIC_WORD	0x2222
 
 typedef struct lorawanControllerConfiguration_tag{
 	char appEui[24];
 	char appKey[48];
 	char devEui[24];
 
-	//	char appSKey[48];
-	//	char devAddr[12];
+	char devAddr[12];
+	char nwkSessionKey[48];
+	char appSessionKey[48];
 
 	char networkJoinMode[2];
 	char confirmMode[2];
@@ -54,7 +55,12 @@ typedef enum lorawanControllerStatus_tag
 #define CMD_GET_APP_EUI 			(AtCommand){"AT+APPEUI=?\n", "OK", " "}
 
 #define CMD_SET_APP_KEY 			(AtCommand){"AT+APPKEY=%s\n", "OK", "AT_PARAM_ERROR"}
-#define CMD_GET_APP_KEY				(AtCommand){"AT+APPKEY=?\n", "OK", "AT_PARAM_ERROR"}
+#define CMD_GET_APP_KEY				(AtCommand){"AT+APPKEY=?\n", "OK", " "}
+
+
+#define CMD_GET_DEV_ADDR			(AtCommand){"AT+DADDR=?\n", "OK", " "}
+#define CMD_GET_NWK_SESSION_KEY		(AtCommand){"AT+NWKSKEY=?\n", "OK", " "}
+#define CMD_GET_APP_SESSION_KEY		(AtCommand){"AT+APPSKEY=?\n", "OK", " "}
 
 #define CMD_SET_CONFIRM_MODE 		(AtCommand){"AT+CFM=%s\n", "OK", "AT_PARAM_ERROR"} // 0 : unconfirmed, 1 : confirmed messages
 #define CMD_GET_CONFIRM_MODE 		(AtCommand){"AT+CFM=?\n", "OK", " "} // 0 : unconfirmed, 1 : confirmed messages

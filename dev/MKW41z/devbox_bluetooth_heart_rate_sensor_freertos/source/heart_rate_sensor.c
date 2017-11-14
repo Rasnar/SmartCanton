@@ -127,7 +127,16 @@ static scdbUserData_t    scdbUserData;
 static scdbConfig_t scdbServiceConfig = {service_smartcanton_devbox, &scdbUserData};
 static psConfig_t psServiceConfig = {service_potentiometer, 0};
 
-static uint16_t cpHandles[3] = { value_heart_rate_control_point, value_lora_app_eui, value_lora_app_key };
+static uint16_t cpHandles[10] = { 	value_heart_rate_control_point,
+									value_lora_app_eui,
+									value_lora_app_key,
+									value_lora_device_eui,
+									value_lora_confirm_mode,
+									value_lora_network_join_status,
+									value_lora_device_address,
+									value_lora_network_session_key,
+									value_lora_app_session_key,
+									value_lora_validate_new_configuration};
 
 /* Application specific data*/
 static bool_t mToggle16BitHeartRate = FALSE;

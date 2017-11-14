@@ -22,7 +22,11 @@
 
 #define LORA_DEFAULT_CONFIG_APP_EUI			ORBIWISE_APP_EUI
 #define LORA_DEFAULT_CONFIG_APP_KEY			ORBIWISE_APP_KEY
+#define LORA_DEFAULT_CONFIG_DEV_ADDR     	"00:00:00:00"
+#define LORA_DEFAULT_CONFIG_NWK_SES_KEY     "00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00"
+#define LORA_DEFAULT_CONFIG_APP_SES_KEY     "00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00"
 #define LORA_DEFAULT_CONFIG_DEV_EUI			"00:00:00:00:00:00:00:00"
+
 #define LORA_DEFAULT_CONFIG_CONFIRM_MODE			"1" 	// 0 : Unconfirmed, 1 : Confirmed messages
 #define LORA_DEFAULT_CONFIG_NETWORK_JOIN_MODE		"1" 	// 0 : ABP, 1 : OTAA
 #define LORA_DEFAULT_CONFIG_DUTYCYCLE_SETTINGS		"0" 	// 0 : ETSI duty cycle disable, 1 : Enable
@@ -194,6 +198,10 @@ lorawanControllerStatus_t lorawan_controller_init_module(){
 
 	lorawan_configuration_valid = true;
 
+	/* Read the configuration from the module to be sure that the one store is correct */
+	lorawan_controller_read_module_configuration();
+
+	/* Save the configuration to flash */
 	if (lorawan_controller_write_configuration_to_flash()
 			!= lorawanController_Success) {
 		return lorawanController_Error;
@@ -257,6 +265,9 @@ static void lorawan_controller_apply_default_configuration(){
 
 	strcpy(currentLoRaWanConfig.appEui, LORA_DEFAULT_CONFIG_APP_EUI);
 	strcpy(currentLoRaWanConfig.appKey, LORA_DEFAULT_CONFIG_APP_KEY);
+	strcpy(currentLoRaWanConfig.devAddr, LORA_DEFAULT_CONFIG_DEV_ADDR);
+	strcpy(currentLoRaWanConfig.nwkSessionKey, LORA_DEFAULT_CONFIG_NWK_SES_KEY);
+	strcpy(currentLoRaWanConfig.appSessionKey, LORA_DEFAULT_CONFIG_APP_SES_KEY);
 	strcpy(currentLoRaWanConfig.confirmMode, LORA_DEFAULT_CONFIG_CONFIRM_MODE);
 
 	strcpy(currentLoRaWanConfig.etsiDutyCycleEnable, LORA_DEFAULT_CONFIG_DUTYCYCLE_SETTINGS);
@@ -264,7 +275,7 @@ static void lorawan_controller_apply_default_configuration(){
 
 	bytesRead = lorawan_controller_get_cmd(CMD_GET_DEVEUI, data, sizeof(data));
 	if (bytesRead < 0) {
-		return lorawanController_Error;
+		return;
 	}
 	strcpy(currentLoRaWanConfig.devEui, data);
 
@@ -296,6 +307,27 @@ lorawanControllerStatus_t lorawan_controller_read_module_configuration(void)
 	}
 
 	strcpy(currentLoRaWanConfig.appKey, data);
+
+	bytesRead = lorawan_controller_get_cmd(CMD_GET_DEV_ADDR, data, sizeof(data));
+	if (bytesRead < 0) {
+		return lorawanController_Error;
+	}
+
+	strcpy(currentLoRaWanConfig.devAddr, data);
+
+	bytesRead = lorawan_controller_get_cmd(CMD_GET_NWK_SESSION_KEY, data, sizeof(data));
+	if (bytesRead < 0) {
+		return lorawanController_Error;
+	}
+
+	strcpy(currentLoRaWanConfig.nwkSessionKey, data);
+
+	bytesRead = lorawan_controller_get_cmd(CMD_GET_APP_SESSION_KEY, data, sizeof(data));
+	if (bytesRead < 0) {
+		return lorawanController_Error;
+	}
+
+	strcpy(currentLoRaWanConfig.appSessionKey, data);
 
 	bytesRead = lorawan_controller_get_cmd(CMD_GET_CONFIRM_MODE, data,
 			sizeof(data));

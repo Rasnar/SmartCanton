@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Characteristic xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd"
-  type="com.hepia.characteristic.smartcanton_devbox_new_characteristic"
+  type="com.hepia.characteristic.lora_network_join_status"
   uuid="df90033e-4a83-4c1f-bb33-b623b734763f"
-  name="SMARTCANTON DEVBOX new characteristic">
+  name="LoRa Network Join Status">
   <Value>
     <Field
       name="New Field">

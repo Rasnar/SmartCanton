@@ -39,6 +39,8 @@ static deviceId_t mScDb_SubscribedClientId;
 *************************************************************************************
 ************************************************************************************/
 
+bleResult_t ScDb_SetCharacteristicValUTF8s (uint16_t serviceHandle, bleUuid_t* uuid_char, char* strVal);
+
 /************************************************************************************
 *************************************************************************************
 * Public functions
@@ -48,45 +50,54 @@ bleResult_t ScDb_Start (scdbConfig_t *pServiceConfig, lorawanControllerConfigura
 {
     bleResult_t result;
     uint16_t  handle;
-    uint8_t data[32];
-    int arrayLength = 0;
 
-    /* Clear subscibed clien ID (if any) */
+    /* Clear subscribed client ID (if any) */
     mScDb_SubscribedClientId = gInvalidDeviceId_c;
     
-    /**
-     *  AppEUI
-     */
-	result = GattDb_FindCharValueHandleInService(pServiceConfig->serviceHandle,
-		gBleUuidType128_c, (bleUuid_t*)&uuid_lora_app_eui, &handle);
+    /* AppEUI*/
+	result = ScDb_SetCharacteristicValUTF8s(pServiceConfig->serviceHandle, (bleUuid_t*)&uuid_lora_app_eui, loraConfig->appEui);
+	if (result != gBleSuccess_c)
+			return result;
 
+	/* App Key */
+	result = ScDb_SetCharacteristicValUTF8s(pServiceConfig->serviceHandle, (bleUuid_t*)&uuid_lora_app_key, loraConfig->appKey);
+	if (result != gBleSuccess_c)
+			return result;
+
+	/*  DevEui */
+	result = ScDb_SetCharacteristicValUTF8s(pServiceConfig->serviceHandle, (bleUuid_t*)&uuid_lora_device_eui, loraConfig->devEui);
+	if (result != gBleSuccess_c)
+			return result;
+
+	/* Confirm Mode */
+	result = GattDb_FindCharValueHandleInService(pServiceConfig->serviceHandle,
+		gBleUuidType128_c, (bleUuid_t*)&uuid_lora_confirm_mode, &handle);
 	if (result != gBleSuccess_c)
 		return result;
 
-	arrayLength = convertHexStringToBytesArray(loraConfig->appEui, data);
+	uint8_t val = false;
+	if(loraConfig->confirmMode[0] == '1')
+		val = true;
 
 	/* Update characteristic value */
-	result = GattDb_WriteAttribute(handle, arrayLength, data);
-
+	result = GattDb_WriteAttribute(handle, 1, &val);
 	if (result != gBleSuccess_c)
 		return result;
 
-	/**
-	 *  AppEUI
-	 */
-	result = GattDb_FindCharValueHandleInService(pServiceConfig->serviceHandle,
-		gBleUuidType128_c, (bleUuid_t*)&uuid_lora_app_key, &handle);
-
+	/* Dev Addr */
+	result = ScDb_SetCharacteristicValUTF8s(pServiceConfig->serviceHandle, (bleUuid_t*)&uuid_lora_device_address, loraConfig->devAddr);
 	if (result != gBleSuccess_c)
-		return result;
+			return result;
 
-	arrayLength = convertHexStringToBytesArray(loraConfig->appKey, data);
-
-	/* Update characteristic value */
-	result = GattDb_WriteAttribute(handle, arrayLength, data);
-
+	/* Nwk Session Key */
+	result = ScDb_SetCharacteristicValUTF8s(pServiceConfig->serviceHandle, (bleUuid_t*)&uuid_lora_network_session_key, loraConfig->nwkSessionKey);
 	if (result != gBleSuccess_c)
-		return result;
+			return result;
+
+	/* App Session Key */
+	result = ScDb_SetCharacteristicValUTF8s(pServiceConfig->serviceHandle, (bleUuid_t*)&uuid_lora_app_session_key, loraConfig->appSessionKey);
+	if (result != gBleSuccess_c)
+			return result;
 
     return gBleSuccess_c;
 }
@@ -169,6 +180,54 @@ uint8_t ScDb_SetAppKey (scdbConfig_t *pScdbConfig, uint8_array_t appKey)
 		return gBleInvalidParameter_c;
 	}
 
+}
+
+uint8_t ScDb_SetConfirmMode (scdbConfig_t *pScdbConfig, bool confirmMode)
+{
+    uint16_t  handle;
+    bleResult_t result;
+
+    /* Get handle of characteristic */
+    result = GattDb_FindCharValueHandleInService(pScdbConfig->serviceHandle,
+        gBleUuidType128_c, (bleUuid_t*)&uuid_lora_confirm_mode, &handle);
+
+    if (result != gBleSuccess_c)
+        return result;
+
+    char * strConfirmMode = "0";
+    if(confirmMode == true)
+    	strConfirmMode[0] = '1';
+
+	if (lorawan_controller_set_cmd(CMD_SET_CONFIRM_MODE, strConfirmMode) == lorawanController_Success) {
+		/* Update characteristic value*/
+		return GattDb_WriteAttribute(handle, sizeof(confirmMode), (void*) confirmMode);
+	} else {
+		return gBleInvalidParameter_c;
+	}
+
+}
+
+bleResult_t ScDb_SetCharacteristicValUTF8s (uint16_t serviceHandle, bleUuid_t* uuid_char, char* strVal) {
+
+    uint16_t  handle;
+    uint8_t data[32];
+    int arrayLength = 0;
+
+   	bleResult_t result = GattDb_FindCharValueHandleInService(serviceHandle,
+   		gBleUuidType128_c, uuid_char, &handle);
+
+   	if (result != gBleSuccess_c)
+   		return result;
+
+   	arrayLength = convertHexStringToBytesArray(strVal, data);
+
+   	/* Update characteristic value */
+   	result = GattDb_WriteAttribute(handle, arrayLength, data);
+
+   	if (result != gBleSuccess_c)
+   		return result;
+
+   	return gBleSuccess_c;
 }
 
 

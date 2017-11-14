@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Descriptor xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/descriptor.xsd"
-  type="com.hepia.descriptor.smartcanton_devbox_new_characteristic_new_descriptor2"
-  uuid="abbc"
-  name="SMARTCANTON DEVBOX new characteristic new descriptor">
+  type="com.hepia.descriptor.lora_device_address"
+  uuid="2d7b"
+  name="LoRa Device Address">
   <InformativeText>
     <Examples />
   </InformativeText>
   <Value>
     <Field
-      name="New Field">
+      name="lora_device_address">
       <Requirement>Mandatory</Requirement>
       <Format>utf8s</Format>
       <Unit>org.bluetooth.unit.unitless</Unit>

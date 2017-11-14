@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<BDSProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="SmartCantonDevBox_base" LastModified="2017-11-11T14:47:00.4522255+01:00">
+<BDSProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="SmartCantonDevBox_base" LastModified="2017-11-14T14:14:06.3925691+01:00">
   <Namespace>com.hepia</Namespace>
   <BaseGuid>df900000-4a83-4c1f-bb33-b623b734763f</BaseGuid>
   <Profile Name="com.hepia.profile.heart_rate" XMLFile="Profiles\com.hepia.profile.heart_rate.xml" />
@@ -36,31 +36,6 @@
         <Characteristic UID="103fd1c0-e19b-4a5e-8387-1e0e0d349249" XMLFile="Characteristics\org.bluetooth.characteristic.heart_rate_control_point.xml" UUIDMode="Short" />
       </CharacteristicFiles>
     </Service>
-    <Service UID="c15df42f-16c8-4dc2-ba64-13057a12ddd7" XMLFile="Services\org.bluetooth.service.battery_service.xml" UUIDMode="Short">
-      <UUIDDisplayMode>Short</UUIDDisplayMode>
-      <CharacteristicFiles>
-        <Characteristic UID="5fbced45-70be-4da1-bb88-854c03391792" XMLFile="Characteristics\org.bluetooth.characteristic.battery_level.xml" UUIDMode="Short">
-          <DescriptorFiles>
-            <Descriptor UID="ee3c9a64-4f25-42cf-83a2-34fcd5ce9551" XMLFile="Descriptors\org.bluetooth.descriptor.gatt.characteristic_presentation_format.xml" UUIDMode="Short" />
-            <Descriptor UID="ec4fad3a-b7ba-45e3-bf57-11dded14c92d" XMLFile="Descriptors\org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml" UUIDMode="Short" />
-          </DescriptorFiles>
-        </Characteristic>
-      </CharacteristicFiles>
-    </Service>
-    <Service UID="970a5b17-d980-4f59-aee4-3535715db459" XMLFile="Services\org.bluetooth.service.device_information.xml" UUIDMode="Short">
-      <UUIDDisplayMode>Short</UUIDDisplayMode>
-      <CharacteristicFiles>
-        <Characteristic UID="3b863712-6c96-4df9-93df-43bde2997932" XMLFile="Characteristics\org.bluetooth.characteristic.pnp_id.xml" UUIDMode="Short" />
-        <Characteristic UID="52a14a80-c9e6-4caf-ac9d-92426d09702d" XMLFile="Characteristics\org.bluetooth.characteristic.ieee_11073-20601_regulatory_certification_data_list.xml" UUIDMode="Short" />
-        <Characteristic UID="a4a45b66-cb22-4721-b0f1-a9cf2c7a4c61" XMLFile="Characteristics\org.bluetooth.characteristic.system_id.xml" UUIDMode="Short" />
-        <Characteristic UID="9d6ae4fd-89db-41fa-adc2-a8b9ed5a45ba" XMLFile="Characteristics\org.bluetooth.characteristic.software_revision_string.xml" UUIDMode="Short" />
-        <Characteristic UID="2440bdef-a774-4489-8d9b-8c7857a0152c" XMLFile="Characteristics\org.bluetooth.characteristic.firmware_revision_string.xml" UUIDMode="Short" />
-        <Characteristic UID="8a0e6e26-a5e5-4c7c-abb8-4cdd45c1ebc9" XMLFile="Characteristics\org.bluetooth.characteristic.hardware_revision_string.xml" UUIDMode="Short" />
-        <Characteristic UID="0e5ced09-7200-4cf4-b232-8e38faf8768a" XMLFile="Characteristics\org.bluetooth.characteristic.serial_number_string.xml" UUIDMode="Short" />
-        <Characteristic UID="abf18894-7e08-4a16-aebe-ff02211915f0" XMLFile="Characteristics\org.bluetooth.characteristic.model_number_string.xml" UUIDMode="Short" />
-        <Characteristic UID="9ba01825-d9c8-47ed-92de-0854b6c89564" XMLFile="Characteristics\org.bluetooth.characteristic.manufacturer_name_string.xml" UUIDMode="Short" />
-      </CharacteristicFiles>
-    </Service>
     <Service UID="39987545-712d-448c-ab02-cce2e209dbf1" XMLFile="Services\com.hepia.service.smartcanton_devbox.xml" UUIDMode="Full">
       <UUIDDisplayMode>Full</UUIDDisplayMode>
       <CharacteristicFiles>
@@ -84,11 +59,56 @@
             <Descriptor UID="dbecac91-000e-45b5-afe1-983c0a80de30" XMLFile="Descriptors\com.hepia.descriptor.smartcanton_devbox_new_characteristic_new_descriptor1.xml" UUIDMode="Short" />
           </DescriptorFiles>
         </Characteristic>
-        <Characteristic UID="4956bad2-9a94-476c-b850-df701ba8cbf9" XMLFile="Characteristics\com.hepia.characteristic.smartcanton_devbox_new_characteristic.xml" UUIDMode="Full">
+        <Characteristic UID="4956bad2-9a94-476c-b850-df701ba8cbf9" XMLFile="Characteristics\com.hepia.characteristic.lora_network_join_status.xml" UUIDMode="Full">
           <DescriptorFiles>
             <Descriptor UID="108b12f0-26da-4e45-a92c-61fd88e0930e" XMLFile="Descriptors\com.hepia.descriptor.smartcanton_devbox_new_characteristic_new_descriptor2.xml" UUIDMode="Short" />
           </DescriptorFiles>
         </Characteristic>
+        <Characteristic UID="3c449092-2994-40c8-bac6-3b919df00e91" XMLFile="Characteristics\com.hepia.characteristic.lora_device_address.xml" UUIDMode="Full">
+          <DescriptorFiles>
+            <Descriptor UID="20de0b9b-2220-45a8-94f6-5fc64fd92ced" XMLFile="Descriptors\com.hepia.descriptor.lora_device_address.xml" UUIDMode="Short" />
+          </DescriptorFiles>
+        </Characteristic>
+        <Characteristic UID="60e67a84-18fe-446d-abb4-ecc23f3f51f5" XMLFile="Characteristics\com.hepia.characteristic.lora_network_session_key.xml" UUIDMode="Full">
+          <DescriptorFiles>
+            <Descriptor UID="556ae9ae-1ae7-410d-b7a6-d9d431e00316" XMLFile="Descriptors\com.hepia.descriptor.lora_network_session_key_descriptor.xml" UUIDMode="Short" />
+          </DescriptorFiles>
+        </Characteristic>
+        <Characteristic UID="952f929f-181f-4d42-9599-10884b70646a" XMLFile="Characteristics\com.hepia.characteristic.lora_app_session_key.xml" UUIDMode="Full">
+          <DescriptorFiles>
+            <Descriptor UID="6dd34296-a9cd-45b9-830a-1789f193c5f4" XMLFile="Descriptors\com.hepia.descriptor.lora_app_session_key_descriptor.xml" UUIDMode="Short" />
+          </DescriptorFiles>
+        </Characteristic>
+        <Characteristic UID="c81a60d1-21da-46c4-99ce-04fff3bf8170" XMLFile="Characteristics\com.hepia.characteristic.lora_validate_new_configuration.xml" UUIDMode="Full">
+          <DescriptorFiles>
+            <Descriptor UID="1a82a94c-6363-40a0-8592-b0edbb4b0698" XMLFile="Descriptors\com.hepia.descriptor.lora_validate_new_configuration_descriptor.xml" UUIDMode="Short" />
+          </DescriptorFiles>
+        </Characteristic>
+      </CharacteristicFiles>
+    </Service>
+    <Service UID="c15df42f-16c8-4dc2-ba64-13057a12ddd7" XMLFile="Services\org.bluetooth.service.battery_service.xml" UUIDMode="Short">
+      <UUIDDisplayMode>Short</UUIDDisplayMode>
+      <CharacteristicFiles>
+        <Characteristic UID="5fbced45-70be-4da1-bb88-854c03391792" XMLFile="Characteristics\org.bluetooth.characteristic.battery_level.xml" UUIDMode="Short">
+          <DescriptorFiles>
+            <Descriptor UID="ee3c9a64-4f25-42cf-83a2-34fcd5ce9551" XMLFile="Descriptors\org.bluetooth.descriptor.gatt.characteristic_presentation_format.xml" UUIDMode="Short" />
+            <Descriptor UID="ec4fad3a-b7ba-45e3-bf57-11dded14c92d" XMLFile="Descriptors\org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml" UUIDMode="Short" />
+          </DescriptorFiles>
+        </Characteristic>
+      </CharacteristicFiles>
+    </Service>
+    <Service UID="970a5b17-d980-4f59-aee4-3535715db459" XMLFile="Services\org.bluetooth.service.device_information.xml" UUIDMode="Short">
+      <UUIDDisplayMode>Short</UUIDDisplayMode>
+      <CharacteristicFiles>
+        <Characteristic UID="3b863712-6c96-4df9-93df-43bde2997932" XMLFile="Characteristics\org.bluetooth.characteristic.pnp_id.xml" UUIDMode="Short" />
+        <Characteristic UID="52a14a80-c9e6-4caf-ac9d-92426d09702d" XMLFile="Characteristics\org.bluetooth.characteristic.ieee_11073-20601_regulatory_certification_data_list.xml" UUIDMode="Short" />
+        <Characteristic UID="a4a45b66-cb22-4721-b0f1-a9cf2c7a4c61" XMLFile="Characteristics\org.bluetooth.characteristic.system_id.xml" UUIDMode="Short" />
+        <Characteristic UID="9d6ae4fd-89db-41fa-adc2-a8b9ed5a45ba" XMLFile="Characteristics\org.bluetooth.characteristic.software_revision_string.xml" UUIDMode="Short" />
+        <Characteristic UID="2440bdef-a774-4489-8d9b-8c7857a0152c" XMLFile="Characteristics\org.bluetooth.characteristic.firmware_revision_string.xml" UUIDMode="Short" />
+        <Characteristic UID="8a0e6e26-a5e5-4c7c-abb8-4cdd45c1ebc9" XMLFile="Characteristics\org.bluetooth.characteristic.hardware_revision_string.xml" UUIDMode="Short" />
+        <Characteristic UID="0e5ced09-7200-4cf4-b232-8e38faf8768a" XMLFile="Characteristics\org.bluetooth.characteristic.serial_number_string.xml" UUIDMode="Short" />
+        <Characteristic UID="abf18894-7e08-4a16-aebe-ff02211915f0" XMLFile="Characteristics\org.bluetooth.characteristic.model_number_string.xml" UUIDMode="Short" />
+        <Characteristic UID="9ba01825-d9c8-47ed-92de-0854b6c89564" XMLFile="Characteristics\org.bluetooth.characteristic.manufacturer_name_string.xml" UUIDMode="Short" />
       </CharacteristicFiles>
     </Service>
   </ServiceFiles>
