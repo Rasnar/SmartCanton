@@ -8,6 +8,7 @@
  */
 
 #include "lorawan_controller_task.h"
+#include "dev_box_app_task.h"
 #include "LED.h"
 
 
@@ -19,9 +20,6 @@ osaTaskId_t gLorawanControllerTaskId = 0;
 static tmrTimerID_t mLoraSendId;
 osaEventId_t  gLoRaControllerEvent;
 
-
-
-//static anchor_t gLoRaCtrlTaskNewLoRaMsg;
 
 static void TimerLoRaSendCallback(void * pParam);
 
@@ -56,9 +54,11 @@ void Lorawan_Controller_Task(osaTaskParam_t argument)
         if (event & gLoRaCtrlTaskEvtConfigure_c) {
         	Led4Flashing();
         	if(lorawan_controller_init_module() != lorawanController_Success){
+        		// If the configuration is unsuccessful, try again to join the network
         		OSA_EventSet(gLoRaControllerEvent, gLoRaCtrlTaskEvtConfigure_c);
         		continue;
         	}
+    		OSA_EventSet(gDevBoxAppEvent, gDevBoxTaskEvtNewLoRaWANConfig_c);
         	StopLed4Flashing();
         	Led4On();
     	}

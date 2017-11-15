@@ -19,7 +19,7 @@
 #include "SerialManager.h"
 #include "atcommander/atcommander.h"
 
-#define LORAWAN_CONTROLLER_MAGIC_WORD	0x2222
+#define LORAWAN_CONTROLLER_MAGIC_WORD	0x1122
 
 typedef struct lorawanControllerConfiguration_tag{
 	char appEui[24];

@@ -41,43 +41,20 @@
 * Include
 *************************************************************************************
 ************************************************************************************/
-/* Framework / Drivers */
-#include "RNG_Interface.h"
-#include "Keyboard.h"
-#include "LED.h"
-#include "TimersManager.h"
-#include "FunctionLib.h"
-#include "MemManager.h"
-#include "Panic.h"
 
-
-#if (cPWR_UsePowerDownMode)
-#include "PWR_Interface.h"
-#include "PWR_Configuration.h"
-#endif
-
-/* BLE Host Stack */
-#include "gatt_server_interface.h"
-#include "gatt_client_interface.h"
-#include "gap_interface.h"
-#include "gatt_db_handles.h"
-
-/* Profile / Services */
-#include "battery_interface.h"
-#include "device_info_interface.h"
-#include "smartcanton_devbox_interface.h"
-#include "lorawan_controller.h"
-
-/* Connection Manager */
-#include "ble_conn_manager.h"
-
-#include "board.h"
-#include "ApplMain.h"
-#include <dev_box_main_app.h>
+#include "dev_box_app_task.h"
 #include "pin_mux.h"
 
 /* Necessary to communicate to the LoRaWAN task */
 #include "lorawan_controller_task.h"
+
+/************************************************************************************
+*************************************************************************************
+* Public memory declarations
+*************************************************************************************
+************************************************************************************/
+OSA_TASK_DEFINE( DevBox_App_Task, gDevBoxAppTaskPriority_c, 1, gDevBoxAppTaskStackSize_c, FALSE );
+osaTaskId_t gDevBoxAppTaskId = 0;
 
 /************************************************************************************
 *************************************************************************************
@@ -118,8 +95,8 @@ static deviceId_t  mPeerDeviceId = gInvalidDeviceId_c;
 
 /* Service Data*/
 static basConfig_t      basServiceConfig = {service_battery, 0};
-static scdbUserData_t    scdbUserData;
-static scdbConfig_t scdbServiceConfig = {service_smartcanton_devbox, &scdbUserData};
+static lorawanControllerConfiguration_t loraConfig;
+static scdbConfig_t scdbServiceConfig = {service_smartcanton_devbox, &loraConfig};
 
 static uint16_t writeHandles[9] = {	value_lora_app_eui,
 									value_lora_app_key,
@@ -136,6 +113,8 @@ static uint16_t readHandles[1] = {	value_lora_network_join_status };
 /* Application specific data*/
 static tmrTimerID_t mAdvTimerId;
 static tmrTimerID_t mBatteryMeasurementTimerId;
+
+osaEventId_t  gDevBoxAppEvent;
 
 /************************************************************************************
 *************************************************************************************
@@ -313,9 +292,8 @@ static void BleApp_Config()
      * /!\ Be sure that the function lorawan_controller_init(void)
      * as been called before (eg. from another task)
      */
-    lorawanControllerConfiguration_t loraConfig;
-	loraConfig = lorawan_controller_get_current_configuration();
-    ScDb_Start(&scdbServiceConfig, &loraConfig);
+    *scdbServiceConfig.loRaCtrlConfig = lorawan_controller_get_current_configuration();
+    ScDb_Start(&scdbServiceConfig);
 
     /* Allocate application timers */
     mAdvTimerId = TMR_AllocateTimer();
@@ -637,6 +615,53 @@ static void BatteryMeasurementTimerCallback(void * pParam)
     basServiceConfig.batteryLevel = BOARD_GetBatteryLevel();
     Bas_RecordBatteryMeasurement(basServiceConfig.serviceHandle, basServiceConfig.batteryLevel);
 }
+
+
+osaStatus_t DevBoxApp_TaskInit(void){
+	if(gDevBoxAppTaskId)
+	{
+		return osaStatus_Error;
+	}
+
+	/* Create application event */
+	gDevBoxAppEvent = OSA_EventCreate(TRUE);
+	if( NULL == gDevBoxAppEvent )
+	{
+		panic(0,0,0,0);
+		return osaStatus_Error;
+	}
+
+	/* Task creation */
+	gDevBoxAppTaskId = OSA_TaskCreate(OSA_TASK(DevBox_App_Task), NULL);
+
+	if( NULL == gDevBoxAppTaskId )
+	{
+		panic(0,0,0,0);
+		return osaStatus_Error;
+	}
+
+	return osaStatus_Success;
+}
+
+
+void DevBox_App_Task(osaTaskParam_t argument){
+
+    osaEventFlags_t event;
+	while(1)
+	{
+		OSA_EventWait(gDevBoxAppEvent, osaEventFlagsAll_c, FALSE, osaWaitForever_c, &event);
+
+		if (event & gDevBoxTaskEvtNewLoRaWANConfig_c) {
+			if(lorawan_controller_get_configuration_validity() == lorawanController_Success){
+				*scdbServiceConfig.loRaCtrlConfig = lorawan_controller_get_current_configuration();
+				ScDb_UpdateAllGattTable(&scdbServiceConfig);
+			}
+		}
+
+	}
+
+}
+
 
 /*! *********************************************************************************
 * @}

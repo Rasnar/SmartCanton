@@ -143,7 +143,7 @@
 #define FSL_RTOS_FREE_RTOS      1
 
 /* Defines number of OS events used */
-#define osNumberOfEvents        6
+#define osNumberOfEvents        7
 
 /* Defines main task stack size */
 #define gMainThreadStackSize_c  2048

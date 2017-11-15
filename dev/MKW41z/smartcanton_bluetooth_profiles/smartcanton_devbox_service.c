@@ -46,60 +46,16 @@ bleResult_t ScDb_SetCharacteristicValUTF8s (uint16_t serviceHandle, bleUuid_t* u
 * Public functions
 *************************************************************************************
 ************************************************************************************/
-bleResult_t ScDb_Start (scdbConfig_t *pServiceConfig, lorawanControllerConfiguration_t* loraConfig)
+bleResult_t ScDb_Start (scdbConfig_t *pServiceConfig)
 {
     bleResult_t result;
-    uint16_t  handle;
 
     /* Clear subscribed client ID (if any) */
     mScDb_SubscribedClientId = gInvalidDeviceId_c;
     
-    /* AppEUI*/
-	result = ScDb_SetCharacteristicValUTF8s(pServiceConfig->serviceHandle, (bleUuid_t*)&uuid_lora_app_eui, loraConfig->appEui);
-	if (result != gBleSuccess_c)
-			return result;
+    result = ScDb_UpdateAllGattTable(pServiceConfig);
 
-	/* App Key */
-	result = ScDb_SetCharacteristicValUTF8s(pServiceConfig->serviceHandle, (bleUuid_t*)&uuid_lora_app_key, loraConfig->appKey);
-	if (result != gBleSuccess_c)
-			return result;
-
-	/*  DevEui */
-	result = ScDb_SetCharacteristicValUTF8s(pServiceConfig->serviceHandle, (bleUuid_t*)&uuid_lora_device_eui, loraConfig->devEui);
-	if (result != gBleSuccess_c)
-			return result;
-
-	/* Confirm Mode */
-	result = GattDb_FindCharValueHandleInService(pServiceConfig->serviceHandle,
-		gBleUuidType128_c, (bleUuid_t*)&uuid_lora_confirm_mode, &handle);
-	if (result != gBleSuccess_c)
-		return result;
-
-	uint8_t val = false;
-	if(loraConfig->confirmMode[0] == '1')
-		val = true;
-
-	/* Update characteristic value */
-	result = GattDb_WriteAttribute(handle, 1, &val);
-	if (result != gBleSuccess_c)
-		return result;
-
-	/* Dev Addr */
-	result = ScDb_SetCharacteristicValUTF8s(pServiceConfig->serviceHandle, (bleUuid_t*)&uuid_lora_device_address, loraConfig->devAddr);
-	if (result != gBleSuccess_c)
-			return result;
-
-	/* Nwk Session Key */
-	result = ScDb_SetCharacteristicValUTF8s(pServiceConfig->serviceHandle, (bleUuid_t*)&uuid_lora_network_session_key, loraConfig->nwkSessionKey);
-	if (result != gBleSuccess_c)
-			return result;
-
-	/* App Session Key */
-	result = ScDb_SetCharacteristicValUTF8s(pServiceConfig->serviceHandle, (bleUuid_t*)&uuid_lora_app_session_key, loraConfig->appSessionKey);
-	if (result != gBleSuccess_c)
-			return result;
-
-    return gBleSuccess_c;
+    return result;
 }
 
 bleResult_t ScDb_Stop (scdbConfig_t *pServiceConfig)
@@ -128,6 +84,72 @@ bleResult_t ScDb_Unsubscribe()
 * Private functions
 *************************************************************************************
 ************************************************************************************/
+
+bleResult_t ScDb_UpdateAllGattTable (scdbConfig_t *pServiceConfig) {
+
+	bleResult_t result;
+	uint16_t  handle;
+
+	/* AppEUI*/
+	result = ScDb_SetCharacteristicValUTF8s(pServiceConfig->serviceHandle,
+			(bleUuid_t*)&uuid_lora_app_eui,
+			pServiceConfig->loRaCtrlConfig->appEui);
+	if (result != gBleSuccess_c)
+		return result;
+
+	/* App Key */
+	result = ScDb_SetCharacteristicValUTF8s(pServiceConfig->serviceHandle,
+			(bleUuid_t*)&uuid_lora_app_key,
+			pServiceConfig->loRaCtrlConfig->appKey);
+	if (result != gBleSuccess_c)
+		return result;
+
+	/*  DevEui */
+	result = ScDb_SetCharacteristicValUTF8s(pServiceConfig->serviceHandle,
+			(bleUuid_t*)&uuid_lora_device_eui,
+			pServiceConfig->loRaCtrlConfig->devEui);
+	if (result != gBleSuccess_c)
+		return result;
+
+	/* Confirm Mode */
+	result = GattDb_FindCharValueHandleInService(pServiceConfig->serviceHandle,
+		gBleUuidType128_c, (bleUuid_t*)&uuid_lora_confirm_mode, &handle);
+	if (result != gBleSuccess_c)
+		return result;
+
+	uint8_t val = false;
+	if(pServiceConfig->loRaCtrlConfig->confirmMode[0] == '1')
+		val = true;
+
+	/* Update characteristic value */
+	result = GattDb_WriteAttribute(handle, 1, &val);
+	if (result != gBleSuccess_c)
+		return result;
+
+	/* Dev Addr */
+	result = ScDb_SetCharacteristicValUTF8s(pServiceConfig->serviceHandle,
+			(bleUuid_t*)&uuid_lora_device_address,
+			pServiceConfig->loRaCtrlConfig->devAddr);
+	if (result != gBleSuccess_c)
+		return result;
+
+	/* Nwk Session Key */
+	result = ScDb_SetCharacteristicValUTF8s(pServiceConfig->serviceHandle,
+			(bleUuid_t*)&uuid_lora_network_session_key,
+			pServiceConfig->loRaCtrlConfig->nwkSessionKey);
+	if (result != gBleSuccess_c)
+		return result;
+
+	/* App Session Key */
+	result = ScDb_SetCharacteristicValUTF8s(pServiceConfig->serviceHandle,
+			(bleUuid_t*)&uuid_lora_app_session_key,
+			pServiceConfig->loRaCtrlConfig->appSessionKey);
+	if (result != gBleSuccess_c)
+		return result;
+
+	return gBleSuccess_c;
+}
+
 
 uint8_t ScDb_SetAppEui (scdbConfig_t *pScdbConfig, uint8_array_t appEui)
 {

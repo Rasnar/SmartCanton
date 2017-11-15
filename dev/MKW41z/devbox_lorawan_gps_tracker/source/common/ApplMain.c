@@ -80,6 +80,7 @@
 #include "ApplMain.h"
 
 #include "pin_mux.h"
+#include "dev_box_app_task.h"
 #include "lorawan_controller_task.h"
 
 
@@ -414,11 +415,17 @@ void main_task(uint32_t param)
         SerialManager_Init();
 
         /* Initialize Lorawan Controller Task */
-	   if (osaStatus_Success != LorawanController_TaskInit())
-	   {
+		if (osaStatus_Success != LorawanController_TaskInit())
+		{
 		   panic(0,0,0,0);
 		   return;
-	   }
+		}
+
+		if (osaStatus_Success != DevBoxApp_TaskInit())
+		{
+		   panic(0,0,0,0);
+		   return;
+		}
             
         /* Create application event */
         mAppEvent = OSA_EventCreate(TRUE);

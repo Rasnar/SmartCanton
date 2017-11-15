@@ -39,6 +39,39 @@
 #ifndef _APP_H_
 #define _APP_H_
 
+/* Framework / Drivers */
+#include "RNG_Interface.h"
+#include "Keyboard.h"
+#include "LED.h"
+#include "TimersManager.h"
+#include "FunctionLib.h"
+#include "MemManager.h"
+#include "Panic.h"
+
+#if (cPWR_UsePowerDownMode)
+#include "PWR_Interface.h"
+#include "PWR_Configuration.h"
+#endif
+
+/* BLE Host Stack */
+#include "gatt_server_interface.h"
+#include "gatt_client_interface.h"
+#include "gap_interface.h"
+#include "gatt_db_handles.h"
+
+/* Profile / Services */
+#include "battery_interface.h"
+#include "device_info_interface.h"
+#include "smartcanton_devbox_interface.h"
+#include "lorawan_controller.h"
+
+/* Connection Manager */
+#include "ble_conn_manager.h"
+
+#include "board.h"
+#include "ApplMain.h"
+#include "pin_mux.h"
+
 /*************************************************************************************
 **************************************************************************************
 * Public macros
@@ -72,6 +105,18 @@ extern gapAdvertisingParameters_t   gAdvParams;
 extern gapSmpKeys_t                 gSmpKeys;
 extern gapPairingParameters_t       gPairingParameters;
 extern gapDeviceSecurityRequirements_t deviceSecurityRequirements;
+
+/*! Idle Task Stack Size */
+#define gDevBoxAppTaskStackSize_c (1500)
+
+/*! Lorawan Controller Task OS Abstraction Priority */
+#define gDevBoxAppTaskPriority_c  (3)
+
+extern osaEventId_t  gDevBoxAppEvent;
+
+/* Task Events */
+#define gDevBoxTaskEvtNewLoRaWANConfig_c       		(1 << 0)
+
 /************************************************************************************
 *************************************************************************************
 * Public prototypes
@@ -85,6 +130,8 @@ extern "C" {
 void BleApp_Init(void);
 void BleApp_Start(void);
 void BleApp_GenericCallback (gapGenericEvent_t* pGenericEvent);
+void DevBox_App_Task(osaTaskParam_t argument);
+osaStatus_t DevBoxApp_TaskInit(void);
 
 #ifdef __cplusplus
 }

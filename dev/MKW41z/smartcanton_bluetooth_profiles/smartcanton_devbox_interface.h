@@ -78,22 +78,11 @@ typedef struct uint8_array_tag
     uint8_t     *pUint8_array;
 }uint8_array_t;
 
-
-/*! Smart Canton Dev Box Service - User Data */
-typedef struct scdbUserData_tag
-{
-	/*! Smart Canton Dev Box Service - LoRa AppEUI*/
-    utf8s_t     appEui;
-
-    /*! Smart Canton Dev Box Service - LoRa AppKey*/
-    utf8s_t     appKey;
-}scdbUserData_t;
-
 /*! Smart Canton Dev Box Service - Configuration */
 typedef struct scdbConfig_tag
 {
     uint16_t    serviceHandle;
-    scdbUserData_t        *pUserData;
+    lorawanControllerConfiguration_t   *loRaCtrlConfig;
 }scdbConfig_t;
 
 /************************************************************************************
@@ -122,7 +111,7 @@ extern "C" {
 *
 * \return       gBleSuccess_c or error.
 ************************************************************************************/
-bleResult_t ScDb_Start (scdbConfig_t *pServiceConfig, lorawanControllerConfiguration_t* loraConfig);
+bleResult_t ScDb_Start (scdbConfig_t *pServiceConfig);
 
 /*!**********************************************************************************
 * \brief        Stops Smart Canton Dev Box Service functionality
@@ -189,6 +178,8 @@ uint8_t ScDb_SetJoinStatus(scdbConfig_t *pScdbConfig, uint8_array_t joinStatus);
 * \return       gAttErrCodeNoError_c or error.
 *************************************************************************************/
 uint8_t ScDb_SetConfirmMode (scdbConfig_t *pScdbConfig, uint8_array_t confirmMode);
+
+bleResult_t ScDb_UpdateAllGattTable (scdbConfig_t *pScdbConfig);
 
 #ifdef __cplusplus
 }
