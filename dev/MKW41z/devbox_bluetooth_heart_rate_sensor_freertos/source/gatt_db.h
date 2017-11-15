@@ -50,7 +50,6 @@ PRIMARY_SERVICE(service_generic_access, gBleSig_GenericAccessProfile_d)
     CHARACTERISTIC(char_peripheral_preferred_connection_parameters, gBleSig_GapPpcp_d, (gGattCharPropRead_c))
         VALUE(value_peripheral_preferred_connection_parameters, gBleSig_GapPpcp_d, (gPermissionFlagReadable_c), 8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
 
-
 PRIMARY_SERVICE_UUID128(service_smartcanton_devbox, uuid_service_smartcanton_devbox)
 	CHARACTERISTIC_UUID128(char_lora_app_eui, uuid_lora_app_eui, (gGattCharPropRead_c | gGattCharPropWrite_c))
 		VALUE_UUID128_VARLEN(value_lora_app_eui, uuid_lora_app_eui, (gPermissionFlagReadable_c | gPermissionFlagWritable_c), 23, 23, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
@@ -79,10 +78,3 @@ PRIMARY_SERVICE_UUID128(service_smartcanton_devbox, uuid_service_smartcanton_dev
 	CHARACTERISTIC_UUID128(char_lora_validate_new_configuration, uuid_lora_validate_new_configuration, (gGattCharPropWrite_c))
 		VALUE_UUID128(value_lora_validate_new_configuration, uuid_lora_validate_new_configuration, (gPermissionFlagWritable_c), 1, 0x00)
 		DESCRIPTOR(descriptor_lora_validate_new_configuration, 0x2901, (gPermissionFlagReadable_c), 35, "LoRaWAN Validate New Configuration")
-
-PRIMARY_SERVICE_UUID128(service_potentiometer, uuid_service_potentiometer)
-	CHARACTERISTIC_UUID128(char_potentiometer_relative_value, uuid_characteristic_potentiometer_relative_value, (gGattCharPropRead_c | gGattCharPropNotify_c))
-		VALUE_UUID128(value_potentiometer_relative_value, uuid_characteristic_potentiometer_relative_value, (gPermissionFlagReadable_c ), 1, 0x00)
-		CCCD(cccd_potentiometer)
-//		DESCRIPTOR(cpfd_potentiometer, gBleSig_CharPresFormatDescriptor_d, (gPermissionFlagReadable_c), 7, gCpfdUnsigned8BitInteger, 0x00,0xAD,0x27,0x01, 0x00, 0x00)
-		DESCRIPTOR(cpfd_potentiometer, gBleSig_CharPresFormatDescriptor_d, (gPermissionFlagReadable_c), 7, 0x04, 0x00, 0xAD, 0x27, 0x01, 0x00, 0x00)
