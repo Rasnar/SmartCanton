@@ -2,7 +2,7 @@
 <Characteristic xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd"
   type="com.hepia.characteristic.lora_app_key"
-  uuid="02ff5804-ba5e-f4ee-5ca1-eb1e5e4b1ce0"
+  uuid="00000002-aaaa-bbbb-cccc-dddddddddddd"
   name="LoRa APP KEY">
   <Value>
     <Field

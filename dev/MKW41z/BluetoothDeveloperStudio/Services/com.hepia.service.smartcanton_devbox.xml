@@ -2,7 +2,7 @@
 <Service xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/service.xsd"
   type="com.hepia.service.smartcanton_devbox"
-  uuid="02ff5604-ba5e-f4ee-5ca1-eb1e5e4b1ce0"
+  uuid="00000000-aaaa-bbbb-cccc-dddddddddddd"
   name="SMARTCANTON DEVBOX">
   <Transports>
     <Classic>false</Classic>
