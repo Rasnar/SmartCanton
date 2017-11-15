@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>devbox_lorawan_gps_tracker</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.cdt.managedbuilder.core.genmakebuilder</name>
+			<triggers>clean,full,incremental,</triggers>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.cdt.managedbuilder.core.ScannerConfigBuilder</name>
+			<triggers>full,incremental,</triggers>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.cdt.core.cnature</nature>
+		<nature>com.nxp.mcuxpresso.core.datamodels.sdkNature</nature>
+		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
+		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>board</name>
+			<type>2</type>
+			<location>C:/Users/David/Dropbox/SmartCanton/dev/MKW41z/smartcanton_devbox_board</location>
+		</link>
+		<link>
+			<name>doc/readme.txt</name>
+			<type>1</type>
+			<location>C:/Users/David/mcuxpresso/SDKPackages/SDK_2.2_MKW41Z512xxx4 (2)/boards/frdmkw41z/wireless_examples/bluetooth/heart_rate_sensor/readme.txt</location>
+		</link>
+		<link>
+			<name>freertos/ChangeLogKSDK.txt</name>
+			<type>1</type>
+			<location>C:/Users/David/mcuxpresso/SDKPackages/SDK_2.2_MKW41Z512xxx4 (2)/rtos/freertos_9.0.0/ChangeLogKSDK.txt</location>
+		</link>
+		<link>
+			<name>freertos/FreeRTOS_for_Kinetis_SDK_v2.0.txt</name>
+			<type>1</type>
+			<location>C:/Users/David/mcuxpresso/SDKPackages/SDK_2.2_MKW41Z512xxx4 (2)/rtos/freertos_9.0.0/FreeRTOS_for_Kinetis_SDK_v2.0.txt</location>
+		</link>
+		<link>
+			<name>freertos/license.txt</name>
+			<type>1</type>
+			<location>C:/Users/David/mcuxpresso/SDKPackages/SDK_2.2_MKW41Z512xxx4 (2)/rtos/freertos_9.0.0/License/license.txt</location>
+		</link>
+		<link>
+			<name>bluetooth/profiles/smartcanton_devbox</name>
+			<type>2</type>
+			<location>C:/Users/David/Dropbox/SmartCanton/dev/MKW41z/smartcanton_bluetooth_profiles</location>
+		</link>
+		<link>
+			<name>doc/doc/freertos/include/stdint.readme</name>
+			<type>1</type>
+			<location>C:/Users/David/mcuxpresso/SDKPackages/SDK_2.2_MKW41Z512xxx4 (2)/rtos/freertos_9.0.0/Source/include/stdint.readme</location>
+		</link>
+		<link>
+			<name>doc/doc/freertos/portable/readme.txt</name>
+			<type>1</type>
+			<location>C:/Users/David/mcuxpresso/SDKPackages/SDK_2.2_MKW41Z512xxx4 (2)/rtos/freertos_9.0.0/Source/portable/readme.txt</location>
+		</link>
+		<link>
+			<name>doc/doc/freertos/source/readme.txt</name>
+			<type>1</type>
+			<location>C:/Users/David/mcuxpresso/SDKPackages/SDK_2.2_MKW41Z512xxx4 (2)/rtos/freertos_9.0.0/Source/readme.txt</location>
+		</link>
+	</linkedResources>
+</projectDescription>
