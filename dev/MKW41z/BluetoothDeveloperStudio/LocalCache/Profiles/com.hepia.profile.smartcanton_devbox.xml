@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Profile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/profile.xsd"
-  name="Heart Rate"
-  type="com.hepia.profile.heart_rate"
-  uuid="df906084-4a83-4c1f-bb33-b623b734763f">
+  name="SmartCanton DevBox"
+  type="com.hepia.profile.smartcanton_devbox"
+  uuid="df900320-4a83-4c1f-bb33-b623b734763f">
   <InformativeText>
-    <Abstract>This profile enables a Collector device to connect and interact with a Heart Rate Sensor for use in fitness applications.</Abstract>
-    <Summary>The Heart Rate Profile is used to enable a data collection device to obtain data from a Heart Rate Sensor that exposes the Heart Rate Service.</Summary>
+    <Abstract />
+    <Summary />
   </InformativeText>
   <Role
-    name="Heart Rate Sensor">
+    name="SMART CANTON DEV BOx">
     <Service
       type="org.bluetooth.service.battery_service">
       <Declaration>Primary</Declaration>
@@ -73,7 +73,7 @@
     </Service>
   </Role>
   <Role
-    name="Collector">
+    name="COLLECTOR">
     <Client
       type="org.bluetooth.service.device_information">
       <Requirement>Optional</Requirement>

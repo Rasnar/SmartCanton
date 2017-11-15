@@ -65,7 +65,6 @@
 /* Profile / Services */
 #include "battery_interface.h"
 #include "device_info_interface.h"
-#include "heart_rate_interface.h"
 #include "smartcanton_devbox_interface.h"
 #include "lorawan_controller.h"
 
@@ -85,10 +84,6 @@
 * Private macros
 *************************************************************************************
 ************************************************************************************/
-#define mHeartRateLowerLimit_c          (40) /* Heart beat lower limit, 8-bit value */
-#define mHeartRateUpperLimit_c          (201) /* Heart beat upper limit, 8-bit value */
-#define mHeartRateRange_c               (mHeartRateUpperLimit_c - mHeartRateLowerLimit_c) /* Range = [ADC16_HB_LOWER_LIMIT .. ADC16_HB_LOWER_LIMIT + ADC16_HB_DYNAMIC_RANGE] */
-#define mHeartRateReportInterval_c      (1)        /* heart rate report interval in seconds  */
 #define mBatteryLevelReportInterval_c   (10)        /* battery level report interval in seconds  */
 /************************************************************************************
 *************************************************************************************
@@ -123,29 +118,23 @@ static deviceId_t  mPeerDeviceId = gInvalidDeviceId_c;
 
 /* Service Data*/
 static basConfig_t      basServiceConfig = {service_battery, 0};
-static hrsUserData_t    hrsUserData;
-static hrsConfig_t hrsServiceConfig = {service_heart_rate, TRUE, TRUE, TRUE, gHrs_BodySensorLocChest_c, &hrsUserData};
 static scdbUserData_t    scdbUserData;
 static scdbConfig_t scdbServiceConfig = {service_smartcanton_devbox, &scdbUserData};
 
-static uint16_t writeHandles[9] = {	value_heart_rate_control_point,
-										value_lora_app_eui,
-										value_lora_app_key,
-										value_lora_device_eui,
-										value_lora_confirm_mode,
-										value_lora_device_address,
-										value_lora_network_session_key,
-										value_lora_app_session_key,
-										value_lora_validate_new_configuration};
+static uint16_t writeHandles[9] = {	value_lora_app_eui,
+									value_lora_app_key,
+									value_lora_device_eui,
+									value_lora_confirm_mode,
+									value_lora_device_address,
+									value_lora_network_session_key,
+									value_lora_app_session_key,
+									value_lora_validate_new_configuration};
 
-static uint16_t readHandles[1] = { 		value_lora_network_join_status };
+static uint16_t readHandles[1] = {	value_lora_network_join_status };
 
 
 /* Application specific data*/
-static bool_t mToggle16BitHeartRate = FALSE;
-static bool_t mContactStatus = TRUE;
 static tmrTimerID_t mAdvTimerId;
-static tmrTimerID_t mMeasurementTimerId;
 static tmrTimerID_t mBatteryMeasurementTimerId;
 
 /************************************************************************************
@@ -162,7 +151,6 @@ static void BleApp_Config();
 
 /* Timer Callbacks */
 static void AdvertisingTimerCallback (void *);
-static void TimerMeasurementCallback (void *);
 static void BatteryMeasurementTimerCallback (void *);
 
 static void BleApp_Advertise(void);
@@ -233,7 +221,7 @@ void BleApp_HandleKeys(key_event_t events)
         }
         case gKBD_EventPressPB2_c:
         {
-            mToggle16BitHeartRate = (mToggle16BitHeartRate)?FALSE:TRUE;
+
         }
         break;
         case gKBD_EventLongPB1_c:
@@ -246,8 +234,7 @@ void BleApp_HandleKeys(key_event_t events)
         }
         case gKBD_EventLongPB2_c:
         {
-            mContactStatus = mContactStatus?FALSE:TRUE;
-            Hrs_SetContactStatus(service_heart_rate, mContactStatus);
+
             break;
         }
         default:
@@ -317,11 +304,6 @@ static void BleApp_Config()
     mAdvState.advOn = FALSE;
 
     /* Start services */
-    hrsServiceConfig.sensorContactDetected = mContactStatus;
-#if gHrs_EnableRRIntervalMeasurements_d    
-    hrsServiceConfig.pUserData->pStoredRrIntervals = MEM_BufferAlloc(sizeof(uint16_t) * gHrs_NumOfRRIntervalsRecorded_c);
-#endif    
-    Hrs_Start(&hrsServiceConfig);
     
     basServiceConfig.batteryLevel = BOARD_GetBatteryLevel();
     Bas_Start(&basServiceConfig);
@@ -337,7 +319,6 @@ static void BleApp_Config()
 
     /* Allocate application timers */
     mAdvTimerId = TMR_AllocateTimer();
-    mMeasurementTimerId = TMR_AllocateTimer();
     mBatteryMeasurementTimerId = TMR_AllocateTimer();
 
 #if (cPWR_UsePowerDownMode)    
@@ -468,8 +449,7 @@ static void BleApp_ConnectionCallback (deviceId_t peerDeviceId, gapConnectionEve
             mAdvState.advOn = FALSE;            
         
             /* Subscribe client*/
-            Bas_Subscribe(peerDeviceId);        
-            Hrs_Subscribe(peerDeviceId);
+            Bas_Subscribe(peerDeviceId);
             ScDb_Subscribe(peerDeviceId);
                                     
 #if (!cPWR_UsePowerDownMode)  
@@ -481,10 +461,6 @@ static void BleApp_ConnectionCallback (deviceId_t peerDeviceId, gapConnectionEve
             /* Stop Advertising Timer*/
             mAdvState.advOn = FALSE;
             TMR_StopTimer(mAdvTimerId);
-            
-            /* Start measurements */
-            TMR_StartLowPowerTimer(mMeasurementTimerId, gTmrLowPowerIntervalMillisTimer_c,
-                       TmrSeconds(mHeartRateReportInterval_c), TimerMeasurementCallback, NULL);
 
             /* Start battery measurements */
             TMR_StartLowPowerTimer(mBatteryMeasurementTimerId, gTmrLowPowerIntervalMillisTimer_c,
@@ -502,12 +478,10 @@ static void BleApp_ConnectionCallback (deviceId_t peerDeviceId, gapConnectionEve
         {
             /* Unsubscribe client */
             Bas_Unsubscribe();
-            Hrs_Unsubscribe();
             ScDb_Unsubscribe();
 
             mPeerDeviceId = gInvalidDeviceId_c;
             
-            TMR_StopTimer(mMeasurementTimerId);
             TMR_StopTimer(mBatteryMeasurementTimerId);            
 
 #if (cPWR_UsePowerDownMode)            
@@ -554,11 +528,6 @@ static void BleApp_GattServerCallback (deviceId_t deviceId, gattServerEvent_t* p
         {
             handle = pServerEvent->eventData.attributeWrittenEvent.handle;
             status = gAttErrCodeNoError_c;
-            
-            if (handle == value_heart_rate_control_point)
-            {
-                status = Hrs_ControlPointHandler(&hrsUserData, pServerEvent->eventData.attributeWrittenEvent.aValue[0]);
-            }
             
             if (handle == value_lora_app_eui)
 			{
@@ -656,33 +625,6 @@ static void AdvertisingTimerCallback(void * pParam)
         }
         break;
     }
-}
-
-/*! *********************************************************************************
-* \brief        Handles measurement timer callback.
-*
-* \param[in]    pParam        Calback parameters.
-********************************************************************************** */
-static void TimerMeasurementCallback(void * pParam)
-{
-    uint16_t hr = BOARD_GetPotentiometerLevel();
-    hr = (hr * mHeartRateRange_c) >> 12;
-
-#if gHrs_EnableRRIntervalMeasurements_d    
-    Hrs_RecordRRInterval(&hrsUserData, (hr & 0x0F));
-    Hrs_RecordRRInterval(&hrsUserData,(hr & 0xF0));
-#endif
-    
-    if (mToggle16BitHeartRate)
-    {
-        Hrs_RecordHeartRateMeasurement(service_heart_rate, 0x0100 + (hr & 0xFF), &hrsUserData);
-    }
-    else
-    {
-        Hrs_RecordHeartRateMeasurement(service_heart_rate, mHeartRateLowerLimit_c + hr, &hrsUserData); 
-    }
-        
-    Hrs_AddExpendedEnergy(&hrsUserData, 100);
 }
 
 /*! *********************************************************************************
