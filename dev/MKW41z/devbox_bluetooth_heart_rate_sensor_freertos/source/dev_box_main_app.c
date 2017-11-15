@@ -73,7 +73,7 @@
 
 #include "board.h"
 #include "ApplMain.h"
-#include "heart_rate_sensor.h"
+#include <dev_box_main_app.h>
 #include "pin_mux.h"
 
 /* Necessary to communicate to the LoRaWAN task */
