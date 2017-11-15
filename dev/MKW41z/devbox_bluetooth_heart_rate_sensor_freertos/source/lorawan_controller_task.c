@@ -17,11 +17,9 @@ OSA_TASK_DEFINE( Lorawan_Controller_Task, gLorawanControllerTaskPriority_c, 1, g
 osaTaskId_t gLorawanControllerTaskId = 0;
 
 static tmrTimerID_t mLoraSendId;
-static osaEventId_t  mLoRaControllerEvent;
+osaEventId_t  gLoRaControllerEvent;
 
-/* Task Events */
-#define gLoRaCtrlTaskEvtNewMsgToSend_c       	(1 << 0)
-#define gLoRaCtrlTaskEvtConfigure_c			(1 << 1)
+
 
 //static anchor_t gLoRaCtrlTaskNewLoRaMsg;
 
@@ -40,10 +38,10 @@ void Lorawan_Controller_Task(osaTaskParam_t argument)
 	                       TmrSeconds(mDelayPacketSentsSeconds), TimerLoRaSendCallback, NULL);
 
 	// Start by configuring the LoRa Module
-	OSA_EventSet(mLoRaControllerEvent, gLoRaCtrlTaskEvtConfigure_c);
+	OSA_EventSet(gLoRaControllerEvent, gLoRaCtrlTaskEvtConfigure_c);
 
 	// Once module configured, send the first message
-	OSA_EventSet(mLoRaControllerEvent, gLoRaCtrlTaskEvtNewMsgToSend_c);
+	OSA_EventSet(gLoRaControllerEvent, gLoRaCtrlTaskEvtNewMsgToSend_c);
 
     osaEventFlags_t event;
 
@@ -53,25 +51,35 @@ void Lorawan_Controller_Task(osaTaskParam_t argument)
     while(1)
     {
 
-    	OSA_EventWait(mLoRaControllerEvent, osaEventFlagsAll_c, FALSE, osaWaitForever_c, &event);
+    	OSA_EventWait(gLoRaControllerEvent, osaEventFlagsAll_c, FALSE, osaWaitForever_c, &event);
 
         if (event & gLoRaCtrlTaskEvtConfigure_c) {
         	Led4Flashing();
         	if(lorawan_controller_init_module() != lorawanController_Success){
-        		OSA_EventSet(mLoRaControllerEvent, gLoRaCtrlTaskEvtConfigure_c);
+        		OSA_EventSet(gLoRaControllerEvent, gLoRaCtrlTaskEvtConfigure_c);
+        		continue;
         	}
         	StopLed4Flashing();
         	Led4On();
     	}
+
+        if (event & gLoRaCtrlTaskEvtConfigureFromModuleConfig_c) {
+			Led4Flashing();
+			if(lorawan_controller_read_module_configuration() == lorawanController_Success) {
+				OSA_EventSet(gLoRaControllerEvent, gLoRaCtrlTaskEvtConfigure_c);
+			} else {
+	        	StopLed4Flashing();
+			}
+		}
 
         if (event & gLoRaCtrlTaskEvtNewMsgToSend_c) {
         	if(lorawan_controller_get_configuration_validity() == lorawanController_Success){
             	lorawan_controller_set_cmd(CMD_SEND_BINARYDATA, "1", "00823D02C07741005D2E8B");
         	} else {
         		// Since the controller isn't in a valid state -> force a new configuration
-        		OSA_EventSet(mLoRaControllerEvent, gLoRaCtrlTaskEvtConfigure_c);
+        		OSA_EventSet(gLoRaControllerEvent, gLoRaCtrlTaskEvtConfigure_c);
         		// Resend a new event to send a message
-        		OSA_EventSet(mLoRaControllerEvent, gLoRaCtrlTaskEvtNewMsgToSend_c);
+        		OSA_EventSet(gLoRaControllerEvent, gLoRaCtrlTaskEvtNewMsgToSend_c);
         	}
         }
     }
@@ -79,7 +87,7 @@ void Lorawan_Controller_Task(osaTaskParam_t argument)
 
 static void TimerLoRaSendCallback(void * pParam) {
 
-	OSA_EventSet(mLoRaControllerEvent, gLoRaCtrlTaskEvtNewMsgToSend_c);
+	OSA_EventSet(gLoRaControllerEvent, gLoRaCtrlTaskEvtNewMsgToSend_c);
 
 }
 
@@ -98,8 +106,8 @@ osaStatus_t LorawanController_TaskInit(void)
 	}
 
     /* Create application event */
-    mLoRaControllerEvent = OSA_EventCreate(TRUE);
-	if( NULL == mLoRaControllerEvent )
+    gLoRaControllerEvent = OSA_EventCreate(TRUE);
+	if( NULL == gLoRaControllerEvent )
 	{
 		panic(0,0,0,0);
         return osaStatus_Error;

@@ -66,7 +66,6 @@
 #include "battery_interface.h"
 #include "device_info_interface.h"
 #include "heart_rate_interface.h"
-#include "potentiometer_interface.h"
 #include "smartcanton_devbox_interface.h"
 #include "lorawan_controller.h"
 
@@ -77,6 +76,9 @@
 #include "ApplMain.h"
 #include "heart_rate_sensor.h"
 #include "pin_mux.h"
+
+/* Necessary to communicate to the LoRaWAN task */
+#include "lorawan_controller_task.h"
 
 /************************************************************************************
 *************************************************************************************
@@ -125,18 +127,19 @@ static hrsUserData_t    hrsUserData;
 static hrsConfig_t hrsServiceConfig = {service_heart_rate, TRUE, TRUE, TRUE, gHrs_BodySensorLocChest_c, &hrsUserData};
 static scdbUserData_t    scdbUserData;
 static scdbConfig_t scdbServiceConfig = {service_smartcanton_devbox, &scdbUserData};
-static psConfig_t psServiceConfig = {service_potentiometer, 0};
 
-static uint16_t cpHandles[10] = { 	value_heart_rate_control_point,
-									value_lora_app_eui,
-									value_lora_app_key,
-									value_lora_device_eui,
-									value_lora_confirm_mode,
-									value_lora_network_join_status,
-									value_lora_device_address,
-									value_lora_network_session_key,
-									value_lora_app_session_key,
-									value_lora_validate_new_configuration};
+static uint16_t writeHandles[9] = {	value_heart_rate_control_point,
+										value_lora_app_eui,
+										value_lora_app_key,
+										value_lora_device_eui,
+										value_lora_confirm_mode,
+										value_lora_device_address,
+										value_lora_network_session_key,
+										value_lora_app_session_key,
+										value_lora_validate_new_configuration};
+
+static uint16_t readHandles[1] = { 		value_lora_network_join_status };
+
 
 /* Application specific data*/
 static bool_t mToggle16BitHeartRate = FALSE;
@@ -307,7 +310,8 @@ static void BleApp_Config()
     BleConnManager_GapPeripheralConfig();
 
     /* Register for callbacks*/
-    GattServer_RegisterHandlesForWriteNotifications(NumberOfElements(cpHandles), cpHandles);
+    GattServer_RegisterHandlesForWriteNotifications(NumberOfElements(writeHandles), writeHandles);
+    GattServer_RegisterHandlesForReadNotifications(NumberOfElements(readHandles), readHandles);
     App_RegisterGattServerCallback(BleApp_GattServerCallback);
 
     mAdvState.advOn = FALSE;
@@ -321,8 +325,6 @@ static void BleApp_Config()
     
     basServiceConfig.batteryLevel = BOARD_GetBatteryLevel();
     Bas_Start(&basServiceConfig);
-    
-    Ps_Start(&psServiceConfig);
 
     /**
      * Get last configuration store in the flash memory
@@ -468,7 +470,6 @@ static void BleApp_ConnectionCallback (deviceId_t peerDeviceId, gapConnectionEve
             /* Subscribe client*/
             Bas_Subscribe(peerDeviceId);        
             Hrs_Subscribe(peerDeviceId);
-            Ps_Subscribe(peerDeviceId);
             ScDb_Subscribe(peerDeviceId);
                                     
 #if (!cPWR_UsePowerDownMode)  
@@ -502,7 +503,6 @@ static void BleApp_ConnectionCallback (deviceId_t peerDeviceId, gapConnectionEve
             /* Unsubscribe client */
             Bas_Unsubscribe();
             Hrs_Unsubscribe();
-            Ps_Unsubscribe();
             ScDb_Unsubscribe();
 
             mPeerDeviceId = gInvalidDeviceId_c;
@@ -574,8 +574,48 @@ static void BleApp_GattServerCallback (deviceId_t deviceId, gattServerEvent_t* p
 						pServerEvent->eventData.attributeWrittenEvent.aValue});
 			}
 
+            if (handle == value_lora_confirm_mode)
+			{
+            	status = ScDb_SetConfirmMode(&scdbServiceConfig,
+						(uint8_array_t){pServerEvent->eventData.attributeWrittenEvent.cValueLength,
+						pServerEvent->eventData.attributeWrittenEvent.aValue});
+			}
+
+            if (handle == value_lora_validate_new_configuration)
+			{
+				OSA_EventSet(gLoRaControllerEvent, gLoRaCtrlTaskEvtConfigureFromModuleConfig_c);
+			}
+
             GattServer_SendAttributeWrittenStatus(deviceId, handle, status);
         }
+        break;
+        case gEvtAttributeRead_c:
+		{
+
+			handle = pServerEvent->eventData.attributeWrittenEvent.handle;
+			status = gAttErrCodeNoError_c;
+
+			if (handle == value_lora_network_join_status)
+			{
+				char strJoinStatus[32];
+				uint8_t joinStatus = 0;
+				uint8_array_t joinStatusArray = {.arrayLength = 1, .pUint8_array=&joinStatus};
+				int bytesRead = lorawan_controller_get_cmd(CMD_GET_NETWORK_JOIN_STATUS,
+						strJoinStatus, sizeof(strJoinStatus));
+				if (bytesRead < 0) {
+					break;
+				}
+
+				if(strcmp(strJoinStatus, "1") == 0){
+					joinStatus = 1;
+				} else {
+					joinStatus = 0;
+				}
+
+				status = ScDb_SetJoinStatus(&scdbServiceConfig, joinStatusArray);
+			}
+            GattServer_SendAttributeReadStatus(deviceId, handle, status);
+		}
         break;
     default:
         break;

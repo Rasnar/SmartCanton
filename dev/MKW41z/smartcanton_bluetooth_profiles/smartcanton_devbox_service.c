@@ -182,7 +182,7 @@ uint8_t ScDb_SetAppKey (scdbConfig_t *pScdbConfig, uint8_array_t appKey)
 
 }
 
-uint8_t ScDb_SetConfirmMode (scdbConfig_t *pScdbConfig, bool confirmMode)
+uint8_t ScDb_SetConfirmMode (scdbConfig_t *pScdbConfig, uint8_array_t confirmMode)
 {
     uint16_t  handle;
     bleResult_t result;
@@ -194,17 +194,39 @@ uint8_t ScDb_SetConfirmMode (scdbConfig_t *pScdbConfig, bool confirmMode)
     if (result != gBleSuccess_c)
         return result;
 
-    char * strConfirmMode = "0";
-    if(confirmMode == true)
-    	strConfirmMode[0] = '1';
+    if(confirmMode.arrayLength != 1)
+    	return gBleInvalidParameter_c;
+
+	char * strConfirmMode = "0";
+	if (confirmMode.pUint8_array[0] == 1)
+		strConfirmMode[0] = '1';
+	else if (confirmMode.pUint8_array[0] != 0)
+		return gBleInvalidParameter_c;
 
 	if (lorawan_controller_set_cmd(CMD_SET_CONFIRM_MODE, strConfirmMode) == lorawanController_Success) {
 		/* Update characteristic value*/
-		return GattDb_WriteAttribute(handle, sizeof(confirmMode), (void*) confirmMode);
+		return GattDb_WriteAttribute(handle, confirmMode.arrayLength, (void*) confirmMode.pUint8_array);
 	} else {
 		return gBleInvalidParameter_c;
 	}
+}
 
+uint8_t ScDb_SetJoinStatus(scdbConfig_t *pScdbConfig, uint8_array_t joinStatus)
+{
+    uint16_t  handle;
+    bleResult_t result;
+
+    /* Get handle of characteristic */
+    result = GattDb_FindCharValueHandleInService(pScdbConfig->serviceHandle,
+        gBleUuidType128_c, (bleUuid_t*)&uuid_lora_network_join_status, &handle);
+
+    if (result != gBleSuccess_c)
+        return result;
+
+    if(joinStatus.arrayLength != 1)
+    	return gBleInvalidParameter_c;
+
+	return GattDb_WriteAttribute(handle, joinStatus.arrayLength, (void*) joinStatus.pUint8_array);
 }
 
 bleResult_t ScDb_SetCharacteristicValUTF8s (uint16_t serviceHandle, bleUuid_t* uuid_char, char* strVal) {

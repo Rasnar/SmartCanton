@@ -170,6 +170,26 @@ uint8_t ScDb_SetAppEui (scdbConfig_t *pScdbConfig, uint8_array_t appEui);
 *************************************************************************************/
 uint8_t ScDb_SetAppKey (scdbConfig_t *pScdbConfig, uint8_array_t appKey);
 
+/*!**********************************************************************************
+* \brief        Handles command on the Smart Box Dev Box LoRa App Key
+*
+* \param[in]    pHrsUserData    Pointer to user data information structure.
+* \param[in]    value           Command Value.
+*
+* \return       gAttErrCodeNoError_c or error.
+*************************************************************************************/
+uint8_t ScDb_SetJoinStatus(scdbConfig_t *pScdbConfig, uint8_array_t joinStatus);
+
+/*!**********************************************************************************
+* \brief        Handles command on the Smart Box Dev Box LoRa Confirm Mode
+*
+* \param[in]    pHrsUserData    Pointer to user data information structure.
+* \param[in]    value           Command Value.
+*
+* \return       gAttErrCodeNoError_c or error.
+*************************************************************************************/
+uint8_t ScDb_SetConfirmMode (scdbConfig_t *pScdbConfig, uint8_array_t confirmMode);
+
 #ifdef __cplusplus
 }
 #endif

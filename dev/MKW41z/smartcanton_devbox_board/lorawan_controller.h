@@ -33,7 +33,10 @@ typedef struct lorawanControllerConfiguration_tag{
 	char networkJoinMode[2];
 	char confirmMode[2];
 	char etsiDutyCycleEnable[2];
-	uint16_t magicWord; // Used to make it a multiple of 4
+
+	// Used to make the lorawanControllerConfiguration_tag a
+	// multiple of 4 and to verify validity
+	uint16_t magicWord;
 }lorawanControllerConfiguration_t;
 
 typedef enum lorawanControllerStatus_tag
@@ -90,4 +93,6 @@ lorawanControllerStatus_t lorawan_controller_set_cmd(AtCommand cmd, ...);
 lorawanControllerStatus_t lorawan_controller_get_configuration_validity();
 
 lorawanControllerConfiguration_t lorawan_controller_get_current_configuration(void);
+
+lorawanControllerStatus_t lorawan_controller_read_module_configuration(void);
 #endif /* __LORAWAN_CONTROLLER_H__ */
