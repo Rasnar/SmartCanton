@@ -51,17 +51,18 @@ void Lorawan_Controller_Task(osaTaskParam_t argument)
 
     	OSA_EventWait(gLoRaControllerEvent, osaEventFlagsAll_c, FALSE, osaWaitForever_c, &event);
 
-        if (event & gLoRaCtrlTaskEvtConfigure_c) {
-        	Led4Flashing();
-        	if(lorawan_controller_init_module() != lorawanController_Success){
-        		// If the configuration is unsuccessful, try again to join the network
-        		OSA_EventSet(gLoRaControllerEvent, gLoRaCtrlTaskEvtConfigure_c);
-        		continue;
-        	}
-    		OSA_EventSet(gDevBoxAppEvent, gDevBoxTaskEvtNewLoRaWANConfig_c);
-        	StopLed4Flashing();
-        	Led4On();
-    	}
+		if (event & gLoRaCtrlTaskEvtConfigure_c) {
+			Led4Flashing();
+			if (lorawan_controller_init_module() == lorawanController_Success) {
+				OSA_EventSet(gDevBoxAppEvent, gDevBoxTaskEvtNewLoRaWANConfig_c);
+				StopLed4Flashing();
+				Led4On();
+			} else {
+				// If the configuration is unsuccessful, try again to join the network
+				OSA_EventSet(gLoRaControllerEvent, gLoRaCtrlTaskEvtConfigure_c);
+				StopLed4Flashing();
+			}
+		}
 
         if (event & gLoRaCtrlTaskEvtConfigureFromModuleConfig_c) {
 			Led4Flashing();

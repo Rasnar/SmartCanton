@@ -707,7 +707,7 @@
 &lt;memory can_program="true" id="Flash" is_ro="true" size="0" type="Flash"/&gt;&#13;
 &lt;memory id="RAM" size="0" type="RAM"/&gt;&#13;
 &lt;memoryInstance derived_from="Flash" driver="FTFA_2K.cfx" edited="true" id="PROGRAM_FLASH" location="0x0" size="0x80000"/&gt;&#13;
-&lt;memoryInstance derived_from="RAM" id="SRAM" location="0x1fff8000" size="0x20000"/&gt;&#13;
+&lt;memoryInstance derived_from="RAM" edited="true" id="SRAM" location="0x1fff8000" size="0x20000"/&gt;&#13;
 &lt;peripheralInstance derived_from="FTFA_FlashConfig" id="FTFA_FlashConfig" location="0x400"/&gt;&#13;
 &lt;peripheralInstance derived_from="DMA" id="DMA" location="0x40008000"/&gt;&#13;
 &lt;peripheralInstance derived_from="FTFA" id="FTFA" location="0x40020000"/&gt;&#13;

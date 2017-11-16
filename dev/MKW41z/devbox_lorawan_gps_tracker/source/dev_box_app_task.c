@@ -43,7 +43,35 @@
 ************************************************************************************/
 
 #include "dev_box_app_task.h"
+
+/* Connection Manager */
+#include "ble_conn_manager.h"
+
+/* Framework / Drivers */
+#include "RNG_Interface.h"
+#include "Keyboard.h"
+#include "LED.h"
+#include "TimersManager.h"
+#include "FunctionLib.h"
+#include "MemManager.h"
+#include "Panic.h"
+
+#if (cPWR_UsePowerDownMode)
+#include "PWR_Interface.h"
+#include "PWR_Configuration.h"
+#endif
+
+/* Profile / Services */
+#include "battery_interface.h"
+#include "device_info_interface.h"
+#include "smartcanton_devbox_interface.h"
+#include "lorawan_controller.h"
+
 #include "pin_mux.h"
+#include "board.h"
+#include "neo-m8.h"
+
+#include "ApplMain.h"
 
 /* Necessary to communicate to the LoRaWAN task */
 #include "lorawan_controller_task.h"
@@ -646,18 +674,22 @@ osaStatus_t DevBoxApp_TaskInit(void){
 
 void DevBox_App_Task(osaTaskParam_t argument){
 
-    osaEventFlags_t event;
+
+	//gps_neo_m8_init();
+
+
+//    osaEventFlags_t event;
 	while(1)
 	{
-		OSA_EventWait(gDevBoxAppEvent, osaEventFlagsAll_c, FALSE, osaWaitForever_c, &event);
-
-		if (event & gDevBoxTaskEvtNewLoRaWANConfig_c) {
-			if(lorawan_controller_get_configuration_validity() == lorawanController_Success){
-				*scdbServiceConfig.loRaCtrlConfig = lorawan_controller_get_current_configuration();
-				ScDb_UpdateAllGattTable(&scdbServiceConfig);
-			}
-		}
-
+//		OSA_EventWait(gDevBoxAppEvent, osaEventFlagsAll_c, FALSE, osaWaitForever_c, &event);
+//
+//		if (event & gDevBoxTaskEvtNewLoRaWANConfig_c) {
+//			if(lorawan_controller_get_configuration_validity() == lorawanController_Success){
+//				*scdbServiceConfig.loRaCtrlConfig = lorawan_controller_get_current_configuration();
+//				ScDb_UpdateAllGattTable(&scdbServiceConfig);
+//			}
+//		}
+		OSA_TimeDelay(1000);
 	}
 
 }

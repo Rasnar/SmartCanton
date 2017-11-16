@@ -39,19 +39,6 @@
 #ifndef _APP_H_
 #define _APP_H_
 
-/* Framework / Drivers */
-#include "RNG_Interface.h"
-#include "Keyboard.h"
-#include "LED.h"
-#include "TimersManager.h"
-#include "FunctionLib.h"
-#include "MemManager.h"
-#include "Panic.h"
-
-#if (cPWR_UsePowerDownMode)
-#include "PWR_Interface.h"
-#include "PWR_Configuration.h"
-#endif
 
 /* BLE Host Stack */
 #include "gatt_server_interface.h"
@@ -59,18 +46,7 @@
 #include "gap_interface.h"
 #include "gatt_db_handles.h"
 
-/* Profile / Services */
-#include "battery_interface.h"
-#include "device_info_interface.h"
-#include "smartcanton_devbox_interface.h"
-#include "lorawan_controller.h"
 
-/* Connection Manager */
-#include "ble_conn_manager.h"
-
-#include "board.h"
-#include "ApplMain.h"
-#include "pin_mux.h"
 
 /*************************************************************************************
 **************************************************************************************
