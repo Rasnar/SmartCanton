@@ -124,6 +124,15 @@
 #define gBlueLedIdx_c                   3
 #endif
 
+#define BOARD_GPS_TIMEPULSE_PIN			1U
+#define BOARD_GPS_TIMEPULSE_GPIO		GPIOC
+#define BOARD_GPS_TIMEPULSE_PORT		PORTC
+#define BOARD_GPS_TIMEPULSE_IRQ			PORTB_PORTC_IRQn
+#define BOARD_GPS_TIMEPULSE_IRQ_HANDLER PORTB_PORTC_IRQHandler
+
+#define BOARD_GPS_nCS_PIN				5U
+#define BOARD_GPS_nCS_GPIO				GPIOC
+#define BOARD_GPS_nCS_PORT				PORTC
 
 #define gADC16_ReferenceVoltageSource_d kADC16_ReferenceVoltageSourceValt
 

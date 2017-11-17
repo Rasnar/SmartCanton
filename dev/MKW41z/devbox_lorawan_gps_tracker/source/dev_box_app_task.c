@@ -689,7 +689,9 @@ void DevBox_App_Task(osaTaskParam_t argument){
 //				ScDb_UpdateAllGattTable(&scdbServiceConfig);
 //			}
 //		}
-		OSA_TimeDelay(1000);
+		//struct minmea_sentence_rmc frame;
+		//gps_neo_m8_read_rmc(&frame);
+		OSA_TimeDelay(50000);
 	}
 
 }
