@@ -524,3 +524,8 @@ How to add your custom service to
 5. Right click on the `board`project -> Proprieties --> C/C++ Build --> Settings --> Includes --> Add... --> `${workspace_loc:/${ProjName}/bluetooth/profiles/smartcanton_devbox}`
 6. C/C++ General--> Paths and Symbols --> Includes --> GNU C --> (is a workspace path) --> `/${ProjName}/bluetooth/profiles/smartcanton_devbox`
 7. Ready to compile
+
+
+
+# 10.11.2017
+
