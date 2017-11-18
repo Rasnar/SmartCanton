@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Service xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/service.xsd"
-  type="com.hepia.service.smartcanton_devbox"
+  type="com.hepia.service.smartcanton_devbox_lora"
   uuid="00000000-aaaa-bbbb-cccc-dddddddddddd"
-  name="SMARTCANTON DEVBOX">
+  name="SMARTCANTON DEVBOX LoRa">
   <Transports>
     <Classic>false</Classic>
     <LowEnergy>true</LowEnergy>

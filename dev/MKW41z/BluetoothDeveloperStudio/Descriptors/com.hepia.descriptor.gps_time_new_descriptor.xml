@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Descriptor xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/descriptor.xsd"
+  type="com.hepia.descriptor.gps_time_new_descriptor"
+  uuid="3ece"
+  name="GPS Time new descriptor">
+  <InformativeText>
+    <Examples />
+  </InformativeText>
+  <Value>
+    <Field
+      name="New Field">
+      <Requirement>Mandatory</Requirement>
+      <Format>utf8s</Format>
+      <Unit>org.bluetooth.unit.unitless</Unit>
+      <Repeated>false</Repeated>
+    </Field>
+  </Value>
+</Descriptor>
