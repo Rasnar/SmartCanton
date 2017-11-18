@@ -92,6 +92,7 @@ extern osaEventId_t  gDevBoxAppEvent;
 
 /* Task Events */
 #define gDevBoxTaskEvtNewLoRaWANConfig_c       		(1 << 0)
+#define gDevBoxTaskEvtNewGPSData_c       			(2 << 0)
 
 /************************************************************************************
 *************************************************************************************

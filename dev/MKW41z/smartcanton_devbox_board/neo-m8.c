@@ -9,6 +9,8 @@
 #include "GPIO_Adapter.h"
 #include "pin_mux.h"
 
+#include "dev_box_app_task.h"
+
 /**
  * Serial Manager parameters
  */
@@ -32,13 +34,13 @@ gpioInputPinConfig_t mTimePulseCfg = {
 	.gpioPort = gpioPort_C_c,
 	.gpioPin = BOARD_GPS_TIMEPULSE_PIN,
 	.pullSelect = pinPull_Down_c,
-	.interruptSelect = pinInt_LogicOne_c,
+	.interruptSelect = pinInt_FallingEdge_c,
 };
 
 static dspi_master_config_t masterConfig;
 uint32_t srcClock_Hz;
 
-#define TRANSFER_SIZE 512U        /*! Transfer dataSize */
+#define TRANSFER_SIZE 1024U        /*! Transfer dataSize */
 static dspi_transfer_t masterXfer;
 uint8_t masterRxData[TRANSFER_SIZE] = {0U};
 uint8_t masterTxData[TRANSFER_SIZE] = {0U};
@@ -86,7 +88,7 @@ static void init_timepulse_irq(){
 
 }
 
-void read_spi(uint8_t *txData, uint8_t *rxData, size_t dataSize){
+void read_spi_blocking(uint8_t *txData, uint8_t *rxData, size_t dataSize){
     /* Start master transfer */
     masterXfer.txData = txData;
     masterXfer.rxData = rxData;
@@ -100,7 +102,7 @@ void read_spi(uint8_t *txData, uint8_t *rxData, size_t dataSize){
     DSPI_MasterTransferBlocking(DSPI_MASTER_BASEADDR, &masterXfer);
 }
 
-void write_spi(){
+void write_spi_blocking(){
 	/* Start master transfer */
 	masterXfer.txData = masterTxData;
 	masterXfer.rxData = masterRxData;
@@ -117,15 +119,8 @@ void write_spi(){
 /*!
  * @brief Interrupt service each second when the gps is synchronized
  */
-//void BOARD_GPS_TIMEPULSE(void)
 void TIMEPULSE_IRQ_CALLBACK(void) {
-
-	//struct minmea_sentence_rmc rmcData;
-	//gps_neo_m8_read_rmc(&rmcData);
-
-	ENABLE_CHIP_SELECT_GPS();
-	//read_spi(masterTxData, masterRxData, TRANSFER_SIZE);
-	DISABLE_CHIP_SELECT_GPS();
+	OSA_EventSet(gDevBoxAppEvent, gDevBoxTaskEvtNewLoRaWANConfig_c);
 
     GpioClearPinIntFlag(&mTimePulseCfg);
 }
@@ -134,27 +129,18 @@ void TIMEPULSE_IRQ_CALLBACK(void) {
 
 gpsNeoStatus_t gps_neo_m8_read_rmc(struct minmea_sentence_rmc *frame) {
 
+	ENABLE_CHIP_SELECT_GPS();
+	read_spi_blocking(masterTxData, masterRxData, TRANSFER_SIZE);
+	DISABLE_CHIP_SELECT_GPS();
 
-
-
-
-
-
-//	if((Serial_Read(interfaceId, data, sizeof(data), &bytesRead) == gSerial_Success_c)
-//			&& (bytesRead > 0)){
-//
-//		if (minmea_check((char*) data, false) == true) {
-//			if (minmea_parse_rmc(frame, (char*) data) == true) {
-//				DISABLE_CHIP_SELECT_GPS();
-//				return gpsNeo_Success;
-//			} else {
-//				DISABLE_CHIP_SELECT_GPS();
-//				return gpsNeo_ParseError;
-//			}
-//		} else {
-//			DISABLE_CHIP_SELECT_GPS();
-//			return gpsNeo_ReadError;
-//		}
+	//if (minmea_check((char*) masterRxData, false) == true) {
+		if (minmea_parse_rmc(frame, (char*) masterRxData) == true) {
+			return gpsNeo_Success;
+		} else {
+			return gpsNeo_ParseError;
+		}
+//	} else {
+//		return gpsNeo_ReadError;
 //	}
 
 	return gpsNeo_ReadError;

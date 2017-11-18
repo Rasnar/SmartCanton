@@ -60,7 +60,6 @@ void Lorawan_Controller_Task(osaTaskParam_t argument)
 			} else {
 				// If the configuration is unsuccessful, try again to join the network
 				OSA_EventSet(gLoRaControllerEvent, gLoRaCtrlTaskEvtConfigure_c);
-				StopLed4Flashing();
 			}
 		}
 

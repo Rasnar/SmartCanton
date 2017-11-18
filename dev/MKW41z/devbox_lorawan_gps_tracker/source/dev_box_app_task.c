@@ -674,24 +674,27 @@ osaStatus_t DevBoxApp_TaskInit(void){
 
 void DevBox_App_Task(osaTaskParam_t argument){
 
+	gps_neo_m8_init();
 
-	//gps_neo_m8_init();
-
-
-//    osaEventFlags_t event;
+    osaEventFlags_t event;
 	while(1)
 	{
-//		OSA_EventWait(gDevBoxAppEvent, osaEventFlagsAll_c, FALSE, osaWaitForever_c, &event);
-//
-//		if (event & gDevBoxTaskEvtNewLoRaWANConfig_c) {
-//			if(lorawan_controller_get_configuration_validity() == lorawanController_Success){
-//				*scdbServiceConfig.loRaCtrlConfig = lorawan_controller_get_current_configuration();
-//				ScDb_UpdateAllGattTable(&scdbServiceConfig);
-//			}
-//		}
-		//struct minmea_sentence_rmc frame;
-		//gps_neo_m8_read_rmc(&frame);
-		OSA_TimeDelay(50000);
+		OSA_EventWait(gDevBoxAppEvent, osaEventFlagsAll_c, FALSE, osaWaitForever_c, &event);
+
+		/* Event oRaWAN controller to update the GATT table with the latest informations */
+		if (event & gDevBoxTaskEvtNewLoRaWANConfig_c) {
+			if(lorawan_controller_get_configuration_validity() == lorawanController_Success){
+				*scdbServiceConfig.loRaCtrlConfig = lorawan_controller_get_current_configuration();
+				ScDb_UpdateAllGattTable(&scdbServiceConfig);
+			}
+		}
+
+		/* Event received when a new GPS frame is available to be read */
+		if (event & gDevBoxTaskEvtNewLoRaWANConfig_c) {
+			struct minmea_sentence_rmc frame;
+			gps_neo_m8_read_rmc(&frame);
+		}
+
 	}
 
 }
