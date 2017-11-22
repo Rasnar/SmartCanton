@@ -1,4 +1,3 @@
-
 #include "neo-m8.h"
 #include "SerialManager.h"
 #include "board.h"
@@ -26,33 +25,31 @@
  * unfortunately the GPS_nCS isn't connected to a compatible pin */
 //#define DSPI_MASTER_PCS_FOR_INIT kDSPI_Pcs0
 //#define DSPI_MASTER_PCS_FOR_TRANSFER kDSPI_MasterPcs0
-
 #define DISABLE_CHIP_SELECT_GPS()	GPIO_WritePinOutput(BOARD_GPS_nCS_GPIO, BOARD_GPS_nCS_PIN, 1)
 #define ENABLE_CHIP_SELECT_GPS()	GPIO_WritePinOutput(BOARD_GPS_nCS_GPIO, BOARD_GPS_nCS_PIN, 0)
 
-gpioInputPinConfig_t mTimePulseCfg = {
-	.gpioPort = gpioPort_C_c,
-	.gpioPin = BOARD_GPS_TIMEPULSE_PIN,
-	.pullSelect = pinPull_Down_c,
-	.interruptSelect = pinInt_FallingEdge_c,
-};
+gpioInputPinConfig_t mTimePulseCfg = { .gpioPort = gpioPort_C_c, .gpioPin =
+		BOARD_GPS_TIMEPULSE_PIN, .pullSelect = pinPull_Down_c,
+		.interruptSelect = pinInt_FallingEdge_c, };
 
 static dspi_master_config_t masterConfig;
-uint32_t srcClock_Hz;
+static dspi_master_handle_t g_m_handle;
+static uint32_t srcClock_Hz;
 
 #define TRANSFER_SIZE 1024U        /*! Transfer dataSize */
 static dspi_transfer_t masterXfer;
-uint8_t masterRxData[TRANSFER_SIZE] = {0U};
-uint8_t masterTxData[TRANSFER_SIZE] = {0U};
+static uint8_t masterRxData[TRANSFER_SIZE] = { 0U };
+static uint8_t masterTxData[TRANSFER_SIZE] = { 0U };
 
-void TIMEPULSE_IRQ_CALLBACK(void);
+/* Pointer to a callback function provided by the application */
+void (*app_function_notification_callback)(void);
 
-static void init_spi_master(){
+static void timepulse_irq_callback(void);
+
+static void init_spi_master() {
 
 	/* Define the init structure for the CS pin */
-	gpio_pin_config_t cs_config = {
-		kGPIO_DigitalOutput, 1,
-	};
+	gpio_pin_config_t cs_config = { kGPIO_DigitalOutput, 1, };
 
 	GPIO_PinInit(BOARD_GPS_nCS_GPIO, BOARD_GPS_nCS_PIN, &cs_config);
 	DISABLE_CHIP_SELECT_GPS();
@@ -64,9 +61,12 @@ static void init_spi_master(){
 	masterConfig.ctarConfig.cpol = kDSPI_ClockPolarityActiveHigh;
 	masterConfig.ctarConfig.cpha = kDSPI_ClockPhaseFirstEdge;
 	masterConfig.ctarConfig.direction = kDSPI_MsbFirst;
-	masterConfig.ctarConfig.pcsToSckDelayInNanoSec = 1000000000U / DSPI_MASTER_BAUDRATE;
-	masterConfig.ctarConfig.lastSckToPcsDelayInNanoSec = 1000000000U / DSPI_MASTER_BAUDRATE;
-	masterConfig.ctarConfig.betweenTransferDelayInNanoSec = 1000000000U / DSPI_MASTER_BAUDRATE;
+	masterConfig.ctarConfig.pcsToSckDelayInNanoSec = 1000000000U
+			/ DSPI_MASTER_BAUDRATE;
+	masterConfig.ctarConfig.lastSckToPcsDelayInNanoSec = 1000000000U
+			/ DSPI_MASTER_BAUDRATE;
+	masterConfig.ctarConfig.betweenTransferDelayInNanoSec = 1000000000U
+			/ DSPI_MASTER_BAUDRATE;
 
 	//masterConfig.whichPcs = EXAMPLE_DSPI_MASTER_PCS_FOR_INIT;
 	//masterConfig.pcsActiveHighOrLow = kDSPI_PcsActiveLow;
@@ -80,29 +80,57 @@ static void init_spi_master(){
 	DSPI_MasterInit(DSPI_MASTER_BASEADDR, &masterConfig, srcClock_Hz);
 }
 
-static void init_timepulse_irq(){
-
-	GpioInstallIsr(TIMEPULSE_IRQ_CALLBACK, gGpioIsrPrioNormal_c, 0x80, &mTimePulseCfg);
+static void init_timepulse_irq() {
+	GpioInstallIsr(timepulse_irq_callback, gGpioIsrPrioNormal_c, 0x80,
+			&mTimePulseCfg);
 	GpioInputPinInit(&mTimePulseCfg, 1);
-
-
 }
 
-void read_spi_blocking(uint8_t *txData, uint8_t *rxData, size_t dataSize){
-    /* Start master transfer */
-    masterXfer.txData = txData;
-    masterXfer.rxData = rxData;
-    masterXfer.dataSize = dataSize;
+void read_spi_blocking(uint8_t *txData, uint8_t *rxData, size_t dataSize) {
+	/* Start master transfer */
+	masterXfer.txData = txData;
+	masterXfer.rxData = rxData;
+	masterXfer.dataSize = dataSize;
 
-    // If using a PCs pin configured :
-    //masterXfer.configFlags = kDSPI_MasterCtar0 | DSPI_MASTER_PCS_FOR_TRANSFER | kDSPI_MasterPcsContinuous;
+	// If using a PCs pin configured :
+	//masterXfer.configFlags = kDSPI_MasterCtar0 | DSPI_MASTER_PCS_FOR_TRANSFER | kDSPI_MasterPcsContinuous;
 
-    masterXfer.configFlags = kDSPI_MasterCtar0 ;
+	masterXfer.configFlags = kDSPI_MasterCtar0;
 
-    DSPI_MasterTransferBlocking(DSPI_MASTER_BASEADDR, &masterXfer);
+	DSPI_MasterTransferBlocking(DSPI_MASTER_BASEADDR, &masterXfer);
 }
 
-void write_spi_blocking(){
+void DSPI_MasterUserCallback(SPI_Type *base, dspi_master_handle_t *handle,
+		status_t status, void *userData) {
+
+	DISABLE_CHIP_SELECT_GPS();
+	if (status == kStatus_Success) {
+		if (app_function_notification_callback != NULL) {
+			app_function_notification_callback();
+		}
+	}
+}
+
+void read_spi_non_blocking(uint8_t *txData, uint8_t *rxData, size_t dataSize) {
+	/* Start master transfer */
+	masterXfer.txData = txData;
+	masterXfer.rxData = rxData;
+	masterXfer.dataSize = dataSize;
+
+	// If using a PCs pin configured :
+	//masterXfer.configFlags = kDSPI_MasterCtar0 | DSPI_MASTER_PCS_FOR_TRANSFER | kDSPI_MasterPcsContinuous;
+
+	masterXfer.configFlags = kDSPI_MasterCtar0;
+
+	/* Set up master transfer */
+	DSPI_MasterTransferCreateHandle(DSPI_MASTER_BASEADDR, &g_m_handle,
+			DSPI_MasterUserCallback, NULL);
+
+	DSPI_MasterTransferNonBlocking(DSPI_MASTER_BASEADDR, &g_m_handle,
+			&masterXfer);
+}
+
+void write_spi_blocking() {
 	/* Start master transfer */
 	masterXfer.txData = masterTxData;
 	masterXfer.rxData = masterRxData;
@@ -111,7 +139,7 @@ void write_spi_blocking(){
 	// If using a PCs pin configured :
 	//masterXfer.configFlags = kDSPI_MasterCtar0 | DSPI_MASTER_PCS_FOR_TRANSFER | kDSPI_MasterPcsContinuous;
 
-	masterXfer.configFlags = kDSPI_MasterCtar0 ;
+	masterXfer.configFlags = kDSPI_MasterCtar0;
 
 	DSPI_MasterTransferBlocking(DSPI_MASTER_BASEADDR, &masterXfer);
 }
@@ -119,40 +147,34 @@ void write_spi_blocking(){
 /*!
  * @brief Interrupt service each second when the gps is synchronized
  */
-void TIMEPULSE_IRQ_CALLBACK(void) {
-	OSA_EventSet(gDevBoxAppEvent, gDevBoxTaskEvtNewLoRaWANConfig_c);
+void timepulse_irq_callback(void) {
+	//OSA_EventSet(gDevBoxAppEvent, gDevBoxTaskEvtNewLoRaWANConfig_c);
 
-    GpioClearPinIntFlag(&mTimePulseCfg);
+	ENABLE_CHIP_SELECT_GPS();
+	read_spi_non_blocking(masterTxData, masterRxData, TRANSFER_SIZE);
+
+	GpioClearPinIntFlag(&mTimePulseCfg);
 }
-
-
 
 gpsNeoStatus_t gps_neo_m8_read_rmc(struct minmea_sentence_rmc *frame) {
 
-	ENABLE_CHIP_SELECT_GPS();
-	read_spi_blocking(masterTxData, masterRxData, TRANSFER_SIZE);
-	DISABLE_CHIP_SELECT_GPS();
-
-	//if (minmea_check((char*) masterRxData, false) == true) {
-		if (minmea_parse_rmc(frame, (char*) masterRxData) == true) {
-			return gpsNeo_Success;
-		} else {
-			return gpsNeo_ParseError;
-		}
-//	} else {
-//		return gpsNeo_ReadError;
-//	}
+	if (minmea_parse_rmc(frame, (char*) masterRxData) == true) {
+		return gpsNeo_Success;
+	} else {
+		return gpsNeo_ParseError;
+	}
 
 	return gpsNeo_ReadError;
 }
 
-osaStatus_t gps_neo_m8_init(void)
-{
+osaStatus_t gps_neo_m8_init(void (*app_notification_callback)(void)) {
 	init_spi_master();
 
 	DISABLE_CHIP_SELECT_GPS();
 
 	init_timepulse_irq();
+
+	app_function_notification_callback = app_notification_callback;
 
 	return osaStatus_Success;
 }

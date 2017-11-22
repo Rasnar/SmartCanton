@@ -671,10 +671,19 @@ osaStatus_t DevBoxApp_TaskInit(void){
 	return osaStatus_Success;
 }
 
+/**
+ * Callback function called when new data have been read from the GPS and can
+ * be converted to NMEA data
+ */
+void gps_neo_m8_new_data_available_callback(void){
+	/* Inform the DevBox Task that she can read the data avaible */
+	OSA_EventSet(gDevBoxAppEvent, gDevBoxTaskEvtNewLoRaWANConfig_c);
+}
 
 void DevBox_App_Task(osaTaskParam_t argument){
 
-	gps_neo_m8_init();
+	struct minmea_sentence_rmc frame;
+	gps_neo_m8_init(gps_neo_m8_new_data_available_callback);
 
     osaEventFlags_t event;
 	while(1)
@@ -691,8 +700,8 @@ void DevBox_App_Task(osaTaskParam_t argument){
 
 		/* Event received when a new GPS frame is available to be read */
 		if (event & gDevBoxTaskEvtNewLoRaWANConfig_c) {
-			struct minmea_sentence_rmc frame;
 			gps_neo_m8_read_rmc(&frame);
+			frame = frame;
 		}
 
 	}
