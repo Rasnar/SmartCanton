@@ -1,11 +1,11 @@
 
+#include <smartcanton_devbox_lora_interface.h>
 
 /************************************************************************************
 *************************************************************************************
 * Include
 *************************************************************************************
 ************************************************************************************/
-#include "smartcanton_devbox_interface.h"
 #include "gatt_uuid_decl_x.h"
 #include "lorawan_controller.h"
 #include "stdio.h"
@@ -31,7 +31,7 @@
 ************************************************************************************/
 
 /*! Potentiometer Service - Subscribed Client*/
-static deviceId_t mScDb_SubscribedClientId;
+static deviceId_t mScDbLoRa_SubscribedClientId;
 
 /************************************************************************************
 *************************************************************************************
@@ -39,43 +39,43 @@ static deviceId_t mScDb_SubscribedClientId;
 *************************************************************************************
 ************************************************************************************/
 
-bleResult_t ScDb_SetCharacteristicValUTF8s (uint16_t serviceHandle, bleUuid_t* uuid_char, char* strVal);
+bleResult_t ScDbLoRa_SetCharacteristicValUTF8s (uint16_t serviceHandle, bleUuid_t* uuid_char, char* strVal);
 
 /************************************************************************************
 *************************************************************************************
 * Public functions
 *************************************************************************************
 ************************************************************************************/
-bleResult_t ScDb_Start (scdbConfig_t *pServiceConfig)
+bleResult_t ScDbLoRa_Start (scdbLoRaConfig_t *pServiceConfig)
 {
     bleResult_t result;
 
     /* Clear subscribed client ID (if any) */
-    mScDb_SubscribedClientId = gInvalidDeviceId_c;
+    mScDbLoRa_SubscribedClientId = gInvalidDeviceId_c;
     
-    result = ScDb_UpdateAllGattTable(pServiceConfig);
+    result = ScDbLoRa_UpdateAllGattTable(pServiceConfig);
 
     return result;
 }
 
-bleResult_t ScDb_Stop (scdbConfig_t *pServiceConfig)
+bleResult_t ScDbLoRa_Stop (scdbLoRaConfig_t *pServiceConfig)
 {
   /* Unsubscribe current client */
-    return ScDb_Unsubscribe();
+    return ScDbLoRa_Unsubscribe();
 }
 
-bleResult_t ScDb_Subscribe(deviceId_t deviceId)
+bleResult_t ScDbLoRa_Subscribe(deviceId_t deviceId)
 {
    /* Subscribe a new client to this service */
-    mScDb_SubscribedClientId = deviceId;
+    mScDbLoRa_SubscribedClientId = deviceId;
 
     return gBleSuccess_c;
 }
 
-bleResult_t ScDb_Unsubscribe()
+bleResult_t ScDbLoRa_Unsubscribe()
 {
    /* Clear current subscribed client ID */
-    mScDb_SubscribedClientId = gInvalidDeviceId_c;
+    mScDbLoRa_SubscribedClientId = gInvalidDeviceId_c;
     return gBleSuccess_c;
 }
 
@@ -85,27 +85,27 @@ bleResult_t ScDb_Unsubscribe()
 *************************************************************************************
 ************************************************************************************/
 
-bleResult_t ScDb_UpdateAllGattTable (scdbConfig_t *pServiceConfig) {
+bleResult_t ScDbLoRa_UpdateAllGattTable (scdbLoRaConfig_t *pServiceConfig) {
 
 	bleResult_t result;
 	uint16_t  handle;
 
 	/* AppEUI*/
-	result = ScDb_SetCharacteristicValUTF8s(pServiceConfig->serviceHandle,
+	result = ScDbLoRa_SetCharacteristicValUTF8s(pServiceConfig->serviceHandle,
 			(bleUuid_t*)&uuid_lora_app_eui,
 			pServiceConfig->loRaCtrlConfig->appEui);
 	if (result != gBleSuccess_c)
 		return result;
 
 	/* App Key */
-	result = ScDb_SetCharacteristicValUTF8s(pServiceConfig->serviceHandle,
+	result = ScDbLoRa_SetCharacteristicValUTF8s(pServiceConfig->serviceHandle,
 			(bleUuid_t*)&uuid_lora_app_key,
 			pServiceConfig->loRaCtrlConfig->appKey);
 	if (result != gBleSuccess_c)
 		return result;
 
 	/*  DevEui */
-	result = ScDb_SetCharacteristicValUTF8s(pServiceConfig->serviceHandle,
+	result = ScDbLoRa_SetCharacteristicValUTF8s(pServiceConfig->serviceHandle,
 			(bleUuid_t*)&uuid_lora_device_eui,
 			pServiceConfig->loRaCtrlConfig->devEui);
 	if (result != gBleSuccess_c)
@@ -127,21 +127,21 @@ bleResult_t ScDb_UpdateAllGattTable (scdbConfig_t *pServiceConfig) {
 		return result;
 
 	/* Dev Addr */
-	result = ScDb_SetCharacteristicValUTF8s(pServiceConfig->serviceHandle,
+	result = ScDbLoRa_SetCharacteristicValUTF8s(pServiceConfig->serviceHandle,
 			(bleUuid_t*)&uuid_lora_device_address,
 			pServiceConfig->loRaCtrlConfig->devAddr);
 	if (result != gBleSuccess_c)
 		return result;
 
 	/* Nwk Session Key */
-	result = ScDb_SetCharacteristicValUTF8s(pServiceConfig->serviceHandle,
+	result = ScDbLoRa_SetCharacteristicValUTF8s(pServiceConfig->serviceHandle,
 			(bleUuid_t*)&uuid_lora_network_session_key,
 			pServiceConfig->loRaCtrlConfig->nwkSessionKey);
 	if (result != gBleSuccess_c)
 		return result;
 
 	/* App Session Key */
-	result = ScDb_SetCharacteristicValUTF8s(pServiceConfig->serviceHandle,
+	result = ScDbLoRa_SetCharacteristicValUTF8s(pServiceConfig->serviceHandle,
 			(bleUuid_t*)&uuid_lora_app_session_key,
 			pServiceConfig->loRaCtrlConfig->appSessionKey);
 	if (result != gBleSuccess_c)
@@ -151,7 +151,7 @@ bleResult_t ScDb_UpdateAllGattTable (scdbConfig_t *pServiceConfig) {
 }
 
 
-uint8_t ScDb_SetAppEui (scdbConfig_t *pScdbConfig, uint8_array_t appEui)
+uint8_t ScDbLoRa_SetAppEui (scdbLoRaConfig_t *pScdbConfig, uint8_array_t appEui)
 {
     uint16_t  handle;
     bleResult_t result;
@@ -177,7 +177,7 @@ uint8_t ScDb_SetAppEui (scdbConfig_t *pScdbConfig, uint8_array_t appEui)
 	}
 }
 
-uint8_t ScDb_SetAppKey (scdbConfig_t *pScdbConfig, uint8_array_t appKey)
+uint8_t ScDbLoRa_SetAppKey (scdbLoRaConfig_t *pScdbConfig, uint8_array_t appKey)
 {
     uint16_t  handle;
     bleResult_t result;
@@ -204,7 +204,7 @@ uint8_t ScDb_SetAppKey (scdbConfig_t *pScdbConfig, uint8_array_t appKey)
 
 }
 
-uint8_t ScDb_SetConfirmMode (scdbConfig_t *pScdbConfig, uint8_array_t confirmMode)
+uint8_t ScDbLoRa_SetConfirmMode (scdbLoRaConfig_t *pScdbConfig, uint8_array_t confirmMode)
 {
     uint16_t  handle;
     bleResult_t result;
@@ -235,7 +235,7 @@ uint8_t ScDb_SetConfirmMode (scdbConfig_t *pScdbConfig, uint8_array_t confirmMod
 	}
 }
 
-uint8_t ScDb_SetJoinStatus(scdbConfig_t *pScdbConfig, uint8_array_t joinStatus)
+uint8_t ScDbLoRa_SetJoinStatus(scdbLoRaConfig_t *pScdbConfig, uint8_array_t joinStatus)
 {
     uint16_t  handle;
     bleResult_t result;
@@ -255,7 +255,7 @@ uint8_t ScDb_SetJoinStatus(scdbConfig_t *pScdbConfig, uint8_array_t joinStatus)
 	return GattDb_WriteAttribute(handle, joinStatus.arrayLength, (void*) joinStatus.pUint8_array);
 }
 
-bleResult_t ScDb_SetCharacteristicValUTF8s (uint16_t serviceHandle, bleUuid_t* uuid_char, char* strVal) {
+bleResult_t ScDbLoRa_SetCharacteristicValUTF8s (uint16_t serviceHandle, bleUuid_t* uuid_char, char* strVal) {
 
     uint16_t  handle;
     uint8_t data[32];

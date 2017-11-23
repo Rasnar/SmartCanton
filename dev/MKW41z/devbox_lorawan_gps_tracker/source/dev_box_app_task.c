@@ -64,7 +64,8 @@
 /* Profile / Services */
 #include "battery_interface.h"
 #include "device_info_interface.h"
-#include "smartcanton_devbox_interface.h"
+#include <smartcanton_devbox_lora_interface.h>
+#include <smartcanton_devbox_gps_interface.h>
 #include "lorawan_controller.h"
 
 #include "pin_mux.h"
@@ -122,9 +123,12 @@ static uint32_t    mAdvTimeout;
 static deviceId_t  mPeerDeviceId = gInvalidDeviceId_c;
 
 /* Service Data*/
-static basConfig_t      basServiceConfig = {service_battery, 0};
+static basConfig_t	basServiceConfig = {service_battery, 0};
+
+static scdbGPSConfig_t scdbGPSServiceConfig = {service_smartcanton_devbox_gps};
+
 static lorawanControllerConfiguration_t loraConfig;
-static scdbConfig_t scdbServiceConfig = {service_smartcanton_devbox, &loraConfig};
+static scdbLoRaConfig_t scdbLoRaServiceConfig = {service_smartcanton_devbox_lora, &loraConfig};
 
 static uint16_t writeHandles[9] = {	value_lora_app_eui,
 									value_lora_app_key,
@@ -320,8 +324,10 @@ static void BleApp_Config()
      * /!\ Be sure that the function lorawan_controller_init(void)
      * as been called before (eg. from another task)
      */
-    *scdbServiceConfig.loRaCtrlConfig = lorawan_controller_get_current_configuration();
-    ScDb_Start(&scdbServiceConfig);
+    *scdbLoRaServiceConfig.loRaCtrlConfig = lorawan_controller_get_current_configuration();
+    ScDbLoRa_Start(&scdbLoRaServiceConfig);
+
+    ScDbGPS_Start(&scdbGPSServiceConfig);
 
     /* Allocate application timers */
     mAdvTimerId = TMR_AllocateTimer();
@@ -456,7 +462,8 @@ static void BleApp_ConnectionCallback (deviceId_t peerDeviceId, gapConnectionEve
         
             /* Subscribe client*/
             Bas_Subscribe(peerDeviceId);
-            ScDb_Subscribe(peerDeviceId);
+            ScDbLoRa_Subscribe(peerDeviceId);
+            ScDbGPS_Subscribe(peerDeviceId);
                                     
 #if (!cPWR_UsePowerDownMode)  
             /* UI */            
@@ -484,7 +491,8 @@ static void BleApp_ConnectionCallback (deviceId_t peerDeviceId, gapConnectionEve
         {
             /* Unsubscribe client */
             Bas_Unsubscribe();
-            ScDb_Unsubscribe();
+            ScDbLoRa_Unsubscribe();
+            ScDbGPS_Unsubscribe();
 
             mPeerDeviceId = gInvalidDeviceId_c;
             
@@ -537,21 +545,21 @@ static void BleApp_GattServerCallback (deviceId_t deviceId, gattServerEvent_t* p
             
             if (handle == value_lora_app_eui)
 			{
-				status = ScDb_SetAppEui(&scdbServiceConfig,
+				status = ScDbLoRa_SetAppEui(&scdbLoRaServiceConfig,
 						(uint8_array_t){pServerEvent->eventData.attributeWrittenEvent.cValueLength,
 						pServerEvent->eventData.attributeWrittenEvent.aValue});
 			}
 
             if (handle == value_lora_app_key)
 			{
-				status = ScDb_SetAppKey(&scdbServiceConfig,
+				status = ScDbLoRa_SetAppKey(&scdbLoRaServiceConfig,
 						(uint8_array_t){pServerEvent->eventData.attributeWrittenEvent.cValueLength,
 						pServerEvent->eventData.attributeWrittenEvent.aValue});
 			}
 
             if (handle == value_lora_confirm_mode)
 			{
-            	status = ScDb_SetConfirmMode(&scdbServiceConfig,
+            	status = ScDbLoRa_SetConfirmMode(&scdbLoRaServiceConfig,
 						(uint8_array_t){pServerEvent->eventData.attributeWrittenEvent.cValueLength,
 						pServerEvent->eventData.attributeWrittenEvent.aValue});
 			}
@@ -587,7 +595,7 @@ static void BleApp_GattServerCallback (deviceId_t deviceId, gattServerEvent_t* p
 					joinStatus = 0;
 				}
 
-				status = ScDb_SetJoinStatus(&scdbServiceConfig, joinStatusArray);
+				status = ScDbLoRa_SetJoinStatus(&scdbLoRaServiceConfig, joinStatusArray);
 			}
             GattServer_SendAttributeReadStatus(deviceId, handle, status);
 		}
@@ -673,7 +681,7 @@ osaStatus_t DevBoxApp_TaskInit(void){
 
 /**
  * Callback function called when new data have been read from the GPS and can
- * be converted to NMEA data
+ * be converted to NMEA data using the parsing function
  */
 void gps_neo_m8_new_data_available_callback(void){
 	/* Inform the DevBox Task that she can read the data avaible */
@@ -693,15 +701,17 @@ void DevBox_App_Task(osaTaskParam_t argument){
 		/* Event oRaWAN controller to update the GATT table with the latest informations */
 		if (event & gDevBoxTaskEvtNewLoRaWANConfig_c) {
 			if(lorawan_controller_get_configuration_validity() == lorawanController_Success){
-				*scdbServiceConfig.loRaCtrlConfig = lorawan_controller_get_current_configuration();
-				ScDb_UpdateAllGattTable(&scdbServiceConfig);
+				*scdbLoRaServiceConfig.loRaCtrlConfig = lorawan_controller_get_current_configuration();
+				ScDbLoRa_UpdateAllGattTable(&scdbLoRaServiceConfig);
 			}
 		}
 
 		/* Event received when a new GPS frame is available to be read */
 		if (event & gDevBoxTaskEvtNewLoRaWANConfig_c) {
-			gps_neo_m8_read_rmc(&frame);
-			frame = frame;
+			if(gps_neo_m8_read_rmc(&frame) == gpsNeo_Success){
+				// TODO: Update GATT Table with new frame
+			}
+
 		}
 
 	}

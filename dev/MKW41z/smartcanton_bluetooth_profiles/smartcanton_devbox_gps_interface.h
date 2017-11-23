@@ -36,8 +36,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _SMARTCANTON_DEVBOX_INTERFACE_H_
-#define _SMARTCANTON_DEVBOX_INTERFACE_H_
+#ifndef _SMARTCANTON_DEVBOX_GPS_INTERFACE_H_
+#define _SMARTCANTON_DEVBOX_GPS_INTERFACE_H_
 
 /************************************************************************************
 *************************************************************************************
@@ -72,18 +72,17 @@
 *************************************************************************************
 ************************************************************************************/
 
-typedef struct uint8_array_tag
-{
-    uint16_t    arrayLength;
-    uint8_t     *pUint8_array;
-}uint8_array_t;
+//typedef struct uint8_array_tag
+//{
+//    uint16_t    arrayLength;
+//    uint8_t     *pUint8_array;
+//}uint8_array_t;
 
 /*! Smart Canton Dev Box Service - Configuration */
-typedef struct scdbConfig_tag
+typedef struct scdbGPSConfig_tag
 {
     uint16_t    serviceHandle;
-    lorawanControllerConfiguration_t   *loRaCtrlConfig;
-}scdbConfig_t;
+}scdbGPSConfig_t;
 
 /************************************************************************************
 *************************************************************************************
@@ -111,7 +110,7 @@ extern "C" {
 *
 * \return       gBleSuccess_c or error.
 ************************************************************************************/
-bleResult_t ScDb_Start (scdbConfig_t *pServiceConfig);
+bleResult_t ScDbGPS_Start (scdbGPSConfig_t *pServiceConfig);
 
 /*!**********************************************************************************
 * \brief        Stops Smart Canton Dev Box Service functionality
@@ -121,7 +120,7 @@ bleResult_t ScDb_Start (scdbConfig_t *pServiceConfig);
 *
 * \return       gBleSuccess_c or error.
 ************************************************************************************/
-bleResult_t ScDb_Stop(scdbConfig_t  *pServiceConfig);
+bleResult_t ScDbGPS_Stop(scdbGPSConfig_t  *pServiceConfig);
 
 /*!**********************************************************************************
 * \brief        Subscribes a GATT client to the Smart Canton Dev Box service
@@ -130,62 +129,23 @@ bleResult_t ScDb_Stop(scdbConfig_t  *pServiceConfig);
 *
 * \return       gBleSuccess_c or error.
 ************************************************************************************/
-bleResult_t ScDb_Subscribe(deviceId_t clientDeviceId);
+bleResult_t ScDbGPS_Subscribe(deviceId_t clientDeviceId);
 
 /*!**********************************************************************************
 * \brief        Unsubscribes a GATT client from the Smart Canton Dev Box service
 *
 * \return       gBleSuccess_c or error.
 ************************************************************************************/
-bleResult_t ScDb_Unsubscribe();
+bleResult_t ScDbGPS_Unsubscribe();
 
-/*!**********************************************************************************
-* \brief        Handles command on the Smart Box Dev Box LoRa App Eui
-*
-* \param[in]    pHrsUserData    Pointer to user data information structure.
-* \param[in]    value           Command Value.
-*
-* \return       gAttErrCodeNoError_c or error.
-*************************************************************************************/
-uint8_t ScDb_SetAppEui (scdbConfig_t *pScdbConfig, uint8_array_t appEui);
 
-/*!**********************************************************************************
-* \brief        Handles command on the Smart Box Dev Box LoRa App Key
-*
-* \param[in]    pHrsUserData    Pointer to user data information structure.
-* \param[in]    value           Command Value.
-*
-* \return       gAttErrCodeNoError_c or error.
-*************************************************************************************/
-uint8_t ScDb_SetAppKey (scdbConfig_t *pScdbConfig, uint8_array_t appKey);
-
-/*!**********************************************************************************
-* \brief        Handles command on the Smart Box Dev Box LoRa App Key
-*
-* \param[in]    pHrsUserData    Pointer to user data information structure.
-* \param[in]    value           Command Value.
-*
-* \return       gAttErrCodeNoError_c or error.
-*************************************************************************************/
-uint8_t ScDb_SetJoinStatus(scdbConfig_t *pScdbConfig, uint8_array_t joinStatus);
-
-/*!**********************************************************************************
-* \brief        Handles command on the Smart Box Dev Box LoRa Confirm Mode
-*
-* \param[in]    pHrsUserData    Pointer to user data information structure.
-* \param[in]    value           Command Value.
-*
-* \return       gAttErrCodeNoError_c or error.
-*************************************************************************************/
-uint8_t ScDb_SetConfirmMode (scdbConfig_t *pScdbConfig, uint8_array_t confirmMode);
-
-bleResult_t ScDb_UpdateAllGattTable (scdbConfig_t *pScdbConfig);
+bleResult_t ScDbGPS_UpdateAllGattTable (scdbGPSConfig_t *pScdbConfig);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* _SMARTCANTON_DEVBOX_INTERFACE_H_ */
+#endif /* _SMARTCANTON_DEVBOX_GPS_INTERFACE_H_ */
 
 /*! **********************************************************************************
  * @}
