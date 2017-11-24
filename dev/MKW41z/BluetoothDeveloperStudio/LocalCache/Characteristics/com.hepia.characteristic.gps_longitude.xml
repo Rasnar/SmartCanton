@@ -8,7 +8,7 @@
     <Field
       name="New Field">
       <Requirement>Mandatory</Requirement>
-      <Format>FLOAT</Format>
+      <Format>utf8s</Format>
       <Unit>org.bluetooth.unit.unitless</Unit>
       <Repeated>false</Repeated>
     </Field>

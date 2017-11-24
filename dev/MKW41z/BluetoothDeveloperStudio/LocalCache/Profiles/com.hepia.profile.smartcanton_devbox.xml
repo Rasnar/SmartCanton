@@ -99,6 +99,10 @@
         type="com.hepia.characteristic.gps_time">
         <Requirement>Mandatory</Requirement>
       </Characteristic>
+      <Characteristic
+        type="com.hepia.characteristic.smartcanton_devbox_gps_new_characteristic">
+        <Requirement>Mandatory</Requirement>
+      </Characteristic>
     </Service>
   </Role>
   <Role
