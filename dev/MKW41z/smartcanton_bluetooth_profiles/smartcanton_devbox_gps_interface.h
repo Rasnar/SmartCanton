@@ -138,6 +138,7 @@ bleResult_t ScDbGPS_Subscribe(deviceId_t clientDeviceId);
 ************************************************************************************/
 bleResult_t ScDbGPS_Unsubscribe();
 
+bleResult_t ScDbGPS_RecordGPSLatitude (uint16_t serviceHandle, float latitude);
 
 bleResult_t ScDbGPS_UpdateAllGattTable (scdbGPSConfig_t *pScdbConfig);
 

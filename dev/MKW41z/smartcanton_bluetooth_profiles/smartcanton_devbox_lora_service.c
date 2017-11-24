@@ -39,7 +39,7 @@ static deviceId_t mScDbLoRa_SubscribedClientId;
 *************************************************************************************
 ************************************************************************************/
 
-bleResult_t ScDbLoRa_SetCharacteristicValUTF8s (uint16_t serviceHandle, bleUuid_t* uuid_char, char* strVal);
+bleResult_t ScDbLoRa_SetCharacteristicValUTF8s (uint16_t *serviceHandle, bleUuid_t* uuid_char, char* strVal);
 
 /************************************************************************************
 *************************************************************************************
@@ -91,21 +91,21 @@ bleResult_t ScDbLoRa_UpdateAllGattTable (scdbLoRaConfig_t *pServiceConfig) {
 	uint16_t  handle;
 
 	/* AppEUI*/
-	result = ScDbLoRa_SetCharacteristicValUTF8s(pServiceConfig->serviceHandle,
+	result = ScDbLoRa_SetCharacteristicValUTF8s(&pServiceConfig->serviceHandle,
 			(bleUuid_t*)&uuid_lora_app_eui,
 			pServiceConfig->loRaCtrlConfig->appEui);
 	if (result != gBleSuccess_c)
 		return result;
 
 	/* App Key */
-	result = ScDbLoRa_SetCharacteristicValUTF8s(pServiceConfig->serviceHandle,
+	result = ScDbLoRa_SetCharacteristicValUTF8s(&pServiceConfig->serviceHandle,
 			(bleUuid_t*)&uuid_lora_app_key,
 			pServiceConfig->loRaCtrlConfig->appKey);
 	if (result != gBleSuccess_c)
 		return result;
 
 	/*  DevEui */
-	result = ScDbLoRa_SetCharacteristicValUTF8s(pServiceConfig->serviceHandle,
+	result = ScDbLoRa_SetCharacteristicValUTF8s(&pServiceConfig->serviceHandle,
 			(bleUuid_t*)&uuid_lora_device_eui,
 			pServiceConfig->loRaCtrlConfig->devEui);
 	if (result != gBleSuccess_c)
@@ -127,21 +127,21 @@ bleResult_t ScDbLoRa_UpdateAllGattTable (scdbLoRaConfig_t *pServiceConfig) {
 		return result;
 
 	/* Dev Addr */
-	result = ScDbLoRa_SetCharacteristicValUTF8s(pServiceConfig->serviceHandle,
+	result = ScDbLoRa_SetCharacteristicValUTF8s(&pServiceConfig->serviceHandle,
 			(bleUuid_t*)&uuid_lora_device_address,
 			pServiceConfig->loRaCtrlConfig->devAddr);
 	if (result != gBleSuccess_c)
 		return result;
 
 	/* Nwk Session Key */
-	result = ScDbLoRa_SetCharacteristicValUTF8s(pServiceConfig->serviceHandle,
+	result = ScDbLoRa_SetCharacteristicValUTF8s(&pServiceConfig->serviceHandle,
 			(bleUuid_t*)&uuid_lora_network_session_key,
 			pServiceConfig->loRaCtrlConfig->nwkSessionKey);
 	if (result != gBleSuccess_c)
 		return result;
 
 	/* App Session Key */
-	result = ScDbLoRa_SetCharacteristicValUTF8s(pServiceConfig->serviceHandle,
+	result = ScDbLoRa_SetCharacteristicValUTF8s(&pServiceConfig->serviceHandle,
 			(bleUuid_t*)&uuid_lora_app_session_key,
 			pServiceConfig->loRaCtrlConfig->appSessionKey);
 	if (result != gBleSuccess_c)
@@ -255,13 +255,13 @@ uint8_t ScDbLoRa_SetJoinStatus(scdbLoRaConfig_t *pScdbConfig, uint8_array_t join
 	return GattDb_WriteAttribute(handle, joinStatus.arrayLength, (void*) joinStatus.pUint8_array);
 }
 
-bleResult_t ScDbLoRa_SetCharacteristicValUTF8s (uint16_t serviceHandle, bleUuid_t* uuid_char, char* strVal) {
+bleResult_t ScDbLoRa_SetCharacteristicValUTF8s (uint16_t *serviceHandle, bleUuid_t* uuid_char, char* strVal) {
 
     uint16_t  handle;
     uint8_t data[32];
     int arrayLength = 0;
 
-   	bleResult_t result = GattDb_FindCharValueHandleInService(serviceHandle,
+   	bleResult_t result = GattDb_FindCharValueHandleInService(*serviceHandle,
    		gBleUuidType128_c, uuid_char, &handle);
 
    	if (result != gBleSuccess_c)

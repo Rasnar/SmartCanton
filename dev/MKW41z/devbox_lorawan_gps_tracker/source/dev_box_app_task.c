@@ -710,6 +710,8 @@ void DevBox_App_Task(osaTaskParam_t argument){
 		if (event & gDevBoxTaskEvtNewLoRaWANConfig_c) {
 			if(gps_neo_m8_read_rmc(&frame) == gpsNeo_Success){
 				// TODO: Update GATT Table with new frame
+				ScDbGPS_RecordGPSLatitude(service_smartcanton_devbox_gps,
+					minmea_tocoord(&frame.latitude));
 			}
 
 		}

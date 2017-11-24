@@ -10,14 +10,16 @@
       name="GPS Latitude">
       <Requirement>Optional</Requirement>
       <Properties>
-        <Read>Excluded</Read>
+        <Read>Mandatory</Read>
         <Write>Excluded</Write>
         <WriteWithoutResponse>Excluded</WriteWithoutResponse>
         <SignedWrite>Excluded</SignedWrite>
         <ReliableWrite>Excluded</ReliableWrite>
         <Notify>Excluded</Notify>
-        <Indicate>Excluded</Indicate>
+        <Indicate>Mandatory</Indicate>
+        <WritableAuxiliaries>Excluded</WritableAuxiliaries>
         <Broadcast>Excluded</Broadcast>
+        <ExtendedProperties>Excluded</ExtendedProperties>
       </Properties>
       <Descriptors>
         <Descriptor
@@ -26,6 +28,14 @@
           <Properties>
             <Read>Mandatory</Read>
             <Write>Optional</Write>
+          </Properties>
+        </Descriptor>
+        <Descriptor
+          type="org.bluetooth.descriptor.gatt.client_characteristic_configuration"
+          name="Client Characteristic Configuration">
+          <Properties>
+            <Read>Mandatory</Read>
+            <Write>Mandatory</Write>
           </Properties>
         </Descriptor>
       </Descriptors>
@@ -41,18 +51,26 @@
         <SignedWrite>Excluded</SignedWrite>
         <ReliableWrite>Excluded</ReliableWrite>
         <Notify>Excluded</Notify>
-        <Indicate>Excluded</Indicate>
+        <Indicate>Mandatory</Indicate>
         <WritableAuxiliaries>Excluded</WritableAuxiliaries>
         <Broadcast>Excluded</Broadcast>
         <ExtendedProperties>Excluded</ExtendedProperties>
       </Properties>
       <Descriptors>
         <Descriptor
-          type="com.hepia.descriptor.gps_longitude_new_descriptor"
+          type="com.hepia.descriptor.gps_longitude"
           name="GPS Longitude new descriptor">
           <Properties>
             <Read>Mandatory</Read>
             <Write>Optional</Write>
+          </Properties>
+        </Descriptor>
+        <Descriptor
+          type="org.bluetooth.descriptor.gatt.client_characteristic_configuration"
+          name="Client Characteristic Configuration">
+          <Properties>
+            <Read>Mandatory</Read>
+            <Write>Mandatory</Write>
           </Properties>
         </Descriptor>
       </Descriptors>
@@ -68,7 +86,7 @@
         <SignedWrite>Excluded</SignedWrite>
         <ReliableWrite>Excluded</ReliableWrite>
         <Notify>Excluded</Notify>
-        <Indicate>Excluded</Indicate>
+        <Indicate>Mandatory</Indicate>
         <WritableAuxiliaries>Excluded</WritableAuxiliaries>
         <Broadcast>Excluded</Broadcast>
         <ExtendedProperties>Excluded</ExtendedProperties>
@@ -80,6 +98,14 @@
           <Properties>
             <Read>Mandatory</Read>
             <Write>Optional</Write>
+          </Properties>
+        </Descriptor>
+        <Descriptor
+          type="org.bluetooth.descriptor.gatt.client_characteristic_configuration"
+          name="Client Characteristic Configuration">
+          <Properties>
+            <Read>Mandatory</Read>
+            <Write>Mandatory</Write>
           </Properties>
         </Descriptor>
       </Descriptors>
@@ -95,11 +121,29 @@
         <SignedWrite>Excluded</SignedWrite>
         <ReliableWrite>Excluded</ReliableWrite>
         <Notify>Excluded</Notify>
-        <Indicate>Excluded</Indicate>
+        <Indicate>Mandatory</Indicate>
         <WritableAuxiliaries>Excluded</WritableAuxiliaries>
         <Broadcast>Excluded</Broadcast>
         <ExtendedProperties>Excluded</ExtendedProperties>
       </Properties>
+      <Descriptors>
+        <Descriptor
+          type="com.hepia.descriptor.gps_course_new_descriptor"
+          name="GPS Course new descriptor">
+          <Properties>
+            <Read>Mandatory</Read>
+            <Write>Optional</Write>
+          </Properties>
+        </Descriptor>
+        <Descriptor
+          type="org.bluetooth.descriptor.gatt.client_characteristic_configuration"
+          name="Client Characteristic Configuration">
+          <Properties>
+            <Read>Mandatory</Read>
+            <Write>Mandatory</Write>
+          </Properties>
+        </Descriptor>
+      </Descriptors>
     </Characteristic>
     <Characteristic
       type="com.hepia.characteristic.gps_date"
@@ -112,7 +156,7 @@
         <SignedWrite>Excluded</SignedWrite>
         <ReliableWrite>Excluded</ReliableWrite>
         <Notify>Excluded</Notify>
-        <Indicate>Excluded</Indicate>
+        <Indicate>Mandatory</Indicate>
         <WritableAuxiliaries>Excluded</WritableAuxiliaries>
         <Broadcast>Excluded</Broadcast>
         <ExtendedProperties>Excluded</ExtendedProperties>

@@ -73,7 +73,7 @@ gapAdvertisingParameters_t gAdvParams = {
 /* Scanning and Advertising Data */
 static const uint8_t adData0[1] = { (gapAdTypeFlags_t)(gLeGeneralDiscoverableMode_c | gBrEdrNotSupported_c) };  // gAdFlags_c
 static const uint8_t adData1[18] = "SmartCantonDevBox";  // gAdCompleteLocalName_c
-static const uint8_t adData2[2] = {UuidArray(gBleSig_HeartRateService_d)};  // gAdIncomplete16bitServiceList_c
+static const uint8_t adData2[2] = {UuidArray(gBleSig_GenericAttributeProfile_d)};  // gAdIncomplete16bitServiceList_c
 
 static const gapAdStructure_t advScanStruct[] = {
   {

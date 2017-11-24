@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<BDSProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="SmartCantonDevBox_base" LastModified="2017-11-18T14:40:29.7130616+01:00">
+<BDSProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="SmartCantonDevBox_base" LastModified="2017-11-22T17:39:37.5826943+01:00">
   <Namespace>com.hepia</Namespace>
   <BaseGuid>df900000-4a83-4c1f-bb33-b623b734763f</BaseGuid>
   <Profile Name="com.hepia.profile.smartcanton_devbox" XMLFile="Profiles\com.hepia.profile.smartcanton_devbox.xml" />
@@ -105,31 +105,37 @@
         <Characteristic UID="8f6ad1de-4036-465c-8fa6-f2a5fc411c1e" XMLFile="Characteristics\com.hepia.characteristic.gps_latitude.xml" UUIDMode="Full">
           <DescriptorFiles>
             <Descriptor UID="bdd04a96-4f64-45ae-92b9-2035c85f464f" XMLFile="Descriptors\com.hepia.descriptor.smartcanton_devbox_gps_new_characteristic_new_descriptor.xml" UUIDMode="Short" />
+            <Descriptor UID="6851e5c5-3e23-4527-a21a-a0ff5393d675" XMLFile="Descriptors\org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml" UUIDMode="Short" />
           </DescriptorFiles>
         </Characteristic>
         <Characteristic UID="51fc31a8-2ec5-403a-b224-17729d4957c0" XMLFile="Characteristics\com.hepia.characteristic.gps_longitude.xml" UUIDMode="Full">
           <DescriptorFiles>
-            <Descriptor UID="d77c0149-fa9e-42a6-a9cd-614389a6349f" XMLFile="Descriptors\com.hepia.descriptor.gps_longitude_new_descriptor.xml" UUIDMode="Short" />
+            <Descriptor UID="d77c0149-fa9e-42a6-a9cd-614389a6349f" XMLFile="Descriptors\com.hepia.descriptor.gps_longitude.xml" UUIDMode="Short" />
+            <Descriptor UID="9e49720f-8450-499a-bab8-e23497173240" XMLFile="Descriptors\org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml" UUIDMode="Short" />
           </DescriptorFiles>
         </Characteristic>
         <Characteristic UID="5b865e16-485c-411f-8c06-e0650df08e2d" XMLFile="Characteristics\com.hepia.characteristic.gps_speed.xml" UUIDMode="Full">
           <DescriptorFiles>
             <Descriptor UID="da0bc4ff-43a0-4dd8-b4fc-3189cb855501" XMLFile="Descriptors\com.hepia.descriptor.gps_speed_new_descriptor.xml" UUIDMode="Short" />
+            <Descriptor UID="a32a1b5e-3525-4ace-a608-1de5231d4038" XMLFile="Descriptors\org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml" UUIDMode="Short" />
           </DescriptorFiles>
         </Characteristic>
         <Characteristic UID="79f6604f-09dd-481d-a95b-86647aecc512" XMLFile="Characteristics\com.hepia.characteristic.gps_course.xml" UUIDMode="Full">
           <DescriptorFiles>
             <Descriptor UID="6b4f5208-c07e-41b0-adcc-cdc27a67adad" XMLFile="Descriptors\com.hepia.descriptor.gps_course_new_descriptor.xml" UUIDMode="Short" />
+            <Descriptor UID="405e1530-37be-437b-93b5-54c531b80555" XMLFile="Descriptors\org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml" UUIDMode="Short" />
           </DescriptorFiles>
         </Characteristic>
         <Characteristic UID="b1aada48-f225-4350-b416-030281d282fe" XMLFile="Characteristics\com.hepia.characteristic.gps_date.xml" UUIDMode="Full">
           <DescriptorFiles>
             <Descriptor UID="66df4802-c27f-4178-8f86-4e1154c918f3" XMLFile="Descriptors\com.hepia.descriptor.gps_date_new_descriptor.xml" UUIDMode="Short" />
+            <Descriptor UID="7ee70bc8-2561-4ed9-a136-5b6c958107a7" XMLFile="Descriptors\org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml" UUIDMode="Short" />
           </DescriptorFiles>
         </Characteristic>
         <Characteristic UID="4c67df31-0412-465a-b427-132534906a20" XMLFile="Characteristics\com.hepia.characteristic.gps_time.xml" UUIDMode="Full">
           <DescriptorFiles>
             <Descriptor UID="4f8d1aef-c251-4c8b-bb47-b86c261366ab" XMLFile="Descriptors\com.hepia.descriptor.gps_time_new_descriptor.xml" UUIDMode="Short" />
+            <Descriptor UID="ee655ceb-160e-45c4-af06-c12e8611f008" XMLFile="Descriptors\org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml" UUIDMode="Short" />
           </DescriptorFiles>
         </Characteristic>
       </CharacteristicFiles>
