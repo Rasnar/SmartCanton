@@ -686,12 +686,15 @@ osaStatus_t DevBoxApp_TaskInit(void){
 void gps_neo_m8_new_data_available_callback(void){
 	/* Inform the DevBox Task that she can read the data avaible */
 	OSA_EventSet(gDevBoxAppEvent, gDevBoxTaskEvtNewLoRaWANConfig_c);
+
+	Led2Toggle();
 }
 
 void DevBox_App_Task(osaTaskParam_t argument){
 
 	struct minmea_sentence_rmc frame;
 	gps_neo_m8_init(gps_neo_m8_new_data_available_callback);
+	float tmp_float1, tmp_float2;
 
     osaEventFlags_t event;
 	while(1)
@@ -709,9 +712,25 @@ void DevBox_App_Task(osaTaskParam_t argument){
 		/* Event received when a new GPS frame is available to be read */
 		if (event & gDevBoxTaskEvtNewLoRaWANConfig_c) {
 			if(gps_neo_m8_read_rmc(&frame) == gpsNeo_Success){
-				// TODO: Update GATT Table with new frame
-				ScDbGPS_RecordGPSLatitude(service_smartcanton_devbox_gps,
-					minmea_tocoord(&frame.latitude));
+
+				tmp_float1 = minmea_tocoord(&frame.latitude);
+				tmp_float2 = minmea_tocoord(&frame.longitude);
+				ScDbGPS_RecordGPSPosition(service_smartcanton_devbox_gps,
+						&tmp_float1, &tmp_float2);
+
+//				tmp_float1 = minmea_tofloat(&frame.course);
+//				ScDbGPS_RecordGPSCourse(service_smartcanton_devbox_gps,
+//						&tmp_float1);
+
+//				tmp_float1 = minmea_tofloat(&frame.speed);
+//				ScDbGPS_RecordGPSSpeed(service_smartcanton_devbox_gps,
+//						&tmp_float1);
+
+				ScDbGPS_RecordGPSTime(service_smartcanton_devbox_gps,
+						&frame.time);
+
+//				ScDbGPS_RecordGPSDate(service_smartcanton_devbox_gps,
+//						&frame.date);
 			}
 
 		}

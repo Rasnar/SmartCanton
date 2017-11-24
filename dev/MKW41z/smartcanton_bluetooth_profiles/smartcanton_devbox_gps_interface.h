@@ -40,10 +40,10 @@
 #define _SMARTCANTON_DEVBOX_GPS_INTERFACE_H_
 
 /************************************************************************************
-*************************************************************************************
-* Include
-*************************************************************************************
-************************************************************************************/
+ *************************************************************************************
+ * Include
+ *************************************************************************************
+ ************************************************************************************/
 
 #include "FunctionLib.h"
 
@@ -52,6 +52,7 @@
 #include "gatt_server_interface.h"
 #include "gap_interface.h"
 #include "lorawan_controller.h"
+#include "minmea/minmea.h"
 
 /**
  * This include is only used to be able to use the structure utf8s_t.
@@ -61,86 +62,94 @@
 #include "device_info_interface.h"
 
 /************************************************************************************
-*************************************************************************************
-* Public constants & macros
-*************************************************************************************
-************************************************************************************/
+ *************************************************************************************
+ * Public constants & macros
+ *************************************************************************************
+ ************************************************************************************/
 
 /************************************************************************************
-*************************************************************************************
-* Public type definitions
-*************************************************************************************
-************************************************************************************/
+ *************************************************************************************
+ * Public type definitions
+ *************************************************************************************
+ ************************************************************************************/
 
 //typedef struct uint8_array_tag
 //{
 //    uint16_t    arrayLength;
 //    uint8_t     *pUint8_array;
 //}uint8_array_t;
-
 /*! Smart Canton Dev Box Service - Configuration */
-typedef struct scdbGPSConfig_tag
-{
-    uint16_t    serviceHandle;
-}scdbGPSConfig_t;
+typedef struct scdbGPSConfig_tag {
+	uint16_t serviceHandle;
+} scdbGPSConfig_t;
 
 /************************************************************************************
-*************************************************************************************
-* Public memory declarations
-*************************************************************************************
-************************************************************************************/
+ *************************************************************************************
+ * Public memory declarations
+ *************************************************************************************
+ ************************************************************************************/
 
 /************************************************************************************
-*************************************************************************************
-* Public prototypes
-*************************************************************************************
-************************************************************************************/
+ *************************************************************************************
+ * Public prototypes
+ *************************************************************************************
+ ************************************************************************************/
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /*!**********************************************************************************
-* \brief        Starts Smart Canton Dev Box Service functionality
-*
-* \param[in]    pServiceConfig  Pointer to structure that contains server 
-*                               configuration information.
-* \param[in]    pServiceConfig  Pointer to structure that contains server
-*                               configuration information.
-*
-* \return       gBleSuccess_c or error.
-************************************************************************************/
-bleResult_t ScDbGPS_Start (scdbGPSConfig_t *pServiceConfig);
+ * \brief        Starts Smart Canton Dev Box Service functionality
+ *
+ * \param[in]    pServiceConfig  Pointer to structure that contains server
+ *                               configuration information.
+ * \param[in]    pServiceConfig  Pointer to structure that contains server
+ *                               configuration information.
+ *
+ * \return       gBleSuccess_c or error.
+ ************************************************************************************/
+bleResult_t ScDbGPS_Start(scdbGPSConfig_t *pServiceConfig);
 
 /*!**********************************************************************************
-* \brief        Stops Smart Canton Dev Box Service functionality
-*
-* \param[in]    pServiceConfig  Pointer to structure that contains server 
-*                               configuration information.
-*
-* \return       gBleSuccess_c or error.
-************************************************************************************/
-bleResult_t ScDbGPS_Stop(scdbGPSConfig_t  *pServiceConfig);
+ * \brief        Stops Smart Canton Dev Box Service functionality
+ *
+ * \param[in]    pServiceConfig  Pointer to structure that contains server
+ *                               configuration information.
+ *
+ * \return       gBleSuccess_c or error.
+ ************************************************************************************/
+bleResult_t ScDbGPS_Stop(scdbGPSConfig_t *pServiceConfig);
 
 /*!**********************************************************************************
-* \brief        Subscribes a GATT client to the Smart Canton Dev Box service
-*
-* \param[in]    clientDeviceId  Client Id in Device DB.
-*
-* \return       gBleSuccess_c or error.
-************************************************************************************/
+ * \brief        Subscribes a GATT client to the Smart Canton Dev Box service
+ *
+ * \param[in]    clientDeviceId  Client Id in Device DB.
+ *
+ * \return       gBleSuccess_c or error.
+ ************************************************************************************/
 bleResult_t ScDbGPS_Subscribe(deviceId_t clientDeviceId);
 
 /*!**********************************************************************************
-* \brief        Unsubscribes a GATT client from the Smart Canton Dev Box service
-*
-* \return       gBleSuccess_c or error.
-************************************************************************************/
+ * \brief        Unsubscribes a GATT client from the Smart Canton Dev Box service
+ *
+ * \return       gBleSuccess_c or error.
+ ************************************************************************************/
 bleResult_t ScDbGPS_Unsubscribe();
 
-bleResult_t ScDbGPS_RecordGPSLatitude (uint16_t serviceHandle, float latitude);
+bleResult_t ScDbGPS_RecordGPSPosition(uint16_t serviceHandle, float* latitude,
+		float* longitude);
 
-bleResult_t ScDbGPS_UpdateAllGattTable (scdbGPSConfig_t *pScdbConfig);
+bleResult_t ScDbGPS_RecordGPSSpeed(uint16_t serviceHandle, float* speed);
+
+bleResult_t ScDbGPS_RecordGPSCourse(uint16_t serviceHandle, float* course);
+
+bleResult_t ScDbGPS_RecordGPSTime(uint16_t serviceHandle, struct minmea_time *time);
+
+bleResult_t ScDbGPS_RecordGPSDate(uint16_t serviceHandle,
+		struct minmea_date *date);
+
+bleResult_t ScDbGPS_UpdateAllGattTable(scdbGPSConfig_t *pScdbConfig);
 
 #ifdef __cplusplus
 }
