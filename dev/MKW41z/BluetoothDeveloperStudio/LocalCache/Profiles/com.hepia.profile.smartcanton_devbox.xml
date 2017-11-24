@@ -16,7 +16,7 @@
       <Requirement>Mandatory</Requirement>
     </Service>
     <Service
-      type="com.hepia.service.smartcanton_devbox_lora">
+      type="com.hepia.service.smartcanton_devbox_lora1">
       <Declaration>Primary</Declaration>
       <Requirement>Mandatory</Requirement>
       <Characteristic
@@ -112,7 +112,7 @@
       <Requirement>Mandatory</Requirement>
     </Client>
     <Client
-      type="com.hepia.service.smartcanton_devbox_lora">
+      type="com.hepia.service.smartcanton_devbox_lora1">
       <Requirement>Mandatory</Requirement>
     </Client>
     <Client

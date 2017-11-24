@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<BDSProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="SmartCantonDevBox_base" LastModified="2017-11-22T17:39:37.5826943+01:00">
+<BDSProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="SmartCantonDevBox_base" LastModified="2017-11-24T11:38:48.0962628+01:00">
   <Namespace>com.hepia</Namespace>
   <BaseGuid>df900000-4a83-4c1f-bb33-b623b734763f</BaseGuid>
   <Profile Name="com.hepia.profile.smartcanton_devbox" XMLFile="Profiles\com.hepia.profile.smartcanton_devbox.xml" />
@@ -49,7 +49,7 @@
         <Characteristic UID="9ba01825-d9c8-47ed-92de-0854b6c89564" XMLFile="Characteristics\org.bluetooth.characteristic.manufacturer_name_string.xml" UUIDMode="Short" />
       </CharacteristicFiles>
     </Service>
-    <Service UID="39987545-712d-448c-ab02-cce2e209dbf1" XMLFile="Services\com.hepia.service.smartcanton_devbox_lora.xml" UUIDMode="Full">
+    <Service UID="39987545-712d-448c-ab02-cce2e209dbf1" XMLFile="Services\com.hepia.service.smartcanton_devbox_lora1.xml" UUIDMode="Full">
       <UUIDDisplayMode>Full</UUIDDisplayMode>
       <CharacteristicFiles>
         <Characteristic UID="ff969222-0278-4942-bd20-cae46873d072" XMLFile="Characteristics\com.hepia.characteristic.lora_app_eui.xml" UUIDMode="Full">
@@ -59,42 +59,42 @@
         </Characteristic>
         <Characteristic UID="bbc40b13-b2fe-44c7-9e64-9f4f13bc5c80" XMLFile="Characteristics\com.hepia.characteristic.lora_app_key.xml" UUIDMode="Full">
           <DescriptorFiles>
-            <Descriptor UID="459707ea-3872-47fc-b61e-cd2eb181b0d1" XMLFile="Descriptors\com.hepia.descriptor.lora_app_key_new_descriptor.xml" UUIDMode="Short" />
+            <Descriptor UID="dbf1cada-3888-432f-976b-693cd29575cb" XMLFile="Descriptors\com.hepia.descriptor.characteristic_user_description.xml" UUIDMode="Short" />
           </DescriptorFiles>
         </Characteristic>
         <Characteristic UID="02096ef4-39af-452e-955d-81b131714044" XMLFile="Characteristics\com.hepia.characteristic.lora_device_eui.xml" UUIDMode="Full">
           <DescriptorFiles>
-            <Descriptor UID="52380d09-1d2b-4560-bf24-a238537eaea7" XMLFile="Descriptors\com.hepia.descriptor.smartcanton_devbox_new_characteristic_new_descriptor.xml" UUIDMode="Short" />
+            <Descriptor UID="ae7697f3-8d06-4535-aa0b-495f6bea1a5f" XMLFile="Descriptors\com.hepia.descriptor.characteristic_user_description.xml" UUIDMode="Short" />
           </DescriptorFiles>
         </Characteristic>
         <Characteristic UID="45f4fe3d-23a9-4100-a9f8-351707b3adc2" XMLFile="Characteristics\com.hepia.characteristic.lora_confirm_mode.xml" UUIDMode="Full">
           <DescriptorFiles>
-            <Descriptor UID="dbecac91-000e-45b5-afe1-983c0a80de30" XMLFile="Descriptors\com.hepia.descriptor.smartcanton_devbox_new_characteristic_new_descriptor1.xml" UUIDMode="Short" />
+            <Descriptor UID="c8e93615-a6ad-472b-93f5-b86be18631d3" XMLFile="Descriptors\com.hepia.descriptor.characteristic_user_description.xml" UUIDMode="Short" />
           </DescriptorFiles>
         </Characteristic>
         <Characteristic UID="4956bad2-9a94-476c-b850-df701ba8cbf9" XMLFile="Characteristics\com.hepia.characteristic.lora_network_join_status.xml" UUIDMode="Full">
           <DescriptorFiles>
-            <Descriptor UID="108b12f0-26da-4e45-a92c-61fd88e0930e" XMLFile="Descriptors\com.hepia.descriptor.smartcanton_devbox_new_characteristic_new_descriptor2.xml" UUIDMode="Short" />
+            <Descriptor UID="1ce3e551-9301-4a92-8b4a-05052f8ded99" XMLFile="Descriptors\com.hepia.descriptor.characteristic_user_description.xml" UUIDMode="Short" />
           </DescriptorFiles>
         </Characteristic>
         <Characteristic UID="3c449092-2994-40c8-bac6-3b919df00e91" XMLFile="Characteristics\com.hepia.characteristic.lora_device_address.xml" UUIDMode="Full">
           <DescriptorFiles>
-            <Descriptor UID="20de0b9b-2220-45a8-94f6-5fc64fd92ced" XMLFile="Descriptors\com.hepia.descriptor.lora_device_address.xml" UUIDMode="Short" />
+            <Descriptor UID="27b27b50-a9f0-4c4b-8048-ed09b43d181a" XMLFile="Descriptors\com.hepia.descriptor.characteristic_user_description.xml" UUIDMode="Short" />
           </DescriptorFiles>
         </Characteristic>
         <Characteristic UID="60e67a84-18fe-446d-abb4-ecc23f3f51f5" XMLFile="Characteristics\com.hepia.characteristic.lora_network_session_key.xml" UUIDMode="Full">
           <DescriptorFiles>
-            <Descriptor UID="556ae9ae-1ae7-410d-b7a6-d9d431e00316" XMLFile="Descriptors\com.hepia.descriptor.lora_network_session_key_descriptor.xml" UUIDMode="Short" />
+            <Descriptor UID="dc3b26cf-1a6f-4b36-afc1-7f74b1410245" XMLFile="Descriptors\com.hepia.descriptor.characteristic_user_description.xml" UUIDMode="Short" />
           </DescriptorFiles>
         </Characteristic>
         <Characteristic UID="952f929f-181f-4d42-9599-10884b70646a" XMLFile="Characteristics\com.hepia.characteristic.lora_app_session_key.xml" UUIDMode="Full">
           <DescriptorFiles>
-            <Descriptor UID="6dd34296-a9cd-45b9-830a-1789f193c5f4" XMLFile="Descriptors\com.hepia.descriptor.lora_app_session_key_descriptor.xml" UUIDMode="Short" />
+            <Descriptor UID="b326fe10-a8d6-4c1a-b48d-17fd1ad49bf8" XMLFile="Descriptors\com.hepia.descriptor.characteristic_user_description.xml" UUIDMode="Short" />
           </DescriptorFiles>
         </Characteristic>
         <Characteristic UID="c81a60d1-21da-46c4-99ce-04fff3bf8170" XMLFile="Characteristics\com.hepia.characteristic.lora_validate_new_configuration.xml" UUIDMode="Full">
           <DescriptorFiles>
-            <Descriptor UID="1a82a94c-6363-40a0-8592-b0edbb4b0698" XMLFile="Descriptors\com.hepia.descriptor.lora_validate_new_configuration_descriptor.xml" UUIDMode="Short" />
+            <Descriptor UID="e4074b8b-e5eb-43f4-b5e8-056aaf107f7e" XMLFile="Descriptors\com.hepia.descriptor.characteristic_user_description.xml" UUIDMode="Short" />
           </DescriptorFiles>
         </Characteristic>
       </CharacteristicFiles>
@@ -104,37 +104,37 @@
       <CharacteristicFiles>
         <Characteristic UID="8f6ad1de-4036-465c-8fa6-f2a5fc411c1e" XMLFile="Characteristics\com.hepia.characteristic.gps_latitude.xml" UUIDMode="Full">
           <DescriptorFiles>
-            <Descriptor UID="bdd04a96-4f64-45ae-92b9-2035c85f464f" XMLFile="Descriptors\com.hepia.descriptor.smartcanton_devbox_gps_new_characteristic_new_descriptor.xml" UUIDMode="Short" />
+            <Descriptor UID="ee298436-4d29-486d-a60b-a039612f7ad7" XMLFile="Descriptors\com.hepia.descriptor.characteristic_user_description.xml" UUIDMode="Short" />
             <Descriptor UID="6851e5c5-3e23-4527-a21a-a0ff5393d675" XMLFile="Descriptors\org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml" UUIDMode="Short" />
           </DescriptorFiles>
         </Characteristic>
         <Characteristic UID="51fc31a8-2ec5-403a-b224-17729d4957c0" XMLFile="Characteristics\com.hepia.characteristic.gps_longitude.xml" UUIDMode="Full">
           <DescriptorFiles>
-            <Descriptor UID="d77c0149-fa9e-42a6-a9cd-614389a6349f" XMLFile="Descriptors\com.hepia.descriptor.gps_longitude.xml" UUIDMode="Short" />
+            <Descriptor UID="b2f58540-7a74-4b50-8fd0-9da5d3ee4289" XMLFile="Descriptors\com.hepia.descriptor.characteristic_user_description.xml" UUIDMode="Short" />
             <Descriptor UID="9e49720f-8450-499a-bab8-e23497173240" XMLFile="Descriptors\org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml" UUIDMode="Short" />
           </DescriptorFiles>
         </Characteristic>
         <Characteristic UID="5b865e16-485c-411f-8c06-e0650df08e2d" XMLFile="Characteristics\com.hepia.characteristic.gps_speed.xml" UUIDMode="Full">
           <DescriptorFiles>
-            <Descriptor UID="da0bc4ff-43a0-4dd8-b4fc-3189cb855501" XMLFile="Descriptors\com.hepia.descriptor.gps_speed_new_descriptor.xml" UUIDMode="Short" />
+            <Descriptor UID="f315ce06-bf81-414e-8178-803b61e442fd" XMLFile="Descriptors\com.hepia.descriptor.characteristic_user_description.xml" UUIDMode="Short" />
             <Descriptor UID="a32a1b5e-3525-4ace-a608-1de5231d4038" XMLFile="Descriptors\org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml" UUIDMode="Short" />
           </DescriptorFiles>
         </Characteristic>
         <Characteristic UID="79f6604f-09dd-481d-a95b-86647aecc512" XMLFile="Characteristics\com.hepia.characteristic.gps_course.xml" UUIDMode="Full">
           <DescriptorFiles>
-            <Descriptor UID="6b4f5208-c07e-41b0-adcc-cdc27a67adad" XMLFile="Descriptors\com.hepia.descriptor.gps_course_new_descriptor.xml" UUIDMode="Short" />
+            <Descriptor UID="8ed31251-d7e2-446d-8bd6-9342a47d283a" XMLFile="Descriptors\com.hepia.descriptor.characteristic_user_description.xml" UUIDMode="Short" />
             <Descriptor UID="405e1530-37be-437b-93b5-54c531b80555" XMLFile="Descriptors\org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml" UUIDMode="Short" />
           </DescriptorFiles>
         </Characteristic>
         <Characteristic UID="b1aada48-f225-4350-b416-030281d282fe" XMLFile="Characteristics\com.hepia.characteristic.gps_date.xml" UUIDMode="Full">
           <DescriptorFiles>
-            <Descriptor UID="66df4802-c27f-4178-8f86-4e1154c918f3" XMLFile="Descriptors\com.hepia.descriptor.gps_date_new_descriptor.xml" UUIDMode="Short" />
+            <Descriptor UID="61d1bbaa-2b17-4b59-a89f-8d23bacd7fe8" XMLFile="Descriptors\com.hepia.descriptor.characteristic_user_description.xml" UUIDMode="Short" />
             <Descriptor UID="7ee70bc8-2561-4ed9-a136-5b6c958107a7" XMLFile="Descriptors\org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml" UUIDMode="Short" />
           </DescriptorFiles>
         </Characteristic>
         <Characteristic UID="4c67df31-0412-465a-b427-132534906a20" XMLFile="Characteristics\com.hepia.characteristic.gps_time.xml" UUIDMode="Full">
           <DescriptorFiles>
-            <Descriptor UID="4f8d1aef-c251-4c8b-bb47-b86c261366ab" XMLFile="Descriptors\com.hepia.descriptor.gps_time_new_descriptor.xml" UUIDMode="Short" />
+            <Descriptor UID="f64aa2d2-4726-4297-9b60-493e494b68d0" XMLFile="Descriptors\com.hepia.descriptor.characteristic_user_description.xml" UUIDMode="Short" />
             <Descriptor UID="ee655ceb-160e-45c4-af06-c12e8611f008" XMLFile="Descriptors\org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml" UUIDMode="Short" />
           </DescriptorFiles>
         </Characteristic>

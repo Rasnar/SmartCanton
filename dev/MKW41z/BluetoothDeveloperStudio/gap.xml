@@ -48,13 +48,6 @@
   </Packet>
   <Services>
     <GAPServiceSettings>
-      <SelectedAdvertise>false</SelectedAdvertise>
-      <SelectedData>false</SelectedData>
-      <SelectedSolicitation>false</SelectedSolicitation>
-      <Name>Generic Attribute</Name>
-      <UUID>1801</UUID>
-    </GAPServiceSettings>
-    <GAPServiceSettings>
       <SelectedAdvertise>true</SelectedAdvertise>
       <SelectedData>false</SelectedData>
       <SelectedSolicitation>false</SelectedSolicitation>
@@ -62,11 +55,11 @@
       <UUID>1800</UUID>
     </GAPServiceSettings>
     <GAPServiceSettings>
-      <SelectedAdvertise>true</SelectedAdvertise>
+      <SelectedAdvertise>false</SelectedAdvertise>
       <SelectedData>false</SelectedData>
-      <SelectedSolicitation>true</SelectedSolicitation>
-      <Name>Heart Rate</Name>
-      <UUID>180D</UUID>
+      <SelectedSolicitation>false</SelectedSolicitation>
+      <Name>Generic Attribute</Name>
+      <UUID>1801</UUID>
     </GAPServiceSettings>
     <GAPServiceSettings>
       <SelectedAdvertise>false</SelectedAdvertise>
@@ -86,8 +79,15 @@
       <SelectedAdvertise>false</SelectedAdvertise>
       <SelectedData>false</SelectedData>
       <SelectedSolicitation>false</SelectedSolicitation>
-      <Name>SMARTCANTON DEVBOX</Name>
-      <UUID>02ff5604-ba5e-f4ee-5ca1-eb1e5e4b1ce0</UUID>
+      <Name>SMARTCANTON DEVBOX LoRa</Name>
+      <UUID>00000000-aaaa-bbbb-cccc-dddddddddddd</UUID>
+    </GAPServiceSettings>
+    <GAPServiceSettings>
+      <SelectedAdvertise>false</SelectedAdvertise>
+      <SelectedData>false</SelectedData>
+      <SelectedSolicitation>false</SelectedSolicitation>
+      <Name>SmartCanton DevBox GPS</Name>
+      <UUID>10000000-aaaa-bbbb-cccc-dddddddddddd</UUID>
     </GAPServiceSettings>
   </Services>
 </GAPSettings>

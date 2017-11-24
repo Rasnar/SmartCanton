@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Service xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/service.xsd"
-  type="com.hepia.service.smartcanton_devbox_lora"
+  type="com.hepia.service.smartcanton_devbox_lora1"
   uuid="00000000-aaaa-bbbb-cccc-dddddddddddd"
   name="SMARTCANTON DEVBOX LoRa">
   <Transports>
@@ -54,8 +54,8 @@
       </Properties>
       <Descriptors>
         <Descriptor
-          type="com.hepia.descriptor.lora_app_key_new_descriptor"
-          name="LoRa APP KEY new descriptor">
+          type="com.hepia.descriptor.characteristic_user_description"
+          name="Characteristic User Description">
           <Properties>
             <Read>Mandatory</Read>
             <Write>Excluded</Write>
@@ -81,8 +81,8 @@
       </Properties>
       <Descriptors>
         <Descriptor
-          type="com.hepia.descriptor.smartcanton_devbox_new_characteristic_new_descriptor"
-          name="SMARTCANTON DEVBOX new characteristic new descriptor">
+          type="com.hepia.descriptor.characteristic_user_description"
+          name="Characteristic User Description">
           <Properties>
             <Read>Mandatory</Read>
             <Write>Excluded</Write>
@@ -108,8 +108,8 @@
       </Properties>
       <Descriptors>
         <Descriptor
-          type="com.hepia.descriptor.smartcanton_devbox_new_characteristic_new_descriptor1"
-          name="SMARTCANTON DEVBOX new characteristic new descriptor">
+          type="com.hepia.descriptor.characteristic_user_description"
+          name="Characteristic User Description">
           <Properties>
             <Read>Mandatory</Read>
             <Write>Excluded</Write>
@@ -135,8 +135,8 @@
       </Properties>
       <Descriptors>
         <Descriptor
-          type="com.hepia.descriptor.smartcanton_devbox_new_characteristic_new_descriptor2"
-          name="SMARTCANTON DEVBOX new characteristic new descriptor">
+          type="com.hepia.descriptor.characteristic_user_description"
+          name="Characteristic User Description">
           <Properties>
             <Read>Mandatory</Read>
             <Write>Excluded</Write>
@@ -162,11 +162,11 @@
       </Properties>
       <Descriptors>
         <Descriptor
-          type="com.hepia.descriptor.lora_device_address"
-          name="SMARTCANTON DEVBOX new characteristic new descriptor">
+          type="com.hepia.descriptor.characteristic_user_description"
+          name="Characteristic User Description">
           <Properties>
             <Read>Mandatory</Read>
-            <Write>Optional</Write>
+            <Write>Excluded</Write>
           </Properties>
         </Descriptor>
       </Descriptors>
@@ -189,11 +189,11 @@
       </Properties>
       <Descriptors>
         <Descriptor
-          type="com.hepia.descriptor.lora_network_session_key_descriptor"
-          name="LoRa Network Session Key new descriptor">
+          type="com.hepia.descriptor.characteristic_user_description"
+          name="Characteristic User Description">
           <Properties>
             <Read>Mandatory</Read>
-            <Write>Optional</Write>
+            <Write>Excluded</Write>
           </Properties>
         </Descriptor>
       </Descriptors>
@@ -216,11 +216,11 @@
       </Properties>
       <Descriptors>
         <Descriptor
-          type="com.hepia.descriptor.lora_app_session_key_descriptor"
-          name="SMARTCANTON DEVBOX new characteristic new descriptor">
+          type="com.hepia.descriptor.characteristic_user_description"
+          name="Characteristic User Description">
           <Properties>
             <Read>Mandatory</Read>
-            <Write>Optional</Write>
+            <Write>Excluded</Write>
           </Properties>
         </Descriptor>
       </Descriptors>
@@ -243,11 +243,11 @@
       </Properties>
       <Descriptors>
         <Descriptor
-          type="com.hepia.descriptor.lora_validate_new_configuration_descriptor"
-          name="SMARTCANTON DEVBOX new characteristic new descriptor">
+          type="com.hepia.descriptor.characteristic_user_description"
+          name="Characteristic User Description">
           <Properties>
             <Read>Mandatory</Read>
-            <Write>Optional</Write>
+            <Write>Excluded</Write>
           </Properties>
         </Descriptor>
       </Descriptors>

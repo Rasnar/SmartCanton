@@ -23,16 +23,16 @@
       </Properties>
       <Descriptors>
         <Descriptor
-          type="com.hepia.descriptor.smartcanton_devbox_gps_new_characteristic_new_descriptor"
-          name="SmartCanton DevBox GPS new characteristic new descriptor">
+          type="org.bluetooth.descriptor.gatt.client_characteristic_configuration"
+          name="Client Characteristic Configuration">
           <Properties>
             <Read>Mandatory</Read>
-            <Write>Optional</Write>
+            <Write>Mandatory</Write>
           </Properties>
         </Descriptor>
         <Descriptor
-          type="org.bluetooth.descriptor.gatt.client_characteristic_configuration"
-          name="Client Characteristic Configuration">
+          type="com.hepia.descriptor.characteristic_user_description"
+          name="Characteristic User Description">
           <Properties>
             <Read>Mandatory</Read>
             <Write>Mandatory</Write>
@@ -58,16 +58,16 @@
       </Properties>
       <Descriptors>
         <Descriptor
-          type="com.hepia.descriptor.gps_longitude"
-          name="GPS Longitude new descriptor">
+          type="org.bluetooth.descriptor.gatt.client_characteristic_configuration"
+          name="Client Characteristic Configuration">
           <Properties>
             <Read>Mandatory</Read>
-            <Write>Optional</Write>
+            <Write>Mandatory</Write>
           </Properties>
         </Descriptor>
         <Descriptor
-          type="org.bluetooth.descriptor.gatt.client_characteristic_configuration"
-          name="Client Characteristic Configuration">
+          type="com.hepia.descriptor.characteristic_user_description"
+          name="Characteristic User Description">
           <Properties>
             <Read>Mandatory</Read>
             <Write>Mandatory</Write>
@@ -93,16 +93,16 @@
       </Properties>
       <Descriptors>
         <Descriptor
-          type="com.hepia.descriptor.gps_speed_new_descriptor"
-          name="GPS Speed new descriptor">
+          type="org.bluetooth.descriptor.gatt.client_characteristic_configuration"
+          name="Client Characteristic Configuration">
           <Properties>
             <Read>Mandatory</Read>
-            <Write>Optional</Write>
+            <Write>Mandatory</Write>
           </Properties>
         </Descriptor>
         <Descriptor
-          type="org.bluetooth.descriptor.gatt.client_characteristic_configuration"
-          name="Client Characteristic Configuration">
+          type="com.hepia.descriptor.characteristic_user_description"
+          name="Characteristic User Description">
           <Properties>
             <Read>Mandatory</Read>
             <Write>Mandatory</Write>
@@ -128,16 +128,16 @@
       </Properties>
       <Descriptors>
         <Descriptor
-          type="com.hepia.descriptor.gps_course_new_descriptor"
-          name="GPS Course new descriptor">
+          type="org.bluetooth.descriptor.gatt.client_characteristic_configuration"
+          name="Client Characteristic Configuration">
           <Properties>
             <Read>Mandatory</Read>
-            <Write>Optional</Write>
+            <Write>Mandatory</Write>
           </Properties>
         </Descriptor>
         <Descriptor
-          type="org.bluetooth.descriptor.gatt.client_characteristic_configuration"
-          name="Client Characteristic Configuration">
+          type="com.hepia.descriptor.characteristic_user_description"
+          name="Characteristic User Description">
           <Properties>
             <Read>Mandatory</Read>
             <Write>Mandatory</Write>
@@ -163,11 +163,11 @@
       </Properties>
       <Descriptors>
         <Descriptor
-          type="com.hepia.descriptor.gps_date_new_descriptor"
-          name="GPS Date new descriptor">
+          type="org.bluetooth.descriptor.gatt.client_characteristic_configuration"
+          name="Client Characteristic Configuration">
           <Properties>
             <Read>Mandatory</Read>
-            <Write>Optional</Write>
+            <Write>Mandatory</Write>
           </Properties>
         </Descriptor>
       </Descriptors>
@@ -183,7 +183,7 @@
         <SignedWrite>Excluded</SignedWrite>
         <ReliableWrite>Excluded</ReliableWrite>
         <Notify>Excluded</Notify>
-        <Indicate>Excluded</Indicate>
+        <Indicate>Mandatory</Indicate>
         <WritableAuxiliaries>Excluded</WritableAuxiliaries>
         <Broadcast>Excluded</Broadcast>
         <ExtendedProperties>Excluded</ExtendedProperties>
@@ -195,6 +195,14 @@
           <Properties>
             <Read>Optional</Read>
             <Write>Optional</Write>
+          </Properties>
+        </Descriptor>
+        <Descriptor
+          type="org.bluetooth.descriptor.gatt.client_characteristic_configuration"
+          name="Client Characteristic Configuration">
+          <Properties>
+            <Read>Mandatory</Read>
+            <Write>Mandatory</Write>
           </Properties>
         </Descriptor>
       </Descriptors>
