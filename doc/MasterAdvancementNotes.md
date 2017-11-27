@@ -535,7 +535,7 @@ When sending indications on a GATT server we need to wait to have responses from
 
 It means that if we want to send multiples indications we need to wait to have a confirmation from the last indications to send the next one!!!
 
-### Sending notitications 
+### Sending notitications  (after writte attribute in db)
 
 ````
 uint16_t  hCccd;
@@ -551,7 +551,7 @@ TRUE == isNotifActive) {
 }
 ````
 
-### Sending indications
+### Sending indications (after writte attribute in db)
 
 ````
 uint16_t cccdHandle;
@@ -569,9 +569,31 @@ if (gBleSuccess_c == Gap_CheckNotificationStatus(mScDbGPS_SubscribedClientId, cc
 }
 ````
 
-### Sending notifications without saving value inside GATT database
+### Sending notifications without saving value inside GATT database before
 
 Data can be sent without been saved inside the GATT database. It means that if we want to access the data after it has been send (eg, with a new connection) it's not possible.
+
+To do this, the only difference is using ***GattServer_SendInstantValueNotification*** instead of ***GattServer_SendNotification***. 
+
+
+
+## BME680 driver
+
+Bosch provide a driver that can be used to read data from the BME680 :
+
+https://github.com/BoschSensortec/BME680_driver
+
+
+
+
+
+## BNO055 driver
+
+Bosch provide a driver that can be used to read data from the BME680 :
+
+https://github.com/BoschSensortec/BME680_driver
+
+
 
 
 
