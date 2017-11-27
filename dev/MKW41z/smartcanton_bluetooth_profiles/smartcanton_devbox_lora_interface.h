@@ -142,7 +142,7 @@ bleResult_t ScDbLoRa_Unsubscribe();
 /*!**********************************************************************************
 * \brief        Handles command on the Smart Box Dev Box LoRa App Eui
 *
-* \param[in]    pHrsUserData    Pointer to user data information structure.
+* \param[in]    pScdbConfig    Pointer to user data information structure.
 * \param[in]    value           Command Value.
 *
 * \return       gAttErrCodeNoError_c or error.
@@ -152,7 +152,7 @@ uint8_t ScDbLoRa_SetAppEui (scdbLoRaConfig_t *pScdbConfig, uint8_array_t appEui)
 /*!**********************************************************************************
 * \brief        Handles command on the Smart Box Dev Box LoRa App Key
 *
-* \param[in]    pHrsUserData    Pointer to user data information structure.
+* \param[in]    pScdbConfig    Pointer to user data information structure.
 * \param[in]    value           Command Value.
 *
 * \return       gAttErrCodeNoError_c or error.
@@ -162,8 +162,8 @@ uint8_t ScDbLoRa_SetAppKey (scdbLoRaConfig_t *pScdbConfig, uint8_array_t appKey)
 /*!**********************************************************************************
 * \brief        Handles command on the Smart Box Dev Box LoRa App Key
 *
-* \param[in]    pHrsUserData    Pointer to user data information structure.
-* \param[in]    value           Command Value.
+* \param[in]    pScdbConfig    Pointer to user data information structure.
+* \param[in]    joinStatus           Command Value.
 *
 * \return       gAttErrCodeNoError_c or error.
 *************************************************************************************/
@@ -172,13 +172,21 @@ uint8_t ScDbLoRa_SetJoinStatus(scdbLoRaConfig_t *pScdbConfig, uint8_array_t join
 /*!**********************************************************************************
 * \brief        Handles command on the Smart Box Dev Box LoRa Confirm Mode
 *
-* \param[in]    pHrsUserData    Pointer to user data information structure.
-* \param[in]    value           Command Value.
+* \param[in]    pScdbConfig    Pointer to user data information structure.
+* \param[in]    confirmMode           Command Value.
 *
 * \return       gAttErrCodeNoError_c or error.
 *************************************************************************************/
 uint8_t ScDbLoRa_SetConfirmMode (scdbLoRaConfig_t *pScdbConfig, uint8_array_t confirmMode);
 
+/*!**********************************************************************************
+* \brief        Update all the GATT database with new values. Should be called when a
+* 				new configuration is applied on the LoRa Module.
+*
+* \param[in]    pScdbConfig    New values to be applied.
+*
+* \return       gAttErrCodeNoError_c or error.
+*************************************************************************************/
 bleResult_t ScDbLoRa_UpdateAllGattTable (scdbLoRaConfig_t *pScdbConfig);
 
 #ifdef __cplusplus
