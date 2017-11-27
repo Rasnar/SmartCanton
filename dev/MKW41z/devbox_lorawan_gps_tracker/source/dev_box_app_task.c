@@ -685,7 +685,7 @@ osaStatus_t DevBoxApp_TaskInit(void){
  */
 void gps_neo_m8_new_data_available_callback(void){
 	/* Inform the DevBox Task that she can read the data avaible */
-	OSA_EventSet(gDevBoxAppEvent, gDevBoxTaskEvtNewLoRaWANConfig_c);
+	OSA_EventSet(gDevBoxAppEvent, gDevBoxTaskEvtNewGPSDataRdy_c);
 
 	Led2Toggle();
 }
@@ -710,7 +710,7 @@ void DevBox_App_Task(osaTaskParam_t argument){
 		}
 
 		/* Event received when a new GPS frame is available to be read */
-		if (event & gDevBoxTaskEvtNewLoRaWANConfig_c) {
+		if (event & gDevBoxTaskEvtNewGPSDataRdy_c) {
 			if(gps_neo_m8_read_rmc(&frame) == gpsNeo_Success){
 
 				tmp_float1 = minmea_tocoord(&frame.latitude);
@@ -732,6 +732,16 @@ void DevBox_App_Task(osaTaskParam_t argument){
 				ScDbGPS_RecordGPSDate(service_smartcanton_devbox_gps,
 						&frame.date);
 			}
+		}
+
+		/* Event received when a new measure to the BME680 as to be done */
+		if (event & gDevBoxTaskEvtNewBME680Measure_c) {
+
+		}
+
+		/* Event received when a new measure to the BNO055 as to be done */
+		if (event & gDevBoxTaskEvtNewBNO055Measure_c) {
+
 		}
 	}
 }
