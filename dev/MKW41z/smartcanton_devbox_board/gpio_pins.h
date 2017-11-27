@@ -43,7 +43,7 @@
  ******************************************************************************/
 
 /*! @brief gpio pin names.*/
-/*!*/ 
+/*!*/
 /*! This should be defined according to board setting.*/
 
 ///* SPI Master Data Available Pin */
@@ -58,15 +58,14 @@
 ///* I2C Slave Data Available Pin */
 //#define gI2cSlaveDap_Port_d   gpioPort_B_c
 //#define gI2cSlaveDap_Pin_d    1
-
 /* switch pins to be initialized by the low power component if the keyboard isn't enabled*/
-/* 1<<n for sitchPins[n] */   
+/* 1<<n for sitchPins[n] */
 #define gLowPower_switchPinsToInitBitmap_d  ( 1<<1 | 1<<0 )
-   
+
 extern gpioInputPinConfig_t switchPins[];
 extern gpioOutputPinConfig_t ledPins[];
 
-extern gpioInputPinConfig_t   gCoexistence_RfDeny;
-extern gpioOutputPinConfig_t  gCoexistence_RfActive;
-extern gpioOutputPinConfig_t  gCoexistence_RfStatus;
+extern gpioInputPinConfig_t gCoexistence_RfDeny;
+extern gpioOutputPinConfig_t gCoexistence_RfActive;
+extern gpioOutputPinConfig_t gCoexistence_RfStatus;
 #endif /* __FSL_GPIO_PINS_H__ */

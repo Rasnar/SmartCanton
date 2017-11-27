@@ -207,7 +207,7 @@ bleResult_t GattServer_RegisterHandlesForWriteNotifications
 bleResult_t GattServer_SendAttributeWrittenStatus
 (
     deviceId_t      deviceId,
-    uint16_t        attributeHandle, 
+    uint16_t        attributeHandle,
     uint8_t         status
 );
 
@@ -251,7 +251,7 @@ bleResult_t GattServer_RegisterHandlesForReadNotifications
 bleResult_t GattServer_SendAttributeReadStatus
 (
     deviceId_t      deviceId,
-    uint16_t        attributeHandle, 
+    uint16_t        attributeHandle,
     uint8_t         status
 );
 
@@ -288,7 +288,7 @@ bleResult_t GattServer_SendIndication
 );
 
 /*! *********************************************************************************
-* \brief  Sends a notification to a peer GATT Client with data given as parameter, 
+* \brief  Sends a notification to a peer GATT Client with data given as parameter,
 * ignoring the GATT Database.
 *
 * \param[in] deviceId           The device ID of the connected peer.
@@ -308,7 +308,7 @@ bleResult_t GattServer_SendInstantValueNotification
 );
 
 /*! *********************************************************************************
-* \brief  Sends an indication to a peer GATT Client with data given as parameter, 
+* \brief  Sends an indication to a peer GATT Client with data given as parameter,
 * ignoring the GATT Database.
 *
 * \param[in] deviceId           The device ID of the connected peer.

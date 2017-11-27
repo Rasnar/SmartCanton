@@ -44,7 +44,8 @@
  ******************************************************************************/
 
 #if defined(__cplusplus)
-extern "C" {
+extern "C"
+{
 #endif /* __cplusplus*/
 
 /*!
@@ -79,7 +80,8 @@ extern const osc_config_t oscConfig_BOARD_BootClockRUN;
  * API for BOARD_BootClockRUN configuration
  ******************************************************************************/
 #if defined(__cplusplus)
-extern "C" {
+extern "C"
+{
 #endif /* __cplusplus*/
 
 /*!
@@ -114,7 +116,8 @@ extern const osc_config_t oscConfig_BOARD_BootClockVLPR;
  * API for BOARD_BootClockVLPR configuration
  ******************************************************************************/
 #if defined(__cplusplus)
-extern "C" {
+extern "C"
+{
 #endif /* __cplusplus*/
 
 /*!

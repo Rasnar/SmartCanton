@@ -1,20 +1,17 @@
 #ifndef _APP_H_
 #define _APP_H_
 
-
 /* BLE Host Stack */
 #include "gatt_server_interface.h"
 #include "gatt_client_interface.h"
 #include "gap_interface.h"
 #include "gatt_db_handles.h"
 
-
-
 /*************************************************************************************
-**************************************************************************************
-* Public macros
-**************************************************************************************
-*************************************************************************************/
+ **************************************************************************************
+ * Public macros
+ **************************************************************************************
+ *************************************************************************************/
 /* Profile Parameters */
 
 #define gFastConnMinAdvInterval_c       32 /* 20 ms */
@@ -33,15 +30,15 @@
 #endif
 
 /************************************************************************************
-*************************************************************************************
-* Public memory declarations
-*************************************************************************************
-********************************************************************************** */
-extern gapAdvertisingData_t         gAppAdvertisingData;
-extern gapScanResponseData_t        gAppScanRspData;
-extern gapAdvertisingParameters_t   gAdvParams;
-extern gapSmpKeys_t                 gSmpKeys;
-extern gapPairingParameters_t       gPairingParameters;
+ *************************************************************************************
+ * Public memory declarations
+ *************************************************************************************
+ ********************************************************************************** */
+extern gapAdvertisingData_t gAppAdvertisingData;
+extern gapScanResponseData_t gAppScanRspData;
+extern gapAdvertisingParameters_t gAdvParams;
+extern gapSmpKeys_t gSmpKeys;
+extern gapPairingParameters_t gPairingParameters;
 extern gapDeviceSecurityRequirements_t deviceSecurityRequirements;
 
 /*! Idle Task Stack Size */
@@ -50,7 +47,7 @@ extern gapDeviceSecurityRequirements_t deviceSecurityRequirements;
 /*! Lorawan Controller Task OS Abstraction Priority */
 #define gDevBoxAppTaskPriority_c  (3)
 
-extern osaEventId_t  gDevBoxAppEvent;
+extern osaEventId_t gDevBoxAppEvent;
 
 /* Task Events */
 #define gDevBoxTaskEvtNewLoRaWANConfig_c       		(1 << 0)
@@ -59,30 +56,29 @@ extern osaEventId_t  gDevBoxAppEvent;
 #define gDevBoxTaskEvtNewBNO055Measure_c       		(1 << 3)
 
 /************************************************************************************
-*************************************************************************************
-* Public prototypes
-*************************************************************************************
-************************************************************************************/
+ *************************************************************************************
+ * Public prototypes
+ *************************************************************************************
+ ************************************************************************************/
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 void BleApp_Init(void);
 
 void BleApp_Start(void);
 
-void BleApp_GenericCallback (gapGenericEvent_t* pGenericEvent);
+void BleApp_GenericCallback(gapGenericEvent_t* pGenericEvent);
 
 void DevBox_App_Task(osaTaskParam_t argument);
 
 osaStatus_t DevBoxApp_TaskInit(void);
 
-
 #ifdef __cplusplus
 }
 #endif 
-
 
 #endif /* _APP_H_ */
 

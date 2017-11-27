@@ -29,10 +29,10 @@
  */
 
 /************************************************************************************
-*************************************************************************************
-* Include
-*************************************************************************************
-************************************************************************************/
+ *************************************************************************************
+ * Include
+ *************************************************************************************
+ ************************************************************************************/
 #include "EmbeddedTypes.h"
 #include "fsl_device_registers.h"
 #include "fsl_common.h"
@@ -66,23 +66,23 @@
 /*! @brief Clock configuration structure. */
 typedef struct _clock_config
 {
-    mcg_config_t mcgConfig;       /*!< MCG configuration.      */
-    sim_clock_config_t simConfig; /*!< SIM configuration.      */
-    osc_config_t oscConfig;       /*!< OSC configuration.      */
-    uint32_t coreClock;           /*!< core clock frequency.   */
+	mcg_config_t mcgConfig; /*!< MCG configuration.      */
+	sim_clock_config_t simConfig; /*!< SIM configuration.      */
+	osc_config_t oscConfig; /*!< OSC configuration.      */
+	uint32_t coreClock; /*!< core clock frequency.   */
 } clock_config_t;
 
 typedef struct gpioPinId_tag
 {
-gpioPort_t   gpioPort;
-uint8_t      gpioPin;
-}gpioPinId_t;
+	gpioPort_t gpioPort;
+	uint8_t gpioPin;
+} gpioPinId_t;
 
 /************************************************************************************
-*************************************************************************************
-* Private type definitions and macros
-*************************************************************************************
-************************************************************************************/
+ *************************************************************************************
+ * Private type definitions and macros
+ *************************************************************************************
+ ************************************************************************************/
 #define ADCDAC_LDO_OVERRIDE           (1)
 #define ADC16_INSTANCE                (0)   /* ADC instance */
 #define ADC16_CHN_GROUP               (0)   /* ADC group configuration selection */
@@ -112,62 +112,62 @@ uint8_t      gpioPin;
 #define mNoOfPinsDisabledInLowPower_c (19)
 
 /************************************************************************************
-*************************************************************************************
-* Private memory declarations
-*************************************************************************************
-************************************************************************************/
+ *************************************************************************************
+ * Private memory declarations
+ *************************************************************************************
+ ************************************************************************************/
 uint32_t offsetVdd = 0;
 static uint32_t adcValue = 0; /* ADC value */
 static adc16_config_t adcUserConfig; /* structure for user config */
 
 #if gDCDC_Enabled_d == 1
-const dcdcConfig_t mDcdcDefaultConfig = 
+const dcdcConfig_t mDcdcDefaultConfig =
 {
 #if APP_DCDC_MODE == gDCDC_Mode_Buck_c
-  .vbatMin = 1800,
-  .vbatMax = 4200,
+	.vbatMin = 1800,
+	.vbatMax = 4200,
 #elif APP_DCDC_MODE == gDCDC_Mode_Boost_c
-  .vbatMin = 900,
-  .vbatMax = 1800,
+	.vbatMin = 900,
+	.vbatMax = 1800,
 #endif  
-  .dcdcMode = APP_DCDC_MODE,
-  .vBatMonitorIntervalMs = APP_DCDC_VBAT_MONITOR_INTERVAL,
-  .pfDCDCAppCallback = NULL, /* .pfDCDCAppCallback = DCDCCallback, */
-  .dcdcMcuVOutputTargetVal = gDCDC_McuV_OutputTargetVal_1_500_c,
-  .dcdc1P8OutputTargetVal = gDCDC_1P8OutputTargetVal_1_800_c
+	.dcdcMode = APP_DCDC_MODE,
+	.vBatMonitorIntervalMs = APP_DCDC_VBAT_MONITOR_INTERVAL,
+	.pfDCDCAppCallback = NULL, /* .pfDCDCAppCallback = DCDCCallback, */
+	.dcdcMcuVOutputTargetVal = gDCDC_McuV_OutputTargetVal_1_500_c,
+	.dcdc1P8OutputTargetVal = gDCDC_1P8OutputTargetVal_1_800_c
 };
 #endif
-const gpioPinId_t maPinsDisabledInLowPower[mNoOfPinsDisabledInLowPower_c]={
-{gpioPort_A_c, 16},
-{gpioPort_A_c, 17},
-{gpioPort_B_c, 1},
-{gpioPort_B_c, 2},
-{gpioPort_B_c, 3},
-{gpioPort_B_c, 16},
-{gpioPort_B_c, 17},
-{gpioPort_C_c, 0},
-{gpioPort_C_c, 1},
-{gpioPort_C_c, 2},
-{gpioPort_C_c, 3},
-{gpioPort_C_c, 6},
-{gpioPort_C_c, 7},
-{gpioPort_C_c, 16},
-{gpioPort_C_c, 17},
-{gpioPort_C_c, 18},
-{gpioPort_C_c, 19},
-{gpioPort_A_c, 0},
-{gpioPort_A_c, 1},
-};
+const gpioPinId_t maPinsDisabledInLowPower[mNoOfPinsDisabledInLowPower_c] =
+{
+{ gpioPort_A_c, 16 },
+{ gpioPort_A_c, 17 },
+{ gpioPort_B_c, 1 },
+{ gpioPort_B_c, 2 },
+{ gpioPort_B_c, 3 },
+{ gpioPort_B_c, 16 },
+{ gpioPort_B_c, 17 },
+{ gpioPort_C_c, 0 },
+{ gpioPort_C_c, 1 },
+{ gpioPort_C_c, 2 },
+{ gpioPort_C_c, 3 },
+{ gpioPort_C_c, 6 },
+{ gpioPort_C_c, 7 },
+{ gpioPort_C_c, 16 },
+{ gpioPort_C_c, 17 },
+{ gpioPort_C_c, 18 },
+{ gpioPort_C_c, 19 },
+{ gpioPort_A_c, 0 },
+{ gpioPort_A_c, 1 }, };
 uint32_t maPCRSave[mNoOfPinsDisabledInLowPower_c];
 
 /* FRDM-KW41Z Rev A2 xtal trim */
 static const uint8_t mXtalTrimDefault = 0x30;
 
 /************************************************************************************
-*************************************************************************************
-* Private functions prototypes
-*************************************************************************************
-************************************************************************************/
+ *************************************************************************************
+ * Private functions prototypes
+ *************************************************************************************
+ ************************************************************************************/
 static void ADC16_CalibrateParams(void);
 static inline uint32_t ADC16_BatLvlDCDC(void);
 static inline uint32_t ADC16_BatLvl(void);
@@ -178,205 +178,211 @@ static void DCDC_AdjustVbatDiv4();
 void BOARD_SetPinsLowPower(bool_t isLowPower);
 
 /************************************************************************************
-*************************************************************************************
-* Public functions prototypes
-*************************************************************************************
-************************************************************************************/
+ *************************************************************************************
+ * Public functions prototypes
+ *************************************************************************************
+ ************************************************************************************/
 void BOARD_InstallLowPowerCallbacks(void);
 void BOARD_EnterLowPowerCb(void);
 void BOARD_ExitLowPowerCb(void);
 void BOARD_GetMCUUid(uint8_t* aOutUid16B, uint8_t* pOutLen);
 /************************************************************************************
-*************************************************************************************
-* Public functions
-*************************************************************************************
-************************************************************************************/
+ *************************************************************************************
+ * Public functions
+ *************************************************************************************
+ ************************************************************************************/
 
 void hardware_init(void)
 {
-    uint32_t temp, tempTrim;
-    uint8_t revId;
-    static uint8_t initialized = 0;
-    
-    if( !initialized )
-    {
-        if(SMC->PMPROT == 0x00)
-        {
-          SMC->PMPROT = SYSTEM_SMC_PMPROT_VALUE;
-        }
+	uint32_t temp, tempTrim;
+	uint8_t revId;
+	static uint8_t initialized = 0;
 
-        if((PMC->REGSC & PMC_REGSC_ACKISO_MASK) != 0x00U)
-        {
-            PMC->REGSC |= PMC_REGSC_ACKISO_MASK; /* Release hold with ACKISO:  Only has an effect if recovering from VLLSx.*/
-            /*clear power management registers after recovery from vlls*/
-            SMC->STOPCTRL &= ~SMC_STOPCTRL_LLSM_MASK;
-            SMC->PMCTRL   &= ~(SMC_PMCTRL_STOPM_MASK | SMC_PMCTRL_RUNM_MASK);
-        }
-        
-        /* enable clock for PORTs */
-        CLOCK_EnableClock(kCLOCK_PortA);
-        CLOCK_EnableClock(kCLOCK_PortB);
-        CLOCK_EnableClock(kCLOCK_PortC);
-        
-        SIM->SCGC6 |= (SIM_SCGC6_DMAMUX_MASK); /* Enable clock to DMA_MUX (SIM module) */
-        SIM->SCGC7 |= (SIM_SCGC7_DMA_MASK);
-        
-        /* Obtain REV ID from SIM */
-        revId = (uint8_t)((SIM->SDID & SIM_SDID_REVID_MASK) >> SIM_SDID_REVID_SHIFT);
-        
-        if(0 == revId)
-        {
-            tempTrim = RSIM->ANA_TRIM;
-            RSIM->ANA_TRIM |= RSIM_ANA_TRIM_BB_LDO_XO_TRIM_MASK; /* max trim for BB LDO for XO */
-        }
-        
-        /* Turn on clocks for the XCVR */
-        /* Enable RF OSC in RSIM and wait for ready */
-        temp = RSIM->CONTROL;
-        temp &= ~RSIM_CONTROL_RF_OSC_EN_MASK;
-        RSIM->CONTROL = temp | RSIM_CONTROL_RF_OSC_EN(1);
-        /* Prevent XTAL_OUT_EN from generating XTAL_OUT request */
-        RSIM->RF_OSC_CTRL |= RSIM_RF_OSC_CTRL_RADIO_EXT_OSC_OVRD_EN_MASK;
-        /* wait for RF_OSC_READY */
-        while((RSIM->CONTROL & RSIM_CONTROL_RF_OSC_READY_MASK) == 0) {}
-        
-        if(0 == revId)
-        {
-            SIM->SCGC5 |= SIM_SCGC5_PHYDIG_MASK;
-            XCVR_TSM->OVRD0 |= XCVR_TSM_OVRD0_BB_LDO_ADCDAC_EN_OVRD_EN_MASK | XCVR_TSM_OVRD0_BB_LDO_ADCDAC_EN_OVRD_MASK; /* Force ADC DAC LDO on to prevent BGAP failure */
-            /* Reset LDO trim settings */
-            RSIM->ANA_TRIM = tempTrim;
-        }/* Workaround for Rev 1.0 XTAL startup and ADC analog diagnostics circuitry */
-        
-        /* Init board clock */
-        BOARD_BootClockRUN();
-        
-        /* Init DCDC module */
-        BOARD_DCDCInit();
-        
-        /* Install callbacks to handle enter and exit low power */
-        #if cPWR_UsePowerDownMode
-        BOARD_InstallLowPowerCallbacks();
-        #endif
+	if (!initialized)
+	{
+		if (SMC->PMPROT == 0x00)
+		{
+			SMC->PMPROT = SYSTEM_SMC_PMPROT_VALUE;
+		}
 
-        NV_ReadHWParameters(&gHardwareParameters);
-        if(0xFFFFFFFF == gHardwareParameters.xtalTrim)
-        {
-            gHardwareParameters.xtalTrim = mXtalTrimDefault;
-        }
-        initialized = 1;
-    }
+		if ((PMC->REGSC & PMC_REGSC_ACKISO_MASK) != 0x00U)
+		{
+			PMC->REGSC |= PMC_REGSC_ACKISO_MASK; /* Release hold with ACKISO:  Only has an effect if recovering from VLLSx.*/
+			/*clear power management registers after recovery from vlls*/
+			SMC->STOPCTRL &= ~SMC_STOPCTRL_LLSM_MASK;
+			SMC->PMCTRL &= ~(SMC_PMCTRL_STOPM_MASK | SMC_PMCTRL_RUNM_MASK);
+		}
+
+		/* enable clock for PORTs */
+		CLOCK_EnableClock(kCLOCK_PortA);
+		CLOCK_EnableClock(kCLOCK_PortB);
+		CLOCK_EnableClock(kCLOCK_PortC);
+
+		SIM->SCGC6 |= (SIM_SCGC6_DMAMUX_MASK); /* Enable clock to DMA_MUX (SIM module) */
+		SIM->SCGC7 |= (SIM_SCGC7_DMA_MASK);
+
+		/* Obtain REV ID from SIM */
+		revId = (uint8_t) ((SIM->SDID & SIM_SDID_REVID_MASK) >> SIM_SDID_REVID_SHIFT);
+
+		if (0 == revId)
+		{
+			tempTrim = RSIM->ANA_TRIM;
+			RSIM->ANA_TRIM |= RSIM_ANA_TRIM_BB_LDO_XO_TRIM_MASK; /* max trim for BB LDO for XO */
+		}
+
+		/* Turn on clocks for the XCVR */
+		/* Enable RF OSC in RSIM and wait for ready */
+		temp = RSIM->CONTROL;
+		temp &= ~RSIM_CONTROL_RF_OSC_EN_MASK;
+		RSIM->CONTROL = temp | RSIM_CONTROL_RF_OSC_EN(1);
+		/* Prevent XTAL_OUT_EN from generating XTAL_OUT request */
+		RSIM->RF_OSC_CTRL |= RSIM_RF_OSC_CTRL_RADIO_EXT_OSC_OVRD_EN_MASK;
+		/* wait for RF_OSC_READY */
+		while ((RSIM->CONTROL & RSIM_CONTROL_RF_OSC_READY_MASK) == 0)
+		{
+		}
+
+		if (0 == revId)
+		{
+			SIM->SCGC5 |= SIM_SCGC5_PHYDIG_MASK;
+			XCVR_TSM->OVRD0 |= XCVR_TSM_OVRD0_BB_LDO_ADCDAC_EN_OVRD_EN_MASK
+					| XCVR_TSM_OVRD0_BB_LDO_ADCDAC_EN_OVRD_MASK; /* Force ADC DAC LDO on to prevent BGAP failure */
+			/* Reset LDO trim settings */
+			RSIM->ANA_TRIM = tempTrim;
+		}/* Workaround for Rev 1.0 XTAL startup and ADC analog diagnostics circuitry */
+
+		/* Init board clock */
+		BOARD_BootClockRUN();
+
+		/* Init DCDC module */
+		BOARD_DCDCInit();
+
+		/* Install callbacks to handle enter and exit low power */
+#if cPWR_UsePowerDownMode
+		BOARD_InstallLowPowerCallbacks();
+#endif
+
+		NV_ReadHWParameters(&gHardwareParameters);
+		if (0xFFFFFFFF == gHardwareParameters.xtalTrim)
+		{
+			gHardwareParameters.xtalTrim = mXtalTrimDefault;
+		}
+		initialized = 1;
+	}
 }
 
-void NMI_Handler(void) 
+void NMI_Handler(void)
 {
-    /* Disable NMI pin */
-    CLOCK_EnableClock(kCLOCK_PortB);
-    GpioSetPinMux(gpioPort_B_c, 18u, pinMux_Alt2_c);
+	/* Disable NMI pin */
+	CLOCK_EnableClock(kCLOCK_PortB);
+	GpioSetPinMux(gpioPort_B_c, 18u, pinMux_Alt2_c);
 }
 
 void BOARD_InitAdc(void)
 {
 #if (gDCDC_Enabled_d == 0) || ((gDCDC_Enabled_d == 1) && (APP_DCDC_MODE == gDCDC_Mode_Bypass_c))
-        CLOCK_EnableClock(kCLOCK_Dcdc0);
-        CLOCK_EnableClock(kCLOCK_Adc0);
-        ADC16_GetDefaultConfig(&adcUserConfig);
-        adcUserConfig.resolution = kADC16_ResolutionSE12Bit;
-        adcUserConfig.referenceVoltageSource = kADC16_ReferenceVoltageSourceValt;
-        ADC16_Init(ADC0, &adcUserConfig);
-        ADC16_EnableHardwareTrigger(ADC0, false); /* Make sure the software trigger is used. */
-        ADC16_CalibrateParams();
+	CLOCK_EnableClock(kCLOCK_Dcdc0);
+	CLOCK_EnableClock(kCLOCK_Adc0);
+	ADC16_GetDefaultConfig(&adcUserConfig);
+	adcUserConfig.resolution = kADC16_ResolutionSE12Bit;
+	adcUserConfig.referenceVoltageSource = kADC16_ReferenceVoltageSourceValt;
+	ADC16_Init(ADC0, &adcUserConfig);
+	ADC16_EnableHardwareTrigger(ADC0, false); /* Make sure the software trigger is used. */
+	ADC16_CalibrateParams();
 #endif     
 }
 uint8_t BOARD_GetBatteryLevelDCDC(void)
 {
-    uint16_t batVal, bandgapValue, batLvl, batVolt, bgVolt = 100; /*cV*/
-    
-    bandgapValue = ADC16_BgLvl();
-    DCDC_AdjustVbatDiv4(); /* Bat voltage  divided by 4 */
-    batVal = ADC16_BatLvlDCDC() * 4; /* Need to multiply the value by 4 because the measured voltage is divided by 4*/
-    
-    batVolt = bgVolt * batVal / bandgapValue;
-    
-    batLvl = (batVolt - MIN_VOLT_BUCK) * (FULL_BAT - EMPTY_BAT) / (MAX_VOLT_BUCK - MIN_VOLT_BUCK);
-    return ((batLvl <= 100) ? batLvl:100);    
+	uint16_t batVal, bandgapValue, batLvl, batVolt, bgVolt = 100; /*cV*/
+
+	bandgapValue = ADC16_BgLvl();
+	DCDC_AdjustVbatDiv4(); /* Bat voltage  divided by 4 */
+	batVal = ADC16_BatLvlDCDC() * 4; /* Need to multiply the value by 4 because the measured voltage is divided by 4*/
+
+	batVolt = bgVolt * batVal / bandgapValue;
+
+	batLvl = (batVolt - MIN_VOLT_BUCK) * (FULL_BAT - EMPTY_BAT) / (MAX_VOLT_BUCK - MIN_VOLT_BUCK);
+	return ((batLvl <= 100) ? batLvl : 100);
 }
 
 uint8_t BOARD_GetBatteryLevel(void)
 {
-    uint32_t batVal, batLvl, batVolt;
+	uint32_t batVal, batLvl, batVolt;
 
 	batVal = ADC16_BatLvl() * 2; /* Need to multiply the value by 2 because the measured voltage is divided by 2*/
 	batVolt = VREF_REG * batVal / ADCR_VDD;
 
-	batLvl = (batVolt - MIN_VOLT_LI_ION_BAT) *(FULL_BAT - EMPTY_BAT) / (MAX_VOLT_LI_ION_BAT - MIN_VOLT_LI_ION_BAT);
+	batLvl = (batVolt - MIN_VOLT_LI_ION_BAT) * (FULL_BAT - EMPTY_BAT)
+			/ (MAX_VOLT_LI_ION_BAT - MIN_VOLT_LI_ION_BAT);
 
-    return ((batLvl <= 100) ? batLvl:100);
+	return ((batLvl <= 100) ? batLvl : 100);
 }
 
 uint16_t BOARD_GetPotentiometerLevel(void)
 {
-    uint32_t random = 0;
-    RNG_GetRandomNo(&random);
-    
-    return (random & 0x0FFF);
+	uint32_t random = 0;
+	RNG_GetRandomNo(&random);
+
+	return (random & 0x0FFF);
 }
 
 int32_t BOARD_GetTemperature(void)
 {
-    uint16_t tempVal, bandgapValue, tempVolt, bgVolt = 100; /*cV*/
-    uint32_t vdd, adcrTemp25, adcr100m;       
-    
-    bandgapValue = ADC16_BgLvl();
-    tempVal = ADC16_ReadValue(ADC16_TEMP_SENSOR_CHN, false);
-    
-    tempVolt = bgVolt * tempVal / bandgapValue;
-    (void)tempVolt;
-    
-    /* Get VDD value measured in mV */
-    /* VDD = (ADCR_VDD x V_BG) / ADCR_BG  */
-    vdd = ADCR_VDD * V_BG / bandgapValue;
-    /* Calibrate ADCR_TEMP25  */
-    /* ADCR_TEMP25 = ADCR_VDD x V_TEMP25 / VDD  */
-    adcrTemp25 = ADCR_VDD * V_TEMP25 / vdd;
-    /* Calculate conversion value of 100mV. */
-    /* ADCR_100M = ADCR_VDD x 100 / VDD */
-    adcr100m = ADCR_VDD*100/ vdd;    
-	    
-    /* Multiplied by 1000 because M in uM/oC */
-    /* Temperature = 25 - (ADCR_T - ADCR_TEMP25) * 100*1000 / ADCR_100M*M */
-    return (int32_t)(STANDARD_TEMP - ((int32_t)adcValue - (int32_t)adcrTemp25) * 100000 /(int32_t)(adcr100m*M));
+	uint16_t tempVal, bandgapValue, tempVolt, bgVolt = 100; /*cV*/
+	uint32_t vdd, adcrTemp25, adcr100m;
+
+	bandgapValue = ADC16_BgLvl();
+	tempVal = ADC16_ReadValue(ADC16_TEMP_SENSOR_CHN, false);
+
+	tempVolt = bgVolt * tempVal / bandgapValue;
+	(void) tempVolt;
+
+	/* Get VDD value measured in mV */
+	/* VDD = (ADCR_VDD x V_BG) / ADCR_BG  */
+	vdd = ADCR_VDD * V_BG / bandgapValue;
+	/* Calibrate ADCR_TEMP25  */
+	/* ADCR_TEMP25 = ADCR_VDD x V_TEMP25 / VDD  */
+	adcrTemp25 = ADCR_VDD * V_TEMP25 / vdd;
+	/* Calculate conversion value of 100mV. */
+	/* ADCR_100M = ADCR_VDD x 100 / VDD */
+	adcr100m = ADCR_VDD * 100 / vdd;
+
+	/* Multiplied by 1000 because M in uM/oC */
+	/* Temperature = 25 - (ADCR_T - ADCR_TEMP25) * 100*1000 / ADCR_100M*M */
+	return (int32_t) (STANDARD_TEMP
+			- ((int32_t) adcValue - (int32_t) adcrTemp25) * 100000 / (int32_t) (adcr100m * M));
 }
 
 /* Initialize DCDC. */
 void BOARD_DCDCInit(void)
 {
 #if gDCDC_Enabled_d == 1
-    /* Initialize DCDC module */
-    DCDC_Init(&mDcdcDefaultConfig); 
+	/* Initialize DCDC module */
+	DCDC_Init(&mDcdcDefaultConfig);
 #endif
 }
 
 /* get 4 words of information that uniquely identifies the MCU */
 void BOARD_GetMCUUid(uint8_t* aOutUid16B, uint8_t* pOutLen)
-{   
-    uint32_t uid[4] = {0};
+{
+	uint32_t uid[4] =
+	{ 0 };
 
-    uid[0] = SIM->SDID;
-    uid[1] = SIM->UIDMH;
-    uid[2] = SIM->UIDML;
-    uid[3] = SIM->UIDL;
-    
-    FLib_MemCpy(aOutUid16B, (uint8_t*)uid, sizeof(uid));
-    *pOutLen = sizeof(uid);
-    
-    return;
+	uid[0] = SIM->SDID;
+	uid[1] = SIM->UIDMH;
+	uid[2] = SIM->UIDML;
+	uid[3] = SIM->UIDL;
+
+	FLib_MemCpy(aOutUid16B, (uint8_t*) uid, sizeof(uid));
+	*pOutLen = sizeof(uid);
+
+	return;
 }
 /************************************************************************************
-*************************************************************************************
-* Private functions
-*************************************************************************************
-************************************************************************************/
+ *************************************************************************************
+ * Private functions
+ *************************************************************************************
+ ************************************************************************************/
 
 /*!
  * @brief Parameters calibration: VDD and ADCR_TEMP25
@@ -387,27 +393,27 @@ void BOARD_GetMCUUid(uint8_t* aOutUid16B, uint8_t* pOutLen)
 void ADC16_CalibrateParams(void)
 {
 #if gDCDC_Enabled_d == 0    
- #if FSL_FEATURE_ADC16_HAS_CALIBRATION
-      ADC16_DoAutoCalibration(ADC0);
- #endif /* FSL_FEATURE_ADC16_HAS_CALIBRATION */
-      ADC16_SetHardwareAverage(ADC0 , kADC16_HardwareAverageCount16);
+#if FSL_FEATURE_ADC16_HAS_CALIBRATION
+	ADC16_DoAutoCalibration(ADC0);
+#endif /* FSL_FEATURE_ADC16_HAS_CALIBRATION */
+	ADC16_SetHardwareAverage(ADC0, kADC16_HardwareAverageCount16);
 #endif
-  
-    pmc_bandgap_buffer_config_t pmcBandgapConfig = 
-{
+
+	pmc_bandgap_buffer_config_t pmcBandgapConfig =
+	{
 #if (defined(FSL_FEATURE_PMC_HAS_BGBE) && FSL_FEATURE_PMC_HAS_BGBE)
-       .enable = true, /*!< Enable bandgap buffer.                   */
+			.enable = true, /*!< Enable bandgap buffer.                   */
 #endif
 #if (defined(FSL_FEATURE_PMC_HAS_BGEN) && FSL_FEATURE_PMC_HAS_BGEN)
-    .enableInLowPower = false, /*!< Enable bandgap buffer in low power mode. */
+			.enableInLowPower = false, /*!< Enable bandgap buffer in low power mode. */
 #endif                         /* FSL_FEATURE_PMC_HAS_BGEN */
 #if (defined(FSL_FEATURE_PMC_HAS_BGBDS) && FSL_FEATURE_PMC_HAS_BGBDS)
-    .drive = kPmcBandgapBufferDriveLow, /*!< Bandgap buffer drive select.             */
+			.drive = kPmcBandgapBufferDriveLow, /*!< Bandgap buffer drive select.             */
 #endif                                       /* FSL_FEATURE_PMC_HAS_BGBDS */
-} ;
-    
-    // Enable BANDGAP reference voltage
-    PMC_ConfigureBandgapBuffer(PMC, &pmcBandgapConfig);
+		};
+
+	// Enable BANDGAP reference voltage
+	PMC_ConfigureBandgapBuffer(PMC, &pmcBandgapConfig);
 }
 
 /*!
@@ -418,8 +424,8 @@ void ADC16_CalibrateParams(void)
 
 static inline uint32_t ADC16_BatLvlDCDC(void)
 {
-      adcValue = ADC16_ReadValue(ADC16_BATLVL_DCDC_CHN, false);
-      return adcValue;
+	adcValue = ADC16_ReadValue(ADC16_BATLVL_DCDC_CHN, false);
+	return adcValue;
 }
 
 /*!
@@ -430,8 +436,8 @@ static inline uint32_t ADC16_BatLvlDCDC(void)
 
 static inline uint32_t ADC16_BatLvl(void)
 {
-      adcValue = ADC16_ReadValue(ADC16_BATLVL_CHN, false);
-      return adcValue;
+	adcValue = ADC16_ReadValue(ADC16_BATLVL_CHN, false);
+	return adcValue;
 }
 
 /*!
@@ -442,8 +448,8 @@ static inline uint32_t ADC16_BatLvl(void)
 
 static inline uint32_t ADC16_BgLvl(void)
 {
-    adcValue = ADC16_ReadValue(ADC16_BANDGAP_CHN, false);
-    return adcValue;
+	adcValue = ADC16_ReadValue(ADC16_BANDGAP_CHN, false);
+	return adcValue;
 }
 
 /*!
@@ -453,169 +459,173 @@ static inline uint32_t ADC16_BgLvl(void)
  */
 static uint16_t ADC16_ReadValue(uint32_t chnIdx, uint8_t diffMode)
 {
-  adc16_channel_config_t chnConfig;
+	adc16_channel_config_t chnConfig;
 
-    /* Configure the conversion channel */
-    chnConfig.channelNumber     = chnIdx;
+	/* Configure the conversion channel */
+	chnConfig.channelNumber = chnIdx;
 #if FSL_FEATURE_ADC16_HAS_DIFF_MODE
-    chnConfig.enableDifferentialConversion = diffMode;
+	chnConfig.enableDifferentialConversion = diffMode;
 #endif
-    chnConfig.enableInterruptOnConversionCompleted  = false;
-    
-    /* Software trigger the conversion */
-    ADC16_SetChannelConfig(ADC0, ADC16_CHN_GROUP, &chnConfig);
-    /* Wait for the conversion to be done */
-    while (0U == (kADC16_ChannelConversionDoneFlag & ADC16_GetChannelStatusFlags(ADC0, ADC16_CHN_GROUP)));
+	chnConfig.enableInterruptOnConversionCompleted = false;
 
-    /* Fetch the conversion value */
-    adcValue =  ADC16_GetChannelConversionValue(ADC0, ADC16_CHN_GROUP);
-    /* Calculates adcValue in 16bit resolution from 12bit resolution 
-    in order to convert to reading */
+	/* Software trigger the conversion */
+	ADC16_SetChannelConfig(ADC0, ADC16_CHN_GROUP, &chnConfig);
+	/* Wait for the conversion to be done */
+	while (0U == (kADC16_ChannelConversionDoneFlag & ADC16_GetChannelStatusFlags(ADC0, ADC16_CHN_GROUP)))
+		;
+
+	/* Fetch the conversion value */
+	adcValue = ADC16_GetChannelConversionValue(ADC0, ADC16_CHN_GROUP);
+	/* Calculates adcValue in 16bit resolution from 12bit resolution
+	 in order to convert to reading */
 #if (FSL_FEATURE_ADC16_MAX_RESOLUTION < 16)
-    adcValue = adcValue << 4;
+	adcValue = adcValue << 4;
 #endif
-    /* Pause the conversion */
-   
-    return adcValue;
+	/* Pause the conversion */
+
+	return adcValue;
 }
 
 static void DCDC_AdjustVbatDiv4()
 {
-  const uint8_t vBatDiv = 3;
-  DCDC->REG0 = (DCDC->REG0 & ~DCDC_REG0_DCDC_VBAT_DIV_CTRL_MASK )| DCDC_REG0_DCDC_VBAT_DIV_CTRL(vBatDiv);
+	const uint8_t vBatDiv = 3;
+	DCDC->REG0 = (DCDC->REG0 & ~DCDC_REG0_DCDC_VBAT_DIV_CTRL_MASK) | DCDC_REG0_DCDC_VBAT_DIV_CTRL(vBatDiv);
 }
 
 void BOARD_InstallLowPowerCallbacks()
 {
 #if cPWR_UsePowerDownMode
-  PWR_RegisterLowPowerEnterCallback((pfPWRCallBack_t)BOARD_EnterLowPowerCb);
-  PWR_RegisterLowPowerExitCallback((pfPWRCallBack_t)BOARD_ExitLowPowerCb); 
+	PWR_RegisterLowPowerEnterCallback((pfPWRCallBack_t)BOARD_EnterLowPowerCb);
+	PWR_RegisterLowPowerExitCallback((pfPWRCallBack_t)BOARD_ExitLowPowerCb);
 #endif
 }
 
 void BOARD_SetPinsLowPower(bool_t isLowPower)
 {
-  uint32_t i,j;
-  
-  if(isLowPower)
-  {
-    
-    for(i=0; i<mNoOfPinsDisabledInLowPower_c; i++)
-    {
-      maPCRSave[i] = GpioGetPinPCR(maPinsDisabledInLowPower[i].gpioPort, maPinsDisabledInLowPower[i].gpioPin);
-      GpioSetPinMux_ISF_Preserved(maPinsDisabledInLowPower[i].gpioPort, maPinsDisabledInLowPower[i].gpioPin, pinMux_PinDisabledOrAnalog_c);    
-    }
-    
-  }
-  else
-  {
-    for(i=0,j=(mNoOfPinsDisabledInLowPower_c-1) ; i<mNoOfPinsDisabledInLowPower_c; i++,j--)
-    {
-      GpioSetPinPCR_ISF_Preserved(maPinsDisabledInLowPower[j].gpioPort, maPinsDisabledInLowPower[j].gpioPin, maPCRSave[j]);
-    }
-    
-  }
+	uint32_t i, j;
+
+	if (isLowPower)
+	{
+
+		for (i = 0; i < mNoOfPinsDisabledInLowPower_c; i++)
+		{
+			maPCRSave[i] = GpioGetPinPCR(maPinsDisabledInLowPower[i].gpioPort,
+					maPinsDisabledInLowPower[i].gpioPin);
+			GpioSetPinMux_ISF_Preserved(maPinsDisabledInLowPower[i].gpioPort,
+					maPinsDisabledInLowPower[i].gpioPin, pinMux_PinDisabledOrAnalog_c);
+		}
+
+	}
+	else
+	{
+		for (i = 0, j = (mNoOfPinsDisabledInLowPower_c - 1); i < mNoOfPinsDisabledInLowPower_c; i++, j--)
+		{
+			GpioSetPinPCR_ISF_Preserved(maPinsDisabledInLowPower[j].gpioPort,
+					maPinsDisabledInLowPower[j].gpioPin, maPCRSave[j]);
+		}
+
+	}
 }
 
 void BOARD_EnterLowPowerCb()
 {
 #if gKeyBoardSupported_d
-    KBD_PrepareEnterLowPower();
+	KBD_PrepareEnterLowPower();
 #endif  
-    BOARD_SetPinsLowPower(TRUE);    
+	BOARD_SetPinsLowPower(TRUE);
 #if gDCDC_Enabled_d
-    //DCDC_BWR_REG0_DCDC_VBAT_DIV_CTRL(DCDC_BASE_PTR, 0);
-    DCDC->REG0 &=  ~DCDC_REG0_DCDC_VBAT_DIV_CTRL_MASK ;
-    DCDC_PrepareForPulsedMode();
+	//DCDC_BWR_REG0_DCDC_VBAT_DIV_CTRL(DCDC_BASE_PTR, 0);
+	DCDC->REG0 &= ~DCDC_REG0_DCDC_VBAT_DIV_CTRL_MASK;
+	DCDC_PrepareForPulsedMode();
 #endif
 }
 
 void BOARD_ExitLowPowerCb()
 {
 #if gDCDC_Enabled_d
-    DCDC_PrepareForContinuousMode();
+	DCDC_PrepareForContinuousMode();
 #endif
 #if gKeyBoardSupported_d
-    KBD_PrepareExitLowPower();
+	KBD_PrepareExitLowPower();
 #endif    
-    BOARD_SetPinsLowPower(FALSE);
+	BOARD_SetPinsLowPower(FALSE);
 
 }
 
 uint32_t BOARD_GetLpuartClock(uint32_t instance)
 {
-    uint32_t clock;
-    uint32_t clockSource = (SIM->SOPT2 & SIM_SOPT2_LPUART0SRC_MASK) >> SIM_SOPT2_LPUART0SRC_SHIFT;
+	uint32_t clock;
+	uint32_t clockSource = (SIM->SOPT2 & SIM_SOPT2_LPUART0SRC_MASK) >> SIM_SOPT2_LPUART0SRC_SHIFT;
 
-    instance = instance; /* Remove compiler warnings */
-    
-    switch(clockSource)
-    {
-    case 1: /* MCGFLLCLK */
-        clock = CLOCK_GetFllFreq();
-        break;
-    case 2: /* OSCERCLK */
-        clock = CLOCK_GetOsc0ErClkFreq();
-        break;
-    case 3: /* MCGIRCLK */
-        clock = CLOCK_GetInternalRefClkFreq();
-        break;
-    default: /* Clock disabled */
-        clock = 0;
-        break;
-    }
-    
-    return clock;
+	instance = instance; /* Remove compiler warnings */
+
+	switch (clockSource)
+	{
+	case 1: /* MCGFLLCLK */
+		clock = CLOCK_GetFllFreq();
+		break;
+	case 2: /* OSCERCLK */
+		clock = CLOCK_GetOsc0ErClkFreq();
+		break;
+	case 3: /* MCGIRCLK */
+		clock = CLOCK_GetInternalRefClkFreq();
+		break;
+	default: /* Clock disabled */
+		clock = 0;
+		break;
+	}
+
+	return clock;
 }
 
 uint32_t BOARD_GetTpmClock(uint32_t instance)
 {
-    uint32_t clock;
-    uint32_t clockSource = (SIM->SOPT2 & SIM_SOPT2_TPMSRC_MASK) >> SIM_SOPT2_TPMSRC_SHIFT;
+	uint32_t clock;
+	uint32_t clockSource = (SIM->SOPT2 & SIM_SOPT2_TPMSRC_MASK) >> SIM_SOPT2_TPMSRC_SHIFT;
 
-    instance = instance; /* Remove compiler warnings */
-    
-    switch(clockSource)
-    {
-    case 1: /* MCGFLLCLK */
-        clock = CLOCK_GetFllFreq();
-        break;
-    case 2: /* OSCERCLK */
-        clock = CLOCK_GetOsc0ErClkFreq();
-        break;
-    case 3: /* MCGIRCLK */
-        clock = CLOCK_GetInternalRefClkFreq();
-        break;
-    default: /* Clock disabled */
-        clock = 0;
-        break;
-    }
-    
-    return clock;
+	instance = instance; /* Remove compiler warnings */
+
+	switch (clockSource)
+	{
+	case 1: /* MCGFLLCLK */
+		clock = CLOCK_GetFllFreq();
+		break;
+	case 2: /* OSCERCLK */
+		clock = CLOCK_GetOsc0ErClkFreq();
+		break;
+	case 3: /* MCGIRCLK */
+		clock = CLOCK_GetInternalRefClkFreq();
+		break;
+	default: /* Clock disabled */
+		clock = 0;
+		break;
+	}
+
+	return clock;
 }
 
 uint32_t BOARD_GetSpiClock(uint32_t instance)
 {
-    instance = instance; /* Remove compiler warnings */
-    return CLOCK_GetFreq(kCLOCK_BusClk);
+	instance = instance; /* Remove compiler warnings */
+	return CLOCK_GetFreq(kCLOCK_BusClk);
 }
 
 uint32_t BOARD_GetI2cClock(uint32_t instance)
 {
-    uint32_t clock;
-    
-    switch(instance)
-    {
-    case 1:
-        clock = CLOCK_GetFreq(kCLOCK_CoreSysClk);
-        break;
+	uint32_t clock;
 
-    default:
-        clock = CLOCK_GetFreq(kCLOCK_BusClk);
-        break;
-    }
-    
-    return clock;
+	switch (instance)
+	{
+	case 1:
+		clock = CLOCK_GetFreq(kCLOCK_CoreSysClk);
+		break;
+
+	default:
+		clock = CLOCK_GetFreq(kCLOCK_BusClk);
+		break;
+	}
+
+	return clock;
 }
 
 void BOARD_BLPEtoBLPI(void)
@@ -624,8 +634,9 @@ void BOARD_BLPEtoBLPI(void)
 
 void BOARD_BLPItoBLPE(void)
 {
-while((RSIM->CONTROL & RSIM_CONTROL_RF_OSC_READY_MASK) == 0 )
-{}
+	while ((RSIM->CONTROL & RSIM_CONTROL_RF_OSC_READY_MASK) == 0)
+	{
+	}
 }
 
 /*******************************************************************************

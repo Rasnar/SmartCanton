@@ -36,7 +36,7 @@
 #define gLoRaCtrlTaskEvtConfigure_c					(1 << 1)
 #define gLoRaCtrlTaskEvtConfigureFromModuleConfig_c	(1 << 2)
 
-extern osaEventId_t  gLoRaControllerEvent;
+extern osaEventId_t gLoRaControllerEvent;
 
 void Lorawan_Controller_Task(osaTaskParam_t argument);
 osaStatus_t LorawanController_TaskInit(void);

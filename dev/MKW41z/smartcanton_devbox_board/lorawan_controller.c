@@ -34,10 +34,8 @@
 #define LORA_SEND_PACKET_PORT		"1"		// Define port to use in Back-End: from 1 to 223
 #define LORA_NETWORK_JOINED_STATUS	"1"		// 0 : Network not yet joined, 1 : Network joined
 
-
 #define DELAY_BEETWEEN_ATTEMPTS_MS 	100		// Try 100 Attempts
 #define MAX_ATTEMPTS_TO_CONFIGURE 	100		// Try 100 Attempts
-
 
 /**
  * Serial Manager parameters
@@ -59,7 +57,6 @@ static AtCommanderConfig config;
  */
 static uint8_t interfaceId;
 
-
 /**
  * Flash programmer
  */
@@ -72,13 +69,11 @@ static uint32_t pflashBlockBase = 0;
 static uint32_t pflashTotalSize = 0;
 static uint32_t pflashSectorSize = 0;
 
-
 /**
  * Module configuration
  */
 static bool lorawan_configuration_valid = false;
 lorawanControllerConfiguration_t currentLoRaWanConfig;
-
 
 lorawanControllerStatus_t lorawan_controller_read_module_configuration();
 static lorawanControllerStatus_t lorawan_controller_flash_init(void);
@@ -89,14 +84,16 @@ static void lorawan_controller_apply_default_configuration();
 /**
  * Callback called by the ATCommander library to write bytes
  */
-void at_commander_write_byte(void* device, uint8_t byte) {
+void at_commander_write_byte(void* device, uint8_t byte)
+{
 	Serial_SyncWrite(interfaceId, &byte, sizeof(byte));
 }
 
 /**
  * Function called by the AT Commander to read one byte from the Queue
  */
-int at_commander_read_byte(void* device) {
+int at_commander_read_byte(void* device)
+{
 	uint8_t data;
 	uint16_t bytesRead;
 
@@ -104,7 +101,8 @@ int at_commander_read_byte(void* device) {
 
 	Serial_Read(interfaceId, &data, sizeof(data), &bytesRead);
 
-	if (bytesRead == 0) {
+	if (bytesRead == 0)
+	{
 		return -1;
 	}
 	else
@@ -116,11 +114,13 @@ int at_commander_read_byte(void* device) {
 /**
  * AT Commander function to wait from device to have a response
  */
-void at_commander_delayms(long unsigned int delayInMs) {
+void at_commander_delayms(long unsigned int delayInMs)
+{
 	OSA_TimeDelay(delayInMs);
 }
 
-lorawanControllerStatus_t lorawan_controller_set_cmd(AtCommand cmd, ...){
+lorawanControllerStatus_t lorawan_controller_set_cmd(AtCommand cmd, ...)
+{
 
 	va_list args;
 	va_start(args, cmd);
@@ -137,21 +137,21 @@ lorawanControllerStatus_t lorawan_controller_set_cmd(AtCommand cmd, ...){
 		return lorawanController_Success;
 }
 
-inline int lorawan_controller_get_cmd(AtCommand cmd, char* response_buffer, int response_buffer_length) {
-	return at_commander_get(&config,
-			&cmd,
-			response_buffer,
-			response_buffer_length);
+inline int lorawan_controller_get_cmd(AtCommand cmd, char* response_buffer, int response_buffer_length)
+{
+	return at_commander_get(&config, &cmd, response_buffer, response_buffer_length);
 }
 
-lorawanControllerStatus_t lorawan_controller_init_module(){
+lorawanControllerStatus_t lorawan_controller_init_module()
+{
 	char data[16];
 	uint16_t bytesRead;
 
 	lorawan_configuration_valid = false;
 
 	/* RESET LoRa MCU to start with a clean state */
-	lorawan_controller_set_cmd(CMD_MCURESET); // Reset LoRa MCU to be sure to have a new configuration
+	lorawan_controller_set_cmd(CMD_MCURESET
+	); // Reset LoRa MCU to be sure to have a new configuration
 	OSA_TimeDelay(20); // Wait a bit to be sure that the LoRa MCU is reset
 
 	/* Empty reception buffer with glitches from the reset */
@@ -160,39 +160,41 @@ lorawanControllerStatus_t lorawan_controller_init_module(){
 	/**
 	 * Configuration LoRa Module with new configuration
 	 */
-	if (lorawan_controller_set_cmd(CMD_SET_APP_EUI, currentLoRaWanConfig.appEui)
-			!= lorawanController_Success)
+	if (lorawan_controller_set_cmd(CMD_SET_APP_EUI
+	, currentLoRaWanConfig.appEui) != lorawanController_Success)
 		return lorawanController_Error;
 
-	if (lorawan_controller_set_cmd(CMD_SET_APP_KEY, currentLoRaWanConfig.appKey)
-			!= lorawanController_Success)
+	if (lorawan_controller_set_cmd(CMD_SET_APP_KEY
+	, currentLoRaWanConfig.appKey) != lorawanController_Success)
 		return lorawanController_Error;
 
-	if (lorawan_controller_set_cmd(CMD_SET_CONFIRM_MODE, currentLoRaWanConfig.confirmMode)
-			!= lorawanController_Success) // 0 : unconfirmed, 1 : confirmed messages
+	if (lorawan_controller_set_cmd(CMD_SET_CONFIRM_MODE
+	, currentLoRaWanConfig.confirmMode) != lorawanController_Success) // 0 : unconfirmed, 1 : confirmed messages
 		return lorawanController_Error;
 
-	if (lorawan_controller_set_cmd(CMD_SET_NETWORK_JOIN_MODE,
-			currentLoRaWanConfig.networkJoinMode) != lorawanController_Success) // 0 : ABP, 1 : OTAA
+	if (lorawan_controller_set_cmd(CMD_SET_NETWORK_JOIN_MODE
+	, currentLoRaWanConfig.networkJoinMode) != lorawanController_Success) // 0 : ABP, 1 : OTAA
 		return lorawanController_Error;
 
-	if (lorawan_controller_set_cmd(CMD_SET_DUTYCYCLE_SETTINGS,
-			currentLoRaWanConfig.etsiDutyCycleEnable) != lorawanController_Success) // 0 : ETSI duty cycle disable, 1 : enable
+	if (lorawan_controller_set_cmd(CMD_SET_DUTYCYCLE_SETTINGS
+	, currentLoRaWanConfig.etsiDutyCycleEnable) != lorawanController_Success) // 0 : ETSI duty cycle disable, 1 : enable
 		return lorawanController_Error;
 
 	/* Join network as configured before */
-	if (lorawan_controller_set_cmd(CMD_NETWORK_JOIN)
-			!= lorawanController_Success)
+	if (lorawan_controller_set_cmd(CMD_NETWORK_JOIN
+	) != lorawanController_Success)
 		return lorawanController_Error;
 
 	uint8_t nb_attempts = 0;
 
 	/* Waiting to receive a join Accept from the server */
-	do {
-		bytesRead = lorawan_controller_get_cmd(CMD_GET_NETWORK_JOIN_STATUS, data, sizeof(data));
+	do
+	{
+		bytesRead = lorawan_controller_get_cmd(CMD_GET_NETWORK_JOIN_STATUS
+		, data, sizeof(data));
 		OSA_TimeDelay(100);
 
-		if((nb_attempts++) > MAX_ATTEMPTS_TO_CONFIGURE)
+		if ((nb_attempts++) > MAX_ATTEMPTS_TO_CONFIGURE)
 			return lorawanController_Error;
 	} while (strcmp(data, LORA_NETWORK_JOINED_STATUS) != 0);
 
@@ -202,29 +204,33 @@ lorawanControllerStatus_t lorawan_controller_init_module(){
 	lorawan_controller_read_module_configuration();
 
 	/* Save the configuration to flash */
-	if (lorawan_controller_write_configuration_to_flash()
-			!= lorawanController_Success) {
+	if (lorawan_controller_write_configuration_to_flash() != lorawanController_Success)
+	{
 		return lorawanController_Error;
 	}
-
 
 	return lorawanController_Success;
 }
 
-lorawanControllerStatus_t lorawan_controller_get_configuration_validity(){
-	if(lorawan_configuration_valid == true) {
+lorawanControllerStatus_t lorawan_controller_get_configuration_validity()
+{
+	if (lorawan_configuration_valid == true)
+	{
 		return lorawanController_Success;
-	} else {
+	}
+	else
+	{
 		return lorawanController_Error;
 	}
 }
 
 osaStatus_t lorawan_controller_init(void)
 {
-    serialStatus_t status = Serial_InitInterface(&interfaceId, SERIAL_MANAGER_INTERFACE_TYPE, SERIAL_MANAGER_INSTANCE_SERIAL);
-	if( gSerial_Success_c != status )
+	serialStatus_t status = Serial_InitInterface(&interfaceId, SERIAL_MANAGER_INTERFACE_TYPE,
+			SERIAL_MANAGER_INSTANCE_SERIAL);
+	if (gSerial_Success_c != status)
 	{
-		panic(0,0,0,0);
+		panic(0, 0, 0, 0);
 		return osaStatus_Error;
 	}
 
@@ -252,14 +258,16 @@ osaStatus_t lorawan_controller_init(void)
 	/* If the magic word is not correct it means that the
 	 * flash memory as not been written. We need to apply a default configuration.
 	 */
-	if(currentLoRaWanConfig.magicWord != LORAWAN_CONTROLLER_MAGIC_WORD){
+	if (currentLoRaWanConfig.magicWord != LORAWAN_CONTROLLER_MAGIC_WORD)
+	{
 		lorawan_controller_apply_default_configuration();
 	}
 
-    return osaStatus_Success;
+	return osaStatus_Success;
 }
 
-static void lorawan_controller_apply_default_configuration(){
+static void lorawan_controller_apply_default_configuration()
+{
 	char data[32];
 	uint16_t bytesRead;
 
@@ -273,8 +281,10 @@ static void lorawan_controller_apply_default_configuration(){
 	strcpy(currentLoRaWanConfig.etsiDutyCycleEnable, LORA_DEFAULT_CONFIG_DUTYCYCLE_SETTINGS);
 	strcpy(currentLoRaWanConfig.networkJoinMode, LORA_DEFAULT_CONFIG_NETWORK_JOIN_MODE);
 
-	bytesRead = lorawan_controller_get_cmd(CMD_GET_DEVEUI, data, sizeof(data));
-	if (bytesRead < 0) {
+	bytesRead = lorawan_controller_get_cmd(CMD_GET_DEVEUI
+	, data, sizeof(data));
+	if (bytesRead < 0)
+	{
 		return;
 	}
 	strcpy(currentLoRaWanConfig.devEui, data);
@@ -287,67 +297,82 @@ lorawanControllerStatus_t lorawan_controller_read_module_configuration(void)
 	char data[64];
 	uint16_t bytesRead;
 
-	bytesRead = lorawan_controller_get_cmd(CMD_GET_DEVEUI, data, sizeof(data));
-	if (bytesRead < 0) {
+	bytesRead = lorawan_controller_get_cmd(CMD_GET_DEVEUI
+	, data, sizeof(data));
+	if (bytesRead < 0)
+	{
 		return lorawanController_Error;
 	}
 
 	strcpy(currentLoRaWanConfig.devEui, data);
 
-	bytesRead = lorawan_controller_get_cmd(CMD_GET_APP_EUI, data, sizeof(data));
-	if (bytesRead < 0) {
+	bytesRead = lorawan_controller_get_cmd(CMD_GET_APP_EUI
+	, data, sizeof(data));
+	if (bytesRead < 0)
+	{
 		return lorawanController_Error;
 	}
 
 	strcpy(currentLoRaWanConfig.appEui, data);
 
-	bytesRead = lorawan_controller_get_cmd(CMD_GET_APP_KEY, data, sizeof(data));
-	if (bytesRead < 0) {
+	bytesRead = lorawan_controller_get_cmd(CMD_GET_APP_KEY
+	, data, sizeof(data));
+	if (bytesRead < 0)
+	{
 		return lorawanController_Error;
 	}
 
 	strcpy(currentLoRaWanConfig.appKey, data);
 
-	bytesRead = lorawan_controller_get_cmd(CMD_GET_DEV_ADDR, data, sizeof(data));
-	if (bytesRead < 0) {
+	bytesRead = lorawan_controller_get_cmd(CMD_GET_DEV_ADDR
+	, data, sizeof(data));
+	if (bytesRead < 0)
+	{
 		return lorawanController_Error;
 	}
 
 	strcpy(currentLoRaWanConfig.devAddr, data);
 
-	bytesRead = lorawan_controller_get_cmd(CMD_GET_NWK_SESSION_KEY, data, sizeof(data));
-	if (bytesRead < 0) {
+	bytesRead = lorawan_controller_get_cmd(CMD_GET_NWK_SESSION_KEY
+	, data, sizeof(data));
+	if (bytesRead < 0)
+	{
 		return lorawanController_Error;
 	}
 
 	strcpy(currentLoRaWanConfig.nwkSessionKey, data);
 
-	bytesRead = lorawan_controller_get_cmd(CMD_GET_APP_SESSION_KEY, data, sizeof(data));
-	if (bytesRead < 0) {
+	bytesRead = lorawan_controller_get_cmd(CMD_GET_APP_SESSION_KEY
+	, data, sizeof(data));
+	if (bytesRead < 0)
+	{
 		return lorawanController_Error;
 	}
 
 	strcpy(currentLoRaWanConfig.appSessionKey, data);
 
-	bytesRead = lorawan_controller_get_cmd(CMD_GET_CONFIRM_MODE, data,
-			sizeof(data));
-	if (bytesRead < 0) {
+	bytesRead = lorawan_controller_get_cmd(CMD_GET_CONFIRM_MODE
+	, data, sizeof(data));
+	if (bytesRead < 0)
+	{
 		return lorawanController_Error;
 	}
 
 	strcpy(currentLoRaWanConfig.confirmMode, data);
 
-	bytesRead = lorawan_controller_get_cmd(CMD_GET_NETWORK_JOIN_MODE, data,
-			sizeof(data));
-	if (bytesRead < 0) {
+	bytesRead = lorawan_controller_get_cmd(CMD_GET_NETWORK_JOIN_MODE
+	, data, sizeof(data));
+	if (bytesRead < 0)
+	{
 		return lorawanController_Error;
 	}
 
 	strcpy(currentLoRaWanConfig.networkJoinMode, data);
 
-	bytesRead = lorawan_controller_get_cmd(CMD_GET_DUTYCYCLE_SETTINGS, data,
-			sizeof(data));
-	if (bytesRead < 0) {
+	bytesRead = lorawan_controller_get_cmd(CMD_GET_DUTYCYCLE_SETTINGS
+	, data, sizeof(data));
+	if (bytesRead < 0)
+	{
 		return lorawanController_Error;
 	}
 
@@ -356,19 +381,23 @@ lorawanControllerStatus_t lorawan_controller_read_module_configuration(void)
 	return lorawanController_Success;
 }
 
-lorawanControllerConfiguration_t lorawan_controller_get_current_configuration(void) {
+lorawanControllerConfiguration_t lorawan_controller_get_current_configuration(void)
+{
 	return currentLoRaWanConfig;
 }
 
-static lorawanControllerConfiguration_t lorawan_controller_read_configuration_from_flash(void) {
+static lorawanControllerConfiguration_t lorawan_controller_read_configuration_from_flash(void)
+{
 
-	memcpy((uint32_t *)&currentLoRaWanConfig, (uint32_t *)flashDestAdrss, sizeof(lorawanControllerConfiguration_t));
+	memcpy((uint32_t *) &currentLoRaWanConfig, (uint32_t *) flashDestAdrss,
+			sizeof(lorawanControllerConfiguration_t));
 
 	return currentLoRaWanConfig;
 }
 
-static lorawanControllerStatus_t lorawan_controller_write_configuration_to_flash(void) {
-    uint32_t failAddr, failDat;
+static lorawanControllerStatus_t lorawan_controller_write_configuration_to_flash(void)
+{
+	uint32_t failAddr, failDat;
 
 	status_t result = FLASH_Erase(&s_flashDriver, flashDestAdrss, pflashSectorSize, kFLASH_ApiEraseKey);
 	if (kStatus_FLASH_Success != result)
@@ -384,16 +413,16 @@ static lorawanControllerStatus_t lorawan_controller_write_configuration_to_flash
 	}
 
 	/* Program user buffer into flash*/
-	result = FLASH_Program(&s_flashDriver, flashDestAdrss, (uint32_t *)&currentLoRaWanConfig, sizeof(lorawanControllerConfiguration_t));
+	result = FLASH_Program(&s_flashDriver, flashDestAdrss, (uint32_t *) &currentLoRaWanConfig,
+			sizeof(lorawanControllerConfiguration_t));
 	if (kStatus_FLASH_Success != result)
 	{
 		return lorawanController_Error;
 	}
 
 	/* Verify programming by Program Check command with user margin levels */
-	result = FLASH_VerifyProgram(&s_flashDriver, flashDestAdrss, sizeof(currentLoRaWanConfig), (uint32_t *)&currentLoRaWanConfig,
-								kFLASH_MarginValueUser,
-								 &failAddr, &failDat);
+	result = FLASH_VerifyProgram(&s_flashDriver, flashDestAdrss, sizeof(currentLoRaWanConfig),
+			(uint32_t *) &currentLoRaWanConfig, kFLASH_MarginValueUser, &failAddr, &failDat);
 	if (kStatus_FLASH_Success != result)
 	{
 		return lorawanController_Error;
@@ -402,7 +431,8 @@ static lorawanControllerStatus_t lorawan_controller_write_configuration_to_flash
 	return lorawanController_Success;
 }
 
-static lorawanControllerStatus_t lorawan_controller_flash_init(void) {
+static lorawanControllerStatus_t lorawan_controller_flash_init(void)
+{
 	/* Clean up Flash driver Structure*/
 	memset(&s_flashDriver, 0, sizeof(flash_config_t));
 
@@ -429,16 +459,16 @@ static lorawanControllerStatus_t lorawan_controller_flash_init(void) {
 	/* Print security status. */
 	switch (securityStatus)
 	{
-		case kFLASH_SecurityStateNotSecure:
-			break;
-		case kFLASH_SecurityStateBackdoorEnabled:
-			return lorawanController_Error;
-			break;
-		case kFLASH_SecurityStateBackdoorDisabled:
-			return lorawanController_Error;
-			break;
-		default:
-			break;
+	case kFLASH_SecurityStateNotSecure:
+		break;
+	case kFLASH_SecurityStateBackdoorEnabled:
+		return lorawanController_Error;
+		break;
+	case kFLASH_SecurityStateBackdoorDisabled:
+		return lorawanController_Error;
+		break;
+	default:
+		break;
 	}
 
 	flashDestAdrss = pflashBlockBase + (pflashTotalSize - pflashSectorSize);

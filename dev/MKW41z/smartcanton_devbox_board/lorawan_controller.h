@@ -21,7 +21,8 @@
 
 #define LORAWAN_CONTROLLER_MAGIC_WORD	0x2222
 
-typedef struct lorawanControllerConfiguration_tag{
+typedef struct lorawanControllerConfiguration_tag
+{
 	char appEui[24];
 	char appKey[48];
 	char devEui[24];
@@ -37,14 +38,13 @@ typedef struct lorawanControllerConfiguration_tag{
 	// Used to make the lorawanControllerConfiguration_tag a
 	// multiple of 4 and to verify validity
 	uint16_t magicWord;
-}lorawanControllerConfiguration_t;
+} lorawanControllerConfiguration_t;
 
 typedef enum lorawanControllerStatus_tag
 {
-    lorawanController_Success = 0U, /*!< Success */
+	lorawanController_Success = 0U, /*!< Success */
 	lorawanController_Error = 1U, /*!< Failed */
-}lorawanControllerStatus_t;
-
+} lorawanControllerStatus_t;
 
 /**
  * AT commands to communicate with the LoRa MCU
@@ -59,7 +59,6 @@ typedef enum lorawanControllerStatus_tag
 
 #define CMD_SET_APP_KEY 			(AtCommand){"AT+APPKEY=%s\n", "OK", "AT_PARAM_ERROR"}
 #define CMD_GET_APP_KEY				(AtCommand){"AT+APPKEY=?\n", "OK", " "}
-
 
 #define CMD_GET_DEV_ADDR			(AtCommand){"AT+DADDR=?\n", "OK", " "}
 #define CMD_GET_NWK_SESSION_KEY		(AtCommand){"AT+NWKSKEY=?\n", "OK", " "}

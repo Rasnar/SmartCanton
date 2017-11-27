@@ -24,9 +24,9 @@ typedef enum gpsNeoStatus_tag
 	gpsNeo_ReadError = 1U, /*!< Failed */
 	gpsNeo_ParseError = 1U, /*!< Failed */
 	gpsNeo_InitError = 2U, /*!< Failed */
-}gpsNeoStatus_t;
+} gpsNeoStatus_t;
 
-osaStatus_t gps_neo_m8_init(void(*app_notification_callback)(void));
+osaStatus_t gps_neo_m8_init(void (*app_notification_callback)(void));
 
 gpsNeoStatus_t gps_neo_m8_read_rmc(struct minmea_sentence_rmc *frame);
 
