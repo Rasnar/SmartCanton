@@ -527,5 +527,55 @@ How to add your custom service to
 
 
 
-# 10.11.2017
+# 27.11.2017
+
+## Notifications vs Indiciations
+
+When sending indications on a GATT server we need to wait to have responses from the device. The response if receive on the ***BleApp_GattServerCallback*** function. The event type is called ***gEvtHandleValueConfirmation_c***. 
+
+It means that if we want to send multiples indications we need to wait to have a confirmation from the last indications to send the next one!!!
+
+### Sending notitications 
+
+````
+uint16_t  hCccd;
+bool_t isNotifActive;
+
+/* Get handle of CCCD */
+if (GattDb_FindCccdHandleForCharValueHandle(handle, &hCccd) != gBleSuccess_c)
+	return;
+
+if (gBleSuccess_c == Gap_CheckIndicationStatus(mScDbGPS_SubscribedClientId, hCccd, &isNotifActive) &&
+TRUE == isNotifActive) {
+	GattServer_SendIndication(mScDbGPS_SubscribedClientId, handle);
+}
+````
+
+### Sending indications
+
+````
+uint16_t cccdHandle;
+bool_t isNotifActive;
+
+/* Get handle of the handle CCCD */
+if (GattDb_FindCccdHandleForCharValueHandle(*charHandle, &cccdHandle) != gBleSuccess_c)
+	return;
+
+if (mScDbGPS_SubscribedClientId == gInvalidDeviceId_c)
+return;
+
+if (gBleSuccess_c == Gap_CheckNotificationStatus(mScDbGPS_SubscribedClientId, cccdHandle, &isNotifActive) && TRUE == isNotifActive) {
+	GattServer_SendNotification(mScDbGPS_SubscribedClientId, *charHandle);
+}
+````
+
+### Sending notifications without saving value inside GATT database
+
+Data can be sent without been saved inside the GATT database. It means that if we want to access the data after it has been send (eg, with a new connection) it's not possible.
+
+
+
+
+
+
 

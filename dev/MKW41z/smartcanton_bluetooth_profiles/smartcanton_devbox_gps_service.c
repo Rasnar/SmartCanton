@@ -55,6 +55,7 @@ bleResult_t ScDbGPS_Start(scdbGPSConfig_t *pServiceConfig) {
 	mScDbGPS_SubscribedClientId = gInvalidDeviceId_c;
 
 	//result = ScDbGPS_UpdateAllGattTable(pServiceConfig);
+
 	result = gBleSuccess_c;
 	return result;
 }
@@ -201,9 +202,9 @@ static void ScDbGPS_SendNotifications(uint16_t *charHandle) {
 	if (mScDbGPS_SubscribedClientId == gInvalidDeviceId_c)
 		return;
 
-	if (gBleSuccess_c == Gap_CheckIndicationStatus(mScDbGPS_SubscribedClientId,
+	if (gBleSuccess_c == Gap_CheckNotificationStatus(mScDbGPS_SubscribedClientId,
 					cccdHandle, &isNotifActive) && TRUE == isNotifActive) {
-		GattServer_SendIndication(mScDbGPS_SubscribedClientId, *charHandle);
+		GattServer_SendNotification(mScDbGPS_SubscribedClientId, *charHandle);
 	}
 }
 

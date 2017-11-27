@@ -718,25 +718,26 @@ void DevBox_App_Task(osaTaskParam_t argument){
 				ScDbGPS_RecordGPSPosition(service_smartcanton_devbox_gps,
 						&tmp_float1, &tmp_float2);
 
-//				tmp_float1 = minmea_tofloat(&frame.course);
-//				ScDbGPS_RecordGPSCourse(service_smartcanton_devbox_gps,
-//						&tmp_float1);
+				OSA_TaskYield();
+				tmp_float1 = minmea_tofloat(&frame.course);
+				ScDbGPS_RecordGPSCourse(service_smartcanton_devbox_gps,
+						&tmp_float1);
 
-//				tmp_float1 = minmea_tofloat(&frame.speed);
-//				ScDbGPS_RecordGPSSpeed(service_smartcanton_devbox_gps,
-//						&tmp_float1);
+				OSA_TaskYield();
+				tmp_float1 = minmea_tofloat(&frame.speed);
+				ScDbGPS_RecordGPSSpeed(service_smartcanton_devbox_gps,
+						&tmp_float1);
 
+				OSA_TaskYield();
 				ScDbGPS_RecordGPSTime(service_smartcanton_devbox_gps,
 						&frame.time);
 
-//				ScDbGPS_RecordGPSDate(service_smartcanton_devbox_gps,
-//						&frame.date);
+				OSA_TaskYield();
+				ScDbGPS_RecordGPSDate(service_smartcanton_devbox_gps,
+						&frame.date);
 			}
-
 		}
-
 	}
-
 }
 
 

@@ -73,11 +73,6 @@
  *************************************************************************************
  ************************************************************************************/
 
-//typedef struct uint8_array_tag
-//{
-//    uint16_t    arrayLength;
-//    uint8_t     *pUint8_array;
-//}uint8_array_t;
 /*! Smart Canton Dev Box Service - Configuration */
 typedef struct scdbGPSConfig_tag {
 	uint16_t serviceHandle;
@@ -137,19 +132,54 @@ bleResult_t ScDbGPS_Subscribe(deviceId_t clientDeviceId);
  ************************************************************************************/
 bleResult_t ScDbGPS_Unsubscribe();
 
+/*!**********************************************************************************
+ * \brief        Record a new GPS position the GATT database and send a notification
+ * \param[in]	 serviceHandle Handle to the Smart Canton Dev Box GPS service
+ * \param[in]	 latitude New Latitude value
+ * \param[in]	 longitude New Longitude value
+ *
+ * \return       gBleSuccess_c or error.
+ ************************************************************************************/
 bleResult_t ScDbGPS_RecordGPSPosition(uint16_t serviceHandle, float* latitude,
 		float* longitude);
 
+/*!**********************************************************************************
+ * \brief        Record a new GPS speed the GATT database and send a notification
+ * \param[in]	 serviceHandle Handle to the Smart Canton Dev Box GPS service
+ * \param[in]	 speed New GPS speed
+ *
+ * \return       gBleSuccess_c or error.
+ ************************************************************************************/
 bleResult_t ScDbGPS_RecordGPSSpeed(uint16_t serviceHandle, float* speed);
 
+/*!**********************************************************************************
+ * \brief        Record a new GPS course the GATT database and send a notification
+ * \param[in]	 serviceHandle Handle to the Smart Canton Dev Box GPS service
+ * \param[in]	 course New GPS course
+ *
+ * \return       gBleSuccess_c or error.
+ ************************************************************************************/
 bleResult_t ScDbGPS_RecordGPSCourse(uint16_t serviceHandle, float* course);
 
+/*!**********************************************************************************
+ * \brief        Record a new GPS Time the GATT database and send a notification
+ * \param[in]	 serviceHandle Handle to the Smart Canton Dev Box GPS service
+ * \param[in]	 course New GPS time
+ *
+ * \return       gBleSuccess_c or error.
+ ************************************************************************************/
 bleResult_t ScDbGPS_RecordGPSTime(uint16_t serviceHandle, struct minmea_time *time);
 
+/*!**********************************************************************************
+ * \brief        Record a new GPS Date the GATT database and send a notification
+ * \param[in]	 serviceHandle Handle to the Smart Canton Dev Box GPS service
+ * \param[in]	 course New GPS Date
+ *
+ * \return       gBleSuccess_c or error.
+ ************************************************************************************/
 bleResult_t ScDbGPS_RecordGPSDate(uint16_t serviceHandle,
 		struct minmea_date *date);
 
-bleResult_t ScDbGPS_UpdateAllGattTable(scdbGPSConfig_t *pScdbConfig);
 
 #ifdef __cplusplus
 }
