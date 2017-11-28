@@ -82,6 +82,7 @@
 #include "pin_mux.h"
 #include "dev_box_app_task.h"
 #include "lorawan_controller_task.h"
+#include "bno055_task.h"
 
 
 #if gAppUseNvm_d
@@ -422,6 +423,12 @@ void main_task(uint32_t param)
 		}
 
 		if (osaStatus_Success != DevBoxApp_TaskInit())
+		{
+		   panic(0,0,0,0);
+		   return;
+		}
+
+		if (osaStatus_Success != Bno055_TaskInit())
 		{
 		   panic(0,0,0,0);
 		   return;

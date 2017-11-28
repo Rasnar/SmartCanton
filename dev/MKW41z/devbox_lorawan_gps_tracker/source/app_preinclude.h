@@ -73,17 +73,17 @@
  * 	Framework Configuration
  ********************************************************************************** */
 /* enable NVM to be used as non volatile storage management by the host stack */
-#define gAppUseNvm_d                    1
+#define gAppUseNvm_d                    0
 
 /* Defines Num of Serial Manager interfaces */
 #define gSerialManagerMaxInterfaces_c   1
-#define gSerialMgrUseSPI_c				0
+#define gSerialMgrUseIIC_c				1
 
 /**
  * TODO: When enabling gAppUseNvm_d to 1, the serial manager semaphore stay stuck.
  * We can disable the semaphore but it's not a very good fix...
  */
-#define gSMGR_UseOsSemForSynchronization_c 0
+#define gSMGR_UseOsSemForSynchronization_c 1
 
 /* Defines Size for Timer Task*/
 #define gTmrTaskStackSize_c  500
