@@ -74,7 +74,8 @@
  ************************************************************************************/
 
 /*! Smart Canton Dev Box Service - Configuration */
-typedef struct scdbGPSConfig_tag {
+typedef struct scdbGPSConfig_tag
+{
 	uint16_t serviceHandle;
 } scdbGPSConfig_t;
 
@@ -91,7 +92,8 @@ typedef struct scdbGPSConfig_tag {
  ************************************************************************************/
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /*!**********************************************************************************
@@ -140,8 +142,7 @@ bleResult_t ScDbGPS_Unsubscribe();
  *
  * \return       gBleSuccess_c or error.
  ************************************************************************************/
-bleResult_t ScDbGPS_RecordGPSPosition(uint16_t serviceHandle, float* latitude,
-		float* longitude);
+bleResult_t ScDbGPS_RecordGPSPosition(uint16_t serviceHandle, float* latitude, float* longitude);
 
 /*!**********************************************************************************
  * \brief        Record a new GPS speed the GATT database and send a notification
@@ -177,9 +178,7 @@ bleResult_t ScDbGPS_RecordGPSTime(uint16_t serviceHandle, struct minmea_time *ti
  *
  * \return       gBleSuccess_c or error.
  ************************************************************************************/
-bleResult_t ScDbGPS_RecordGPSDate(uint16_t serviceHandle,
-		struct minmea_date *date);
-
+bleResult_t ScDbGPS_RecordGPSDate(uint16_t serviceHandle, struct minmea_date *date);
 
 #ifdef __cplusplus
 }
