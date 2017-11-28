@@ -1,5 +1,5 @@
 /**
- * @file    bno055.c
+ * @file    bno055_support.c
  * @author  Da Silva Andrade David
  * @version V1.0
  * @date    25-10-2017
@@ -38,7 +38,7 @@ static void (*bno055_app_function_notification_callback)(void);
  *   which is hold in an array
  *	\param cnt : The no of byte of data to be read
  */
-s8 BNO055_I2C_bus_read(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt);
+static s8 BNO055_I2C_bus_read(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt);
 
 /*	\Brief: The API is used as SPI bus write
  *	\Return : Status of the SPI write
@@ -49,20 +49,20 @@ s8 BNO055_I2C_bus_read(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt);
  *	will be used for write the value into the register
  *	\param cnt : The no of byte of data to be write
  */
-s8 BNO055_I2C_bus_write(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt);
+static s8 BNO055_I2C_bus_write(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt);
 
 /*	Brief : The delay routine
  *	\param : delay in ms
  */
-void BNO055_delay_msek(u32 msek);
+static void BNO055_delay_msek(u32 msek);
 
-i2c_master_config_t masterConfig;
-i2c_master_transfer_t masterXfer;
+static i2c_master_config_t masterConfig;
+static i2c_master_transfer_t masterXfer;
 
 /*!
  * @brief Interrupt service each second when the gps is synchronized
  */
-void bno055_irq(void) {
+static void bno055_irq(void) {
 
 	if (bno055_app_function_notification_callback != NULL)
 	{
@@ -124,7 +124,7 @@ void bno055_kw41z_I2C_routines_init(struct bno055_t* bno055, void (*bno055_app_n
  *		will be used for write the value into the register
  *	\param cnt : The no of byte of data to be write
  */
-s8 BNO055_I2C_bus_write(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
+static s8 BNO055_I2C_bus_write(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
 {
 	s32 BNO055_iERROR = BNO055_INIT_VALUE;
 
@@ -151,7 +151,7 @@ s8 BNO055_I2C_bus_write(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
  *   which is hold in an array
  *	\param cnt : The no of byte of data to be read
  */
-s8 BNO055_I2C_bus_read(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
+static s8 BNO055_I2C_bus_read(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
 {
 	s32 BNO055_iERROR = BNO055_INIT_VALUE;
 
@@ -170,7 +170,7 @@ s8 BNO055_I2C_bus_read(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
 /*	Brief : The delay routine
  *	\param : delay in ms
 */
-void BNO055_delay_msek(u32 msek)
+static void BNO055_delay_msek(u32 msek)
 {
 	OSA_TimeDelay(msek);
 }
