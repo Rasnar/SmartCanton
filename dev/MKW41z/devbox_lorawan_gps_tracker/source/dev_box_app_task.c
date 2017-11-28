@@ -71,6 +71,7 @@
 #include "pin_mux.h"
 #include "board.h"
 #include "neo-m8.h"
+#include "bno055_support.h"
 
 #include "ApplMain.h"
 
@@ -146,6 +147,8 @@ static tmrTimerID_t mAdvTimerId;
 static tmrTimerID_t mBatteryMeasurementTimerId;
 
 osaEventId_t gDevBoxAppEvent;
+
+struct bno055_t bno055;
 
 /************************************************************************************
  *************************************************************************************
@@ -703,18 +706,47 @@ void gps_neo_m8_new_data_available_callback(void)
 	Led2Toggle();
 }
 
+/**
+ * Callback function called when an interruption as been received from the
+ *
+ */
+void bno055_new_data_available_callback(void)
+{
+	/* Inform the DevBox Task that she can read the data avaible */
+	//OSA_EventSet(gDevBoxAppEvent, gDevBoxTaskEvtNewGPSDataRdy_c);
+
+	Led3Toggle();
+}
+
 void DevBox_App_Task(osaTaskParam_t argument)
 {
 
 	struct minmea_sentence_rmc frame;
-	gps_neo_m8_init(gps_neo_m8_new_data_available_callback);
 	float tmp_float1, tmp_float2;
-
 	osaEventFlags_t event;
+
+	gps_neo_m8_init(gps_neo_m8_new_data_available_callback);
+
+	bno055_kw41z_I2C_routines_init(&bno055, bno055_new_data_available_callback);
+	bno055_init(&bno055);
+
+	bno055_set_operation_mode(BNO055_OPERATION_MODE_AMG);
+
+	struct bno055_accel_t accel_xyz;
+	struct bno055_mag_t mag_xyz;
+	struct bno055_gyro_t gyro_xyz;
+
+	bno055_read_accel_xyz(&accel_xyz);
+	bno055_read_mag_xyz(&mag_xyz);
+	bno055_read_gyro_xyz(&gyro_xyz);
+
+	bno055_set_operation_mode(BNO055_OPERATION_MODE_NDOF);
+	struct bno055_gravity_t gravity;
+	bno055_read_gravity_xyz(&gravity);
+
 	while (1)
 	{
-		OSA_EventWait(gDevBoxAppEvent, osaEventFlagsAll_c, FALSE,
-		osaWaitForever_c, &event);
+		OSA_EventWait(gDevBoxAppEvent, osaEventFlagsAll_c, FALSE, osaWaitForever_c, &event);
 
 		/* Event oRaWAN controller to update the GATT table with the latest informations */
 		if (event & gDevBoxTaskEvtNewLoRaWANConfig_c)
