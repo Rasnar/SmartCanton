@@ -150,8 +150,7 @@ lorawanControllerStatus_t lorawan_controller_init_module()
 	lorawan_configuration_valid = false;
 
 	/* RESET LoRa MCU to start with a clean state */
-	lorawan_controller_set_cmd(CMD_MCURESET
-	); // Reset LoRa MCU to be sure to have a new configuration
+	lorawan_controller_set_cmd(CMD_MCURESET);
 	OSA_TimeDelay(20); // Wait a bit to be sure that the LoRa MCU is reset
 
 	/* Empty reception buffer with glitches from the reset */
@@ -227,7 +226,7 @@ lorawanControllerStatus_t lorawan_controller_get_configuration_validity()
 osaStatus_t lorawan_controller_init(void)
 {
 	serialStatus_t status = Serial_InitInterface(&interfaceId, SERIAL_MANAGER_INTERFACE_TYPE,
-			SERIAL_MANAGER_INSTANCE_SERIAL);
+	SERIAL_MANAGER_INSTANCE_SERIAL);
 	if (gSerial_Success_c != status)
 	{
 		panic(0, 0, 0, 0);
