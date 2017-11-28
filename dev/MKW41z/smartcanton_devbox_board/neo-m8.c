@@ -28,9 +28,12 @@
 #define DISABLE_CHIP_SELECT_GPS()	GPIO_WritePinOutput(BOARD_GPS_nCS_GPIO, BOARD_GPS_nCS_PIN, 1)
 #define ENABLE_CHIP_SELECT_GPS()	GPIO_WritePinOutput(BOARD_GPS_nCS_GPIO, BOARD_GPS_nCS_PIN, 0)
 
-gpioInputPinConfig_t mTimePulseCfg =
-{ .gpioPort = gpioPort_C_c, .gpioPin =
-BOARD_GPS_TIMEPULSE_PIN, .pullSelect = pinPull_Down_c, .interruptSelect = pinInt_FallingEdge_c, };
+static gpioInputPinConfig_t mTimePulseCfg =
+{ 		.gpioPort = BOARD_GPS_TIMEPULSE_GPIO_PORT,
+		.gpioPin = BOARD_GPS_TIMEPULSE_PIN,
+		.pullSelect = pinPull_Down_c,
+		.interruptSelect = pinInt_FallingEdge_c,
+};
 
 static dspi_master_config_t masterConfig;
 static dspi_master_handle_t g_m_handle;
@@ -44,7 +47,7 @@ static uint8_t masterTxData[TRANSFER_SIZE] =
 { 0U };
 
 /* Pointer to a callback function provided by the application */
-void (*app_function_notification_callback)(void);
+static void (*app_function_notification_callback)(void);
 
 static void timepulse_irq_callback(void);
 
@@ -153,8 +156,6 @@ void write_spi_blocking()
  */
 void timepulse_irq_callback(void)
 {
-	//OSA_EventSet(gDevBoxAppEvent, gDevBoxTaskEvtNewLoRaWANConfig_c);
-
 	ENABLE_CHIP_SELECT_GPS();
 	read_spi_non_blocking(masterTxData, masterRxData, TRANSFER_SIZE);
 
