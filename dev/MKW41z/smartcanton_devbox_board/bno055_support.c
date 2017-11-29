@@ -8,23 +8,20 @@
 
 #include "bno055_support.h"
 #include "board.h"
-#include "fsl_i2c.h"
+#include "fsl_i2c_freertos.h"
 #include "fsl_os_abstraction.h"
 #include "fsl_gpio.h"
 #include "GPIO_Adapter.h"
 
-#define I2C_MASTER_BASEADDR I2C0
-#define I2C_MASTER_CLK_SRC I2C0_CLK_SRC
-#define I2C_MASTER_CLK_FREQ CLOCK_GetFreq(I2C0_CLK_SRC)
-#define I2C_BAUDRATE 400000U
+#define	I2C_BUFFER_LEN 8
+#define	BNO055_I2C_BUS_WRITE_ARRAY_INDEX	((u8)1)
 
 static gpioInputPinConfig_t mBno055IntCfg =
-{
-		.gpioPort = BOARD_BNO055_INT_GPIO_PORT,
-		.gpioPin = BOARD_BNO055_INT_PIN,
-		.pullSelect = pinPull_Down_c,
-		.interruptSelect = pinInt_RisingEdge_c,
-};
+{ .gpioPort = BOARD_BNO055_INT_GPIO_PORT, .gpioPin = BOARD_BNO055_INT_PIN, .pullSelect = pinPull_Down_c,
+		.interruptSelect = pinInt_RisingEdge_c, };
+
+static i2c_rtos_handle_t* master_rtos_handle;
+static i2c_master_transfer_t masterXfer;
 
 /* Pointer to a callback function provided by the application */
 static void (*bno055_app_function_notification_callback)(void);
@@ -56,13 +53,12 @@ static s8 BNO055_I2C_bus_write(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt);
  */
 static void BNO055_delay_msek(u32 msek);
 
-static i2c_master_config_t masterConfig;
-static i2c_master_transfer_t masterXfer;
 
 /*!
  * @brief Interrupt service each second when the gps is synchronized
  */
-static void bno055_irq(void) {
+static void bno055_irq(void)
+{
 
 	if (bno055_app_function_notification_callback != NULL)
 	{
@@ -71,49 +67,36 @@ static void bno055_irq(void) {
 	GpioClearPinIntFlag(&mBno055IntCfg);
 }
 
-
-
-static void init_bno055_irq(){
+static void init_bno055_irq()
+{
 
 	GpioInstallIsr(bno055_irq, gGpioIsrPrioNormal_c, 0x80, &mBno055IntCfg);
 	GpioInputPinInit(&mBno055IntCfg, 1);
 }
 
-
-void bno055_kw41z_I2C_routines_init(struct bno055_t* bno055, void (*bno055_app_notification_callback)(void))
+void bno055_kw41z_I2C_routines_init(struct bno055_t* bno055, i2c_rtos_handle_t* i2c_master_rtos_handle, void (*bno055_app_notification_callback)(void))
 {
 
 	bno055_app_function_notification_callback = bno055_app_notification_callback;
 
 	init_bno055_irq();
 
-	 /*
-	 * masterConfig.baudRate_Bps = 100000U;
-	 * masterConfig.enableStopHold = false;
-	 * masterConfig.glitchFilterWidth = 0U;
-	 * masterConfig.enableMaster = true;
-	 */
-	I2C_MasterGetDefaultConfig(&masterConfig);
-	masterConfig.baudRate_Bps = I2C_BAUDRATE;
-
-	I2C_MasterInit(I2C_MASTER_BASEADDR, &masterConfig, I2C_MASTER_CLK_FREQ);
-
 	bno055->bus_write = BNO055_I2C_bus_write;
 	bno055->bus_read = BNO055_I2C_bus_read;
 	bno055->delay_msec = BNO055_delay_msek;
 	bno055->dev_addr = BNO055_I2C_ADDR1;
+
+
+	master_rtos_handle = i2c_master_rtos_handle;
 }
 
-#define	I2C_BUFFER_LEN 8
-#define	BNO055_I2C_BUS_WRITE_ARRAY_INDEX	((u8)1)
-
 /*-------------------------------------------------------------------*
-*
-*	This is a sample code for read and write the data by using I2C
-*	Use either I2C  based on your need
-*	The device address defined in the bno055.h file
-*
-*--------------------------------------------------------------------*/
+ *
+ *	This is a sample code for read and write the data by using I2C
+ *	Use either I2C  based on your need
+ *	The device address defined in the bno055.h file
+ *
+ *--------------------------------------------------------------------*/
 
 /*	\Brief: The API is used as I2C bus write
  *	\Return : Status of the I2C write
@@ -126,8 +109,6 @@ void bno055_kw41z_I2C_routines_init(struct bno055_t* bno055, void (*bno055_app_n
  */
 static s8 BNO055_I2C_bus_write(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
 {
-	s32 BNO055_iERROR = BNO055_INIT_VALUE;
-
 	masterXfer.slaveAddress = dev_addr;
 	masterXfer.direction = kI2C_Write;
 	masterXfer.subaddress = reg_addr;
@@ -136,13 +117,18 @@ static s8 BNO055_I2C_bus_write(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
 	masterXfer.dataSize = cnt;
 	masterXfer.flags = kI2C_TransferDefaultFlag;
 
-	status_t res = I2C_MasterTransferBlocking(I2C_MASTER_BASEADDR, &masterXfer);
-	res = res;
-
-	return (s8)BNO055_iERROR;
+	status_t status = I2C_RTOS_Transfer(master_rtos_handle, &masterXfer);
+	if (status == kStatus_Success)
+	{
+		return (s8) BNO055_SUCCESS;
+	}
+	else
+	{
+		return (s8) BNO055_ERROR;
+	}
 }
 
- /*	\Brief: The API is used as I2C bus read
+/*	\Brief: The API is used as I2C bus read
  *	\Return : Status of the I2C read
  *	\param dev_addr : The device address of the sensor
  *	\param reg_addr : Address of the first register,
@@ -153,8 +139,6 @@ static s8 BNO055_I2C_bus_write(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
  */
 static s8 BNO055_I2C_bus_read(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
 {
-	s32 BNO055_iERROR = BNO055_INIT_VALUE;
-
 	masterXfer.slaveAddress = dev_addr;
 	masterXfer.direction = kI2C_Read;
 	masterXfer.subaddress = reg_addr;
@@ -163,13 +147,20 @@ static s8 BNO055_I2C_bus_read(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
 	masterXfer.dataSize = cnt;
 	masterXfer.flags = kI2C_TransferDefaultFlag;
 
-	I2C_MasterTransferBlocking(I2C_MASTER_BASEADDR, &masterXfer);
+	status_t status = I2C_RTOS_Transfer(master_rtos_handle, &masterXfer);
+	if (status != kStatus_Success)
+	{
+		return (s8) BNO055_SUCCESS;
+	}
+	else
+	{
+		return (s8) BNO055_ERROR;
+	}
 
-	return (s8)BNO055_iERROR;
 }
 /*	Brief : The delay routine
  *	\param : delay in ms
-*/
+ */
 static void BNO055_delay_msek(u32 msek)
 {
 	OSA_TimeDelay(msek);

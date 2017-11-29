@@ -163,6 +163,10 @@ uint32_t maPCRSave[mNoOfPinsDisabledInLowPower_c];
 /* FRDM-KW41Z Rev A2 xtal trim */
 static const uint8_t mXtalTrimDefault = 0x30;
 
+
+static i2c_master_config_t i2cEmbedSensorsConfig;
+static i2c_rtos_handle_t i2c0_master_rtos_handle;
+
 /************************************************************************************
  *************************************************************************************
  * Private functions prototypes
@@ -637,6 +641,26 @@ void BOARD_BLPItoBLPE(void)
 	while ((RSIM->CONTROL & RSIM_CONTROL_RF_OSC_READY_MASK) == 0)
 	{
 	}
+}
+
+status_t BOARD_InitI2CEmbeddedSensors(void)
+{
+	/*
+	 * masterConfig.baudRate_Bps = 100000U;
+	 * masterConfig.enableStopHold = false;
+	 * masterConfig.glitchFilterWidth = 0U;
+	 * masterConfig.enableMaster = true;
+	 */
+	I2C_MasterGetDefaultConfig(&i2cEmbedSensorsConfig);
+	i2cEmbedSensorsConfig.baudRate_Bps = BOARD_I2C_EMBEDDED_SENSORS_BAUDRATE;
+
+	return I2C_RTOS_Init(&i2c0_master_rtos_handle, BOARD_I2C_EMBEDDED_SENSORS_BASEADDR, &i2cEmbedSensorsConfig,
+			BOARD_I2C_EMBEDDED_SENSORS_CLK_FREQ);
+}
+
+i2c_rtos_handle_t* BOARD_GetI2CEmbeddedSensorsHandle(void)
+{
+	return &i2c0_master_rtos_handle;
 }
 
 /*******************************************************************************

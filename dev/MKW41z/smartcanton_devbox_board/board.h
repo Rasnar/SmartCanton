@@ -32,6 +32,8 @@
 #define _BOARD_H_
 
 #include "fsl_gpio.h"
+#include "fsl_i2c_freertos.h"
+#include "fsl_dspi_freertos.h"
 
 /*******************************************************************************
  * Definitions
@@ -138,6 +140,11 @@
 #define BOARD_GPS_nCS_GPIO				GPIOC
 #define BOARD_GPS_nCS_PORT				PORTC
 
+#define BOARD_I2C_EMBEDDED_SENSORS_BASEADDR I2C0
+#define BOARD_I2C_EMBEDDED_SENSORS_CLK_SRC I2C0_CLK_SRC
+#define BOARD_I2C_EMBEDDED_SENSORS_CLK_FREQ CLOCK_GetFreq(I2C0_CLK_SRC)
+#define BOARD_I2C_EMBEDDED_SENSORS_BAUDRATE 400000U
+
 #define gADC16_ReferenceVoltageSource_d kADC16_ReferenceVoltageSourceValt
 
 #if defined(__cplusplus)
@@ -155,6 +162,10 @@ void hardware_init(void);
 
 /* Function to initialize ADC on board configuration. */
 void BOARD_InitAdc(void);
+
+/* Function to initialize I2C0 on board configuration. */
+status_t BOARD_InitI2CEmbeddedSensors(void);
+i2c_rtos_handle_t* BOARD_GetI2CEmbeddedSensorsHandle(void);
 
 /* Function to initialize DCDC on board configuration. */
 void BOARD_DCDCInit(void);

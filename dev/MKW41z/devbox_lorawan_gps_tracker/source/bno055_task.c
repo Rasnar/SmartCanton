@@ -24,6 +24,8 @@ struct bno055_mag_t mag_xyz;
 struct bno055_gyro_t gyro_xyz;
 struct bno055_gravity_t gravity;
 
+static i2c_rtos_handle_t* master_rtos_handle;
+
 /**
  * Callback function called when an interruption as been received from the
  *
@@ -40,11 +42,9 @@ void bno055_new_data_available_callback(void)
  */
 void Bno055_Task(osaTaskParam_t argument)
 {
-
-	//	osaEventFlags_t event;
 	int8_t rslt = 0;
 
-	bno055_kw41z_I2C_routines_init(&bno055, bno055_new_data_available_callback);
+	bno055_kw41z_I2C_routines_init(&bno055, master_rtos_handle, bno055_new_data_available_callback);
 	rslt = bno055_init(&bno055);
 
 	while (1)
@@ -62,12 +62,14 @@ void Bno055_Task(osaTaskParam_t argument)
 	}
 }
 
-osaStatus_t Bno055_TaskInit(void)
+osaStatus_t Bno055_TaskInit(i2c_rtos_handle_t* i2c_master_rtos_handle)
 {
 	if (gBno055TaskId)
 	{
 		return osaStatus_Error;
 	}
+
+	master_rtos_handle = i2c_master_rtos_handle;
 
 	/* Task creation */
 	gBno055TaskId = OSA_TaskCreate(OSA_TASK(Bno055_Task), NULL);

@@ -428,7 +428,13 @@ void main_task(uint32_t param)
 		   return;
 		}
 
-		if (osaStatus_Success != Bno055_TaskInit())
+		/**
+		 * Init I2C used by BNO055 and BME680. Both Tasks using these peripherals needs
+		 * an handle to the same I2C.
+		 */
+		BOARD_InitI2CEmbeddedSensors();
+
+		if (osaStatus_Success != Bno055_TaskInit(BOARD_GetI2CEmbeddedSensorsHandle()))
 		{
 		   panic(0,0,0,0);
 		   return;

@@ -11,6 +11,7 @@
 
 /* Fwk */
 #include "fsl_os_abstraction.h"
+#include "fsl_i2c_freertos.h"
 
 /*
  * These values should be modified by the application as necessary.
@@ -23,6 +24,6 @@
 #define gBno055TaskPriority_c  (3)
 
 void Bno055_Task(osaTaskParam_t argument);
-osaStatus_t Bno055_TaskInit(void);
+osaStatus_t Bno055_TaskInit(i2c_rtos_handle_t* i2c_master_rtos_handle);
 
 #endif /* __BNO055_TASK_H__ */

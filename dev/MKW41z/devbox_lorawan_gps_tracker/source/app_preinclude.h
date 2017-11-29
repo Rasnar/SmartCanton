@@ -77,7 +77,6 @@
 
 /* Defines Num of Serial Manager interfaces */
 #define gSerialManagerMaxInterfaces_c   1
-#define gSerialMgrUseIIC_c				1
 
 /**
  * TODO: When enabling gAppUseNvm_d to 1, the serial manager semaphore stay stuck.
