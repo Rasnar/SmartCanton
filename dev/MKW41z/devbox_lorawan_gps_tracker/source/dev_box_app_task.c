@@ -149,7 +149,6 @@ static tmrTimerID_t mBatteryMeasurementTimerId;
 
 osaEventId_t gDevBoxAppEvent;
 
-struct bme680_dev bme680;
 
 /************************************************************************************
  *************************************************************************************
@@ -717,47 +716,6 @@ void DevBox_App_Task(osaTaskParam_t argument)
 	osaEventFlags_t event;
 
 	gps_neo_m8_init(gps_neo_m8_new_data_available_callback);
-
-//	bme680_kw41z_I2C_routines_init(&bme680);
-//	rslt = bme680_init(&bme680);
-//
-//	uint8_t set_required_settings;
-//
-//	/* Set the temperature, pressure and humidity settings */
-//	bme680.tph_sett.os_hum = BME680_OS_2X;
-//	bme680.tph_sett.os_pres = BME680_OS_4X;
-//	bme680.tph_sett.os_temp = BME680_OS_8X;
-//	bme680.tph_sett.filter = BME680_FILTER_SIZE_3;
-//
-//	/* Set the remaining gas sensor settings and link the heating profile */
-//	bme680.gas_sett.run_gas = BME680_ENABLE_GAS_MEAS;
-//	/* Create a ramp heat waveform in 3 steps */
-//	bme680.gas_sett.heatr_temp = 320; /* degree Celsius */
-//	bme680.gas_sett.heatr_dur = 150; /* milliseconds */
-//
-//	/* Select the power mode */
-//	/* Must be set before writing the sensor configuration */
-//	bme680.power_mode = BME680_FORCED_MODE;
-//
-//	/* Set the required sensor settings needed */
-//	set_required_settings = BME680_OST_SEL | BME680_OSP_SEL | BME680_OSH_SEL | BME680_FILTER_SEL
-//		| BME680_GAS_SENSOR_SEL;
-//
-//	/* Set the desired sensor configuration */
-//	rslt = bme680_set_sensor_settings(set_required_settings,&bme680);
-//
-//	/* Set the power mode */
-//	rslt = bme680_set_sensor_mode(&bme680);
-//
-//	/* Get the total measurement duration so as to sleep or wait till the
-//	 * measurement is complete */
-//	uint16_t meas_period;
-//	bme680_get_profile_dur(&meas_period, &bme680);
-//	OSA_TimeDelay(meas_period); /* Delay till the measurement is ready */
-//
-//	struct bme680_field_data data;
-//	rslt = bme680_get_sensor_data(&data, &bme680);
-
 
 	while (1)
 	{

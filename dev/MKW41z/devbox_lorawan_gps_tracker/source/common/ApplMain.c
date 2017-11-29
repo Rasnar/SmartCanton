@@ -83,6 +83,7 @@
 #include "dev_box_app_task.h"
 #include "lorawan_controller_task.h"
 #include "bno055_task.h"
+#include "bme680_task.h"
 
 
 #if gAppUseNvm_d
@@ -435,6 +436,12 @@ void main_task(uint32_t param)
 		BOARD_InitI2CEmbeddedSensors();
 
 		if (osaStatus_Success != Bno055_TaskInit(BOARD_GetI2CEmbeddedSensorsHandle()))
+		{
+		   panic(0,0,0,0);
+		   return;
+		}
+
+		if (osaStatus_Success != Bme680_TaskInit(BOARD_GetI2CEmbeddedSensorsHandle()))
 		{
 		   panic(0,0,0,0);
 		   return;

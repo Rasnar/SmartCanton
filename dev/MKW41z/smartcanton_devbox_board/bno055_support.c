@@ -148,7 +148,7 @@ static s8 BNO055_I2C_bus_read(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
 	masterXfer.flags = kI2C_TransferDefaultFlag;
 
 	status_t status = I2C_RTOS_Transfer(master_rtos_handle, &masterXfer);
-	if (status != kStatus_Success)
+	if (status == kStatus_Success)
 	{
 		return (s8) BNO055_SUCCESS;
 	}
