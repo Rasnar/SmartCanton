@@ -42,7 +42,7 @@ extern gapPairingParameters_t gPairingParameters;
 extern gapDeviceSecurityRequirements_t deviceSecurityRequirements;
 
 /*! Idle Task Stack Size */
-#define gDevBoxAppTaskStackSize_c (1500)
+#define gDevBoxAppTaskStackSize_c (1024)
 
 /*! Lorawan Controller Task OS Abstraction Priority */
 #define gDevBoxAppTaskPriority_c  (3)

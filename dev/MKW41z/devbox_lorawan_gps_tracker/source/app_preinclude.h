@@ -75,8 +75,11 @@
 /* enable NVM to be used as non volatile storage management by the host stack */
 #define gAppUseNvm_d                    0
 
+/* Bytes allowed to the Serial Manager Stack */
+#define gSerialTaskStackSize_c			(512)
+
 /* Defines Num of Serial Manager interfaces */
-#define gSerialManagerMaxInterfaces_c   1
+#define gSerialManagerMaxInterfaces_c   2
 
 /**
  * TODO: When enabling gAppUseNvm_d to 1, the serial manager semaphore stay stuck.
@@ -152,10 +155,10 @@
 #define osNumberOfEvents        7
 
 /* Defines main task stack size */
-#define gMainThreadStackSize_c  2048
+#define gMainThreadStackSize_c  1024
            
 /* Defines total heap size used by the OS */
-#define gTotalHeapSize_c        16000
+#define gTotalHeapSize_c        20480
            
 /*! *********************************************************************************
  * 	BLE Stack Configuration
