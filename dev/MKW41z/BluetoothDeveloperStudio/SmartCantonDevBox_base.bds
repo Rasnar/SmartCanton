@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<BDSProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="SmartCantonDevBox_base" LastModified="2017-11-24T13:45:46.0738843+01:00">
+<BDSProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="SmartCantonDevBox_base" LastModified="2017-11-30T14:18:48.9298825+01:00">
   <Namespace>com.hepia</Namespace>
   <BaseGuid>df900000-4a83-4c1f-bb33-b623b734763f</BaseGuid>
   <Profile Name="com.hepia.profile.smartcanton_devbox" XMLFile="Profiles\com.hepia.profile.smartcanton_devbox.xml" />
@@ -102,13 +102,7 @@
     <Service UID="3caea3f1-0849-476c-b079-2abe69e2a316" XMLFile="Services\com.hepia.service.smartcanton_devbox_gps.xml" UUIDMode="Full">
       <UUIDDisplayMode>Full</UUIDDisplayMode>
       <CharacteristicFiles>
-        <Characteristic UID="8f6ad1de-4036-465c-8fa6-f2a5fc411c1e" XMLFile="Characteristics\com.hepia.characteristic.gps_latitude.xml" UUIDMode="Full">
-          <DescriptorFiles>
-            <Descriptor UID="ee298436-4d29-486d-a60b-a039612f7ad7" XMLFile="Descriptors\com.hepia.descriptor.characteristic_user_description.xml" UUIDMode="Short" />
-            <Descriptor UID="6851e5c5-3e23-4527-a21a-a0ff5393d675" XMLFile="Descriptors\org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml" UUIDMode="Short" />
-          </DescriptorFiles>
-        </Characteristic>
-        <Characteristic UID="51fc31a8-2ec5-403a-b224-17729d4957c0" XMLFile="Characteristics\com.hepia.characteristic.gps_longitude.xml" UUIDMode="Full">
+        <Characteristic UID="51fc31a8-2ec5-403a-b224-17729d4957c0" XMLFile="Characteristics\com.hepia.characteristic.gps_position.xml" UUIDMode="Full">
           <DescriptorFiles>
             <Descriptor UID="b2f58540-7a74-4b50-8fd0-9da5d3ee4289" XMLFile="Descriptors\com.hepia.descriptor.characteristic_user_description.xml" UUIDMode="Short" />
             <Descriptor UID="9e49720f-8450-499a-bab8-e23497173240" XMLFile="Descriptors\org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml" UUIDMode="Short" />

@@ -2,7 +2,7 @@
 <Characteristic xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd"
   type="com.hepia.characteristic.gps_course"
-  uuid="10000004-aaaa-bbbb-cccc-dddddddddddd"
+  uuid="10000003-aaaa-bbbb-cccc-dddddddddddd"
   name="GPS Course">
   <Value>
     <Field
