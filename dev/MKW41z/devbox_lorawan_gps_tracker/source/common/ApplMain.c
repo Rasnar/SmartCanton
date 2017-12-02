@@ -435,11 +435,11 @@ void main_task(uint32_t param)
 		 */
 		BOARD_InitI2CEmbeddedSensors();
 
-		if (osaStatus_Success != Bno055_TaskInit(BOARD_GetI2CEmbeddedSensorsHandle()))
-		{
-		   panic(0,0,0,0);
-		   return;
-		}
+//		if (osaStatus_Success != Bno055_TaskInit(BOARD_GetI2CEmbeddedSensorsHandle()))
+//		{
+//		   panic(0,0,0,0);
+//		   return;
+//		}
 
 		if (osaStatus_Success != Bme680_TaskInit(BOARD_GetI2CEmbeddedSensorsHandle()))
 		{

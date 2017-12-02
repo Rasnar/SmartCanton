@@ -72,7 +72,7 @@
 #include "board.h"
 #include "neo-m8.h"
 #include "bno055_support.h"
-#include "bme680_support.h"
+#include "bme680_bsec_support.h"
 
 #include "ApplMain.h"
 
@@ -710,7 +710,6 @@ void gps_neo_m8_new_data_available_callback(void)
 
 void DevBox_App_Task(osaTaskParam_t argument)
 {
-
 	struct minmea_sentence_rmc frame;
 	float tmp_float1, tmp_float2;
 	osaEventFlags_t event;
@@ -721,7 +720,7 @@ void DevBox_App_Task(osaTaskParam_t argument)
 	{
 		OSA_EventWait(gDevBoxAppEvent, osaEventFlagsAll_c, FALSE, osaWaitForever_c, &event);
 
-		/* Event oRaWAN controller to update the GATT table with the latest informations */
+		/* Event LoRaWAN controller to update the GATT table with the latest informations */
 		if (event & gDevBoxTaskEvtNewLoRaWANConfig_c)
 		{
 			if (lorawan_controller_get_configuration_validity() == lorawanController_Success)
