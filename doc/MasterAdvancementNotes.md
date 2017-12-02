@@ -236,7 +236,7 @@ In file "command" of the project "AT_Slave" of the LRWAN card we can find this h
 
 
 
-##### Maximum Duty Cycle
+### Maximum Duty Cycle
 
 The duty cycle of radio devices is often regulated by government. If this is the case, the duty cycle is commonly set to 1%, but make sure to check the regulations of your local government to be sure.
 
@@ -585,19 +585,43 @@ https://github.com/BoschSensortec/BME680_driver
 
 
 
+## BME680 BSEC
 
+Bosch provide a software API to be able to calculate an index for the air quality :
+
+https://www.bosch-sensortec.com/bst/products/all_products/bme680
+
+
+
+board/BME680_BSEC
+
+
+
+`project -> Properties -> C/C++ Build -> MCU Linker -> Libraries`
+
+Libraries : 
+
+`algobsec`
+
+Library search path :
+
+`"${workspace_loc:/${ProjName}/board/BME680_BSEC}"`
+
+The algo library also needs to have the MATH library linked (`-lm`).
+
+To link it you can add it as follow : 
+
+`project -> Properties -> C/C++ Build -> MCU Linker -> Libraries`
+
+Libraries : 
+
+`m`
+
+The m need to be put **AFTER** the ***algobsec***.
 
 ## BNO055 driver
 
 Bosch provide a driver that can be used to read data from the BME680 :
 
-https://github.com/BoschSensortec/BME680_driver
-
-
-
-
-
-
-
-
+https://github.com/BoschSensortec/BNO055_driver
 
