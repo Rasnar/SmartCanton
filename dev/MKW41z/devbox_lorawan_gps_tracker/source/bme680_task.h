@@ -18,7 +18,7 @@
  * They are used by the BME680 Task  initialization code from bme680_task.c.
  */
 /*! Idle Task Stack Size */
-#define gBme680TaskStackSize_c (1500)
+#define gBme680TaskStackSize_c (4096)
 
 /*! Bno55 Task OS Abstraction Priority */
 #define gBme680TaskPriority_c  (3)

@@ -76,7 +76,7 @@
 #define gAppUseNvm_d                    0
 
 /* Bytes allowed to the Serial Manager Stack */
-#define gSerialTaskStackSize_c			(512)
+#define gSerialTaskStackSize_c			(1024)
 
 /* Defines Num of Serial Manager interfaces */
 #define gSerialManagerMaxInterfaces_c   2
@@ -155,7 +155,7 @@
 #define osNumberOfEvents        7
 
 /* Defines main task stack size */
-#define gMainThreadStackSize_c  1024
+#define gMainThreadStackSize_c  2048
            
 /* Defines total heap size used by the OS */
 #define gTotalHeapSize_c        20480
