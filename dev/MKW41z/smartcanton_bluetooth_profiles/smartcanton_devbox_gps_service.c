@@ -128,7 +128,7 @@ bleResult_t ScDbGPS_RecordGPSTime(uint16_t serviceHandle, struct minmea_time *ti
 	if (result != gBleSuccess_c)
 		return result;
 
-	snprintf(strFloat, sizeof(strFloat), "%d:%d:%d", time->hours, time->minutes, time->seconds);
+	snprintf(strFloat, sizeof(strFloat), "%02d:%02d:%02d", time->hours, time->minutes, time->seconds);
 
 	/* Update characteristic value and send notification */
 	if (!ScDbGPS_UpdateGPSCharacteristicUTF8s(&handle, strFloat))
@@ -151,7 +151,7 @@ bleResult_t ScDbGPS_RecordGPSDate(uint16_t serviceHandle, struct minmea_date *da
 	if (result != gBleSuccess_c)
 		return result;
 
-	snprintf(strFloat, sizeof(strFloat), "%d/%d/%d", date->day, date->month, date->year);
+	snprintf(strFloat, sizeof(strFloat), "%02d/%02d/%02d", date->day, date->month, date->year);
 
 	/* Update characteristic value and send notification */
 	if (!ScDbGPS_UpdateGPSCharacteristicUTF8s(&handle, strFloat))
