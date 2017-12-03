@@ -26,7 +26,7 @@ int convertHexStringToBytesArray(char *strHex, uint8_t* bytesArray)
 int convertBytesArrayToHexString(uint8_t *buffer, uint16_t bufferLength, char* str)
 {
 
-	int i;
+	int i = 0;
 
 	if (bufferLength > 1)
 	{
