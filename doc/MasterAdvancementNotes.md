@@ -690,5 +690,30 @@ To have a greater margin :
 
 
 
+## Interrupt Priority Cortex M in FreeRTOS
+
+https://www.freertos.org/RTOS-Cortex-M3-M4.html
+
+https://www.freertos.org/a00110.html#kernel_priority
+
+
+
+## Time occupied by each task 
+
+It's possible to ask Freertos to log the time passed in each task. In the file FreeRTOSConfig.h : 
+
+````
+#define configGENERATE_RUN_TIME_STATS           1
+...
+#define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS() OSA_TimeGetMsec()
+#define portGET_RUN_TIME_COUNTER_VALUE() OSA_TimeGetMsec()
+````
+
+More infos : https://www.freertos.org/rtos-run-time-stats.html
+
+
+
+
+
 
 
