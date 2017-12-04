@@ -63,7 +63,7 @@
 #define gPasskeyValue_c                999999
 
 #define gSerialMgrRxBufSize_c               (128)
-#define gSerialTaskPriority_c               (16)
+#define gSerialTaskPriority_c               (10)
 
 #if (gAppUseBonding_d) && (!gAppUsePairing_d)
   #error "Enable pairing to make use of bonding"
@@ -79,7 +79,7 @@
 #define gSerialTaskStackSize_c			(1024)
 
 /* Defines Num of Serial Manager interfaces */
-#define gSerialManagerMaxInterfaces_c   2
+#define gSerialManagerMaxInterfaces_c   1
 
 /**
  * TODO: When enabling gAppUseNvm_d to 1, the serial manager semaphore stay stuck.
@@ -88,7 +88,7 @@
 #define gSMGR_UseOsSemForSynchronization_c 1
 
 /* Defines Size for Timer Task*/
-#define gTmrTaskStackSize_c  500
+#define gTmrTaskStackSize_c  750
 
 /* Defines pools by block size and number of blocks. Must be aligned to 4 bytes.*/
 #define AppPoolsDetails_c \
@@ -98,10 +98,10 @@
          _block_size_ 512  _number_of_blocks_   10 _eol_
 
 /* Defines number of timers needed by the application */
-#define gTmrApplicationTimers_c         4
+#define gTmrApplicationTimers_c         20
 
 /* Defines number of timers needed by the protocol stack */
-#define gTmrStackTimers_c               5
+#define gTmrStackTimers_c               20
 
 /* Set this define TRUE if the PIT frequency is an integer number of MHZ */
 #define gTMR_PIT_FreqMultipleOfMHZ_d    0
@@ -152,13 +152,17 @@
 #define FSL_RTOS_FREE_RTOS      1
 
 /* Defines number of OS events used */
-#define osNumberOfEvents        7
+#define osNumberOfEvents        10
+#define osNumberOfMessages   	20
+#define osNumberOfMessageQs  	2
+#define osNumberOfSemaphores 	10
+#define osNumberOfMutexes    	10
 
 /* Defines main task stack size */
-#define gMainThreadStackSize_c  2048
+#define gMainThreadStackSize_c  10000
            
 /* Defines total heap size used by the OS */
-#define gTotalHeapSize_c        20480
+#define gTotalHeapSize_c        35000
            
 /*! *********************************************************************************
  * 	BLE Stack Configuration
