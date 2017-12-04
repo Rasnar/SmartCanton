@@ -45,7 +45,7 @@ extern gapDeviceSecurityRequirements_t deviceSecurityRequirements;
 #define gDevBoxAppTaskStackSize_c (2048)
 
 /*! Lorawan Controller Task OS Abstraction Priority */
-#define gDevBoxAppTaskPriority_c  (3)
+#define gDevBoxAppTaskPriority_c  (5)
 
 extern osaEventId_t gDevBoxAppEvent;
 
