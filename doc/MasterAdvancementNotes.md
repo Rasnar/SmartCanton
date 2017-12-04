@@ -31,7 +31,7 @@ Notes prises durant l'entretient :
 
 
 
-## 18.09.2017
+# 18.09.2017
 
 ### Keil license 
 
@@ -624,4 +624,71 @@ The m need to be put **AFTER** the ***algobsec***.
 Bosch provide a driver that can be used to read data from the BME680 :
 
 https://github.com/BoschSensortec/BNO055_driver
+
+
+
+
+
+
+
+# 04.12.2017
+
+Error with the following stack trace :
+
+````
+Thread #1 57005 (Suspended : Signal : SIGTRAP:Trace/breakpoint trap)	
+	HardFault_Handler() at startup_MKW41Z4.S:210 0x548	
+	<signal handler called>() at 0xfffffffd	
+	0x20017ff8	
+	0x0	
+````
+
+And the other error is the following : 
+
+````
+Thread #1 57005 (Suspended : Signal : SIGTRAP:Trace/breakpoint trap)	
+	HardFault_Handler() at startup_MKW41Z4.S:210 0x548	
+	<signal handler called>() at 0xfffffff1	
+	osObjectIsAllocated() at fsl_os_abstraction_free_rtos.c:1 090 0x2d0cc	
+	OSA_EventSet() at fsl_os_abstraction_free_rtos.c:602 0x2ce6e	
+	llh_isr_handler() at 0xa2fa	
+	Controller_InterruptHandler() at 0x7eb4	
+	<signal handler called>() at 0xfffffffd	
+	0x20017ff8	
+	0x0	
+````
+
+The error isn't always present. But it appears some times. To be sure to reproduce this error it's possible to reduce these 2 parameters : 
+
+````
+/* Defines number of timers needed by the application */
+#define gTmrApplicationTimers_c         2
+
+/* Defines number of timers needed by the protocol stack */
+#define gTmrStackTimers_c               2
+````
+
+By default, the **gTmrApplicationTimers_c** had 4 timers and **gTmrStackTimers_c** 5. To prevent any errors we set it to 10 and 10.
+
+
+
+Another thing that block the code execution is the number of event, mutex and semaphores. By default we can see these values : 
+
+````
+#define osNumberOfEvents        7
+#define osNumberOfSemaphores 	5
+#define osNumberOfMutexes    	5
+````
+
+To have a greater margin : 
+
+````
+#define osNumberOfEvents        20
+#define osNumberOfSemaphores 	20
+#define osNumberOfMutexes    	20
+````
+
+
+
+
 
