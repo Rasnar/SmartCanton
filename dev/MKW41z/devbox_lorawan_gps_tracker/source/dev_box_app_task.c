@@ -706,8 +706,6 @@ void gps_neo_m8_new_data_available_callback(void)
 	Led2Toggle();
 }
 
-
-
 void DevBox_App_Task(osaTaskParam_t argument)
 {
 	struct minmea_sentence_rmc frame;
@@ -733,6 +731,7 @@ void DevBox_App_Task(osaTaskParam_t argument)
 		/* Event received when a new GPS frame is available to be read */
 		if (event & gDevBoxTaskEvtNewGPSDataRdy_c)
 		{
+			/* Update Bluetooth Service with new values */
 			if (gps_neo_m8_read_rmc(&frame) == gpsNeo_Success)
 			{
 
@@ -741,6 +740,10 @@ void DevBox_App_Task(osaTaskParam_t argument)
 				ScDbGPS_RecordGPSPosition(service_smartcanton_devbox_gps, &tmp_float1, &tmp_float2);
 
 				tmp_float1 = minmea_tofloat(&frame.course);
+				if (isnanf(tmp_float1))
+				{
+					tmp_float1 = 0.0;
+				}
 				ScDbGPS_RecordGPSCourse(service_smartcanton_devbox_gps, &tmp_float1);
 
 				tmp_float1 = minmea_tofloat(&frame.speed);
@@ -755,14 +758,15 @@ void DevBox_App_Task(osaTaskParam_t argument)
 		/* Event received when a new measure to the BME680 as to be done */
 		if (event & gDevBoxTaskEvtNewBME680Measure_c)
 		{
-
+			tmp_float1 = 0;
 		}
 
 		/* Event received when a new measure to the BNO055 as to be done */
 		if (event & gDevBoxTaskEvtNewBNO055Measure_c)
 		{
-
+			tmp_float1 = 0;
 		}
+
 	}
 }
 
