@@ -429,24 +429,6 @@ void main_task(uint32_t param)
 		   return;
 		}
 
-		/**
-		 * Init I2C used by BNO055 and BME680. Both Tasks using these peripherals needs
-		 * an handle to the same I2C.
-		 */
-		BOARD_InitI2CEmbeddedSensors();
-
-//		if (osaStatus_Success != Bno055_TaskInit(BOARD_GetI2CEmbeddedSensorsHandle()))
-//		{
-//		   panic(0,0,0,0);
-//		   return;
-//		}
-
-		if (osaStatus_Success != Bme680_TaskInit(BOARD_GetI2CEmbeddedSensorsHandle()))
-		{
-		   panic(0,0,0,0);
-		   return;
-		}
-            
         /* Create application event */
         mAppEvent = OSA_EventCreate(TRUE);
         if( NULL == mAppEvent )
@@ -454,13 +436,13 @@ void main_task(uint32_t param)
             panic(0,0,0,0);
             return;
         }
-        
+
         /* Prepare application input queue.*/
         MSG_InitQueue(&mHostAppInputQueue);
-        
+
         /* Prepare callback input queue.*/
         MSG_InitQueue(&mAppCbInputQueue);
-        
+
         /* BLE Host Stack Init */
         if (Ble_Initialize(App_GenericCallback) != gBleSuccess_c)
         {
@@ -468,7 +450,23 @@ void main_task(uint32_t param)
             return;
         }
 
+        /**
+		 * Init I2C used by BNO055 and BME680. Both Tasks using these peripherals needs
+		 * an handle to the same I2C.
+		 */
+		BOARD_InitI2CEmbeddedSensors();
 
+		if (osaStatus_Success != Bno055_TaskInit(BOARD_GetI2CEmbeddedSensorsHandle()))
+		{
+		   panic(0,0,0,0);
+		   return;
+		}
+
+		if (osaStatus_Success != Bme680_TaskInit(BOARD_GetI2CEmbeddedSensorsHandle()))
+		{
+		   panic(0,0,0,0);
+		   return;
+		}
     }
     
     /* Call application task */
