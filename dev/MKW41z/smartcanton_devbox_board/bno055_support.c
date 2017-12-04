@@ -70,7 +70,7 @@ static void bno055_irq(void)
 static void init_bno055_irq()
 {
 
-	GpioInstallIsr(bno055_irq, gGpioIsrPrioNormal_c, 0x80, &mBno055IntCfg);
+	GpioInstallIsr(bno055_irq, gGpioIsrPrioLow_c, gGpioDefaultNvicPrio_c, &mBno055IntCfg);
 	GpioInputPinInit(&mBno055IntCfg, 1);
 }
 

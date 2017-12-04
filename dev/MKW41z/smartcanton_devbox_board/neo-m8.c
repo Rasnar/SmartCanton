@@ -86,7 +86,7 @@ static void init_spi_master()
 
 static void init_timepulse_irq()
 {
-	GpioInstallIsr(timepulse_irq_callback, gGpioIsrPrioNormal_c, 0x80, &mTimePulseCfg);
+	GpioInstallIsr(timepulse_irq_callback, gGpioIsrPrioLow_c, gGpioDefaultNvicPrio_c, &mTimePulseCfg);
 	GpioInputPinInit(&mTimePulseCfg, 1);
 }
 
