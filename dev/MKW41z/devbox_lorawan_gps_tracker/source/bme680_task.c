@@ -46,7 +46,7 @@ void output_ready(int64_t timestamp, float iaq, uint8_t iaq_accuracy, float temp
 
 
 	/* Inform the DevBox Task that she can read the data avaible */
-	OSA_EventSet(gDevBoxAppEvent, gDevBoxTaskEvtNewGPSDataRdy_c);
+	OSA_EventSet(gDevBoxAppEvent, gDevBoxTaskEvtNewBME680Measure_c);
 }
 
 /**

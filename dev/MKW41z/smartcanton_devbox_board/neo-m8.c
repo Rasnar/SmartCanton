@@ -39,7 +39,7 @@ static dspi_master_config_t masterConfig;
 static dspi_master_handle_t g_m_handle;
 static uint32_t srcClock_Hz;
 
-#define TRANSFER_SIZE 1024U        /*! Transfer dataSize */
+#define TRANSFER_SIZE 728U        /*! Transfer dataSize */
 static dspi_transfer_t masterXfer;
 static uint8_t masterRxData[TRANSFER_SIZE] =
 { 0U };

@@ -159,10 +159,10 @@
 #define osNumberOfMutexes    	10
 
 /* Defines main task stack size */
-#define gMainThreadStackSize_c  10000
+#define gMainThreadStackSize_c  4096
            
 /* Defines total heap size used by the OS */
-#define gTotalHeapSize_c        35000
+#define gTotalHeapSize_c        30000
            
 /*! *********************************************************************************
  * 	BLE Stack Configuration
