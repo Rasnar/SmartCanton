@@ -1433,6 +1433,249 @@ https://www.nxp.com/docs/en/quick-reference-guide/MCUXpresso_IDE_Instruction_Tra
 
 
 
+# 05.12.2017
+
+## Rest API with json web token (jwt)
+
+Tutorial source code (PY JWT) : 
+
+https://prettyprinted.com/blog/966916/creating-restful-api-flask-json-web-token-auth
+
+JWT advantages :
+
+https://medium.com/vandium-software/5-easy-steps-to-understanding-json-web-tokens-jwt-1164c0adfcec
+
+JWT Flask Methods documentation : 
+
+https://pythonhosted.org/Flask-JWT/#flask_jwt.jwt_required 
+
+
+
+All dependences : 
+
+````
+pip install Flask
+pip install SQLAlchemy
+pip install flask-sqlalchemy
+pip install PyJWT
+ou
+pip install Flask-JWT
+
+````
+
+To enable https with flask : https://blog.miguelgrinberg.com/post/running-your-flask-application-over-https
+
+
+
+## Convert File PATH to file URI
+
+````
+import pathlib
+pathlib.Path("E:\Dropbox\SmartCanton\dev\SmartCanton_AppKeyServer\todo.db").as_uri() 
+````
+
+
+
+## Flask server
+
+### How to create first client login  
+
+Modify the route post for `/user`  :
+
+```python
+@app.route('/user', methods=['POST'])
+# @token_required
+def create_user():
+    # if not current_user.admin:
+    #     return jsonify({'message': 'Cannot perform that function!'})
+
+    data = request.get_json()
+
+    hashed_password = generate_password_hash(data['password'], method='sha256')
+
+    new_user = User(public_id=str(uuid.uuid4()), name=data['name'], password=hashed_password, admin=True)
+    db.session.add(new_user)
+    db.session.commit()
+
+    return jsonify({'message': 'New user created!'})
+```
+
+The DataBase can be viewed inside Pycharm with `View -> Tools Windows -> Database `.
+
+
+
+Post request : **JSON/Application**
+
+With body : 
+
+````
+{"name" : "Admin", "password":"SmartCanton2017"}
+
+````
+
+
+
+### Authentication 
+
+As **Admin** and password **SmartCanton2017**:
+
+````bash
+curl -X POST \
+  http://127.0.0.1:5000/auth \
+  -H 'cache-control: no-cache' \
+  -H 'content-type: application/json' \
+  -H 'postman-token: 78885420-8e4b-6e54-193b-b6a662d63ca3' \
+  -d '{
+    "username": "Admin",
+    "password": "SmartCanton2017"
+}'
+````
+
+Response : 
+
+````json
+{
+    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MTUxNTEyNTEsImlhdCI6MTUxMjU1OTI1MSwibmJmIjoxNTEyNTU5MjUxLCJwdWJsaWNfaWQiOiJkZjQ1ZThlMi02ZTEwLTRlYmEtOGJjZC0yMjJjYWNlMjk3NGUifQ.m3TOhN1bclTS4NO4EM9xUIr03FaaaESvvH5FHWkK0m4"
+}
+````
+
+We can find the following data encoded in base64 in the 2 first data. The last Base64 value is the : 
+
+````
+{
+  "typ": "JWT",
+  "alg": "HS256"
+}
+{
+  "exp": 1515151212,
+  "iat": 1512559212,
+  "nbf": 1512559212,
+  "public_id": "df45e8e2-6e10-4eba-8bcd-222cace2974e"
+}
+````
+
+Registered claimes (eg. iss, exp, etc...) are explained here : https://tools.ietf.org/html/rfc7519#section-4.1
+
+
+
+### Get all users 
+
+````bash
+curl -X GET \
+  http://127.0.0.1:5000/user \
+  -H 'authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MTUxNTEyMTIsImlhdCI6MTUxMjU1OTIxMiwibmJmIjoxNTEyNTU5MjEyLCJwdWJsaWNfaWQiOiJkZjQ1ZThlMi02ZTEwLTRlYmEtOGJjZC0yMjJjYWNlMjk3NGUifQ.qCvAHln-q2N-EEj4iZPmyrTw8lfM1cuTkw5hZuiqin0' \
+  -H 'cache-control: no-cache' \
+  -H 'postman-token: 1bff814e-840a-c5fe-0e7e-a1ced43fadab'
+````
+
+Response :
+
+````json
+{
+    "users": [
+        {
+            "admin": true,
+            "name": "Admin",
+            "password": "sha256$UXfgsAhJ$20559d1cb177cf3236c7f63a44d95db4ac6d260d1bceeda5f266a0ebebfb1ac9",
+            "public_id": "df45e8e2-6e10-4eba-8bcd-222cace2974e"
+        },
+        {
+            "admin": false,
+            "name": "david",
+            "password": "sha256$Ft7ypK8U$8e39836d549222ffc51695a77db0069e748ecfd2740e02cc634e6b5116d878bf",
+            "public_id": "93cb11d2-bbdd-4d2a-8e66-e970e6d6bd25"
+        }
+    ]
+}
+````
+
+### Create new user 
+
+````bash
+curl -X POST \
+  http://127.0.0.1:5000/user \
+  -H 'authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MTUxNTEyMTIsImlhdCI6MTUxMjU1OTIxMiwibmJmIjoxNTEyNTU5MjEyLCJwdWJsaWNfaWQiOiJkZjQ1ZThlMi02ZTEwLTRlYmEtOGJjZC0yMjJjYWNlMjk3NGUifQ.qCvAHln-q2N-EEj4iZPmyrTw8lfM1cuTkw5hZuiqin0' \
+  -H 'cache-control: no-cache' \
+  -H 'content-type: application/json' \
+  -H 'postman-token: 5f79895d-86f2-4e20-fbc5-3fd57dfbcc95' \
+  -d '{"username": "david2", "password": "SmartCanton"}'
+````
+
+Response :
+
+````json
+{
+    "message": "New user created!"
+}
+````
+
+### Promote user
+
+````bash
+curl -X PUT \
+  http://127.0.0.1:5000/user/02752fc1-00be-4986-b909-843b6a33aa0f \
+  -H 'authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MTUxNTEyMTIsImlhdCI6MTUxMjU1OTIxMiwibmJmIjoxNTEyNTU5MjEyLCJwdWJsaWNfaWQiOiJkZjQ1ZThlMi02ZTEwLTRlYmEtOGJjZC0yMjJjYWNlMjk3NGUifQ.qCvAHln-q2N-EEj4iZPmyrTw8lfM1cuTkw5hZuiqin0' \
+  -H 'cache-control: no-cache' \
+  -H 'content-type: application/json' \
+  -H 'postman-token: 32f51bab-66d3-8e13-cc5f-8db5d04dbef3'
+````
+
+Response :
+
+```json
+{
+    "message": "The user has been promoted!"
+}
+```
+
+### Delete user
+
+```bash
+curl -X DELETE \
+  http://127.0.0.1:5000/user/02752fc1-00be-4986-b909-843b6a33aa0f \
+  -H 'authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MTUxNTEyMTIsImlhdCI6MTUxMjU1OTIxMiwibmJmIjoxNTEyNTU5MjEyLCJwdWJsaWNfaWQiOiJkZjQ1ZThlMi02ZTEwLTRlYmEtOGJjZC0yMjJjYWNlMjk3NGUifQ.qCvAHln-q2N-EEj4iZPmyrTw8lfM1cuTkw5hZuiqin0' \
+  -H 'cache-control: no-cache' \
+  -H 'postman-token: 5891bb22-7306-babb-8b1e-ecec346db951'
+```
+
+Response :
+
+```json
+{
+    "message": "The user has been deleted!"
+}
+```
+
+
+
+### Access protected route 
+
+````bash
+curl -X GET \
+  http://127.0.0.1:5000/todo \
+  -H 'authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MTUxNTEyMTIsImlhdCI6MTUxMjU1OTIxMiwibmJmIjoxNTEyNTU5MjEyLCJwdWJsaWNfaWQiOiJkZjQ1ZThlMi02ZTEwLTRlYmEtOGJjZC0yMjJjYWNlMjk3NGUifQ.qCvAHln-q2N-EEj4iZPmyrTw8lfM1cuTkw5hZuiqin0' \
+  -H 'cache-control: no-cache' \
+  -H 'postman-token: a338e0e0-1ed0-46a0-4595-153671d57651'
+````
+
+With valid token : 
+
+````bash
+{
+    "todos": []
+}
+````
+
+With invalid token : 
+
+````bash
+{
+    "description": "Request does not contain an access token",
+    "error": "Authorization Required",
+    "status_code": 401
+}
+````
+
 
 
 
