@@ -9,9 +9,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'thisissecret'
-app.config[
-    'SQLALCHEMY_DATABASE_URI'] = 'sqlite:////Users/David/Dropbox/SmartCanton/dev/SmartCanton_AppKeyServer/todo.db'
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///E:/Dropbox/SmartCanton/dev/SmartCanton_AppKeyServer/todo.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////Users/David/Dropbox/SmartCanton/dev/SmartCanton_AppKeyServer/todo.db'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///E:/Dropbox/SmartCanton/dev/SmartCanton_AppKeyServer/todo.db'
 db = SQLAlchemy(app)
 
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=30)
@@ -43,6 +42,7 @@ def login():
 
     username = request.json.get('username', None)
     password = request.json.get('password', None)
+
     if not username:
         return jsonify({"msg": "Missing username parameter"}), 400
     if not password:
@@ -51,7 +51,7 @@ def login():
     user = User.query.filter_by(name=username).first()
 
     # If user exist and password correct
-    if not user and not check_password_hash(user.password, password):
+    if (user is None) or (not check_password_hash(user.password, password)):
         # if username != 'test' or password != 'test':
         return jsonify({"msg": "Bad username or password"}), 401
 
@@ -237,4 +237,4 @@ def delete_todo(todo_id):
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=False)
+    app.run(host='0.0.0.0', debug=True)
