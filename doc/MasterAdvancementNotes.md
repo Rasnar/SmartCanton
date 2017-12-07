@@ -1445,9 +1445,21 @@ JWT advantages :
 
 https://medium.com/vandium-software/5-easy-steps-to-understanding-json-web-tokens-jwt-1164c0adfcec
 
-JWT Flask Methods documentation : 
+JWT Flask Methods documentation (**not using now !**) : 
 
 https://pythonhosted.org/Flask-JWT/#flask_jwt.jwt_required 
+
+
+
+Why use **JWT Flask Extended** and not **JWT Flask** 
+
+https://github.com/mattupstate/flask-jwt/issues/99
+
+
+
+**JWT Flask extended documentation** : 
+
+http://flask-jwt-extended.readthedocs.io/en/latest/index.html
 
 
 
@@ -1459,7 +1471,7 @@ pip install SQLAlchemy
 pip install flask-sqlalchemy
 pip install PyJWT
 ou
-pip install Flask-JWT
+pip install flask-jwt-extended
 
 ````
 
@@ -1535,7 +1547,7 @@ Response :
 
 ````json
 {
-    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MTUxNTEyNTEsImlhdCI6MTUxMjU1OTI1MSwibmJmIjoxNTEyNTU5MjUxLCJwdWJsaWNfaWQiOiJkZjQ1ZThlMi02ZTEwLTRlYmEtOGJjZC0yMjJjYWNlMjk3NGUifQ.m3TOhN1bclTS4NO4EM9xUIr03FaaaESvvH5FHWkK0m4"
+    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MTI1OTMwODgsImlhdCI6MTUxMjU5MjE4OCwibmJmIjoxNTEyNTkyMTg4LCJqdGkiOiIzN2M5ZmY0Zi03ZmNjLTQyZGMtODBiZi1mOWMyMGMyMGFmYmMiLCJpZGVudGl0eSI6ImRmNDVlOGUyLTZlMTAtNGViYS04YmNkLTIyMmNhY2UyOTc0ZSIsImZyZXNoIjpmYWxzZSwidHlwZSI6ImFjY2VzcyJ9.BXKWcLrSYzFX65WJVkzv7mb8KIFvqyBGzgJw29LgVnY"
 }
 ````
 
@@ -1547,10 +1559,13 @@ We can find the following data encoded in base64 in the 2 first data. The last B
   "alg": "HS256"
 }
 {
-  "exp": 1515151212,
-  "iat": 1512559212,
-  "nbf": 1512559212,
-  "public_id": "df45e8e2-6e10-4eba-8bcd-222cace2974e"
+  "exp": 1512593088,
+  "iat": 1512592188,
+  "nbf": 1512592188,
+  "jti": "37c9ff4f-7fcc-42dc-80bf-f9c20c20afbc",
+  "identity": "df45e8e2-6e10-4eba-8bcd-222cace2974e",
+  "fresh": false,
+  "type": "access"
 }
 ````
 
@@ -1594,7 +1609,7 @@ Response :
 ````bash
 curl -X POST \
   http://127.0.0.1:5000/user \
-  -H 'authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MTUxNTEyMTIsImlhdCI6MTUxMjU1OTIxMiwibmJmIjoxNTEyNTU5MjEyLCJwdWJsaWNfaWQiOiJkZjQ1ZThlMi02ZTEwLTRlYmEtOGJjZC0yMjJjYWNlMjk3NGUifQ.qCvAHln-q2N-EEj4iZPmyrTw8lfM1cuTkw5hZuiqin0' \
+  -H 'authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MTI1OTMwODgsImlhdCI6MTUxMjU5MjE4OCwibmJmIjoxNTEyNTkyMTg4LCJqdGkiOiIzN2M5ZmY0Zi03ZmNjLTQyZGMtODBiZi1mOWMyMGMyMGFmYmMiLCJpZGVudGl0eSI6ImRmNDVlOGUyLTZlMTAtNGViYS04YmNkLTIyMmNhY2UyOTc0ZSIsImZyZXNoIjpmYWxzZSwidHlwZSI6ImFjY2VzcyJ9.BXKWcLrSYzFX65WJVkzv7mb8KIFvqyBGzgJw29LgVnY' \
   -H 'cache-control: no-cache' \
   -H 'content-type: application/json' \
   -H 'postman-token: 5f79895d-86f2-4e20-fbc5-3fd57dfbcc95' \
@@ -1614,7 +1629,7 @@ Response :
 ````bash
 curl -X PUT \
   http://127.0.0.1:5000/user/02752fc1-00be-4986-b909-843b6a33aa0f \
-  -H 'authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MTUxNTEyMTIsImlhdCI6MTUxMjU1OTIxMiwibmJmIjoxNTEyNTU5MjEyLCJwdWJsaWNfaWQiOiJkZjQ1ZThlMi02ZTEwLTRlYmEtOGJjZC0yMjJjYWNlMjk3NGUifQ.qCvAHln-q2N-EEj4iZPmyrTw8lfM1cuTkw5hZuiqin0' \
+  -H 'authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MTI1OTMwODgsImlhdCI6MTUxMjU5MjE4OCwibmJmIjoxNTEyNTkyMTg4LCJqdGkiOiIzN2M5ZmY0Zi03ZmNjLTQyZGMtODBiZi1mOWMyMGMyMGFmYmMiLCJpZGVudGl0eSI6ImRmNDVlOGUyLTZlMTAtNGViYS04YmNkLTIyMmNhY2UyOTc0ZSIsImZyZXNoIjpmYWxzZSwidHlwZSI6ImFjY2VzcyJ9.BXKWcLrSYzFX65WJVkzv7mb8KIFvqyBGzgJw29LgVnY' \
   -H 'cache-control: no-cache' \
   -H 'content-type: application/json' \
   -H 'postman-token: 32f51bab-66d3-8e13-cc5f-8db5d04dbef3'
@@ -1633,7 +1648,7 @@ Response :
 ```bash
 curl -X DELETE \
   http://127.0.0.1:5000/user/02752fc1-00be-4986-b909-843b6a33aa0f \
-  -H 'authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MTUxNTEyMTIsImlhdCI6MTUxMjU1OTIxMiwibmJmIjoxNTEyNTU5MjEyLCJwdWJsaWNfaWQiOiJkZjQ1ZThlMi02ZTEwLTRlYmEtOGJjZC0yMjJjYWNlMjk3NGUifQ.qCvAHln-q2N-EEj4iZPmyrTw8lfM1cuTkw5hZuiqin0' \
+  -H 'authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MTI1OTMwODgsImlhdCI6MTUxMjU5MjE4OCwibmJmIjoxNTEyNTkyMTg4LCJqdGkiOiIzN2M5ZmY0Zi03ZmNjLTQyZGMtODBiZi1mOWMyMGMyMGFmYmMiLCJpZGVudGl0eSI6ImRmNDVlOGUyLTZlMTAtNGViYS04YmNkLTIyMmNhY2UyOTc0ZSIsImZyZXNoIjpmYWxzZSwidHlwZSI6ImFjY2VzcyJ9.BXKWcLrSYzFX65WJVkzv7mb8KIFvqyBGzgJw29LgVnY' \
   -H 'cache-control: no-cache' \
   -H 'postman-token: 5891bb22-7306-babb-8b1e-ecec346db951'
 ```
@@ -1653,7 +1668,7 @@ Response :
 ````bash
 curl -X GET \
   http://127.0.0.1:5000/todo \
-  -H 'authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MTUxNTEyMTIsImlhdCI6MTUxMjU1OTIxMiwibmJmIjoxNTEyNTU5MjEyLCJwdWJsaWNfaWQiOiJkZjQ1ZThlMi02ZTEwLTRlYmEtOGJjZC0yMjJjYWNlMjk3NGUifQ.qCvAHln-q2N-EEj4iZPmyrTw8lfM1cuTkw5hZuiqin0' \
+  -H 'authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MTI1OTMwODgsImlhdCI6MTUxMjU5MjE4OCwibmJmIjoxNTEyNTkyMTg4LCJqdGkiOiIzN2M5ZmY0Zi03ZmNjLTQyZGMtODBiZi1mOWMyMGMyMGFmYmMiLCJpZGVudGl0eSI6ImRmNDVlOGUyLTZlMTAtNGViYS04YmNkLTIyMmNhY2UyOTc0ZSIsImZyZXNoIjpmYWxzZSwidHlwZSI6ImFjY2VzcyJ9.BXKWcLrSYzFX65WJVkzv7mb8KIFvqyBGzgJw29LgVnY' \
   -H 'cache-control: no-cache' \
   -H 'postman-token: a338e0e0-1ed0-46a0-4595-153671d57651'
 ````
@@ -1675,6 +1690,20 @@ With invalid token :
     "status_code": 401
 }
 ````
+
+
+
+## 06.12.2017
+
+## Android JWT Client
+
+https://medium.com/bcgdv-engineering/use-android-studio-to-stub-web-api-simple-jwt-login-as-an-example-615ee8efe1b0
+
+
+
+https://github.com/segunfamisa/android-jwt-authentication
+
+https://github.com/jwtk/jjwt
 
 
 
