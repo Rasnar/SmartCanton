@@ -10,11 +10,13 @@ app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'thisissecret'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////Users/David/Dropbox/SmartCanton/dev/SmartCanton_AppKeyServer/todo.db'
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///E:/Dropbox/SmartCanton/dev/SmartCanton_AppKeyServer/todo.db'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///E:/Dropbox/SmartCanton/dev/SmartCanton_AppKeyServer/todo.db'
 db = SQLAlchemy(app)
 
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=30)
 app.config['JWT_HEADER_TYPE'] = "JWT"
+
+jwt = JWTManager(app)
 
 
 class User(db.Model):
@@ -38,22 +40,26 @@ class Todo(db.Model):
 @app.route('/auth', methods=['POST'])
 def login():
     if not request.is_json:
-        return jsonify({"msg": "Missing JSON in request"}), 400
+        return jsonify({"message": "Missing JSON in request"}), 400
 
-    username = request.json.get('username', None)
-    password = request.json.get('password', None)
+    try:
+        username = request.json.get('username', None)
+        password = request.json.get('password', None)
+    except:
+        username = None
+        password = None
 
     if not username:
-        return jsonify({"msg": "Missing username parameter"}), 400
+        return jsonify({"message": "Missing username parameter"}), 400
     if not password:
-        return jsonify({"msg": "Missing password parameter"}), 400
+        return jsonify({"message": "Missing password parameter"}), 400
 
     user = User.query.filter_by(name=username).first()
 
     # If user exist and password correct
     if (user is None) or (not check_password_hash(user.password, password)):
         # if username != 'test' or password != 'test':
-        return jsonify({"msg": "Bad username or password"}), 401
+        return jsonify({"message": "Bad username or password"}), 401
 
     # Identity can be any data that is json serializable
     access_token = create_access_token(identity=user.public_id)
@@ -68,14 +74,11 @@ def user_from_public_id(public_id):
         return User.query.filter_by(public_id).first()
 
 
-jwt = JWTManager(app)
-
-
 @app.route('/user', methods=['GET'])
 @jwt_required
 def get_all_users():
     if not user_from_public_id(get_jwt_identity()).admin:
-        return jsonify({'msg': 'Cannot perform that function with your rights!'})
+        return jsonify({'message': 'Cannot perform that function with your rights!'})
 
     users = User.query.all()
 
@@ -96,12 +99,12 @@ def get_all_users():
 @jwt_required
 def get_one_user(public_id):
     if not get_jwt_identity().admin:
-        return jsonify({'msg': 'Cannot perform that function!'})
+        return jsonify({'message': 'Cannot perform that function!'})
 
     user = User.query.filter_by(public_id=public_id).first()
 
     if not user:
-        return jsonify({'msg': 'No user found!'})
+        return jsonify({'message': 'No user found!'})
 
     user_data = {}
     user_data['public_id'] = user.public_id
@@ -116,7 +119,7 @@ def get_one_user(public_id):
 @jwt_required
 def create_user():
     if not user_from_public_id(get_jwt_identity()).admin:
-        return jsonify({'msg': 'Cannot perform that function!'})
+        return jsonify({'message': 'Cannot perform that function!'})
 
     data = request.get_json()
 
@@ -126,41 +129,41 @@ def create_user():
     db.session.add(new_user)
     db.session.commit()
 
-    return jsonify({'msg': 'New user created!'})
+    return jsonify({'message': 'New user created!'})
 
 
 @app.route('/user/<public_id>', methods=['PUT'])
 @jwt_required
 def promote_user(public_id):
     if not user_from_public_id(get_jwt_identity()).admin:
-        return jsonify({'msg': 'Cannot perform that function!'})
+        return jsonify({'message': 'Cannot perform that function!'})
 
     user = User.query.filter_by(public_id=public_id).first()
 
     if not user:
-        return jsonify({'msg': 'No user found!'})
+        return jsonify({'message': 'No user found!'})
 
     user.admin = True
     db.session.commit()
 
-    return jsonify({'msg': 'The user has been promoted!'})
+    return jsonify({'message': 'The user has been promoted!'})
 
 
 @app.route('/user/<public_id>', methods=['DELETE'])
 @jwt_required
 def delete_user(public_id):
     if not user_from_public_id(get_jwt_identity()).admin:
-        return jsonify({'msg': 'Cannot perform that function!'})
+        return jsonify({'message': 'Cannot perform that function!'})
 
     user = User.query.filter_by(public_id=public_id).first()
 
     if not user:
-        return jsonify({'msg': 'No user found!'})
+        return jsonify({'message': 'No user found!'})
 
     db.session.delete(user)
     db.session.commit()
 
-    return jsonify({'msg': 'The user has been deleted!'})
+    return jsonify({'message': 'The user has been deleted!'})
 
 
 @app.route('/todo', methods=['GET'])
@@ -186,7 +189,7 @@ def get_one_todo(todo_id):
     todo = Todo.query.filter_by(id=todo_id, user_id=user_from_public_id(get_jwt_identity()).id).first()
 
     if not todo:
-        return jsonify({'msg': 'No todo found!'})
+        return jsonify({'message': 'No todo found!'})
 
     todo_data = {}
     todo_data['id'] = todo.id
@@ -205,7 +208,7 @@ def create_todo():
     db.session.add(new_todo)
     db.session.commit()
 
-    return jsonify({'msg': "Todo created!"})
+    return jsonify({'message': "Todo created!"})
 
 
 @app.route('/todo/<todo_id>', methods=['PUT'])
@@ -214,12 +217,12 @@ def complete_todo(todo_id):
     todo = Todo.query.filter_by(id=todo_id, user_id=user_from_public_id(get_jwt_identity()).id).first()
 
     if not todo:
-        return jsonify({'msg': 'No todo found!'})
+        return jsonify({'message': 'No todo found!'})
 
     todo.complete = True
     db.session.commit()
 
-    return jsonify({'msg': 'Todo item has been completed!'})
+    return jsonify({'message': 'Todo item has been completed!'})
 
 
 @app.route('/todo/<todo_id>', methods=['DELETE'])
@@ -228,13 +231,13 @@ def delete_todo(todo_id):
     todo = Todo.query.filter_by(id=todo_id, user_id=user_from_public_id(get_jwt_identity()).id).first()
 
     if not todo:
-        return jsonify({'msg': 'No todo found!'})
+        return jsonify({'message': 'No todo found!'})
 
     db.session.delete(todo)
     db.session.commit()
 
-    return jsonify({'msg': 'Todo item deleted!'})
+    return jsonify({'message': 'Todo item deleted!'})
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0', debug=False)
