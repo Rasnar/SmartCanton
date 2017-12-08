@@ -1707,5 +1707,17 @@ https://github.com/jwtk/jjwt
 
 
 
+Base code used for the android app
+
+https://www.learn2crack.com/2016/09/android-user-registration-login-node-server.html
+
+JWT android library
+
+https://github.com/auth0/JWTDecode.Android
+
+## OkHttpClient with self signed certificate
+
+http://www.snip2code.com/Snippet/25364/Get-OkHttpClient-which-ignores-all-SSL-e
+
 
 
