@@ -8,13 +8,18 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////Users/David/Dropbox/SmartCanton/dev/SmartCanton_AppKeyServer/' \
+                                        'smartcanton_users_devices.db'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///E:/Dropbox/SmartCanton/dev/SmartCanton_AppKeyServer/' \
+#                                         'smartcanton_users_devices.db'
+
 app.config['SECRET_KEY'] = 'thisissecret'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////Users/David/Dropbox/SmartCanton/dev/SmartCanton_AppKeyServer/todo.db'
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///E:/Dropbox/SmartCanton/dev/SmartCanton_AppKeyServer/todo.db'
 db = SQLAlchemy(app)
 
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=30)
 app.config['JWT_HEADER_TYPE'] = "JWT"
+app.config['JWT_IDENTITY_CLAIM'] = "public_id"
+
 
 jwt = JWTManager(app)
 
@@ -27,11 +32,13 @@ class User(db.Model):
     admin = db.Column(db.Boolean)
 
 
-class Todo(db.Model):
+class LoraDevice(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    text = db.Column(db.String(50))
-    complete = db.Column(db.Boolean)
-    user_id = db.Column(db.Integer)
+    device_eui = db.Column(db.CHAR(16), unique=True)
+    app_eui = db.Column(db.CHAR(16))
+    app_key = db.Column(db.CHAR(32))
+    owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    owner = db.relationship('User', foreign_keys=owner_id)
 
 
 # Provide a method to create access tokens. The create_access_token()
@@ -78,7 +85,7 @@ def user_from_public_id(public_id):
 @jwt_required
 def get_all_users():
     if not user_from_public_id(get_jwt_identity()).admin:
-        return jsonify({'message': 'Cannot perform that function with your rights!'})
+        return jsonify({'message': 'Cannot perform that function with your rights!'}), 403
 
     users = User.query.all()
 
@@ -98,8 +105,8 @@ def get_all_users():
 @app.route('/user/<public_id>', methods=['GET'])
 @jwt_required
 def get_one_user(public_id):
-    if not get_jwt_identity().admin:
-        return jsonify({'message': 'Cannot perform that function!'})
+    if not user_from_public_id(get_jwt_identity()).admin:
+        return jsonify({'message': 'Cannot perform that function!'}), 403
 
     user = User.query.filter_by(public_id=public_id).first()
 
@@ -109,17 +116,18 @@ def get_one_user(public_id):
     user_data = {}
     user_data['public_id'] = user.public_id
     user_data['username'] = user.name
-    user_data['password'] = user.password
+    # user_data['password'] = user.password
     user_data['admin'] = user.admin
 
-    return jsonify({'user': user_data})
+    # return jsonify({'user': user_data})
+    return jsonify(user_data)
 
 
 @app.route('/user', methods=['POST'])
 @jwt_required
 def create_user():
     if not user_from_public_id(get_jwt_identity()).admin:
-        return jsonify({'message': 'Cannot perform that function!'})
+        return jsonify({'message': 'Cannot perform that function!'}), 403
 
     data = request.get_json()
 
@@ -136,24 +144,24 @@ def create_user():
 @jwt_required
 def promote_user(public_id):
     if not user_from_public_id(get_jwt_identity()).admin:
-        return jsonify({'message': 'Cannot perform that function!'})
+        return jsonify({'message': 'Cannot perform that function!'}), 403
 
     user = User.query.filter_by(public_id=public_id).first()
 
     if not user:
-        return jsonify({'message': 'No user found!'})
+        return jsonify({'message': 'No user found!'}), 404
 
     user.admin = True
     db.session.commit()
 
-    return jsonify({'message': 'The user has been promoted!'})
+    return jsonify({'message': 'The user password has been changed!'})
 
 
 @app.route('/user/<public_id>', methods=['DELETE'])
 @jwt_required
 def delete_user(public_id):
     if not user_from_public_id(get_jwt_identity()).admin:
-        return jsonify({'message': 'Cannot perform that function!'})
+        return jsonify({'message': 'Cannot perform that function!'}), 403
 
     user = User.query.filter_by(public_id=public_id).first()
 
@@ -166,78 +174,87 @@ def delete_user(public_id):
     return jsonify({'message': 'The user has been deleted!'})
 
 
-@app.route('/todo', methods=['GET'])
+@app.route('/device', methods=['GET'])
 @jwt_required
-def get_all_todos():
-    todos = Todo.query.filter_by(user_id=user_from_public_id(get_jwt_identity()).id).all()
+def get_all_devices_eui():
+
+    if user_from_public_id(get_jwt_identity()).admin:
+        devices = LoraDevice.query.all()
+    else:
+        devices = LoraDevice.query.filter_by(owner_id=user_from_public_id(get_jwt_identity())).all()
 
     output = []
 
-    for todo in todos:
-        todo_data = {}
-        todo_data['id'] = todo.id
-        todo_data['text'] = todo.text
-        todo_data['complete'] = todo.complete
-        output.append(todo_data)
+    for device in devices:
+        device_data = {}
+        device_data['dev_eui'] = device.device_eui
+        output.append(device_data)
 
-    return jsonify({'todos': output})
+    return jsonify({'devices': output})
 
 
-@app.route('/todo/<todo_id>', methods=['GET'])
+@app.route('/device/<dev_eui>', methods=['GET'])
 @jwt_required
-def get_one_todo(todo_id):
-    todo = Todo.query.filter_by(id=todo_id, user_id=user_from_public_id(get_jwt_identity()).id).first()
+def get_one_device_eui(dev_eui):
 
-    if not todo:
-        return jsonify({'message': 'No todo found!'})
+    if user_from_public_id(get_jwt_identity()).admin:
+        device = LoraDevice.query.filter_by(device_eui=dev_eui).first()
+    else:
+        device = LoraDevice.query.filter_by(device_eui=dev_eui, owner_id=user_from_public_id(get_jwt_identity())).first()
 
-    todo_data = {}
-    todo_data['id'] = todo.id
-    todo_data['text'] = todo.text
-    todo_data['complete'] = todo.complete
+    if not device:
+        return jsonify({'message': 'No device found!'})
 
-    return jsonify(todo_data)
+    device_data = {}
+    device_data['dev_eui'] = device.device_eui
+    device_data['app_eui'] = device.app_eui
+    device_data['app_key'] = device.app_key
+    device_data['owner_public_id'] = User.query.filter_by(id=device.owner_id).first().public_id
+
+    return jsonify(device_data)
 
 
-@app.route('/todo', methods=['POST'])
+@app.route('/device', methods=['POST'])
 @jwt_required
-def create_todo():
+def create_device():
     data = request.get_json()
 
-    new_todo = Todo(text=data['text'], complete=False, user_id=user_from_public_id(get_jwt_identity()).id)
-    db.session.add(new_todo)
-    db.session.commit()
+    new_device = None
 
-    return jsonify({'message': "Todo created!"})
+    try:
+        new_device = LoraDevice(device_eui=data['dev_eui'],
+                                app_eui=data['app_eui'],
+                                app_key=data['app_key'],
+                                owner_id=User.query.filter_by(public_id=data['owner_public_id']).first().id)
+    except:
+        return jsonify({'message': "New device could NOT be created!"}), 403
+
+    try:
+        db.session.add(new_device)
+        db.session.commit()
+    except:
+        return jsonify({'message': "Device already present inside the database!"}), 401
+
+    return jsonify({'message': "New device created!"})
 
 
-@app.route('/todo/<todo_id>', methods=['PUT'])
+@app.route('/device/<dev_eui>', methods=['DELETE'])
 @jwt_required
-def complete_todo(todo_id):
-    todo = Todo.query.filter_by(id=todo_id, user_id=user_from_public_id(get_jwt_identity()).id).first()
+def delete_todo(dev_eui):
 
-    if not todo:
-        return jsonify({'message': 'No todo found!'})
+    if user_from_public_id(get_jwt_identity()).admin:
+        device = LoraDevice.query.filter_by(device_eui=dev_eui).first()
+    else:
+        return jsonify({'message': 'Cannot perform that function!'}), 403
 
-    todo.complete = True
+    if not device:
+        return jsonify({'message': 'Device not found!'})
+
+    db.session.delete(device)
     db.session.commit()
 
-    return jsonify({'message': 'Todo item has been completed!'})
-
-
-@app.route('/todo/<todo_id>', methods=['DELETE'])
-@jwt_required
-def delete_todo(todo_id):
-    todo = Todo.query.filter_by(id=todo_id, user_id=user_from_public_id(get_jwt_identity()).id).first()
-
-    if not todo:
-        return jsonify({'message': 'No todo found!'})
-
-    db.session.delete(todo)
-    db.session.commit()
-
-    return jsonify({'message': 'Todo item deleted!'})
+    return jsonify({'message': 'Lora Device item deleted!'})
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=False)
+    app.run(host='0.0.0.0', debug=True)
