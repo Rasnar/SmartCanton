@@ -36,6 +36,7 @@ class SmartcantonDevboxDevice(db.Model):
     device_eui = db.Column(db.CHAR(16), unique=True)
     app_eui = db.Column(db.CHAR(16))
     app_key = db.Column(db.CHAR(32))
+    ble_passkey = db.Column(db.String(16))
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     owner = db.relationship('User', foreign_keys=owner_id)
 
@@ -179,7 +180,8 @@ def get_all_devices_eui():
     if user_from_public_id(get_jwt_identity()).admin:
         devices = SmartcantonDevboxDevice.query.all()
     else:
-        devices = SmartcantonDevboxDevice.query.filter_by(owner_id=user_from_public_id(get_jwt_identity())).all()
+        user = user_from_public_id(get_jwt_identity())
+        devices = SmartcantonDevboxDevice.query.filter_by(owner_id=user.id).all()
 
     output = []
 
@@ -197,8 +199,9 @@ def get_one_device_eui(dev_eui):
     if user_from_public_id(get_jwt_identity()).admin:
         device = SmartcantonDevboxDevice.query.filter_by(device_eui=dev_eui).first()
     else:
+        user = user_from_public_id(get_jwt_identity())
         device = SmartcantonDevboxDevice.query.filter_by(device_eui=dev_eui,
-                                                         owner_id=user_from_public_id(get_jwt_identity())).first()
+                                                         owner_id=user).first()
 
     if not device:
         return jsonify({'message': 'No device found!'}), 400
@@ -208,6 +211,7 @@ def get_one_device_eui(dev_eui):
     device_data['app_eui'] = device.app_eui
     device_data['app_key'] = device.app_key
     device_data['owner_public_id'] = User.query.filter_by(id=device.owner_id).first().public_id
+    device_data['ble_passkey'] = device.ble_passkey
 
     return jsonify(device_data)
 
@@ -217,12 +221,11 @@ def get_one_device_eui(dev_eui):
 def create_device():
     data = request.get_json()
 
-    new_device = None
-
     try:
         new_device = SmartcantonDevboxDevice(device_eui=data['dev_eui'],
                                              app_eui=data['app_eui'],
                                              app_key=data['app_key'],
+                                             ble_passkey=data['ble_passkey'],
                                              owner_id=User.query.filter_by(public_id=data['owner_public_id']).first().id)
     except:
         return jsonify({'message': "New device could NOT be created!"}), 403
@@ -244,8 +247,9 @@ def update_device(dev_eui):
     if user_from_public_id(get_jwt_identity()).admin:
         device = SmartcantonDevboxDevice.query.filter_by(device_eui=dev_eui).first()
     else:
+        user = user_from_public_id(get_jwt_identity())
         device = SmartcantonDevboxDevice.query.filter_by(device_eui=dev_eui,
-                                                         owner_id=user_from_public_id(get_jwt_identity())).first()
+                                                         owner_id=user.id).first()
 
     if not device:
         return jsonify({'message': 'Device not found!'}), 403
@@ -255,6 +259,7 @@ def update_device(dev_eui):
         device.app_eui = device['app_eui']
         device.app_key = device['app_key']
         device.public_id = device['owner_public_id']
+        device.ble_passkey = device['ble_pass_key']
     except:
         return jsonify({'message': "Device parameter not valid!"}), 401
 
@@ -280,7 +285,7 @@ def delete_device(dev_eui):
     db.session.delete(device)
     db.session.commit()
 
-    return jsonify({'message': 'Lora Device item deleted!'})
+    return jsonify({'message': 'SmartCanton Devbox item deleted!'})
 
 
 if __name__ == '__main__':
