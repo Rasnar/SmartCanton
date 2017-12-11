@@ -1,7 +1,5 @@
 package com.master_hesso.smartcantonmanager.network;
 
-import android.util.Base64;
-
 import com.master_hesso.smartcantonmanager.utils.Constants;
 
 import org.json.JSONException;

@@ -47,4 +47,6 @@ dependencies {
     compile 'com.auth0.android:jwtdecode:1.1.1'
     compile 'org.json:json:20171018'
     testCompile 'junit:junit:4.12'
+
+    compile fileTree(dir: 'libs', include: '*.jar')
 }
