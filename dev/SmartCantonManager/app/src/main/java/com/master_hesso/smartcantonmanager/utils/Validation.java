@@ -20,13 +20,5 @@ public class Validation {
     public static boolean validateUsername(String string) {
 
         return !string.isEmpty();
-//        if (TextUtils.isEmpty(string) || !Patterns.EMAIL_ADDRESS.matcher(string).matches()) {
-//
-//            return false;
-//
-//        } else {
-//
-//            return  true;
-//        }
     }
 }

@@ -87,7 +87,7 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
             logout();
         }
 
-        mUserId = mJwt.getClaim("identity").asString();
+        mUserId = mJwt.getClaim("public_id").asString();
         mTokenExpiresAt = mJwt.getExpiresAt();
     }
 
@@ -106,7 +106,7 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
 
         Bundle bundle = new Bundle();
         bundle.putString(Constants.USERNAME, mUsername);
-        bundle.putString(Constants.TOKEN,mToken);
+        bundle.putString(Constants.TOKEN, mToken);
         fragment.setArguments(bundle);
 
         fragment.show(getFragmentManager(), ChangePasswordDialog.TAG);
@@ -123,9 +123,10 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
     private void handleResponse(User user) {
 
         mProgressbar.setVisibility(View.GONE);
-        mTvName.setText(user.getName());
-        mTvUsername.setText(user.getUsername());
-        mTvDate.setText(user.getCreated_at());
+        mTvName.setText(user.getUsername());
+        mTvUsername.setText(user.getPublicId());
+
+        //mTvDate.setText(user.getCreated_at());
     }
 
     private void handleError(Throwable error) {

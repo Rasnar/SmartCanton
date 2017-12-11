@@ -31,18 +31,12 @@ public class NetworkUtil {
     }
 
     public static RetrofitInterface getRetrofit(String username, String password) {
-
-        String credentials = username + ":" + password;
-        String basic = "Basic " + Base64.encodeToString(credentials.getBytes(),Base64.NO_WRAP);
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
         httpClient.addInterceptor(chain -> {
             final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
             Request original = chain.request();
-//            Request.Builder builder = original.newBuilder()
-//                    .addHeader("Authorization", basic)
-//                    .method(original.method(),original.body());
 
             JSONObject json = new JSONObject();
             try {
@@ -79,7 +73,7 @@ public class NetworkUtil {
 
             Request original = chain.request();
             Request.Builder builder = original.newBuilder()
-                    .addHeader("Authorization", token)
+                    .addHeader("Authorization", "JWT " + token)
                     .method(original.method(),original.body());
             return  chain.proceed(builder.build());
 

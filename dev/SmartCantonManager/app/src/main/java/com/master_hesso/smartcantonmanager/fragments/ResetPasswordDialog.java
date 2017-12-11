@@ -153,7 +153,7 @@ public class ResetPasswordDialog extends DialogFragment {
 
             User user = new User();
             user.setPassword(password);
-            user.setToken(token);
+//            user.setToken(token);
             resetPasswordFinishProgress(user);
         }
     }

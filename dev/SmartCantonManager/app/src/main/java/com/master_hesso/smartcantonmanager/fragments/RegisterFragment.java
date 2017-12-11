@@ -35,12 +35,12 @@ public class RegisterFragment extends Fragment {
 
     public static final String TAG = RegisterFragment.class.getSimpleName();
 
-    private EditText mEtName;
+    private EditText mEtUsername;
     private EditText mEtEmail;
     private EditText mEtPassword;
     private Button   mBtRegister;
     private TextView mTvLogin;
-    private TextInputLayout mTiName;
+    private TextInputLayout mTiUsername;
     private TextInputLayout mTiEmail;
     private TextInputLayout mTiPassword;
     private ProgressBar mProgressbar;
@@ -59,12 +59,12 @@ public class RegisterFragment extends Fragment {
 
     private void initViews(View v) {
 
-        mEtName = (EditText) v.findViewById(R.id.et_name);
+        mEtUsername = (EditText) v.findViewById(R.id.et_name);
         mEtEmail = (EditText) v.findViewById(R.id.et_username);
         mEtPassword = (EditText) v.findViewById(R.id.et_password);
         mBtRegister = (Button) v.findViewById(R.id.btn_register);
         mTvLogin = (TextView) v.findViewById(R.id.tv_login);
-        mTiName = (TextInputLayout) v.findViewById(R.id.ti_name);
+        mTiUsername = (TextInputLayout) v.findViewById(R.id.ti_name);
         mTiEmail = (TextInputLayout) v.findViewById(R.id.ti_username);
         mTiPassword = (TextInputLayout) v.findViewById(R.id.ti_password);
         mProgressbar = (ProgressBar) v.findViewById(R.id.progress);
@@ -77,16 +77,16 @@ public class RegisterFragment extends Fragment {
 
         setError();
 
-        String name = mEtName.getText().toString();
+        String username = mEtUsername.getText().toString();
         String email = mEtEmail.getText().toString();
         String password = mEtPassword.getText().toString();
 
         int err = 0;
 
-        if (!validateFields(name)) {
+        if (!validateFields(username)) {
 
             err++;
-            mTiName.setError("Name should not be empty !");
+            mTiUsername.setError("Username should not be empty !");
         }
 
         if (!validateUsername(email)) {
@@ -104,7 +104,7 @@ public class RegisterFragment extends Fragment {
         if (err == 0) {
 
             User user = new User();
-            user.setName(name);
+            user.setUsername(username);
             //user.setEmail(email);
             user.setPassword(password);
 
@@ -119,7 +119,7 @@ public class RegisterFragment extends Fragment {
 
     private void setError() {
 
-        mTiName.setError(null);
+        mTiUsername.setError(null);
         mTiEmail.setError(null);
         mTiPassword.setError(null);
     }
