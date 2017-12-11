@@ -127,9 +127,9 @@ gapScanResponseData_t gAppScanRspData =
 /* SMP Data */
 gapPairingParameters_t gPairingParameters = {
     .withBonding = gAppUseBonding_d,
-    .securityModeAndLevel = gSecurityMode_2_Level_2_c,
+    .securityModeAndLevel = gSecurityMode_1_Level_4_c,
     .maxEncryptionKeySize = mcEncryptionKeySize_c,
-    .localIoCapabilities = gIoNone_c,
+    .localIoCapabilities = gIoDisplayOnly_c,
     .oobAvailable = FALSE,
     .centralKeys = gIrk_c,
     .peripheralKeys = (gapSmpKeyFlags_t)(gLtk_c | gIrk_c),
@@ -185,7 +185,7 @@ static const gapSecurityRequirements_t        masterSecurity = gGapDefaultSecuri
 static const gapServiceSecurityRequirements_t serviceSecurity[4] = {
   {
     .requirements = {
-        .securityModeLevel = gSecurityMode_2_Level_2_c,
+        .securityModeLevel = gSecurityMode_1_Level_4_c,
         .authorization = TRUE,
         .minimumEncryptionKeySize = gDefaultEncryptionKeySize_d
     },
@@ -193,7 +193,7 @@ static const gapServiceSecurityRequirements_t serviceSecurity[4] = {
   },
   {
       .requirements = {
-          .securityModeLevel = gSecurityMode_2_Level_2_c,
+          .securityModeLevel = gSecurityMode_1_Level_4_c,
           .authorization = TRUE,
           .minimumEncryptionKeySize = gDefaultEncryptionKeySize_d
       },
@@ -201,7 +201,7 @@ static const gapServiceSecurityRequirements_t serviceSecurity[4] = {
   },
   {
     .requirements = {
-        .securityModeLevel = gSecurityMode_2_Level_2_c,
+        .securityModeLevel = gSecurityMode_1_Level_4_c,
         .authorization = FALSE,
         .minimumEncryptionKeySize = gDefaultEncryptionKeySize_d
     },
@@ -209,7 +209,7 @@ static const gapServiceSecurityRequirements_t serviceSecurity[4] = {
   },
   {
     .requirements = {
-        .securityModeLevel = gSecurityMode_2_Level_2_c,
+        .securityModeLevel = gSecurityMode_1_Level_4_c,
         .authorization = FALSE,
         .minimumEncryptionKeySize = gDefaultEncryptionKeySize_d
     },
