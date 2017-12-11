@@ -52,10 +52,10 @@
  * 	App Configuration
  ********************************************************************************** */
 /*! Enable/disable use of bonding capability */
-#define gAppUseBonding_d   0
+#define gAppUseBonding_d   1
 
 /*! Enable/disable use of pairing procedure */
-#define gAppUsePairing_d   0
+#define gAppUsePairing_d   1
 
 /*! Enable/disable use of privacy */
 #define gAppUsePrivacy_d   0

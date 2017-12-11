@@ -127,9 +127,9 @@ gapScanResponseData_t gAppScanRspData =
 /* SMP Data */
 gapPairingParameters_t gPairingParameters = {
     .withBonding = gAppUseBonding_d,
-    .securityModeAndLevel = gSecurityMode_1_Level_1_c,
+    .securityModeAndLevel = gSecurityMode_2_Level_2_c,
     .maxEncryptionKeySize = mcEncryptionKeySize_c,
-    .localIoCapabilities = gIoDisplayOnly_c,
+    .localIoCapabilities = gIoNone_c,
     .oobAvailable = FALSE,
     .centralKeys = gIrk_c,
     .peripheralKeys = (gapSmpKeyFlags_t)(gLtk_c | gIrk_c),
@@ -166,51 +166,59 @@ gapSmpKeys_t gSmpKeys = {
     .ediv = smpEdiv,
 };
 
-/* Device Security Requirements */
-static const gapSecurityRequirements_t masterSecurity = {
-        gSecurityMode_1_Level_1_c,
-        FALSE,
-        gDefaultEncryptionKeySize_d
-};
-
-gapDeviceSecurityRequirements_t deviceSecurityRequirements = {
-    .pMasterSecurityRequirements  = (void*)&masterSecurity,
-    .cNumServices                 = 0,
-    .aServiceSecurityRequirements = NULL
-};
-
-
 ///* Device Security Requirements */
-//static const gapSecurityRequirements_t        masterSecurity = gGapDefaultSecurityRequirements_d;
-//static const gapServiceSecurityRequirements_t serviceSecurity[3] = {
-//  {
-//    .requirements = {
-//        .securityModeLevel = gSecurityMode_1_Level_3_c,
-//        .authorization = FALSE,
-//        .minimumEncryptionKeySize = gDefaultEncryptionKeySize_d
-//    },
-//    .serviceHandle = service_heart_rate
-//  },
-//  {
-//    .requirements = {
-//        .securityModeLevel = gSecurityMode_1_Level_3_c,
-//        .authorization = FALSE,
-//        .minimumEncryptionKeySize = gDefaultEncryptionKeySize_d
-//    },
-//    .serviceHandle = service_battery
-//  },
-//  {
-//    .requirements = {
-//        .securityModeLevel = gSecurityMode_1_Level_3_c,
-//        .authorization = FALSE,
-//        .minimumEncryptionKeySize = gDefaultEncryptionKeySize_d
-//    },
-//    .serviceHandle = service_device_information
-//  }
+//static const gapSecurityRequirements_t masterSecurity = {
+//        gSecurityMode_1_Level_1_c,
+//        FALSE,
+//        gDefaultEncryptionKeySize_d
 //};
 //
 //gapDeviceSecurityRequirements_t deviceSecurityRequirements = {
-//    .pMasterSecurityRequirements    = (void*)&masterSecurity,
-//    .cNumServices                   = 3,
-//    .aServiceSecurityRequirements   = (void*)serviceSecurity
+//    .pMasterSecurityRequirements  = (void*)&masterSecurity,
+//    .cNumServices                 = 0,
+//    .aServiceSecurityRequirements = NULL
 //};
+
+
+/* Device Security Requirements */
+static const gapSecurityRequirements_t        masterSecurity = gGapDefaultSecurityRequirements_d;
+static const gapServiceSecurityRequirements_t serviceSecurity[4] = {
+  {
+    .requirements = {
+        .securityModeLevel = gSecurityMode_2_Level_2_c,
+        .authorization = TRUE,
+        .minimumEncryptionKeySize = gDefaultEncryptionKeySize_d
+    },
+    .serviceHandle = service_smartcanton_devbox_lora
+  },
+  {
+      .requirements = {
+          .securityModeLevel = gSecurityMode_2_Level_2_c,
+          .authorization = TRUE,
+          .minimumEncryptionKeySize = gDefaultEncryptionKeySize_d
+      },
+      .serviceHandle = service_smartcanton_devbox_gps
+  },
+  {
+    .requirements = {
+        .securityModeLevel = gSecurityMode_2_Level_2_c,
+        .authorization = FALSE,
+        .minimumEncryptionKeySize = gDefaultEncryptionKeySize_d
+    },
+    .serviceHandle = service_battery
+  },
+  {
+    .requirements = {
+        .securityModeLevel = gSecurityMode_2_Level_2_c,
+        .authorization = FALSE,
+        .minimumEncryptionKeySize = gDefaultEncryptionKeySize_d
+    },
+    .serviceHandle = service_device_information
+  }
+};
+
+gapDeviceSecurityRequirements_t deviceSecurityRequirements = {
+    .pMasterSecurityRequirements    = (void*)&masterSecurity,
+    .cNumServices                   = 4,
+    .aServiceSecurityRequirements   = (void*)serviceSecurity
+};
