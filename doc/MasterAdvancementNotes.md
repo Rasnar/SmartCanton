@@ -1721,3 +1721,124 @@ http://www.snip2code.com/Snippet/25364/Get-OkHttpClient-which-ignores-all-SSL-e
 
 
 
+# 08.12.2017
+
+
+
+## KW41z Bluetooth security 
+
+gap security : http://microchipdeveloper.com/wireless:ble-gap-security
+
+How encryption work : http://www.fte.com/webhelp/sodera/Content/Documentation/WhitePapers/BTLE/HowEncryptionWorksInBluetoothLowEnergy.htm
+
+Ble pairing vs bonding : https://piratecomm.wordpress.com/2014/01/19/ble-pairing-vs-bonding/
+
+A basic introduction to BLE Security : https://eewiki.net/display/Wireless/A+Basic+Introduction+to+BLE+Security
+
+### Pairing parameters
+
+The Bluetooth configuration is devined in the file `app_config.c`. The security applied while pairing is device by the following parameters. The default values are the following : 
+
+````
+/* SMP Data */
+gapPairingParameters_t gPairingParameters = {
+    .withBonding = gAppUseBonding_d,
+    .securityModeAndLevel = gSecurityMode_1_Level_1_c,
+    .maxEncryptionKeySize = mcEncryptionKeySize_c,
+    .localIoCapabilities = gIoDisplayOnly_c,
+    .oobAvailable = FALSE,
+    .centralKeys = gIrk_c,
+    .peripheralKeys = (gapSmpKeyFlags_t)(gLtk_c | gIrk_c),
+    .leSecureConnectionSupported = TRUE,
+    .useKeypressNotifications = FALSE,
+};
+````
+
+
+
+To change the security level we can modify 2 parameters mainly. The first is the `securityModeAndLevel` all options are the following : 
+
+````
+
+````
+
+### Gap security
+
+#### Parameters 
+
+````
+/*! LE Security Level */
+typedef enum gapSecurityLevel_tag {
+    gSecurityLevel_NoSecurity_c =           0x00,  /*!< No security (combined only with Mode 1). */
+    gSecurityLevel_NoMitmProtection_c =     0x01,  /*!< Unauthenticated (no MITM protection). */
+    gSecurityLevel_WithMitmProtection_c =   0x02,  /*!< Authenticated (MITM protection by PIN or OOB). */
+    gSecurityLevel_LeSecureConnections_c =  0x03   /*!< Authenticated with LE Secure Connections (BLE 4.2 only). */
+} gapSecurityLevel_t;
+
+/*! Security Mode-and-Level definitions */
+typedef enum gapSecurityModeAndLevel_tag {
+    gSecurityMode_1_Level_1_c = (uint8_t)gSecurityMode_1_c | (uint8_t)gSecurityLevel_NoSecurity_c,          /*!< Mode 1 Level 1 - No Security. */
+    gSecurityMode_1_Level_2_c = (uint8_t)gSecurityMode_1_c | (uint8_t)gSecurityLevel_NoMitmProtection_c,    /*!< Mode 1 Level 2 - Encryption without authentication. */
+    gSecurityMode_1_Level_3_c = (uint8_t)gSecurityMode_1_c | (uint8_t)gSecurityLevel_WithMitmProtection_c,  /*!< Mode 1 Level 3 - Encryption with authentication. */
+    gSecurityMode_1_Level_4_c = (uint8_t)gSecurityMode_1_c | (uint8_t)gSecurityLevel_LeSecureConnections_c, /*!< Mode 1 Level 4 - Encryption with LE Secure Connections pairing (BLE 4.2 only). */
+    gSecurityMode_2_Level_1_c = (uint8_t)gSecurityMode_2_c | (uint8_t)gSecurityLevel_NoMitmProtection_c,    /*!< Mode 2 Level 1 - Data Signing without authentication. */
+    gSecurityMode_2_Level_2_c = (uint8_t)gSecurityMode_2_c | (uint8_t)gSecurityLevel_WithMitmProtection_c   /*!< Mode 2 Level 2 - Data Signing with authentication. */
+} gapSecurityModeAndLevel_t;
+````
+
+#### No security 
+
+````
+/* Device Security Requirements */
+static const gapSecurityRequirements_t masterSecurity = {
+        gSecurityMode_1_Level_1_c,
+        FALSE,
+        gDefaultEncryptionKeySize_d
+};
+
+gapDeviceSecurityRequirements_t deviceSecurityRequirements = {
+    .pMasterSecurityRequirements  = (void*)&masterSecurity,
+    .cNumServices                 = 0,
+    .aServiceSecurityRequirements = NULL
+};
+````
+
+#### Service security (heart rate example)
+
+````
+/* Device Security Requirements */
+static const gapSecurityRequirements_t        masterSecurity = gGapDefaultSecurityRequirements_d;
+static const gapServiceSecurityRequirements_t serviceSecurity[3] = {
+  {
+    .requirements = {
+        .securityModeLevel = gSecurityMode_1_Level_3_c,
+        .authorization = FALSE,
+        .minimumEncryptionKeySize = gDefaultEncryptionKeySize_d
+    },
+    .serviceHandle = service_heart_rate
+  },
+  {
+    .requirements = {
+        .securityModeLevel = gSecurityMode_1_Level_3_c,
+        .authorization = FALSE,
+        .minimumEncryptionKeySize = gDefaultEncryptionKeySize_d
+    },
+    .serviceHandle = service_battery
+  },
+  {
+    .requirements = {
+        .securityModeLevel = gSecurityMode_1_Level_3_c,
+        .authorization = FALSE,
+        .minimumEncryptionKeySize = gDefaultEncryptionKeySize_d
+    },
+    .serviceHandle = service_device_information
+  }
+};
+
+gapDeviceSecurityRequirements_t deviceSecurityRequirements = {
+    .pMasterSecurityRequirements    = (void*)&masterSecurity,
+    .cNumServices                   = 3,
+    .aServiceSecurityRequirements   = (void*)serviceSecurity
+};
+````
+
