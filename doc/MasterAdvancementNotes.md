@@ -1735,9 +1735,17 @@ Ble pairing vs bonding : https://piratecomm.wordpress.com/2014/01/19/ble-pairing
 
 A basic introduction to BLE Security : https://eewiki.net/display/Wireless/A+Basic+Introduction+to+BLE+Security
 
+Bluetooth series on pairing and security : 
+
+http://blog.bluetooth.com/bluetooth-pairing-part-1-pairing-feature-exchange
+
+http://blog.bluetooth.com/bluetooth-pairing-part-2-key-generation-methods
+
+http://blog.bluetooth.com/bluetooth-pairing-passkey-entry
+
 ### Pairing parameters
 
-The Bluetooth configuration is devined in the file `app_config.c`. The security applied while pairing is device by the following parameters. The default values are the following : 
+The Bluetooth configuration is defined in the file `app_config.c`. The security applied while pairing is device by the following parameters. The default values are the following : 
 
 ````
 /* SMP Data */
