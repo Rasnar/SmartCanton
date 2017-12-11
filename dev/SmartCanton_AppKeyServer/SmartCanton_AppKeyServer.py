@@ -20,7 +20,6 @@ app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=30)
 app.config['JWT_HEADER_TYPE'] = "JWT"
 app.config['JWT_IDENTITY_CLAIM'] = "public_id"
 
-
 jwt = JWTManager(app)
 
 
@@ -111,7 +110,7 @@ def get_one_user(public_id):
     user = User.query.filter_by(public_id=public_id).first()
 
     if not user:
-        return jsonify({'message': 'No user found!'})
+        return jsonify({'message': 'No user found!'}), 403
 
     user_data = {}
     user_data['public_id'] = user.public_id
@@ -166,7 +165,7 @@ def delete_user(public_id):
     user = User.query.filter_by(public_id=public_id).first()
 
     if not user:
-        return jsonify({'message': 'No user found!'})
+        return jsonify({'message': 'No user found!'}), 400
 
     db.session.delete(user)
     db.session.commit()
@@ -177,7 +176,6 @@ def delete_user(public_id):
 @app.route('/device', methods=['GET'])
 @jwt_required
 def get_all_devices_eui():
-
     if user_from_public_id(get_jwt_identity()).admin:
         devices = LoraDevice.query.all()
     else:
@@ -196,14 +194,14 @@ def get_all_devices_eui():
 @app.route('/device/<dev_eui>', methods=['GET'])
 @jwt_required
 def get_one_device_eui(dev_eui):
-
     if user_from_public_id(get_jwt_identity()).admin:
         device = LoraDevice.query.filter_by(device_eui=dev_eui).first()
     else:
-        device = LoraDevice.query.filter_by(device_eui=dev_eui, owner_id=user_from_public_id(get_jwt_identity())).first()
+        device = LoraDevice.query.filter_by(device_eui=dev_eui,
+                                            owner_id=user_from_public_id(get_jwt_identity())).first()
 
     if not device:
-        return jsonify({'message': 'No device found!'})
+        return jsonify({'message': 'No device found!'}), 400
 
     device_data = {}
     device_data['dev_eui'] = device.device_eui
@@ -233,22 +231,51 @@ def create_device():
         db.session.add(new_device)
         db.session.commit()
     except:
-        return jsonify({'message': "Device already present inside the database!"}), 401
+        return jsonify({'message': "Device already present inside the database!"}), 403
+
+    return jsonify({'message': "New device created!"})
+
+
+@app.route('/device/<dev_eui>', methods=['PUT'])
+@jwt_required
+def update_device(dev_eui):
+    data = request.get_json()
+
+    if user_from_public_id(get_jwt_identity()).admin:
+        device = LoraDevice.query.filter_by(device_eui=dev_eui).first()
+    else:
+        device = LoraDevice.query.filter_by(device_eui=dev_eui,
+                                            owner_id=user_from_public_id(get_jwt_identity())).first()
+
+    if not device:
+        return jsonify({'message': 'Device not found!'}), 403
+
+    try:
+        device.device_eui = device['dev_eui']
+        device.app_eui = device['app_eui']
+        device.app_key = device['app_key']
+        device.public_id = device['owner_public_id']
+    except:
+        return jsonify({'message': "Device parameter not valid!"}), 401
+
+    try:
+        db.session.commit()
+    except:
+        return jsonify({'message': "Device parameter not valid!"}), 401
 
     return jsonify({'message': "New device created!"})
 
 
 @app.route('/device/<dev_eui>', methods=['DELETE'])
 @jwt_required
-def delete_todo(dev_eui):
-
+def delete_device(dev_eui):
     if user_from_public_id(get_jwt_identity()).admin:
         device = LoraDevice.query.filter_by(device_eui=dev_eui).first()
     else:
         return jsonify({'message': 'Cannot perform that function!'}), 403
 
     if not device:
-        return jsonify({'message': 'Device not found!'})
+        return jsonify({'message': 'Device not found!'}), 403
 
     db.session.delete(device)
     db.session.commit()
