@@ -36,6 +36,7 @@ class SmartcantonDevboxDevice(db.Model):
     device_eui = db.Column(db.CHAR(16), unique=True)
     app_eui = db.Column(db.CHAR(16))
     app_key = db.Column(db.CHAR(32))
+    ble_mac_addr = db.Column(db.CHAR(32))
     ble_passkey = db.Column(db.String(16))
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     owner = db.relationship('User', foreign_keys=owner_id)
@@ -188,19 +189,20 @@ def get_all_devices_eui():
     for device in devices:
         device_data = {}
         device_data['dev_eui'] = device.device_eui
+        device_data['ble_mac_addr'] = device.ble_mac_addr
         output.append(device_data)
 
     return jsonify({'devices': output})
 
 
-@app.route('/device/<dev_eui>', methods=['GET'])
+@app.route('/device/<ble_mac_addr>', methods=['GET'])
 @jwt_required
-def get_one_device_eui(dev_eui):
+def get_one_device_mac_addr(ble_mac_addr):
     if user_from_public_id(get_jwt_identity()).admin:
-        device = SmartcantonDevboxDevice.query.filter_by(device_eui=dev_eui).first()
+        device = SmartcantonDevboxDevice.query.filter_by(ble_mac_addr=ble_mac_addr).first()
     else:
         user = user_from_public_id(get_jwt_identity())
-        device = SmartcantonDevboxDevice.query.filter_by(device_eui=dev_eui,
+        device = SmartcantonDevboxDevice.query.filter_by(ble_mac_addr=ble_mac_addr,
                                                          owner_id=user).first()
 
     if not device:
@@ -211,6 +213,7 @@ def get_one_device_eui(dev_eui):
     device_data['app_eui'] = device.app_eui
     device_data['app_key'] = device.app_key
     device_data['owner_public_id'] = User.query.filter_by(id=device.owner_id).first().public_id
+    device_data['ble_mac_addr'] = device.ble_mac_addr
     device_data['ble_passkey'] = device.ble_passkey
 
     return jsonify(device_data)
@@ -226,6 +229,7 @@ def create_device():
                                              app_eui=data['app_eui'],
                                              app_key=data['app_key'],
                                              ble_passkey=data['ble_passkey'],
+                                             ble_mac_addr=data['ble_mac_addr'],
                                              owner_id=User.query.filter_by(public_id=data['owner_public_id']).first().id)
     except:
         return jsonify({'message': "New device could NOT be created!"}), 403
@@ -239,16 +243,16 @@ def create_device():
     return jsonify({'message': "New device created!"})
 
 
-@app.route('/device/<dev_eui>', methods=['PUT'])
+@app.route('/device/<ble_mac_addr>', methods=['PUT'])
 @jwt_required
-def update_device(dev_eui):
+def update_device(ble_mac_addr):
     data = request.get_json()
 
     if user_from_public_id(get_jwt_identity()).admin:
-        device = SmartcantonDevboxDevice.query.filter_by(device_eui=dev_eui).first()
+        device = SmartcantonDevboxDevice.query.filter_by(ble_mac_addr=ble_mac_addr).first()
     else:
         user = user_from_public_id(get_jwt_identity())
-        device = SmartcantonDevboxDevice.query.filter_by(device_eui=dev_eui,
+        device = SmartcantonDevboxDevice.query.filter_by(ble_mac_addr=ble_mac_addr,
                                                          owner_id=user.id).first()
 
     if not device:
@@ -259,6 +263,7 @@ def update_device(dev_eui):
         device.app_eui = device['app_eui']
         device.app_key = device['app_key']
         device.public_id = device['owner_public_id']
+        device.ble_mac_addr = device['ble_mac_addr']
         device.ble_passkey = device['ble_pass_key']
     except:
         return jsonify({'message': "Device parameter not valid!"}), 401
@@ -271,11 +276,11 @@ def update_device(dev_eui):
     return jsonify({'message': "New device created!"})
 
 
-@app.route('/device/<dev_eui>', methods=['DELETE'])
+@app.route('/device/<ble_mac_addr>', methods=['DELETE'])
 @jwt_required
-def delete_device(dev_eui):
+def delete_device(ble_mac_addr):
     if user_from_public_id(get_jwt_identity()).admin:
-        device = SmartcantonDevboxDevice.query.filter_by(device_eui=dev_eui).first()
+        device = SmartcantonDevboxDevice.query.filter_by(ble_mac_addr=ble_mac_addr).first()
     else:
         return jsonify({'message': 'Cannot perform that function!'}), 403
 
