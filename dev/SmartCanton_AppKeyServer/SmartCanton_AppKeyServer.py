@@ -206,7 +206,7 @@ def get_one_device_mac_addr(ble_mac_addr):
                                                          owner_id=user).first()
 
     if not device:
-        return jsonify({'message': 'No device found!'}), 400
+        return jsonify({'message': 'Device NOT found!'}), 400
 
     device_data = {}
     device_data['dev_eui'] = device.device_eui
