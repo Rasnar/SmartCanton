@@ -17,31 +17,41 @@
 package com.master_hesso.smartcantonmanager.fragments;
 
 import android.app.Fragment;
-import android.app.ListFragment;
+import android.app.ProgressDialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
+import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
+import android.widget.ProgressBar;
 
+import com.auth0.android.jwt.DecodeException;
+import com.auth0.android.jwt.JWT;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.idevicesinc.sweetblue.BleDevice;
 import com.idevicesinc.sweetblue.BleManager;
-import com.idevicesinc.sweetblue.BleManager.DiscoveryListener.LifeCycle;
 import com.idevicesinc.sweetblue.BleManagerConfig;
-import com.idevicesinc.sweetblue.BleManagerConfig.ScanFilter;
 import com.idevicesinc.sweetblue.BleScanApi;
 import com.idevicesinc.sweetblue.utils.BluetoothEnabler;
 import com.idevicesinc.sweetblue.utils.BluetoothEnabler.DefaultBluetoothEnablerFilter;
-import com.idevicesinc.sweetblue.utils.Interval;
 import com.master_hesso.smartcantonmanager.R;
-import com.master_hesso.smartcantonmanager.adapters.ScanResultAdapter;
+import com.master_hesso.smartcantonmanager.model.Response;
+import com.master_hesso.smartcantonmanager.model.SmartCantonDevBoxDevice;
+import com.master_hesso.smartcantonmanager.network.NetworkUtil;
+import com.master_hesso.smartcantonmanager.utils.Constants;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.io.IOException;
+import java.util.Date;
+
+import retrofit2.adapter.rxjava.HttpException;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 
 /**
@@ -49,64 +59,116 @@ import java.util.TimerTask;
  */
 public class BLEConnectFragment extends Fragment {
 
-    private static final String TAG = BLEConnectFragment.class.getSimpleName();
+    public static final String TAG = BLEConnectFragment.class.getSimpleName();
+
+    private BleDevice bleDevice = null;
+
+    private CompositeSubscription mSubscriptions;
+
+    private ProgressDialog mProgressDialog;
+
+    private SharedPreferences mSharedPreferences;
+    private String mToken;
+    private String mUsername;
+    private String mUserId;
+    private Date mTokenExpiresAt;
+    private JWT mJwt;
 
     /**
      * SweetBlue BLE configuration
      */
     private final BleManagerConfig mBleManagerConfig = new BleManagerConfig() {{
-
-        //this.loggingEnabled = true;
-
-
-        //this.infiniteScanInterval = Interval.ONE_SEC;
-        //this.autoScanActiveTime =
         this.scanApi = BleScanApi.POST_LOLLIPOP;
         this.stopScanOnPause = true;
     }};
-
-    //Handler object declaration
-    final Handler h = new Handler();
-    // Timer object creation and Staring;
-    final Timer timer = new Timer();
-    // Timer task creation which will be executed on timer schedule
-    TimerTask timerTask = new TimerTask() {
-        @Override
-        public void run() {
-            h.post(() -> mAdapter.notifyDataSetChanged());
-        }
-    };
-
-    // A ScanFilter decides whether a BleDevice instance will be created from a
-    // BLE advertisement and passed to the DiscoveryListener implementation below.
-    final ScanFilter scanFilter = e ->
-            ScanFilter.Please.acknowledgeIf(e.name_normalized().
-                    contains("SmartCantonDevBox")).thenStopScan();
-
-    // New BleDevice instances are provided through this listener.
-    // Nested listeners then listen for connection and read results.
-    // Obviously you will want to structure your actual code a little better.
-    // The deep nesting simply demonstrates the async-callback-based nature of the API.
-    final BleManager.DiscoveryListener discoveryListener = e -> {
-        if( e.was(LifeCycle.DISCOVERED) || e.was(LifeCycle.REDISCOVERED) )
-        {
-            mAdapter.add(e.device());
-            mAdapter.notifyDataSetChanged();
-        }
-    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+    }
 
-        // Use getActivity().getApplicationContext() instead of just getActivity() because this
-        // object lives in a fragment and needs to be kept separate from the Activity lifecycle.
-        //
-        // We could get a LayoutInflater from the ApplicationContext but it messes with the
-        // default theme, so generate it from getActivity() and pass it in separately.
-        mAdapter = new ScanResultAdapter(getActivity().getApplicationContext(),
-                LayoutInflater.from(getActivity()));
+
+    private void initSharedPreferences() {
+
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        mToken = mSharedPreferences.getString(Constants.TOKEN,"");
+        mUsername = mSharedPreferences.getString(Constants.USERNAME,"");
+    }
+
+    private void extractTokenInformation() {
+        try {
+            mJwt = new JWT(mToken);
+        } catch (DecodeException exception){
+
+        }
+
+        mUserId = mJwt.getClaim("public_id").asString();
+        mTokenExpiresAt = mJwt.getExpiresAt();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        View view = inflater.inflate(R.layout.fragment_ble_connect,container,false);
+        mSubscriptions = new CompositeSubscription();
+        setHasOptionsMenu(true);
+        initViews(view);
+        initSharedPreferences();
+        extractTokenInformation();
+        getDataFromArguments();
+
+        loadDevice();
+
+        return view;
+    }
+
+    private void initViews(View view) {
+
+//        mTvName = (TextView) findViewById(R.id.tv_name);
+//        mTvUsername = (TextView) findViewById(R.id.tv_username);
+//        mTvDate = (TextView) findViewById(R.id.tv_date);
+//        mBtChangePassword = (Button) findViewById(R.id.btn_change_password);
+//        mBtLogout = (Button) findViewById(R.id.btn_logout);
+//        mProgressbar = (ProgressBar) view.findViewById(R.id.progress);
+//
+//        mBtChangePassword.setOnClickListener(view -> showDialog());
+//        mBtLogout.setOnClickListener(view -> logout());
+    }
+
+    private void getDataFromArguments() {
+
+        Bundle bundle = getArguments();
+        String ble_mac_addr = bundle.getString(Constants.BLE_DEVICE_MAC);
+        if(ble_mac_addr != null) {
+            bleDevice = BleManager.get(getActivity()).getDevice(ble_mac_addr);
+        } else {
+
+        }
+
+    }
+
+    private void loadDevice() {
+        String macAddrURI = bleDevice.getMacAddress().replaceAll(":", "");
+        mSubscriptions.add(NetworkUtil.getRetrofit(mToken).getDevice(macAddrURI)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(this::handleResponse,this::handleError));
+
+        mProgressDialog = new ProgressDialog(getActivity());
+        mProgressDialog.setTitle("Loading");
+        mProgressDialog.setMessage("Contacting server for device information...");
+        mProgressDialog.setCancelable(false); // disable dismiss by tapping outside of the dialog
+        mProgressDialog.show();
+    }
+
+    private void handleResponse(SmartCantonDevBoxDevice device) {
+
+        mProgressDialog.dismiss();
+
+        //        mTvName.setText(user.getUsername());
+        //        mTvUsername.setText(user.getPublicId());
 
         // This class helps you navigate the treacherous waters of Android M Location requirements for scanning.
         // First it enables bluetooth itself, then location permissions, then location services. The latter two
@@ -117,48 +179,42 @@ public class BLEConnectFragment extends Fragment {
             {
                 if( e.isDone() )
                 {
-                    e.bleManager().setConfig(mBleManagerConfig);
-                    e.bleManager().startScan(Interval.INFINITE, discoveryListener);
+                    bleDevice.connect();
                 }
-
                 return super.onEvent(e);
             }
         });
 
-        timer.schedule(timerTask, 1000, 1000);
+        //mTvDate.setText(user.getCreated_at());
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    private void handleError(Throwable error) {
 
-        final View view = super.onCreateView(inflater, container, savedInstanceState);
+        mProgressDialog.dismiss();
 
-        setListAdapter(mAdapter);
-        setHasOptionsMenu(true);
+        if (error instanceof HttpException) {
 
-        return view;
+            Gson gson = new GsonBuilder().create();
+
+            try {
+
+                String errorBody = ((HttpException) error).response().errorBody().string();
+                Response response = gson.fromJson(errorBody,Response.class);
+                showSnackBarMessage(response.getMessage());
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+
+            showSnackBarMessage("Network Error !");
+        }
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-//        getListView().setDivider(null);
-//        getListView().setDividerHeight(0);
-
-        setEmptyText(getString(R.string.empty_list));
-    }
-
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        BleDevice device = (BleDevice) mAdapter.getItem(position);
-        Log.d(TAG, "onListItemClick: " + device.getMacAddress());
-
-        try {
-            ((OnScannerDeviceSelected) getActivity()).onScannerDevicePicked(device);
-        } catch (ClassCastException cce) {
-        }
     }
 
     @Override
@@ -185,7 +241,11 @@ public class BLEConnectFragment extends Fragment {
         super.onPrepareOptionsMenu(menu);
     }
 
-    public interface OnScannerDeviceSelected {
-        public void onScannerDevicePicked(BleDevice device);
+    private void showSnackBarMessage(String message) {
+
+        View view = getView();
+        if(view !=null) {
+            Snackbar.make(getView(),message,Snackbar.LENGTH_LONG).show();
+        }
     }
 }

@@ -63,18 +63,14 @@ public class BluetoothActivity extends AppCompatActivity implements ChangePasswo
     private Date mTokenExpiresAt;
     private JWT mJwt;
 
-    private CompositeSubscription mSubscriptions;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bluetooth);
-        mSubscriptions = new CompositeSubscription();
         initViews();
         initSharedPreferences();
         extractTokenInformation();
-        loadProfile();
         loadFragment();
     }
 
@@ -108,15 +104,6 @@ public class BluetoothActivity extends AppCompatActivity implements ChangePasswo
 
     private void initViews() {
 
-//        mTvName = (TextView) findViewById(R.id.tv_name);
-//        mTvUsername = (TextView) findViewById(R.id.tv_username);
-//        mTvDate = (TextView) findViewById(R.id.tv_date);
-//        mBtChangePassword = (Button) findViewById(R.id.btn_change_password);
-//        mBtLogout = (Button) findViewById(R.id.btn_logout);
-//        mProgressbar = (ProgressBar) findViewById(R.id.progress);
-//
-//        mBtChangePassword.setOnClickListener(view -> showDialog());
-//        mBtLogout.setOnClickListener(view -> logout());
     }
 
     private void initSharedPreferences() {
@@ -167,45 +154,6 @@ public class BluetoothActivity extends AppCompatActivity implements ChangePasswo
         fragment.show(getFragmentManager(), ChangePasswordDialog.TAG);
     }
 
-    private void loadProfile() {
-
-        mSubscriptions.add(NetworkUtil.getRetrofit(mToken).getProfile(mUserId)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(this::handleResponse,this::handleError));
-    }
-
-    private void handleResponse(User user) {
-
-//        mProgressbar.setVisibility(View.GONE);
-//        mTvName.setText(user.getUsername());
-//        mTvUsername.setText(user.getPublicId());
-
-        //mTvDate.setText(user.getCreated_at());
-    }
-
-    private void handleError(Throwable error) {
-
-//        mProgressbar.setVisibility(View.GONE);
-
-        if (error instanceof HttpException) {
-
-            Gson gson = new GsonBuilder().create();
-
-            try {
-
-                String errorBody = ((HttpException) error).response().errorBody().string();
-                Response response = gson.fromJson(errorBody,Response.class);
-                showSnackBarMessage(response.getMessage());
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-
-            showSnackBarMessage("Network Error !");
-        }
-    }
 
     private void showSnackBarMessage(String message) {
 
@@ -216,7 +164,6 @@ public class BluetoothActivity extends AppCompatActivity implements ChangePasswo
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mSubscriptions.unsubscribe();
     }
 
     @Override

@@ -9,7 +9,7 @@
     <string name="minutes_ago">minutes ago</string>
     <string name="hours_ago">hours ago</string>
     <string name="no_name">(no name)</string>
-    <string name="empty_list">No devices found - refresh to try again.</string>
+    <string name="empty_list">No devices found yet - Scan in progress, please be patient.</string>
     <string name="activity_title_bluetooth">BLE Scanner</string>
     <string name="profile_settings_menu_title">User Profile</string>
     <string name="activity_title_profile">User Profile</string>

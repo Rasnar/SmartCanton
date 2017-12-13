@@ -16,12 +16,15 @@
 
 package com.master_hesso.smartcantonmanager.fragments;
 
+import com.google.gson.Gson;
 import com.idevicesinc.sweetblue.BleManager.DiscoveryListener.LifeCycle;
 import com.idevicesinc.sweetblue.BleManagerConfig;
 import com.idevicesinc.sweetblue.BleManagerConfig.ScanFilter;
 import com.idevicesinc.sweetblue.BleScanApi;
 import com.idevicesinc.sweetblue.utils.BluetoothEnabler.DefaultBluetoothEnablerFilter;
 import com.master_hesso.smartcantonmanager.R;
+
+import android.app.FragmentTransaction;
 import android.app.ListFragment;
 import android.os.Bundle;
 import android.os.Handler;
@@ -38,6 +41,7 @@ import com.idevicesinc.sweetblue.BleManager;
 import com.idevicesinc.sweetblue.utils.BluetoothEnabler;
 import com.idevicesinc.sweetblue.utils.Interval;
 import com.master_hesso.smartcantonmanager.adapters.ScanResultAdapter;
+import com.master_hesso.smartcantonmanager.utils.Constants;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -84,7 +88,7 @@ public class ScannerFragment extends ListFragment {
     // BLE advertisement and passed to the DiscoveryListener implementation below.
     final ScanFilter scanFilter = e ->
             ScanFilter.Please.acknowledgeIf(e.name_normalized().
-                    contains("SmartCantonDevBox")).thenStopScan();
+                    contains("SmartCantonDevBoxDevice")).thenStopScan();
 
     // New BleDevice instances are provided through this listener.
     // Nested listeners then listen for connection and read results.
@@ -158,10 +162,24 @@ public class ScannerFragment extends ListFragment {
         BleDevice device = (BleDevice) mAdapter.getItem(position);
         Log.d(TAG, "onListItemClick: " + device.getMacAddress());
 
-        try {
-            ((OnScannerDeviceSelected) getActivity()).onScannerDevicePicked(device);
-        } catch (ClassCastException cce) {
-        }
+        BLEConnectFragment bleConnectFragment = new BLEConnectFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putString(Constants.BLE_DEVICE_MAC, device.getMacAddress());
+        bleConnectFragment.setArguments(bundle);
+
+        // create a transaction for transition here
+        final FragmentTransaction transaction = getFragmentManager()
+                .beginTransaction();
+
+        // put the fragment in place
+        transaction.replace(R.id.fragmentFrame, bleConnectFragment);
+
+        // this is the part that will cause a fragment to be added to backstack,
+        // this way we can return to it at any time using this tag
+        transaction.addToBackStack(bleConnectFragment.getClass().getName());
+
+        transaction.commit();
     }
 
     @Override
@@ -188,7 +206,7 @@ public class ScannerFragment extends ListFragment {
         super.onPrepareOptionsMenu(menu);
     }
 
-    public interface OnScannerDeviceSelected {
-        public void onScannerDevicePicked(BleDevice device);
-    }
+//    public interface OnScannerDeviceSelected {
+//        public void onScannerDevicePicked(BleDevice device);
+//    }
 }

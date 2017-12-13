@@ -1,9 +1,13 @@
 package com.master_hesso.smartcantonmanager.network;
 
 import com.master_hesso.smartcantonmanager.model.Response;
+import com.master_hesso.smartcantonmanager.model.SmartCantonDevBoxDevice;
 import com.master_hesso.smartcantonmanager.model.User;
 
+import java.util.List;
+
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -29,4 +33,19 @@ public interface RetrofitInterface {
 
     @POST("user/{userId}/password")
     Observable<Response> resetPasswordFinish(@Path("userId") String userId, @Body User user);
+
+    @GET("device")
+    Observable<List<SmartCantonDevBoxDevice>> getAllDevices(@Path("userId") String userId, @Body User user);
+
+    @GET("device/{bleMacAddr}")
+    Observable<SmartCantonDevBoxDevice> getDevice(@Path("bleMacAddr") String bleMacAddr);
+
+    @POST("device")
+    Observable<Response> createDevice(@Path("userId") String userId, @Body SmartCantonDevBoxDevice device);
+
+    @PUT("device/{bleMacAddr}")
+    Observable<Response> modifyDevice(@Path("userId") String userId, @Body User user);
+
+    @DELETE("device/{bleMacAddr}")
+    Observable<Response> deleteDevice(@Path("userId") String userId, @Body User user);
 }
