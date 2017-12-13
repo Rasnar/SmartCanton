@@ -1743,6 +1743,8 @@ http://blog.bluetooth.com/bluetooth-pairing-part-2-key-generation-methods
 
 http://blog.bluetooth.com/bluetooth-pairing-passkey-entry
 
+https://blog.bluetooth.com/bluetooth-pairing-part-4
+
 ### Pairing parameters
 
 The Bluetooth configuration is defined in the file `app_config.c`. The security applied while pairing is device by the following parameters. The default values are the following : 
