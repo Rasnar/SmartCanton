@@ -116,13 +116,12 @@ static const gapAdStructure_t rspScanStruct[] = {
     .aData = (uint8_t*)adData2
   }
 };
+
 gapScanResponseData_t gAppScanRspData =
 {
     NumberOfElements(rspScanStruct),
     (void *)rspScanStruct
 };
-
-
 
 /* SMP Data */
 gapPairingParameters_t gPairingParameters = {
@@ -166,59 +165,28 @@ gapSmpKeys_t gSmpKeys = {
     .ediv = smpEdiv,
 };
 
-///* Device Security Requirements */
-//static const gapSecurityRequirements_t masterSecurity = {
-//        gSecurityMode_1_Level_1_c,
-//        FALSE,
-//        gDefaultEncryptionKeySize_d
-//};
-//
-//gapDeviceSecurityRequirements_t deviceSecurityRequirements = {
-//    .pMasterSecurityRequirements  = (void*)&masterSecurity,
-//    .cNumServices                 = 0,
-//    .aServiceSecurityRequirements = NULL
-//};
-
+/* Device Security Requirements */
+static const gapSecurityRequirements_t masterSecurity = {
+		gSecurityMode_1_Level_4_c,
+        FALSE,
+        gDefaultEncryptionKeySize_d
+};
 
 /* Device Security Requirements */
-static const gapSecurityRequirements_t        masterSecurity = gGapDefaultSecurityRequirements_d;
-static const gapServiceSecurityRequirements_t serviceSecurity[4] = {
-  {
-    .requirements = {
-        .securityModeLevel = gSecurityMode_1_Level_4_c,
-        .authorization = TRUE,
-        .minimumEncryptionKeySize = gDefaultEncryptionKeySize_d
-    },
-    .serviceHandle = service_smartcanton_devbox_lora
-  },
-  {
-      .requirements = {
-          .securityModeLevel = gSecurityMode_1_Level_4_c,
-          .authorization = TRUE,
-          .minimumEncryptionKeySize = gDefaultEncryptionKeySize_d
-      },
-      .serviceHandle = service_smartcanton_devbox_gps
-  },
-  {
-    .requirements = {
-        .securityModeLevel = gSecurityMode_1_Level_4_c,
-        .authorization = FALSE,
-        .minimumEncryptionKeySize = gDefaultEncryptionKeySize_d
-    },
-    .serviceHandle = service_battery
-  },
-  {
-    .requirements = {
-        .securityModeLevel = gSecurityMode_1_Level_4_c,
-        .authorization = FALSE,
-        .minimumEncryptionKeySize = gDefaultEncryptionKeySize_d
-    },
-    .serviceHandle = service_device_information
-  }
+//static const gapSecurityRequirements_t masterSecurity = gGapDefaultSecurityRequirements_d;
+static const gapServiceSecurityRequirements_t serviceSecurity[1] = {
+	{
+	.requirements = {
+		.securityModeLevel = gSecurityMode_1_Level_4_c,
+		.authorization = FALSE,
+		.minimumEncryptionKeySize = gDefaultEncryptionKeySize_d
+	},
+	.serviceHandle = service_battery
+	}
 };
 
 gapDeviceSecurityRequirements_t deviceSecurityRequirements = {
     .pMasterSecurityRequirements    = (void*)&masterSecurity,
-    .cNumServices                   = 4,
+    .cNumServices                   = 1,
     .aServiceSecurityRequirements   = (void*)serviceSecurity
 };

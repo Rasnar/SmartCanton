@@ -52,7 +52,7 @@
  * 	App Configuration
  ********************************************************************************** */
 /*! Enable/disable use of bonding capability */
-#define gAppUseBonding_d   1
+#define gAppUseBonding_d   0
 
 /*! Enable/disable use of pairing procedure */
 #define gAppUsePairing_d   1
