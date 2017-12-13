@@ -1,5 +1,6 @@
 package com.master_hesso.smartcantonmanager;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
@@ -15,6 +16,7 @@ import com.auth0.android.jwt.JWT;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.master_hesso.smartcantonmanager.fragments.ChangePasswordDialog;
+import com.master_hesso.smartcantonmanager.fragments.LoginFragment;
 import com.master_hesso.smartcantonmanager.model.Response;
 import com.master_hesso.smartcantonmanager.model.User;
 import com.master_hesso.smartcantonmanager.network.NetworkUtil;
@@ -97,7 +99,11 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
         editor.putString(Constants.USERNAME,"");
         editor.putString(Constants.TOKEN,"");
         editor.apply();
-        finish();
+
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish(); // call this to finish the current activity
     }
 
     private void showDialog(){

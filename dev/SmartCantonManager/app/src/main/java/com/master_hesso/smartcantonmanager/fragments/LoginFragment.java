@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.master_hesso.smartcantonmanager.BluetoothActivity;
 import com.master_hesso.smartcantonmanager.ProfileActivity;
 import com.master_hesso.smartcantonmanager.R;
 import com.master_hesso.smartcantonmanager.model.Response;
@@ -142,7 +143,8 @@ public class LoginFragment extends Fragment {
         mEtUsername.setText(null);
         mEtPassword.setText(null);
 
-        Intent intent = new Intent(getActivity(), ProfileActivity.class);
+        //Intent intent = new Intent(getActivity(), ProfileActivity.class);
+        Intent intent = new Intent(getActivity(), BluetoothActivity.class);
         startActivity(intent);
 
     }

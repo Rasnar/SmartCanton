@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">SmartCantonManager</string>
+
+    <string name="last_seen">Last Seen:</string>
+    <string name="just_now">just now</string>
+    <string name="minute_ago">minute ago</string>
+    <string name="hour_ago">hour ago</string>
+    <string name="seconds_ago">seconds ago</string>
+    <string name="minutes_ago">minutes ago</string>
+    <string name="hours_ago">hours ago</string>
+    <string name="no_name">(no name)</string>
+    <string name="empty_list">No devices found - refresh to try again.</string>
+    <string name="activity_title_bluetooth">BLE Scanner</string>
+    <string name="profile_settings_menu_title">User Profile</string>
+    <string name="activity_title_profile">User Profile</string>
 </resources>

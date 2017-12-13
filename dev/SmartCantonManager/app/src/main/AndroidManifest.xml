@@ -33,6 +33,11 @@
         </activity>
         <activity
             android:name=".ProfileActivity"
+            android:label="@string/activity_title_profile"
             android:theme="@style/AppTheme.Profile"/>
+        <activity
+            android:name=".BluetoothActivity"
+            android:label="@string/activity_title_bluetooth"
+            android:theme="@style/AppTheme.Bluetooth"/>
     </application>
 </manifest>

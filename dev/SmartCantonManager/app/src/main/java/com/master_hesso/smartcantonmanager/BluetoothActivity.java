@@ -1,11 +1,15 @@
 package com.master_hesso.smartcantonmanager;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -15,13 +19,15 @@ import com.auth0.android.jwt.DecodeException;
 import com.auth0.android.jwt.JWT;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.idevicesinc.sweetblue.BleDevice;
 import com.idevicesinc.sweetblue.BleDeviceState;
 import com.idevicesinc.sweetblue.BleManager;
 import com.idevicesinc.sweetblue.BleManagerConfig;
 import com.idevicesinc.sweetblue.utils.BluetoothEnabler;
+import com.idevicesinc.sweetblue.utils.Interval;
 import com.idevicesinc.sweetblue.utils.Uuids;
 import com.master_hesso.smartcantonmanager.fragments.ChangePasswordDialog;
+import com.master_hesso.smartcantonmanager.fragments.LoginFragment;
+import com.master_hesso.smartcantonmanager.fragments.ScannerFragment;
 import com.master_hesso.smartcantonmanager.model.Response;
 import com.master_hesso.smartcantonmanager.model.User;
 import com.master_hesso.smartcantonmanager.network.NetworkUtil;
@@ -40,11 +46,13 @@ public class BluetoothActivity extends AppCompatActivity implements ChangePasswo
 
     public static final String TAG = BluetoothActivity.class.getSimpleName();
 
-    private TextView mTvName;
-    private TextView mTvUsername;
-    private TextView mTvDate;
-    private Button mBtChangePassword;
-    private Button mBtLogout;
+//    private TextView mTvName;
+//    private TextView mTvUsername;
+//    private TextView mTvDate;
+//    private Button mBtChangePassword;
+//    private Button mBtLogout;
+
+    private ScannerFragment mScannerFragment;
 
     private ProgressBar mProgressbar;
 
@@ -57,77 +65,58 @@ public class BluetoothActivity extends AppCompatActivity implements ChangePasswo
 
     private CompositeSubscription mSubscriptions;
 
-    // A ScanFilter decides whether a BleDevice instance will be created from a
-    // BLE advertisement and passed to the DiscoveryListener implementation below.
-    final BleManagerConfig.ScanFilter scanFilter = e ->
-            BleManagerConfig.ScanFilter.Please.acknowledgeIf(e.name_normalized().
-                    contains("SmartCantonDevBox")).thenStopScan();
-
-    // New BleDevice instances are provided through this listener.
-    // Nested listeners then listen for connection and read results.
-    // Obviously you will want to structure your actual code a little better.
-    // The deep nesting simply demonstrates the async-callback-based nature of the API.
-    final BleManager.DiscoveryListener discoveryListener = new BleManager.DiscoveryListener()
-    {
-        @Override public void onEvent(DiscoveryEvent e)
-        {
-            if( e.was(LifeCycle.DISCOVERED) )
-            {
-                e.device().connect(e1 -> {
-                    if( e1.didEnter(BleDeviceState.INITIALIZED) )
-                    {
-                        e1.device().read(Uuids.BATTERY_LEVEL, e11 -> {
-                            if( e11.wasSuccess() )
-                            {
-                                Log.i("", "Battery level is " + e11.data_byte() + "%");
-                            }
-                        });
-                    }
-                });
-            }
-        }
-    };
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+        setContentView(R.layout.activity_bluetooth);
         mSubscriptions = new CompositeSubscription();
         initViews();
         initSharedPreferences();
         extractTokenInformation();
         loadProfile();
+        loadFragment();
+    }
 
-        // This class helps you navigate the treacherous waters of Android M Location requirements for scanning.
-        // First it enables bluetooth itself, then location permissions, then location services. The latter two
-        // are only needed in Android M. This must be called from an Activity instance.
-        BluetoothEnabler.start(this, new BluetoothEnabler.DefaultBluetoothEnablerFilter()
-        {
-            @Override public Please onEvent(BluetoothEnablerEvent e)
-            {
-                if( e.isDone() )
-                {
-                    e.bleManager().startScan(scanFilter, discoveryListener);
-                }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu items for use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.bluetooth_menu, menu);
 
-                return super.onEvent(e);
-            }
-        });
+        // Update Action title with current username
+        MenuItem profileMenuItem = menu.findItem(R.id.action_profile);
+        profileMenuItem.setTitle(mUsername);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case R.id.action_profile:
+
+                Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                startActivity(intent);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void initViews() {
 
-        mTvName = (TextView) findViewById(R.id.tv_name);
-        mTvUsername = (TextView) findViewById(R.id.tv_username);
-        mTvDate = (TextView) findViewById(R.id.tv_date);
-        mBtChangePassword = (Button) findViewById(R.id.btn_change_password);
-        mBtLogout = (Button) findViewById(R.id.btn_logout);
-        mProgressbar = (ProgressBar) findViewById(R.id.progress);
-
-        mBtChangePassword.setOnClickListener(view -> showDialog());
-        mBtLogout.setOnClickListener(view -> logout());
+//        mTvName = (TextView) findViewById(R.id.tv_name);
+//        mTvUsername = (TextView) findViewById(R.id.tv_username);
+//        mTvDate = (TextView) findViewById(R.id.tv_date);
+//        mBtChangePassword = (Button) findViewById(R.id.btn_change_password);
+//        mBtLogout = (Button) findViewById(R.id.btn_logout);
+//        mProgressbar = (ProgressBar) findViewById(R.id.progress);
+//
+//        mBtChangePassword.setOnClickListener(view -> showDialog());
+//        mBtLogout.setOnClickListener(view -> logout());
     }
 
     private void initSharedPreferences() {
@@ -146,6 +135,15 @@ public class BluetoothActivity extends AppCompatActivity implements ChangePasswo
 
         mUserId = mJwt.getClaim("public_id").asString();
         mTokenExpiresAt = mJwt.getExpiresAt();
+    }
+
+    private void loadFragment(){
+
+        if (mScannerFragment == null) {
+
+            mScannerFragment = new ScannerFragment();
+        }
+        getFragmentManager().beginTransaction().replace(R.id.fragmentFrame,mScannerFragment,LoginFragment.TAG).commit();
     }
 
     private void logout() {
@@ -179,16 +177,16 @@ public class BluetoothActivity extends AppCompatActivity implements ChangePasswo
 
     private void handleResponse(User user) {
 
-        mProgressbar.setVisibility(View.GONE);
-        mTvName.setText(user.getUsername());
-        mTvUsername.setText(user.getPublicId());
+//        mProgressbar.setVisibility(View.GONE);
+//        mTvName.setText(user.getUsername());
+//        mTvUsername.setText(user.getPublicId());
 
         //mTvDate.setText(user.getCreated_at());
     }
 
     private void handleError(Throwable error) {
 
-        mProgressbar.setVisibility(View.GONE);
+//        mProgressbar.setVisibility(View.GONE);
 
         if (error instanceof HttpException) {
 
