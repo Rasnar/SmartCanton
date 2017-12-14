@@ -30,8 +30,8 @@
                 <!--<category android:name="android.intent.category.DEFAULT" />-->
                 <!--<category android:name="android.intent.category.BROWSABLE" />-->
 
-                <data android:scheme="http"
-                    android:host="smartcantonmanager" />
+                <!--<data android:scheme="http"-->
+                    <!--android:host="smartcantonmanager" />-->
             </intent-filter>
         </activity>
         <activity
