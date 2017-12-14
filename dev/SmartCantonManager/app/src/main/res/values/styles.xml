@@ -13,22 +13,22 @@
         <item name="colorControlHighlight">@android:color/white</item>
         <item name="colorControlActivated">@android:color/white</item>
         <item name="colorButtonNormal">@color/colorAccent</item>
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:textColorPrimary">@android:color/white</item>
-        <item name="android:editTextColor">@android:color/white</item>
+        <item name="android:textColor">@color/colorTextPrimary</item>
+        <item name="android:textColorPrimary">@color/colorTextPrimary</item>
+        <item name="android:editTextColor">@color/colorTextPrimary</item>
     </style>
 
     <style name="AppTheme.Profile" parent="AppTheme">
         <item name="android:windowBackground">@color/colorPrimary</item>
         <item name="colorButtonNormal">@color/colorAccent</item>
-        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:textColorPrimary">@color/colorTextPrimary</item>
     </style>
 
     <style name="AppTheme.Bluetooth" parent="AppTheme">
         <item name="android:windowBackground">@color/colorPrimary</item>
         <item name="colorButtonNormal">@color/colorAccent</item>
-        <item name="android:textColorPrimary">@android:color/white</item>
-        <item name="android:listDivider">@android:color/white</item>
+        <item name="android:textColorPrimary">@color/colorTextPrimary</item>
+        <item name="android:listDivider">@color/colorTextPrimary</item>
         <item name="android:dividerHeight">1dp</item>
 
         <item name="android:dialogTheme">@style/AppTheme.Dialog</item>
@@ -36,27 +36,29 @@
 
         <item name="android:negativeButtonText">@color/colorAccent</item>
         <item name="android:positiveButtonText">@color/colorAccent</item>
-        <item name="android:editTextColor">@android:color/white</item>
-        <item name="android:textColor">@android:color/white</item>
+        <item name="android:editTextColor">@color/colorTextPrimary</item>
+        <item name="android:textColor">@color/colorTextPrimary</item>
     </style>
 
     <style name="AppTheme.Dialog.Alert" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:colorPrimary">@color/colorPrimary</item>
+        <item name="android:colorAccent">@color/colorAccent</item>
+        <item name="android:textColorPrimary">@color/colorTextPrimary</item>
         <item name="android:windowBackground">@color/colorPrimary</item>
         <item name="android:negativeButtonText">@color/colorAccent</item>
         <item name="android:positiveButtonText">@color/colorAccent</item>
-        <item name="android:editTextColor">@color/colorAccent</item>
-        <item name="android:textColor">@android:color/white</item>
-    </style>
-
-    <style name="AppTheme.Dialog" parent="Theme.AppCompat.Light.Dialog">
-        <item name="android:textColorPrimary">@android:color/white</item>
-        <item name="android:windowBackground">@color/colorPrimary</item>
-        <item name="android:negativeButtonText">@color/colorAccent</item>
-        <item name="android:positiveButtonText">@color/colorAccent</item>
-        <item name="android:editTextColor">@android:color/white</item>
+        <item name="android:editTextColor">@color/colorTextPrimary</item>
         <item name="android:textColor">@color/colorAccent</item>
     </style>
 
-
+    <style name="AppTheme.Dialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:colorPrimary">@color/colorPrimary</item>
+        <item name="android:colorAccent">@color/colorAccent</item>
+        <item name="android:textColorPrimary">@color/colorTextPrimary</item>
+        <item name="android:windowBackground">@color/colorPrimary</item>
+        <item name="android:negativeButtonText">@color/colorAccent</item>
+        <item name="android:positiveButtonText">@color/colorAccent</item>
+        <item name="android:editTextColor">@color/colorTextPrimary</item>
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
 </resources>

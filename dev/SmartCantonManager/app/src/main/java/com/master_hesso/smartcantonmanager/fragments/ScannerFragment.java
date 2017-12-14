@@ -115,23 +115,6 @@ public class ScannerFragment extends ListFragment {
         mAdapter = new ScanResultAdapter(getActivity().getApplicationContext(),
                 LayoutInflater.from(getActivity()));
 
-        // This class helps you navigate the treacherous waters of Android M Location requirements for scanning.
-        // First it enables bluetooth itself, then location permissions, then location services. The latter two
-        // are only needed in Android M. This must be called from an Activity instance.
-        BluetoothEnabler.start(getActivity(), new DefaultBluetoothEnablerFilter()
-        {
-            @Override public Please onEvent(BluetoothEnablerEvent e)
-            {
-                if( e.isDone() )
-                {
-                    e.bleManager().setConfig(mBleManagerConfig);
-                    e.bleManager().startScan(Interval.INFINITE, discoveryListener);
-                }
-
-                return super.onEvent(e);
-            }
-        });
-
         timer.schedule(timerTask, 1000, 1000);
     }
 
@@ -151,10 +134,24 @@ public class ScannerFragment extends ListFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-//        getListView().setDivider(null);
-//        getListView().setDividerHeight(0);
-
         setEmptyText(getString(R.string.empty_list));
+
+        // This class helps you navigate the treacherous waters of Android M Location requirements for scanning.
+        // First it enables bluetooth itself, then location permissions, then location services. The latter two
+        // are only needed in Android M. This must be called from an Activity instance.
+        BluetoothEnabler.start(getActivity(), new DefaultBluetoothEnablerFilter()
+        {
+            @Override public Please onEvent(BluetoothEnablerEvent e)
+            {
+                if( e.isDone() )
+                {
+                    e.bleManager().setConfig(mBleManagerConfig);
+                    e.bleManager().startScan(Interval.INFINITE, discoveryListener);
+                }
+
+                return super.onEvent(e);
+            }
+        });
     }
 
     @Override

@@ -22,12 +22,15 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.CardView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.auth0.android.jwt.DecodeException;
 import com.auth0.android.jwt.JWT;
@@ -73,6 +76,20 @@ public class BLEConnectFragment extends Fragment {
     private String mUserId;
     private Date mTokenExpiresAt;
     private JWT mJwt;
+
+    private TextView tvCardViewTitle;
+    private TextView tvBleTitleServ;
+    private TextView tvBleMacAddrServ;
+    private TextView tvBlePasskeyServ;
+    private TextView tvLoRaTitleServ;
+    private TextView tvDevEuiServ;
+    private TextView tvAppEuiServ;
+    private TextView tvAppKeyServ;
+    private TextView tvDeviceOwnerTitleServ;
+    private TextView tvPublicIdServ;
+    private CardView cvDeviceBLE;
+    private CardView cvDeviceServer;
+    private Button btnBleConnectDevice;
 
     /**
      * SweetBlue BLE configuration
@@ -126,13 +143,25 @@ public class BLEConnectFragment extends Fragment {
 
     private void initViews(View view) {
 
-//        mTvName = (TextView) findViewById(R.id.tv_name);
-//        mTvUsername = (TextView) findViewById(R.id.tv_username);
-//        mTvDate = (TextView) findViewById(R.id.tv_date);
-//        mBtChangePassword = (Button) findViewById(R.id.btn_change_password);
-//        mBtLogout = (Button) findViewById(R.id.btn_logout);
-//        mProgressbar = (ProgressBar) view.findViewById(R.id.progress);
-//
+        cvDeviceServer = view.findViewById(R.id.card_serv);
+        cvDeviceBLE = view.findViewById(R.id.card_ble);
+        cvDeviceBLE.setVisibility(View.GONE);
+
+        btnBleConnectDevice = view.findViewById(R.id.btn_ble_connect_device);
+
+        tvCardViewTitle = view.findViewById(R.id.tv_cv_title_serv);
+        tvBleTitleServ = view.findViewById(R.id.tv_ble_title_serv);
+        tvBleMacAddrServ  = view.findViewById(R.id.tv_ble_mac_address_serv);
+        tvBlePasskeyServ  = view.findViewById(R.id.tv_ble_passkey_serv);
+        tvLoRaTitleServ  = view.findViewById(R.id.tv_lora_title_serv);
+        tvDevEuiServ = view.findViewById(R.id.tv_dev_eui_serv);
+        tvAppEuiServ = view.findViewById(R.id.tv_app_eui_serv);
+        tvAppKeyServ = view.findViewById(R.id.tv_app_key_serv);
+        tvDeviceOwnerTitleServ = view.findViewById(R.id.tv_device_owner_title_serv);
+        tvPublicIdServ = view.findViewById(R.id.tv_owner_public_id_serv);
+
+
+
 //        mBtChangePassword.setOnClickListener(view -> showDialog());
 //        mBtLogout.setOnClickListener(view -> logout());
     }
@@ -167,8 +196,20 @@ public class BLEConnectFragment extends Fragment {
 
         mProgressDialog.dismiss();
 
-        //        mTvName.setText(user.getUsername());
-        //        mTvUsername.setText(user.getPublicId());
+
+        tvBleMacAddrServ.setText(String.format("Mac Address : %s", device.getBleMacAddr()));
+
+        tvBleMacAddrServ.setText( Html.fromHtml(
+                getColoredSpanned("Mac Address : %s",
+                        getResources().getColor(R.color.colorTextPrimaryLightDark)) +
+                        getColoredSpanned(device.getBleMacAddr(),
+                        getResources().getColor(R.color.colorTextPrimaryDark))));
+
+        tvBlePasskeyServ.setText(String.format("Passkey : %s", device.getBlePassKey()));
+        tvDevEuiServ.setText(String.format("DevEUI : %s", device.getDevEui()));
+        tvAppEuiServ.setText(String.format("AppEUI : %s", device.getAppEui()));
+        tvAppKeyServ.setText(String.format("AppKey : %s", device.getAppKey()));
+        tvPublicIdServ.setText(String.format("Owner ID : %s", device.getOwnerPublicId()));
 
         // This class helps you navigate the treacherous waters of Android M Location requirements for scanning.
         // First it enables bluetooth itself, then location permissions, then location services. The latter two
@@ -184,13 +225,24 @@ public class BLEConnectFragment extends Fragment {
                 return super.onEvent(e);
             }
         });
-
-        //mTvDate.setText(user.getCreated_at());
     }
 
     private void handleError(Throwable error) {
 
         mProgressDialog.dismiss();
+
+        tvCardViewTitle.setText(R.string.cv_device_not_found_title);
+        tvBleTitleServ.setText(R.string.cv_device_not_found_msg);
+        tvLoRaTitleServ.setVisibility(View.GONE);
+        tvDeviceOwnerTitleServ.setVisibility(View.GONE);
+        tvBleMacAddrServ.setVisibility(View.GONE);
+        tvBlePasskeyServ.setVisibility(View.GONE);
+        tvDevEuiServ.setVisibility(View.GONE);
+        tvAppEuiServ.setVisibility(View.GONE);
+        tvAppKeyServ.setVisibility(View.GONE);
+        tvPublicIdServ.setVisibility(View.GONE);
+
+        btnBleConnectDevice.setEnabled(false);
 
         if (error instanceof HttpException) {
 
@@ -247,5 +299,11 @@ public class BLEConnectFragment extends Fragment {
         if(view !=null) {
             Snackbar.make(getView(),message,Snackbar.LENGTH_LONG).show();
         }
+    }
+
+    private String getColoredSpanned(String text, int color) {
+        String colorHex = "#" + Integer.toHexString(color & 0x00ffffff);
+        String input = "<font color=" + color + ">" + text + "</font>";
+        return input;
     }
 }

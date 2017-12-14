@@ -13,4 +13,6 @@
     <string name="activity_title_bluetooth">BLE Scanner</string>
     <string name="profile_settings_menu_title">User Profile</string>
     <string name="activity_title_profile">User Profile</string>
+    <string name="cv_device_not_found_title">DEVICE NOT FOUND!</string>
+    <string name="cv_device_not_found_msg">This device has not been found on the server. If this device is a correct SmartCanton DevBox, please add it to the server with his BLE Mac Address and a valid LoRa DevEui</string>
 </resources>

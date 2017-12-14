@@ -16,99 +16,217 @@
         android:paddingTop="@dimen/activity_vertical_margin">
 
         <android.support.v7.widget.CardView
-            android:id="@+id/card"
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/card_serv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/progress">
+            card_view:cardCornerRadius="8dp"
+            card_view:cardBackgroundColor="@color/colorCardViewBackground">
+            <!--card_view:contentPadding="25dp"-->
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/card_padding">
+                android:layout_height="wrap_content">
+                <!--android:layout_margin="@dimen/card_padding"-->
 
                 <TextView
-                    android:id="@+id/tv_ble_title"
-                    android:text="Bluetooth Information"
+                    android:id="@+id/tv_cv_title_serv"
+                    android:text="Server information"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:layout_centerHorizontal="true"
+                    android:textColor="@color/colorTextPrimary"
+                    android:background="@color/colorPrimaryDark"
+                    android:textStyle="bold"
+                    android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+                <TextView
+                    android:id="@+id/tv_ble_title_serv"
+                    android:text="Bluetooth"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv_name"
                     android:layout_marginTop="@dimen/card_items_margin"
                     android:layout_centerHorizontal="true"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:layout_below="@+id/tv_cv_title_serv"
                     android:textAppearance="?android:attr/textAppearanceMedium"/>
 
                 <TextView
-                    android:id="@+id/tv_ble_mac_address"
+                    android:id="@+id/tv_ble_mac_address_serv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:textColor="@android:color/black"
-                    android:layout_below="@+id/tv_ble_title"
-                    android:textAppearance="?android:attr/textAppearanceMedium"/>
+                    android:textColor="@color/colorTextPrimaryLightDark"
+                    android:layout_below="@+id/tv_ble_title_serv"
+                    android:textAppearance="?android:attr/textAppearanceSmall"/>
 
                 <TextView
-                    android:id="@+id/tv_ble_passkey"
+                    android:id="@+id/tv_ble_passkey_serv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv_ble_mac_address"
+                    android:layout_below="@+id/tv_ble_mac_address_serv"
                     android:layout_marginTop="@dimen/card_items_margin"
                     android:layout_centerHorizontal="true"
+                    android:textColor="@color/colorTextPrimaryLightDark"
+                    android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+                <TextView
+                    android:id="@+id/tv_lora_title_serv"
+                    android:text="LoRa"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_ble_passkey_serv"
+                    android:layout_marginTop="@dimen/card_items_margin"
+                    android:layout_centerHorizontal="true"
+                    android:textColor="@color/colorPrimaryDark"
                     android:textAppearance="?android:attr/textAppearanceMedium"/>
 
                 <TextView
-                    android:id="@+id/tv_lora_title"
-                    android:text="LoRa Information"
+                    android:id="@+id/tv_dev_eui_serv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv_ble_passkey"
+                    android:layout_below="@+id/tv_lora_title_serv"
                     android:layout_marginTop="@dimen/card_items_margin"
                     android:layout_centerHorizontal="true"
+                    android:textColor="@color/colorTextPrimaryLightDark"
+                    android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+                <TextView
+                    android:id="@+id/tv_app_eui_serv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_dev_eui_serv"
+                    android:layout_marginTop="@dimen/card_items_margin"
+                    android:layout_centerHorizontal="true"
+                    android:textColor="@color/colorTextPrimaryLightDark"
+                    android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+                <TextView
+                    android:id="@+id/tv_app_key_serv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_app_eui_serv"
+                    android:layout_marginTop="@dimen/card_items_margin"
+                    android:layout_centerHorizontal="true"
+                    android:textColor="@color/colorTextPrimaryLightDark"
+                    android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+                <TextView
+                    android:id="@+id/tv_device_owner_title_serv"
+                    android:text="Owner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_app_key_serv"
+                    android:layout_marginTop="@dimen/card_items_margin"
+                    android:layout_centerHorizontal="true"
+                    android:textColor="@color/colorPrimaryDark"
                     android:textAppearance="?android:attr/textAppearanceMedium"/>
 
                 <TextView
-                    android:id="@+id/tv_dev_eui"
+                    android:id="@+id/tv_owner_public_id_serv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv_lora_title"
+                    android:layout_below="@+id/tv_device_owner_title_serv"
                     android:layout_marginTop="@dimen/card_items_margin"
                     android:layout_centerHorizontal="true"
+                    android:textColor="@color/colorTextPrimaryLightDark"
+                    android:textAlignment="center"
+                    android:textAppearance="?android:attr/textAppearanceSmall"/>
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/card_ble"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            card_view:cardCornerRadius="8dp"
+            android:layout_below="@+id/card_serv"
+            card_view:cardBackgroundColor="@color/colorCardViewBackground">
+            <!--card_view:contentPadding="25dp"-->
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <!--android:layout_margin="@dimen/card_padding"-->
+
+                <TextView
+                    android:id="@+id/tv_cv_title_device"
+                    android:text="BLE Device information"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:layout_centerHorizontal="true"
+                    android:textColor="@color/colorTextPrimary"
+                    android:background="@color/colorPrimaryDark"
+                    android:textStyle="bold"
+                    android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+                <!--LORA SERVICE-->
+                <TextView
+                    android:id="@+id/tv_lora_service_title_device"
+                    android:text="BLE LoRa Service"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/card_items_margin"
+                    android:layout_centerHorizontal="true"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:layout_below="@+id/tv_cv_title_device"
                     android:textAppearance="?android:attr/textAppearanceMedium"/>
 
                 <TextView
-                    android:id="@+id/tv_app_eui"
+                    android:id="@+id/tv_lora_dev_eui_device"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv_dev_eui"
-                    android:layout_marginTop="@dimen/card_items_margin"
                     android:layout_centerHorizontal="true"
-                    android:textAppearance="?android:attr/textAppearanceMedium"/>
+                    android:textColor="@color/colorTextPrimaryLightDark"
+                    android:layout_below="@+id/tv_lora_service_title_device"
+                    android:textAppearance="?android:attr/textAppearanceSmall"/>
 
                 <TextView
-                    android:id="@+id/tv_app_key"
+                    android:id="@+id/tv_lora_app_eui_device"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv_app_eui"
+                    android:layout_below="@+id/tv_lora_dev_eui_device"
                     android:layout_marginTop="@dimen/card_items_margin"
                     android:layout_centerHorizontal="true"
-                    android:textAppearance="?android:attr/textAppearanceMedium"/>
+                    android:textColor="@color/colorTextPrimaryLightDark"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
 
                 <TextView
-                    android:id="@+id/tv_device_owner"
-                    android:text="Device Owner"
+                    android:id="@+id/tv_lora_network_join_status_device"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv_app_key"
+                    android:layout_below="@+id/tv_lora_app_eui_device"
                     android:layout_marginTop="@dimen/card_items_margin"
                     android:layout_centerHorizontal="true"
-                    android:textAppearance="?android:attr/textAppearanceMedium"/>
+                    android:textColor="@color/colorTextPrimaryLightDark"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
 
                 <TextView
-                    android:id="@+id/tv_owner_public_id"
+                    android:id="@+id/tv_lora_device_address"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv_device_owner"
+                    android:layout_below="@+id/tv_lora_network_join_status_device"
                     android:layout_marginTop="@dimen/card_items_margin"
                     android:layout_centerHorizontal="true"
+                    android:textColor="@color/colorTextPrimaryLightDark"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                    <!--GPS SERVICE-->
+                <TextView
+                    android:id="@+id/tv_gps_service_title_device"
+                    android:text="BLE GPS Service"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/card_items_margin"
+                    android:layout_centerHorizontal="true"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:layout_below="@+id/tv_lora_device_address"
                     android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+
             </RelativeLayout>
         </android.support.v7.widget.CardView>
 
@@ -116,21 +234,12 @@
             android:id="@+id/btn_ble_connect_device"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/card"
+            android:layout_below="@+id/card_ble"
             android:layout_marginTop="@dimen/button_margin"
             android:drawableRight="@drawable/ic_bluetooth_connect_white"
             android:paddingLeft="@dimen/button_padding"
             android:text="Connect to Bluetooth device" />
 
-        <Button
-            android:id="@+id/btn_logout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/btn_ble_connect_device"
-            android:layout_marginTop="@dimen/button_margin"
-            android:drawableRight="@drawable/ic_exit"
-            android:paddingLeft="@dimen/button_padding"
-            android:text="Logout" />
 
     </RelativeLayout>
 </ScrollView>
