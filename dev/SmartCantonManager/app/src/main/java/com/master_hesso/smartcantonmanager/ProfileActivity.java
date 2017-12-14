@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -60,6 +61,11 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
         initSharedPreferences();
         extractTokenInformation();
         loadProfile();
+
+        try {
+            this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        } catch (Exception ignored) {
+        }
     }
 
     private void initViews() {
@@ -174,6 +180,18 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
     public void onPasswordChanged() {
 
         showSnackBarMessage("Password Changed Successfully !");
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
 

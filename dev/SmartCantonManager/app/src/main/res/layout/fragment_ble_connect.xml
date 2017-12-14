@@ -143,6 +143,7 @@
             android:layout_height="wrap_content"
             card_view:cardCornerRadius="8dp"
             android:layout_below="@+id/card_serv"
+            android:layout_marginTop="@dimen/child_margin_top"
             card_view:cardBackgroundColor="@color/colorCardViewBackground">
             <!--card_view:contentPadding="25dp"-->
 

@@ -22,8 +22,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
-import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,9 +38,11 @@ import com.auth0.android.jwt.JWT;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.idevicesinc.sweetblue.BleDevice;
+import com.idevicesinc.sweetblue.BleDeviceState;
 import com.idevicesinc.sweetblue.BleManager;
 import com.idevicesinc.sweetblue.BleManagerConfig;
 import com.idevicesinc.sweetblue.BleScanApi;
+import com.idevicesinc.sweetblue.BondRetryFilter;
 import com.idevicesinc.sweetblue.utils.BluetoothEnabler;
 import com.idevicesinc.sweetblue.utils.BluetoothEnabler.DefaultBluetoothEnablerFilter;
 import com.master_hesso.smartcantonmanager.R;
@@ -64,7 +67,8 @@ public class BLEConnectFragment extends Fragment {
 
     public static final String TAG = BLEConnectFragment.class.getSimpleName();
 
-    private BleDevice bleDevice = null;
+    private BleDevice mBleDevice = null;
+    private BleManager mBleManager;
 
     private CompositeSubscription mSubscriptions;
 
@@ -95,7 +99,10 @@ public class BLEConnectFragment extends Fragment {
      * SweetBlue BLE configuration
      */
     private final BleManagerConfig mBleManagerConfig = new BleManagerConfig() {{
-        this.scanApi = BleScanApi.POST_LOLLIPOP;
+//        this.scanApi = BleScanApi.POST_LOLLIPOP;
+//        this.useLeTransportForBonding
+//        this.alwaysBondOnConnect = true;
+        this.forceBondDialog = true;
         this.stopScanOnPause = true;
     }};
 
@@ -103,20 +110,23 @@ public class BLEConnectFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+
+        mBleManager = BleManager.get(getActivity());
+        mBleManager.setConfig(mBleManagerConfig);
     }
 
 
     private void initSharedPreferences() {
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        mToken = mSharedPreferences.getString(Constants.TOKEN,"");
-        mUsername = mSharedPreferences.getString(Constants.USERNAME,"");
+        mToken = mSharedPreferences.getString(Constants.TOKEN, "");
+        mUsername = mSharedPreferences.getString(Constants.USERNAME, "");
     }
 
     private void extractTokenInformation() {
         try {
             mJwt = new JWT(mToken);
-        } catch (DecodeException exception){
+        } catch (DecodeException exception) {
 
         }
 
@@ -128,7 +138,7 @@ public class BLEConnectFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_ble_connect,container,false);
+        View view = inflater.inflate(R.layout.fragment_ble_connect, container, false);
         mSubscriptions = new CompositeSubscription();
         setHasOptionsMenu(true);
         initViews(view);
@@ -138,6 +148,94 @@ public class BLEConnectFragment extends Fragment {
 
         loadDevice();
 
+
+
+//        mBleDevice.setListener_Bond(new BleDevice.BondListener() {
+//            @Override
+//            public void onEvent(BondEvent bondEvent) {
+//
+//                showSnackBarMessage("BOND EVENT WITH CODE : " + bondEvent.failReason());
+//                Log.i(TAG, "BOND EVENT WITH CODE : " + bondEvent.failReason());
+//
+////                mBleManager.reset();
+//            }
+//        });
+
+        btnBleConnectDevice.setOnClickListener((View view1) -> mBleDevice.connect(e ->
+                {
+                    if (e.didEnter(BleDeviceState.UNDISCOVERED)) {
+                        Log.i(TAG, "UNDISCOVERED");
+                    }
+                    if (e.didEnter(BleDeviceState.RECONNECTING_LONG_TERM)) {
+                        Log.i(TAG, "RECONNECTING_LONG_TERM");
+                    }
+                    if (e.didEnter(BleDeviceState.RECONNECTING_SHORT_TERM)) {
+                        Log.i(TAG, "RECONNECTING_SHORT_TERM");
+                    }
+                    if (e.didEnter(BleDeviceState.RETRYING_BLE_CONNECTION)) {
+                        Log.i(TAG, "RETRYING_BLE_CONNECTION");
+                    }
+                    if (e.didEnter(BleDeviceState.ADVERTISING)) {
+                        Log.i(TAG, "ADVERTISING");
+                    }
+                    if (e.didEnter(BleDeviceState.DISCONNECTED)) {
+                        Log.i(TAG, "DISCONNECTED");
+                    }
+                    if (e.didEnter(BleDeviceState.UNBONDED)) {
+                        Log.i(TAG, "UNBONDED");
+                    }
+                    if (e.didEnter(BleDeviceState.BONDING)) {
+                        Log.i(TAG, "BONDING");
+                    }
+                    if (e.didEnter(BleDeviceState.BONDED)) {
+                        Log.i(TAG, "BONDED");
+                    }
+                    if (e.didEnter(BleDeviceState.CONNECTING_OVERALL)) {
+                        Log.i(TAG, "CONNECTING_OVERALL");
+                    }
+                    if (e.didEnter(BleDeviceState.CONNECTING)) {
+                        Log.i(TAG, "CONNECTING");
+                    }
+                    if (e.didEnter(BleDeviceState.CONNECTED)) {
+                        Log.i(TAG, "CONNECTED");
+                    }
+                    if (e.didEnter(BleDeviceState.DISCOVERING_SERVICES)) {
+                        Log.i(TAG, "DISCOVERING_SERVICES");
+                    }
+                    if (e.didEnter(BleDeviceState.SERVICES_DISCOVERED)) {
+                        Log.i(TAG, "SERVICES_DISCOVERED");
+                    }
+                    if (e.didEnter(BleDeviceState.AUTHENTICATING)) {
+                        Log.i(TAG, "AUTHENTICATING");
+                    }
+                    if (e.didEnter(BleDeviceState.AUTHENTICATED)) {
+                        Log.i(TAG, "AUTHENTICATED");
+                    }
+                    if (e.didEnter(BleDeviceState.INITIALIZING)) {
+                        Log.i(TAG, "INITIALIZING");
+                    }
+                    if (e.didEnter(BleDeviceState.INITIALIZED)) {
+                        Log.i(TAG, "INITIALIZED");
+                    }
+                    if (e.didEnter(BleDeviceState.PERFORMING_OTA)) {
+                        Log.i(TAG, "PERFORMING_OTA");
+                    }
+//                    if (e.didEnter(BleDeviceState.INITIALIZED)) {
+//                        e.device().read(Uuids.BATTERY_LEVEL, e1 -> {
+//                            if (e1.wasSuccess()) {
+//                                showSnackBarMessage("Battery level is : " + e1.data_byte() + "%");
+//                            }
+//                        });
+//                    }
+                },
+                connectionFailEvent -> {
+                    showSnackBarMessage("Connection fail event with number : "
+                            + connectionFailEvent.bondFailReason());
+
+                    return null;
+                })
+        );
+
         return view;
     }
 
@@ -145,33 +243,29 @@ public class BLEConnectFragment extends Fragment {
 
         cvDeviceServer = view.findViewById(R.id.card_serv);
         cvDeviceBLE = view.findViewById(R.id.card_ble);
-        cvDeviceBLE.setVisibility(View.GONE);
+        //cvDeviceBLE.setVisibility(View.GONE);
 
         btnBleConnectDevice = view.findViewById(R.id.btn_ble_connect_device);
 
         tvCardViewTitle = view.findViewById(R.id.tv_cv_title_serv);
         tvBleTitleServ = view.findViewById(R.id.tv_ble_title_serv);
-        tvBleMacAddrServ  = view.findViewById(R.id.tv_ble_mac_address_serv);
-        tvBlePasskeyServ  = view.findViewById(R.id.tv_ble_passkey_serv);
-        tvLoRaTitleServ  = view.findViewById(R.id.tv_lora_title_serv);
+        tvBleMacAddrServ = view.findViewById(R.id.tv_ble_mac_address_serv);
+        tvBlePasskeyServ = view.findViewById(R.id.tv_ble_passkey_serv);
+        tvLoRaTitleServ = view.findViewById(R.id.tv_lora_title_serv);
         tvDevEuiServ = view.findViewById(R.id.tv_dev_eui_serv);
         tvAppEuiServ = view.findViewById(R.id.tv_app_eui_serv);
         tvAppKeyServ = view.findViewById(R.id.tv_app_key_serv);
         tvDeviceOwnerTitleServ = view.findViewById(R.id.tv_device_owner_title_serv);
         tvPublicIdServ = view.findViewById(R.id.tv_owner_public_id_serv);
 
-
-
-//        mBtChangePassword.setOnClickListener(view -> showDialog());
-//        mBtLogout.setOnClickListener(view -> logout());
     }
 
     private void getDataFromArguments() {
 
         Bundle bundle = getArguments();
         String ble_mac_addr = bundle.getString(Constants.BLE_DEVICE_MAC);
-        if(ble_mac_addr != null) {
-            bleDevice = BleManager.get(getActivity()).getDevice(ble_mac_addr);
+        if (ble_mac_addr != null) {
+            mBleDevice = mBleManager.getDevice(ble_mac_addr);
         } else {
 
         }
@@ -179,11 +273,11 @@ public class BLEConnectFragment extends Fragment {
     }
 
     private void loadDevice() {
-        String macAddrURI = bleDevice.getMacAddress().replaceAll(":", "");
+        String macAddrURI = mBleDevice.getMacAddress().replaceAll(":", "");
         mSubscriptions.add(NetworkUtil.getRetrofit(mToken).getDevice(macAddrURI)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(this::handleResponse,this::handleError));
+                .subscribe(this::handleResponse, this::handleError));
 
         mProgressDialog = new ProgressDialog(getActivity());
         mProgressDialog.setTitle("Loading");
@@ -196,15 +290,14 @@ public class BLEConnectFragment extends Fragment {
 
         mProgressDialog.dismiss();
 
+        // If we want double colors on the same text
+//        tvBleMacAddrServ.setText( Html.fromHtml(
+//                getColoredSpanned("Mac Address : %s",
+//                        getResources().getColor(R.color.colorTextPrimaryLightDark)) +
+//                        getColoredSpanned(device.getBleMacAddr(),
+//                                getResources().getColor(R.color.colorTextPrimaryDark))));
 
         tvBleMacAddrServ.setText(String.format("Mac Address : %s", device.getBleMacAddr()));
-
-        tvBleMacAddrServ.setText( Html.fromHtml(
-                getColoredSpanned("Mac Address : %s",
-                        getResources().getColor(R.color.colorTextPrimaryLightDark)) +
-                        getColoredSpanned(device.getBleMacAddr(),
-                        getResources().getColor(R.color.colorTextPrimaryDark))));
-
         tvBlePasskeyServ.setText(String.format("Passkey : %s", device.getBlePassKey()));
         tvDevEuiServ.setText(String.format("DevEUI : %s", device.getDevEui()));
         tvAppEuiServ.setText(String.format("AppEUI : %s", device.getAppEui()));
@@ -214,13 +307,11 @@ public class BLEConnectFragment extends Fragment {
         // This class helps you navigate the treacherous waters of Android M Location requirements for scanning.
         // First it enables bluetooth itself, then location permissions, then location services. The latter two
         // are only needed in Android M. This must be called from an Activity instance.
-        BluetoothEnabler.start(getActivity(), new DefaultBluetoothEnablerFilter()
-        {
-            @Override public Please onEvent(BluetoothEnablerEvent e)
-            {
-                if( e.isDone() )
-                {
-                    bleDevice.connect();
+        BluetoothEnabler.start(getActivity(), new DefaultBluetoothEnablerFilter() {
+            @Override
+            public Please onEvent(BluetoothEnablerEvent e) {
+                if (e.isDone()) {
+
                 }
                 return super.onEvent(e);
             }
@@ -242,7 +333,7 @@ public class BLEConnectFragment extends Fragment {
         tvAppKeyServ.setVisibility(View.GONE);
         tvPublicIdServ.setVisibility(View.GONE);
 
-        btnBleConnectDevice.setEnabled(false);
+//        btnBleConnectDevice.setClickable(false);
 
         if (error instanceof HttpException) {
 
@@ -251,7 +342,7 @@ public class BLEConnectFragment extends Fragment {
             try {
 
                 String errorBody = ((HttpException) error).response().errorBody().string();
-                Response response = gson.fromJson(errorBody,Response.class);
+                Response response = gson.fromJson(errorBody, Response.class);
                 showSnackBarMessage(response.getMessage());
 
             } catch (IOException e) {
@@ -296,9 +387,15 @@ public class BLEConnectFragment extends Fragment {
     private void showSnackBarMessage(String message) {
 
         View view = getView();
-        if(view !=null) {
-            Snackbar.make(getView(),message,Snackbar.LENGTH_LONG).show();
+        if (view != null) {
+            Snackbar.make(getView(), message, Snackbar.LENGTH_LONG).show();
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mBleManager.disconnectAll();
     }
 
     private String getColoredSpanned(String text, int color) {

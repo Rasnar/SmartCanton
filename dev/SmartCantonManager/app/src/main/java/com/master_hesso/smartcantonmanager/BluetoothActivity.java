@@ -6,40 +6,19 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.auth0.android.jwt.DecodeException;
 import com.auth0.android.jwt.JWT;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.idevicesinc.sweetblue.BleDeviceState;
-import com.idevicesinc.sweetblue.BleManager;
-import com.idevicesinc.sweetblue.BleManagerConfig;
-import com.idevicesinc.sweetblue.utils.BluetoothEnabler;
-import com.idevicesinc.sweetblue.utils.Interval;
-import com.idevicesinc.sweetblue.utils.Uuids;
 import com.master_hesso.smartcantonmanager.fragments.ChangePasswordDialog;
 import com.master_hesso.smartcantonmanager.fragments.LoginFragment;
 import com.master_hesso.smartcantonmanager.fragments.ScannerFragment;
-import com.master_hesso.smartcantonmanager.model.Response;
-import com.master_hesso.smartcantonmanager.model.User;
-import com.master_hesso.smartcantonmanager.network.NetworkUtil;
 import com.master_hesso.smartcantonmanager.utils.Constants;
 
-import java.io.IOException;
 import java.util.Date;
-
-import retrofit2.adapter.rxjava.HttpException;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 
 public class BluetoothActivity extends AppCompatActivity implements ChangePasswordDialog.Listener {
@@ -96,27 +75,32 @@ public class BluetoothActivity extends AppCompatActivity implements ChangePasswo
                 Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
                 startActivity(intent);
                 return true;
-
+            case android.R.id.home:
+                onBackPressed();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
     private void initViews() {
-
+        try {
+            this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        } catch (Exception ignored) {
+        }
     }
 
     private void initSharedPreferences() {
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        mToken = mSharedPreferences.getString(Constants.TOKEN,"");
-        mUsername = mSharedPreferences.getString(Constants.USERNAME,"");
+        mToken = mSharedPreferences.getString(Constants.TOKEN, "");
+        mUsername = mSharedPreferences.getString(Constants.USERNAME, "");
     }
 
     private void extractTokenInformation() {
         try {
             mJwt = new JWT(mToken);
-        } catch (DecodeException exception){
+        } catch (DecodeException exception) {
             logout();
         }
 
@@ -124,25 +108,25 @@ public class BluetoothActivity extends AppCompatActivity implements ChangePasswo
         mTokenExpiresAt = mJwt.getExpiresAt();
     }
 
-    private void loadFragment(){
+    private void loadFragment() {
 
         if (mScannerFragment == null) {
 
             mScannerFragment = new ScannerFragment();
         }
-        getFragmentManager().beginTransaction().replace(R.id.fragmentFrame,mScannerFragment,LoginFragment.TAG).commit();
+        getFragmentManager().beginTransaction().replace(R.id.fragmentFrame, mScannerFragment, LoginFragment.TAG).commit();
     }
 
     private void logout() {
 
         SharedPreferences.Editor editor = mSharedPreferences.edit();
-        editor.putString(Constants.USERNAME,"");
-        editor.putString(Constants.TOKEN,"");
+        editor.putString(Constants.USERNAME, "");
+        editor.putString(Constants.TOKEN, "");
         editor.apply();
         finish();
     }
 
-    private void showDialog(){
+    private void showDialog() {
 
         ChangePasswordDialog fragment = new ChangePasswordDialog();
 
@@ -157,7 +141,7 @@ public class BluetoothActivity extends AppCompatActivity implements ChangePasswo
 
     private void showSnackBarMessage(String message) {
 
-        Snackbar.make(findViewById(R.id.activity_profile),message,Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(findViewById(R.id.activity_profile), message, Snackbar.LENGTH_SHORT).show();
 
     }
 

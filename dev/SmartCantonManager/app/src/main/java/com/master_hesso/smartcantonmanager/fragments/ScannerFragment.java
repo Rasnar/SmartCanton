@@ -63,12 +63,9 @@ public class ScannerFragment extends ListFragment {
      */
     private final BleManagerConfig mBleManagerConfig = new BleManagerConfig() {{
 
-        //this.loggingEnabled = true;
-
-
-        //this.infiniteScanInterval = Interval.ONE_SEC;
+        this.infiniteScanInterval = Interval.FIVE_SECS;
         //this.autoScanActiveTime =
-        this.scanApi = BleScanApi.POST_LOLLIPOP;
+//        this.scanApi = BleScanApi.POST_LOLLIPOP;
         this.stopScanOnPause = true;
     }};
 
@@ -168,6 +165,8 @@ public class ScannerFragment extends ListFragment {
         // create a transaction for transition here
         final FragmentTransaction transaction = getFragmentManager()
                 .beginTransaction();
+
+       // transaction.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
 
         // put the fragment in place
         transaction.replace(R.id.fragmentFrame, bleConnectFragment);
