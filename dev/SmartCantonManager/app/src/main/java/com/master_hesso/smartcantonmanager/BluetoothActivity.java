@@ -25,12 +25,6 @@ public class BluetoothActivity extends AppCompatActivity implements ChangePasswo
 
     public static final String TAG = BluetoothActivity.class.getSimpleName();
 
-//    private TextView mTvName;
-//    private TextView mTvUsername;
-//    private TextView mTvDate;
-//    private Button mBtChangePassword;
-//    private Button mBtLogout;
-
     private ScannerFragment mScannerFragment;
 
     private ProgressBar mProgressbar;
@@ -114,7 +108,8 @@ public class BluetoothActivity extends AppCompatActivity implements ChangePasswo
 
             mScannerFragment = new ScannerFragment();
         }
-        getFragmentManager().beginTransaction().replace(R.id.fragmentFrame, mScannerFragment, LoginFragment.TAG).commit();
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragmentFrame, mScannerFragment, LoginFragment.TAG).commit();
     }
 
     private void logout() {

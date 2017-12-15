@@ -16,18 +16,17 @@
 
 package com.master_hesso.smartcantonmanager.fragments;
 
-import com.google.gson.Gson;
 import com.idevicesinc.sweetblue.BleManager.DiscoveryListener.LifeCycle;
 import com.idevicesinc.sweetblue.BleManagerConfig;
 import com.idevicesinc.sweetblue.BleManagerConfig.ScanFilter;
-import com.idevicesinc.sweetblue.BleScanApi;
 import com.idevicesinc.sweetblue.utils.BluetoothEnabler.DefaultBluetoothEnablerFilter;
 import com.master_hesso.smartcantonmanager.R;
 
-import android.app.FragmentTransaction;
-import android.app.ListFragment;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.ListFragment;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -113,6 +112,10 @@ public class ScannerFragment extends ListFragment {
                 LayoutInflater.from(getActivity()));
 
         timer.schedule(timerTask, 1000, 1000);
+
+        mBleManager = BleManager.get(getActivity(), mBleManagerConfig);
+        mBleManager.setConfig(mBleManagerConfig);
+
     }
 
     @Override
@@ -123,7 +126,6 @@ public class ScannerFragment extends ListFragment {
 
         setListAdapter(mAdapter);
         setHasOptionsMenu(true);
-
         return view;
     }
 
@@ -142,8 +144,7 @@ public class ScannerFragment extends ListFragment {
             {
                 if( e.isDone() )
                 {
-                    e.bleManager().setConfig(mBleManagerConfig);
-                    e.bleManager().startScan(Interval.INFINITE, discoveryListener);
+                    mBleManager.startScan(Interval.INFINITE, discoveryListener);
                 }
 
                 return super.onEvent(e);
@@ -162,20 +163,29 @@ public class ScannerFragment extends ListFragment {
         bundle.putString(Constants.BLE_DEVICE_MAC, device.getMacAddress());
         bleConnectFragment.setArguments(bundle);
 
-        // create a transaction for transition here
-        final FragmentTransaction transaction = getFragmentManager()
-                .beginTransaction();
+//        // create a transaction for transition here
+//        final FragmentTransaction transaction = getFragmentManager()
+//                .beginTransaction();
+//
+//        transaction.setCustomAnimations(R.animator.slide_in_left, R.animator.slide_out_left,
+//                R.animator.slide_out_right, R.animator.slide_in_right);
+//
+//
+//
+//        // put the fragment in place
+//        transaction.replace(R.id.fragmentFrame, bleConnectFragment);
 
-       // transaction.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
-
-        // put the fragment in place
+        FragmentTransaction transaction = this.getFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right);
         transaction.replace(R.id.fragmentFrame, bleConnectFragment);
-
-        // this is the part that will cause a fragment to be added to backstack,
-        // this way we can return to it at any time using this tag
-        transaction.addToBackStack(bleConnectFragment.getClass().getName());
-
+        transaction.addToBackStack(TAG);
         transaction.commit();
+
+//        // this is the part that will cause a fragment to be added to backstack,
+//        // this way we can return to it at any time using this tag
+//        transaction.addToBackStack(TAG);
+//
+//        transaction.commit();
     }
 
     @Override
@@ -187,6 +197,8 @@ public class ScannerFragment extends ListFragment {
     @Override
     public void onResume() {
         super.onResume();
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Scanner");
+        mBleManager.startScan(Interval.INFINITE, discoveryListener);
         BleManager.get(getActivity()).onResume();
         getActivity().invalidateOptionsMenu();
     }
