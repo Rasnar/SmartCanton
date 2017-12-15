@@ -1693,7 +1693,7 @@ With invalid token :
 
 
 
-## 06.12.2017
+# 06.12.2017
 
 ## Android JWT Client
 
@@ -1851,4 +1851,75 @@ gapDeviceSecurityRequirements_t deviceSecurityRequirements = {
     .aServiceSecurityRequirements   = (void*)serviceSecurity
 };
 ````
+
+
+
+
+
+NOTE : Maximum 3 services can have a custom security. But it's possible to put a Master Security that will set the default security.
+
+
+
+
+
+
+
+
+
+
+
+# 14.12.2017
+
+## Android Bluetooth order pairing (BlueSweet library)
+
+When you connect to a device waiting to pair (pop up Android for passkey) :
+
+````
+12-14 17:13:34.353 30273-30273/com.smartcantonmanager I/BLEConnectFragment: BONDING
+12-14 17:13:34.360 30273-30273/com.smartcantonmanager I/BLEConnectFragment: CONNECTING_OVERALL
+12-14 17:13:34.367 30273-30273/com.smartcantonmanager I/BLEConnectFragment: CONNECTING
+````
+
+Time out Passkey request : 
+
+````
+12-14 17:13:34.353 30273-30273/com.smartcantonmanager I/BLEConnectFragment: BONDING
+12-14 17:13:34.360 30273-30273/com.smartcantonmanager I/BLEConnectFragment: CONNECTING_OVERALL
+12-14 17:13:34.367 30273-30273/com.smartcantonmanager I/BLEConnectFragment: CONNECTING
+12-14 17:13:46.941 30273-30273/com.smartcantonmanager I/BLEConnectFragment: ADVERTISING
+12-14 17:13:46.954 30273-30273/com.smartcantonmanager I/BLEConnectFragment: DISCONNECTED
+12-14 17:13:46.969 30273-30273/com.smartcantonmanager I/BLEConnectFragment: BOND EVENT WITH CODE : -1
+12-14 17:13:47.163 30273-30273/com.smartcantonmanager I/BLEConnectFragment: UNBONDED
+````
+
+
+
+States after connection with a **correct** passkey
+
+````
+12-15 08:35:17.060 28405-28405/com.smartcantonmanager I/BLEConnectFragment: CONNECTING_OVERALL
+12-15 08:35:17.061 28405-28405/com.smartcantonmanager I/BLEConnectFragment: CONNECTING
+12-15 08:35:17.657 28405-28405/com.smartcantonmanager I/BLEConnectFragment: BONDING
+12-15 08:35:17.789 28405-28405/com.smartcantonmanager I/BLEConnectFragment: CONNECTED
+12-15 08:35:17.789 28405-28405/com.smartcantonmanager I/BLEConnectFragment: DISCOVERING_SERVICES
+12-15 08:35:24.240 28405-28405/com.smartcantonmanager I/BLEConnectFragment: BONDED
+12-15 08:35:24.248 28405-28405/com.smartcantonmanager I/BLEConnectFragment: BOND EVENT WITH CODE : -1
+12-15 08:35:30.896 28405-28405/com.smartcantonmanager I/BLEConnectFragment: SERVICES_DISCOVERED
+12-15 08:35:30.896 28405-28405/com.smartcantonmanager I/BLEConnectFragment: AUTHENTICATED
+12-15 08:35:30.896 28405-28405/com.smartcantonmanager I/BLEConnectFragment: INITIALIZED
+````
+
+States after connection with a **wrong** passkey
+
+````
+
+````
+
+
+
+
+
+
+
+
 
