@@ -62,6 +62,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
+import static com.idevicesinc.sweetblue.BleDevice.ReadWriteListener.Status;
+
 
 /**
  * Scans for Bluetooth Low Energy Advertisements matching a filter and displays them to the user.
@@ -316,9 +318,26 @@ public class BLEConnectFragment extends Fragment {
         );
 
 
+        btnBleGpsDownloadDevice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                readBleGpsCharacteristics();
+            }
+        });
 
+        btnBleLoraDownloadDevice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // TODO : Implement define edition and creation to the server
+            }
+        });
 
-
+        btnDownloadServ.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loadDevice();
+            }
+        });
 
         swGpsEnableNotifications.setOnClickListener(view12 -> {
             if (swGpsEnableNotifications.isChecked()) {
@@ -381,6 +400,7 @@ public class BLEConnectFragment extends Fragment {
 
     private void setGpsCardFieldsVisibility(int visibility) {
         rlBleGpsNotifsSwitch.setVisibility(visibility);
+        btnBleGpsDownloadDevice.setVisibility(visibility);
         tvGpsServicePositionDevice.setVisibility(visibility);
         tvGpsServiceSpeedDevice.setVisibility(visibility);
         tvGpsServiceCourseDevice.setVisibility(visibility);
@@ -391,6 +411,8 @@ public class BLEConnectFragment extends Fragment {
     private void setLoraCardFieldsVisibility(int visibility) {
         tvLoraDevEuiDevice.setVisibility(visibility);
         tvLoraAppEuiDevice.setVisibility(visibility);
+        btnBleLoraUploadDevice.setVisibility(visibility);
+        btnBleLoraDownloadDevice.setVisibility(visibility);
         tvLoraNetworkJoinStatusDevice.setVisibility(visibility);
         tvLoraDeviceAddressDevice.setVisibility(visibility);
     }
@@ -401,10 +423,7 @@ public class BLEConnectFragment extends Fragment {
         String ble_mac_addr = bundle.getString(Constants.BLE_DEVICE_MAC);
         if (ble_mac_addr != null) {
             mBleDevice = mBleManager.getDevice(ble_mac_addr);
-        } else {
-
         }
-
     }
 
     private void loadDevice() {
@@ -613,48 +632,44 @@ public class BLEConnectFragment extends Fragment {
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_POSITION,
                 e1 -> {
                     if (e1.wasSuccess()) {
-                        if (e1.data_utf8().length() > 0)
-                            tvGpsServicePositionDevice.setText(
-                                    String.format("Position : %s", e1.data_utf8()));
-                        else
-                            tvGpsServiceDateDevice.setText(
-                                    String.format("Position : %s", "<no signal yet>"));
+                        tvGpsServicePositionDevice.setText(
+                                String.format("Position : %s", e1.data_utf8()));
+                    } else if (e1.status() == Status.EMPTY_DATA) {
+                        tvGpsServicePositionDevice.setText(
+                                String.format("Position : %s", "<no signal yet>"));
                     }
                 });
         mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SPEED,
                 e1 -> {
                     if (e1.wasSuccess()) {
-                        if (e1.data_utf8().length() > 0)
-                            tvGpsServiceSpeedDevice.setText(
-                                    String.format("Speed : %s", e1.data_utf8()));
-                        else
-                            tvGpsServiceDateDevice.setText(
-                                    String.format("Speed : %s", "<no signal yet>"));
+                        tvGpsServiceSpeedDevice.setText(
+                                String.format("Speed : %s", e1.data_utf8()));
+                    } else if (e1.status() == Status.EMPTY_DATA) {
+                        tvGpsServiceSpeedDevice.setText(
+                                String.format("Speed : %s", "<no signal yet>"));
                     }
                 });
         mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_COURSE,
                 e1 -> {
                     if (e1.wasSuccess()) {
-                        if (e1.data_utf8().length() > 0)
-                            tvGpsServiceCourseDevice.setText(
-                                    String.format("Course : %s", e1.data_utf8()));
-                        else
-                            tvGpsServiceDateDevice.setText(
-                                    String.format("Course : %s", "<no signal yet>"));
+                        tvGpsServiceCourseDevice.setText(
+                                String.format("Course : %s", e1.data_utf8()));
+                    } else if (e1.status() == Status.EMPTY_DATA) {
+                        tvGpsServiceCourseDevice.setText(
+                                String.format("Course : %s", "<no signal yet>"));
                     }
                 });
         mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_DATE,
                 e1 -> {
                     if (e1.wasSuccess()) {
-                        if (e1.data_utf8().length() > 0)
-                            tvGpsServiceDateDevice.setText(
-                                    String.format("Date : %s", e1.data_utf8()));
-                        else
-                            tvGpsServiceDateDevice.setText(
-                                    String.format("Date : %s", "<no signal yet>"));
+                        tvGpsServiceDateDevice.setText(
+                                String.format("Date : %s", e1.data_utf8()));
+                    } else if (e1.status() == Status.EMPTY_DATA) {
+                        tvGpsServiceDateDevice.setText(
+                                String.format("Date : %s", "<no signal yet>"));
                     }
                 });
 
@@ -662,12 +677,11 @@ public class BLEConnectFragment extends Fragment {
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_DATE,
                 e1 -> {
                     if (e1.wasSuccess()) {
-                        if (e1.data_utf8().length() > 0)
-                            tvGpsServiceDateDevice.setText(
-                                    String.format("Date : %s", e1.data_utf8()));
-                        else
-                            tvGpsServiceDateDevice.setText(
-                                    String.format("Date : %s", "<no signal yet>"));
+                        tvGpsServiceDateDevice.setText(
+                                String.format("Date : %s", e1.data_utf8()));
+                    } else if (e1.status() == Status.EMPTY_DATA) {
+                        tvGpsServiceDateDevice.setText(
+                                String.format("Date : %s", "<no signal yet>"));
                     }
                 });
 
@@ -675,12 +689,11 @@ public class BLEConnectFragment extends Fragment {
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_TIME,
                 e1 -> {
                     if (e1.wasSuccess()) {
-                        if (e1.data_utf8().length() > 0)
-                            tvGpsServiceTimeDevice.setText(
-                                    String.format("Time : %s", e1.data_utf8()));
-                        else
-                            tvGpsServiceTimeDevice.setText(
-                                    String.format("Time : %s", "<no signal yet>"));
+                        tvGpsServiceTimeDevice.setText(
+                                String.format("Time : %s", e1.data_utf8()));
+                    } else if (e1.status() == Status.EMPTY_DATA) {
+                        tvGpsServiceTimeDevice.setText(
+                                String.format("Time : %s", "<no signal yet>"));
                     }
                 });
     }

@@ -1,12 +1,14 @@
 <resources>
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="activity_horizontal_margin">8dp</dimen>
+    <dimen name="activity_vertical_margin">8dp</dimen>
     <dimen name="child_margin_top">24dp</dimen>
     <dimen name="logo_height">80dp</dimen>
     <dimen name="button_padding">48dp</dimen>
     <dimen name="button_margin">24dp</dimen>
+    <dimen name="button_margin_top">6dp</dimen>
     <dimen name="card_padding">8dp</dimen>
     <dimen name="card_items_margin">8dp</dimen>
 
     <dimen name="card_view_item_image_padding">48dp</dimen>
+    <dimen name="card_view_title_textview_padding">3dp</dimen>
 </resources>
