@@ -7,4 +7,6 @@
     <dimen name="button_margin">24dp</dimen>
     <dimen name="card_padding">8dp</dimen>
     <dimen name="card_items_margin">8dp</dimen>
+
+    <dimen name="card_view_item_image_padding">48dp</dimen>
 </resources>

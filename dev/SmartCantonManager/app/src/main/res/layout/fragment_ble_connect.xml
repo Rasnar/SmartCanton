@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
@@ -36,9 +37,32 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
+                <!--<RelativeLayout-->
+                    <!--android:id="@+id/rl_title_serv"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content">-->
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/tv_cv_title_serv"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_centerHorizontal="true"-->
+                        <!--android:background="@color/colorPrimaryDark"-->
+                        <!--android:drawableEnd="@drawable/ic_download_white"-->
+                        <!--android:drawableStart="@drawable/ic_upload_white"-->
+                        <!--android:paddingEnd="@dimen/card_items_margin"-->
+                        <!--android:paddingStart="@dimen/card_items_margin"-->
+                        <!--android:text="Server information"-->
+                        <!--android:textAlignment="center"-->
+                        <!--android:textAppearance="?android:attr/textAppearanceLarge"-->
+                        <!--android:textColor="@color/colorTextPrimary"-->
+                        <!--android:textStyle="bold" />-->
+                <!--</RelativeLayout>-->
+
                 <RelativeLayout
-                    android:id="@+id/rl_title_serv"
+                    android:id="@+id/rl_cv_title_serv"
                     android:layout_width="match_parent"
+                    android:background="@color/colorPrimaryDark"
                     android:layout_height="wrap_content">
                     <TextView
                         android:id="@+id/tv_cv_title_serv"
@@ -48,16 +72,49 @@
                         android:background="@color/colorPrimaryDark"
                         android:text="Server information"
                         android:textAlignment="center"
+                        android:gravity="center"
+                        android:paddingTop="@dimen/card_padding"
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:textColor="@color/colorTextPrimary"
-                        android:drawableEnd="@drawable/ic_bluetooth_connect_white"
                         android:textStyle="bold" />
+
+                    <RelativeLayout
+                        android:layout_alignEnd="@+id/tv_cv_title_serv"
+                        android:paddingEnd="@dimen/card_padding"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <ImageButton
+                            android:id="@+id/btn_download_serv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="3dp"
+                            android:scaleType="fitStart"
+                            android:layout_gravity="center"
+                            android:layout_centerHorizontal="true"
+                            android:src="@drawable/ic_download_white"/>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_alignStart="@+id/tv_cv_title_serv"
+                        android:paddingEnd="@dimen/card_padding"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <ImageButton
+                            android:id="@+id/btn_upload_serv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="3dp"
+                            android:scaleType="fitStart"
+                            android:layout_gravity="center"
+                            android:layout_centerHorizontal="true"
+                            android:src="@drawable/ic_upload_white"/>
+                    </RelativeLayout>
                 </RelativeLayout>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/rl_title_serv"
+                    android:layout_below="@+id/rl_cv_title_serv"
                     android:layout_margin="@dimen/card_padding">
 
                     <TextView
@@ -68,6 +125,8 @@
                         android:layout_marginTop="@dimen/card_items_margin"
                         android:text="@string/cv_msg_waiting_for_server_response"
                         android:textAlignment="center"
+                        android:paddingEnd="@dimen/card_items_margin"
+                        android:paddingStart="@dimen/card_items_margin"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:textColor="@color/colorAccent" />
                     <!--android:padding="@dimen/card_items_margin"-->
@@ -81,6 +140,8 @@
                         android:layout_marginTop="@dimen/card_items_margin"
                         android:text="Bluetooth"
                         android:textAlignment="center"
+                        android:paddingEnd="@dimen/card_items_margin"
+                        android:paddingStart="@dimen/card_items_margin"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:textColor="@color/colorPrimaryDark" />
 
@@ -92,6 +153,8 @@
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="@dimen/card_items_margin"
                         android:textAlignment="center"
+                        android:paddingEnd="@dimen/card_items_margin"
+                        android:paddingStart="@dimen/card_items_margin"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textColor="@color/colorTextPrimaryLightDark" />
 
@@ -103,6 +166,8 @@
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="@dimen/card_items_margin"
                         android:textAlignment="center"
+                        android:paddingEnd="@dimen/card_items_margin"
+                        android:paddingStart="@dimen/card_items_margin"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textColor="@color/colorTextPrimaryLightDark" />
 
@@ -115,6 +180,8 @@
                         android:layout_marginTop="@dimen/card_items_margin"
                         android:text="LoRa"
                         android:textAlignment="center"
+                        android:paddingEnd="@dimen/card_items_margin"
+                        android:paddingStart="@dimen/card_items_margin"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:textColor="@color/colorPrimaryDark" />
 
@@ -126,6 +193,8 @@
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="@dimen/card_items_margin"
                         android:textAlignment="center"
+                        android:paddingEnd="@dimen/card_items_margin"
+                        android:paddingStart="@dimen/card_items_margin"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textColor="@color/colorTextPrimaryLightDark" />
 
@@ -137,6 +206,8 @@
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="@dimen/card_items_margin"
                         android:textAlignment="center"
+                        android:paddingEnd="@dimen/card_items_margin"
+                        android:paddingStart="@dimen/card_items_margin"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textColor="@color/colorTextPrimaryLightDark" />
 
@@ -148,6 +219,8 @@
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="@dimen/card_items_margin"
                         android:textAlignment="center"
+                        android:paddingEnd="@dimen/card_items_margin"
+                        android:paddingStart="@dimen/card_items_margin"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textColor="@color/colorTextPrimaryLightDark" />
 
@@ -160,6 +233,8 @@
                         android:layout_marginTop="@dimen/card_items_margin"
                         android:text="Owner"
                         android:textAlignment="center"
+                        android:paddingEnd="@dimen/card_items_margin"
+                        android:paddingStart="@dimen/card_items_margin"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:textColor="@color/colorPrimaryDark" />
 
@@ -171,6 +246,8 @@
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="@dimen/card_items_margin"
                         android:textAlignment="center"
+                        android:paddingEnd="@dimen/card_items_margin"
+                        android:paddingStart="@dimen/card_items_margin"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textColor="@color/colorTextPrimaryLightDark" />
                 </RelativeLayout>
@@ -184,6 +261,8 @@
             android:layout_below="@+id/card_serv"
             android:layout_marginTop="@dimen/child_margin_top"
             android:textAlignment="center"
+            android:paddingEnd="@dimen/card_items_margin"
+            android:paddingStart="@dimen/card_items_margin"
             card_view:cardBackgroundColor="@color/colorCardViewBackground"
             card_view:cardCornerRadius="8dp">
             <!--card_view:contentPadding="25dp"-->
@@ -192,22 +271,62 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/tv_cv_title_ble_lora"
+                <RelativeLayout
+                    android:id="@+id/rl_cv_title_ble_lora"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
                     android:background="@color/colorPrimaryDark"
-                    android:text="BLE LoRa Service"
-                    android:textAlignment="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:textColor="@color/colorTextPrimary"
-                    android:textStyle="bold" />
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/tv_cv_title_ble_lora"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:background="@color/colorPrimaryDark"
+                        android:text="BLE LoRa Service"
+                        android:textAlignment="center"
+                        android:gravity="center"
+                        android:paddingTop="@dimen/card_padding"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:textColor="@color/colorTextPrimary"
+                        android:textStyle="bold" />
+
+                    <RelativeLayout
+                        android:layout_alignEnd="@+id/tv_cv_title_ble_lora"
+                        android:paddingEnd="@dimen/card_padding"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <ImageButton
+                            android:id="@+id/btn_ble_lora_download_device"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="3dp"
+                            android:scaleType="fitStart"
+                            android:layout_gravity="center"
+                            android:layout_centerHorizontal="true"
+                            android:src="@drawable/ic_download_white"/>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_alignStart="@+id/tv_cv_title_ble_lora"
+                        android:paddingEnd="@dimen/card_padding"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <ImageButton
+                            android:id="@+id/btn_ble_lora_upload_device"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="3dp"
+                            android:scaleType="fitStart"
+                            android:layout_gravity="center"
+                            android:layout_centerHorizontal="true"
+                            android:src="@drawable/ic_upload_white"/>
+                    </RelativeLayout>
+                </RelativeLayout>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv_cv_title_ble_lora"
+                    android:layout_below="@+id/rl_cv_title_ble_lora"
                     android:layout_margin="@dimen/card_padding">
 
                     <TextView
@@ -217,6 +336,7 @@
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="@dimen/card_items_margin"
                         android:text="@string/card_msg_connect_bluetooth_first"
+                        android:textAlignment="center"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:textColor="@color/colorAccent" />
 
@@ -227,6 +347,8 @@
                         android:layout_below="@+id/tv_lora_message_device"
                         android:layout_centerHorizontal="true"
                         android:textAlignment="center"
+                        android:paddingEnd="@dimen/card_items_margin"
+                        android:paddingStart="@dimen/card_items_margin"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textColor="@color/colorTextPrimaryLightDark" />
 
@@ -238,6 +360,8 @@
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="@dimen/card_items_margin"
                         android:textAlignment="center"
+                        android:paddingEnd="@dimen/card_items_margin"
+                        android:paddingStart="@dimen/card_items_margin"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textColor="@color/colorTextPrimaryLightDark" />
 
@@ -248,6 +372,9 @@
                         android:layout_below="@+id/tv_lora_app_eui_device"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="@dimen/card_items_margin"
+                        android:textAlignment="center"
+                        android:paddingEnd="@dimen/card_items_margin"
+                        android:paddingStart="@dimen/card_items_margin"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textColor="@color/colorTextPrimaryLightDark" />
 
@@ -259,6 +386,9 @@
                         android:layout_centerHorizontal="true"
                         android:layout_marginBottom="@dimen/card_items_margin"
                         android:layout_marginTop="@dimen/card_items_margin"
+                        android:textAlignment="center"
+                        android:paddingEnd="@dimen/card_items_margin"
+                        android:paddingStart="@dimen/card_items_margin"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textColor="@color/colorTextPrimaryLightDark" />
                 </RelativeLayout>
@@ -280,22 +410,79 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/tv_cv_title_ble_gps"
+                <RelativeLayout
+                    android:id="@+id/rl_cv_title_ble_gps"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
                     android:background="@color/colorPrimaryDark"
-                    android:text="BLE GPS Service"
-                    android:textAlignment="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:textColor="@color/colorTextPrimary"
-                    android:textStyle="bold" />
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/tv_cv_title_ble_gps"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:background="@color/colorPrimaryDark"
+                        android:text="BLE GPS Service"
+                        android:textAlignment="center"
+                        android:gravity="center"
+                        android:paddingTop="3dp"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:textColor="@color/colorTextPrimary"
+                        android:textStyle="bold" />
+
+                    <RelativeLayout
+                        android:layout_alignEnd="@+id/tv_cv_title_ble_gps"
+                        android:paddingEnd="@dimen/card_padding"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <ImageButton
+                            android:id="@+id/btn_ble_gps_download_device"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="3dp"
+                            android:scaleType="fitStart"
+                            android:layout_gravity="center"
+                            android:layout_centerHorizontal="true"
+                            android:src="@drawable/ic_download_white"/>
+                    </RelativeLayout>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rl_ble_gps_notifs_switch"
+                    android:layout_below="@+id/rl_cv_title_ble_gps"
+                    android:layout_width="match_parent"
+                    android:background="@color/colorPrimaryDark"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/tv_gps_enable_notifications"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:text="BLE Notifications"
+                        android:textAlignment="center"
+                        android:gravity="center"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/colorAccent"
+                        android:textStyle="bold"
+                        tools:ignore="RtlSymmetry" />
+                    <!--android:paddingTop="@dimen/card_items_margin"-->
+                    <!--android:paddingBottom="@dimen/card_items_margin"-->
+
+                    <Switch
+                        android:id="@+id/sw_gps_enable_notifications"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentEnd="true"
+                        android:paddingEnd="1dp"
+                        android:layout_alignStart="@+id/tv_gps_enable_notifications"/>
+
+                </RelativeLayout>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv_cv_title_ble_gps"
+                    android:layout_below="@+id/rl_ble_gps_notifs_switch"
                     android:layout_margin="@dimen/card_padding">
 
                     <TextView
@@ -303,6 +490,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
+                        android:textAlignment="center"
+                        android:paddingEnd="@dimen/card_items_margin"
+                        android:paddingStart="@dimen/card_items_margin"
                         android:layout_marginTop="@dimen/card_items_margin"
                         android:text="@string/card_msg_connect_bluetooth_first"
                         android:textAppearance="?android:attr/textAppearanceMedium"
@@ -314,6 +504,9 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/tv_gps_message_device"
                         android:layout_centerHorizontal="true"
+                        android:textAlignment="center"
+                        android:paddingEnd="@dimen/card_items_margin"
+                        android:paddingStart="@dimen/card_items_margin"
                         android:layout_marginTop="@dimen/card_items_margin"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textColor="@color/colorTextPrimaryLightDark" />
@@ -324,6 +517,9 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/tv_gps_service_position_device"
                         android:layout_centerHorizontal="true"
+                        android:textAlignment="center"
+                        android:paddingEnd="@dimen/card_items_margin"
+                        android:paddingStart="@dimen/card_items_margin"
                         android:layout_marginTop="@dimen/card_items_margin"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textColor="@color/colorTextPrimaryLightDark" />
@@ -334,6 +530,9 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/tv_gps_service_speed_device"
                         android:layout_centerHorizontal="true"
+                        android:textAlignment="center"
+                        android:paddingEnd="@dimen/card_items_margin"
+                        android:paddingStart="@dimen/card_items_margin"
                         android:layout_marginTop="@dimen/card_items_margin"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textColor="@color/colorTextPrimaryLightDark" />
@@ -344,6 +543,9 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/tv_gps_service_course_device"
                         android:layout_centerHorizontal="true"
+                        android:textAlignment="center"
+                        android:paddingEnd="@dimen/card_items_margin"
+                        android:paddingStart="@dimen/card_items_margin"
                         android:layout_marginTop="@dimen/card_items_margin"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textColor="@color/colorTextPrimaryLightDark" />
@@ -354,6 +556,9 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/tv_gps_service_date_device"
                         android:layout_centerHorizontal="true"
+                        android:textAlignment="center"
+                        android:paddingEnd="@dimen/card_items_margin"
+                        android:paddingStart="@dimen/card_items_margin"
                         android:layout_marginBottom="@dimen/card_items_margin"
                         android:layout_marginTop="@dimen/card_items_margin"
                         android:textAppearance="?android:attr/textAppearanceSmall"

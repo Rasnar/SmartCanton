@@ -16,6 +16,7 @@
 
 package com.master_hesso.smartcantonmanager.fragments;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -31,6 +32,9 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.auth0.android.jwt.DecodeException;
@@ -82,6 +86,8 @@ public class BLEConnectFragment extends Fragment {
 
     private CardView cvDeviceServer;
     private TextView tvCvTitleServ;
+    private ImageButton btnDownloadServ;
+    private ImageButton btnUploadServ;
     private TextView tvMessageServ;
     private TextView tvBleTitleServ;
     private TextView tvBleMacAddrServ;
@@ -95,6 +101,8 @@ public class BLEConnectFragment extends Fragment {
 
     private CardView cvDeviceBLELora;
     private TextView tvCvTitleBleLora;
+    private ImageButton btnBleLoraDownloadDevice;
+    private ImageButton btnBleLoraUploadDevice;
     private TextView tvLoraMessageDevice;
     private TextView tvLoraDevEuiDevice;
     private TextView tvLoraAppEuiDevice;
@@ -103,6 +111,9 @@ public class BLEConnectFragment extends Fragment {
 
     private CardView cvDeviceBleGps;
     private TextView tvCvTitleBleGps;
+    private ImageButton btnBleGpsDownloadDevice;
+    private RelativeLayout rlBleGpsNotifsSwitch;
+    private Switch swGpsEnableNotifications;
     private TextView tvGpsMessageDevice;
     private TextView tvGpsServicePositionDevice;
     private TextView tvGpsServiceSpeedDevice;
@@ -232,57 +243,7 @@ public class BLEConnectFragment extends Fragment {
                 /*--------------------------------------
                  *      GPS Service
                  *-------------------------------------*/
-                e.device().enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
-                        SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_POSITION,
-                        e1 -> {
-                            if (e1.wasSuccess()) {
-                                tvGpsServicePositionDevice.setText(
-                                        String.format("Position : %s", e1.data_utf8()));
-                            }
-                        });
-                e.device().enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
-                        SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SPEED,
-                        e1 -> {
-                            if (e1.wasSuccess()) {
-                                tvGpsServiceSpeedDevice.setText(
-                                        String.format("Speed : %s", e1.data_utf8()));
-                            }
-                        });
-                e.device().enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
-                        SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_COURSE,
-                        e1 -> {
-                            if (e1.wasSuccess()) {
-                                tvGpsServiceCourseDevice.setText(
-                                        String.format("Course : %s", e1.data_utf8()));
-                            }
-                        });
-                e.device().read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
-                        SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_DATE,
-                        e1 -> {
-                            if (e1.wasSuccess()) {
-                                tvGpsServiceDateDevice.setText(
-                                        String.format("Date : %s", e1.data_utf8()));
-                            }
-                        });
-
-                e.device().enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
-                        SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_DATE,
-                        e1 -> {
-                            if (e1.wasSuccess()) {
-                                tvGpsServiceDateDevice.setText(
-                                        String.format("Date : %s", e1.data_utf8()));
-                            }
-                        });
-
-                e.device().enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
-                        SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_TIME,
-                        e1 -> {
-                            if (e1.wasSuccess()) {
-                                String test = e1.data_string();
-                                tvGpsServiceTimeDevice.setText(
-                                        String.format("Time : %s", e1.data_utf8()));
-                            }
-                        });
+                readBleGpsCharacteristics();
             }
             if (e.didEnter(BleDeviceState.PERFORMING_OTA)) {
                 Log.i(TAG, "PERFORMING_OTA");
@@ -296,7 +257,6 @@ public class BLEConnectFragment extends Fragment {
         setRetainInstance(true);
 
         mBleManager = BleManager.get(getActivity());
-//        mBleManager.reset();
         mBleManager.setConfig(mBleManagerConfig);
     }
 
@@ -319,6 +279,7 @@ public class BLEConnectFragment extends Fragment {
         mTokenExpiresAt = mJwt.getExpiresAt();
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -354,6 +315,19 @@ public class BLEConnectFragment extends Fragment {
                 })
         );
 
+
+
+
+
+
+        swGpsEnableNotifications.setOnClickListener(view12 -> {
+            if (swGpsEnableNotifications.isChecked()) {
+                enableBleGpsNotifications();
+            } else {
+                diableBleGpsNotifications();
+            }
+        });
+
         return view;
     }
 
@@ -362,13 +336,14 @@ public class BLEConnectFragment extends Fragment {
         cvDeviceServer = view.findViewById(R.id.card_serv);
         cvDeviceBleGps = view.findViewById(R.id.card_ble_gps);
         cvDeviceBLELora = view.findViewById(R.id.card_ble_lora);
-        //cvDeviceBLE.setVisibility(View.GONE);
 
         btnBleConnectDevice = view.findViewById(R.id.btn_ble_connect_device);
 
         tvCvTitleServ = view.findViewById(R.id.tv_cv_title_serv);
         tvMessageServ = view.findViewById(R.id.tv_message_serv);
         tvBleTitleServ = view.findViewById(R.id.tv_ble_title_serv);
+        btnUploadServ = view.findViewById(R.id.btn_upload_serv);
+        btnDownloadServ = view.findViewById(R.id.btn_download_serv);
         tvBleMacAddrServ = view.findViewById(R.id.tv_ble_mac_address_serv);
         tvBlePasskeyServ = view.findViewById(R.id.tv_ble_passkey_serv);
         tvLoRaTitleServ = view.findViewById(R.id.tv_lora_title_serv);
@@ -380,6 +355,8 @@ public class BLEConnectFragment extends Fragment {
 
         cvDeviceBLELora = view.findViewById(R.id.card_ble_lora);
         tvCvTitleBleLora = view.findViewById(R.id.tv_cv_title_ble_lora);
+        btnBleLoraDownloadDevice = view.findViewById(R.id.btn_ble_lora_download_device);
+        btnBleLoraUploadDevice = view.findViewById(R.id.btn_ble_lora_upload_device);
         tvLoraMessageDevice = view.findViewById(R.id.tv_lora_message_device);
         tvLoraDevEuiDevice = view.findViewById(R.id.tv_lora_dev_eui_device);
         tvLoraAppEuiDevice = view.findViewById(R.id.tv_lora_app_eui_device);
@@ -388,6 +365,9 @@ public class BLEConnectFragment extends Fragment {
 
         cvDeviceBleGps = view.findViewById(R.id.card_ble_gps);
         tvCvTitleBleGps = view.findViewById(R.id.tv_cv_title_ble_gps);
+        btnBleGpsDownloadDevice = view.findViewById(R.id.btn_ble_gps_download_device);
+        rlBleGpsNotifsSwitch = view.findViewById(R.id.rl_ble_gps_notifs_switch);
+        swGpsEnableNotifications = view.findViewById(R.id.sw_gps_enable_notifications);
         tvGpsMessageDevice = view.findViewById(R.id.tv_gps_message_device);
         tvGpsServicePositionDevice = view.findViewById(R.id.tv_gps_service_position_device);
         tvGpsServiceSpeedDevice = view.findViewById(R.id.tv_gps_service_speed_device);
@@ -399,7 +379,8 @@ public class BLEConnectFragment extends Fragment {
         setLoraCardFieldsVisibility(View.GONE);
     }
 
-    private void setGpsCardFieldsVisibility(int visibility){
+    private void setGpsCardFieldsVisibility(int visibility) {
+        rlBleGpsNotifsSwitch.setVisibility(visibility);
         tvGpsServicePositionDevice.setVisibility(visibility);
         tvGpsServiceSpeedDevice.setVisibility(visibility);
         tvGpsServiceCourseDevice.setVisibility(visibility);
@@ -407,7 +388,7 @@ public class BLEConnectFragment extends Fragment {
         tvGpsServiceTimeDevice.setVisibility(visibility);
     }
 
-    private void setLoraCardFieldsVisibility(int visibility){
+    private void setLoraCardFieldsVisibility(int visibility) {
         tvLoraDevEuiDevice.setVisibility(visibility);
         tvLoraAppEuiDevice.setVisibility(visibility);
         tvLoraNetworkJoinStatusDevice.setVisibility(visibility);
@@ -566,5 +547,161 @@ public class BLEConnectFragment extends Fragment {
         String colorHex = "#" + Integer.toHexString(color & 0x00ffffff);
         String input = "<font color=" + color + ">" + text + "</font>";
         return input;
+    }
+
+    private void enableBleGpsNotifications() {
+        mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_POSITION,
+                e1 -> {
+                    if (e1.wasSuccess()) {
+                        if (e1.data_utf8().length() > 0)
+                            tvGpsServicePositionDevice.setText(
+                                    String.format("Position : %s", e1.data_utf8()));
+                    }
+                });
+        mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SPEED,
+                e1 -> {
+                    if (e1.wasSuccess()) {
+                        if (e1.data_utf8().length() > 0)
+                            tvGpsServiceSpeedDevice.setText(
+                                    String.format("Speed : %s", e1.data_utf8()));
+                    }
+                });
+        mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_COURSE,
+                e1 -> {
+                    if (e1.wasSuccess()) {
+                        if (e1.data_utf8().length() > 0)
+                            tvGpsServiceCourseDevice.setText(
+                                    String.format("Course : %s", e1.data_utf8()));
+                    }
+                });
+        mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_DATE,
+                e1 -> {
+                    if (e1.wasSuccess()) {
+                        if (e1.data_utf8().length() > 0)
+                            tvGpsServiceDateDevice.setText(
+                                    String.format("Date : %s", e1.data_utf8()));
+                    }
+                });
+
+        mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_DATE,
+                e1 -> {
+                    if (e1.wasSuccess()) {
+                        if (e1.data_utf8().length() > 0)
+                            tvGpsServiceDateDevice.setText(
+                                    String.format("Date : %s", e1.data_utf8()));
+                    }
+                });
+
+        mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_TIME,
+                e1 -> {
+                    if (e1.wasSuccess()) {
+                        if (e1.data_utf8().length() > 0)
+                            tvGpsServiceTimeDevice.setText(
+                                    String.format("Time : %s", e1.data_utf8()));
+                    }
+                });
+    }
+
+    private void readBleGpsCharacteristics() {
+        mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_POSITION,
+                e1 -> {
+                    if (e1.wasSuccess()) {
+                        if (e1.data_utf8().length() > 0)
+                            tvGpsServicePositionDevice.setText(
+                                    String.format("Position : %s", e1.data_utf8()));
+                        else
+                            tvGpsServiceDateDevice.setText(
+                                    String.format("Position : %s", "<no signal yet>"));
+                    }
+                });
+        mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SPEED,
+                e1 -> {
+                    if (e1.wasSuccess()) {
+                        if (e1.data_utf8().length() > 0)
+                            tvGpsServiceSpeedDevice.setText(
+                                    String.format("Speed : %s", e1.data_utf8()));
+                        else
+                            tvGpsServiceDateDevice.setText(
+                                    String.format("Speed : %s", "<no signal yet>"));
+                    }
+                });
+        mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_COURSE,
+                e1 -> {
+                    if (e1.wasSuccess()) {
+                        if (e1.data_utf8().length() > 0)
+                            tvGpsServiceCourseDevice.setText(
+                                    String.format("Course : %s", e1.data_utf8()));
+                        else
+                            tvGpsServiceDateDevice.setText(
+                                    String.format("Course : %s", "<no signal yet>"));
+                    }
+                });
+        mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_DATE,
+                e1 -> {
+                    if (e1.wasSuccess()) {
+                        if (e1.data_utf8().length() > 0)
+                            tvGpsServiceDateDevice.setText(
+                                    String.format("Date : %s", e1.data_utf8()));
+                        else
+                            tvGpsServiceDateDevice.setText(
+                                    String.format("Date : %s", "<no signal yet>"));
+                    }
+                });
+
+        mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_DATE,
+                e1 -> {
+                    if (e1.wasSuccess()) {
+                        if (e1.data_utf8().length() > 0)
+                            tvGpsServiceDateDevice.setText(
+                                    String.format("Date : %s", e1.data_utf8()));
+                        else
+                            tvGpsServiceDateDevice.setText(
+                                    String.format("Date : %s", "<no signal yet>"));
+                    }
+                });
+
+        mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_TIME,
+                e1 -> {
+                    if (e1.wasSuccess()) {
+                        if (e1.data_utf8().length() > 0)
+                            tvGpsServiceTimeDevice.setText(
+                                    String.format("Time : %s", e1.data_utf8()));
+                        else
+                            tvGpsServiceTimeDevice.setText(
+                                    String.format("Time : %s", "<no signal yet>"));
+                    }
+                });
+    }
+
+    private void diableBleGpsNotifications() {
+        mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_POSITION);
+
+        mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SPEED);
+
+        mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_COURSE);
+
+        mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_DATE);
+
+        mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_DATE);
+
+        mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_TIME);
     }
 }
