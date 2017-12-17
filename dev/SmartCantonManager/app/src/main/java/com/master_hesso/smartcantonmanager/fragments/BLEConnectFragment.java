@@ -92,8 +92,10 @@ public class BLEConnectFragment extends Fragment {
 //        this.useLeTransportForBonding
 //        this.alwaysBondOnConnect = true;
 
-//        this.forceBondDialog = true;
-        this.connectFailRetryConnectingOverall = true;
+
+        this.forceBondDialog = true;
+//        this.bondingFailFailsConnection = true;
+//        this.connectFailRetryConnectingOverall = true;
         this.stopScanOnPause = true;
     }};
 
@@ -192,6 +194,10 @@ public class BLEConnectFragment extends Fragment {
             }
             if (e.didEnter(BleDeviceState.DISCONNECTED)) {
                 Log.i(TAG, "DISCONNECTED");
+                tvGpsMessageDevice.setVisibility(View.VISIBLE);
+                tvLoraMessageDevice.setVisibility(View.VISIBLE);
+                setGpsCardFieldsVisibility(View.GONE);
+                setLoraCardFieldsVisibility(View.GONE);
                 setBtnBleConnectDeviceToConnectMode();
             }
             if (e.didEnter(BleDeviceState.UNBONDED)) {
@@ -342,7 +348,7 @@ public class BLEConnectFragment extends Fragment {
             writeBleLoraCharacteristicsFromServer();
             showBleReadWriteProgressDialog("Writing LoRa configuration",
                     "Please be patient, the write command can take a few seconds to finish his process...",
-                    GPS_BLE_SERVICE_NUMBER_OF_READ_CHARACTERISTICS);
+                    LORA_BLE_SERVICE_NUMBER_OF_WRITE_CHARACTERISTICS);
         });
 
         btnDownloadServ.setOnClickListener(view15 -> loadDevice());
@@ -549,7 +555,7 @@ public class BLEConnectFragment extends Fragment {
         btnBleConnectDevice.setOnClickListener(listenerConnectMode);
         btnBleConnectDevice.setText(R.string.ble_btn_default_connect_msg);
         btnBleConnectDevice.setCompoundDrawablesWithIntrinsicBounds( 0, 0,
-                R.drawable.ic_bluetooth_disconnect_white, 0);
+                R.drawable.ic_bluetooth_connect_white, 0);
     }
 
     private void setBtnBleConnectDeviceToDisconnectMode(){
@@ -917,12 +923,24 @@ public class BLEConnectFragment extends Fragment {
                 });
 
         mBleDevice.write(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_SERVICE,
-                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_NETWORK_NWTORK_SESSION_KEY,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_APP_KEY,
                 FormatConversions.hexStringToByteArray(smartCantonDevBoxDevice.getAppKey()),
                 e1 -> {
                     if (!e1.wasSuccess()) {
                         showSnackBarMessage(String.format("Error while writing characteristics %s",
                                 "LORA APP KEY"));
+                    }
+                    bleReadWriteProgressDialog.incrementProgressBy(1);
+                });
+
+        byte[] cmdValidateConfig = {0x01};
+        mBleDevice.write(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_NETWORK_VALIDATE_NEW_CONFIGURATION,
+                cmdValidateConfig,
+                e1 -> {
+                    if (!e1.wasSuccess()) {
+                        showSnackBarMessage(String.format("Error while writing characteristics %s",
+                                "LORA VALIDATE CONFIG"));
                     }
                     bleReadWriteProgressDialog.incrementProgressBy(1);
                 });
