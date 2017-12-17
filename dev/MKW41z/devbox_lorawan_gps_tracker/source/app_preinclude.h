@@ -52,7 +52,7 @@
  * 	App Configuration
  ********************************************************************************** */
 /*! Enable/disable use of bonding capability */
-#define gAppUseBonding_d   0
+#define gAppUseBonding_d   1
 
 /*! Enable/disable use of pairing procedure */
 #define gAppUsePairing_d   1
@@ -60,7 +60,7 @@
 /*! Enable/disable use of privacy */
 #define gAppUsePrivacy_d   0
 
-#define gPasskeyValue_c                999999
+#define gPasskeyValue_c                111100
 
 #define gSerialMgrRxBufSize_c               (128)
 #define gSerialTaskPriority_c               (10)
@@ -73,7 +73,7 @@
  * 	Framework Configuration
  ********************************************************************************** */
 /* enable NVM to be used as non volatile storage management by the host stack */
-#define gAppUseNvm_d                    0
+#define gAppUseNvm_d                    1
 
 /* Bytes allowed to the Serial Manager Stack */
 #define gSerialTaskStackSize_c			(1024)
@@ -85,7 +85,7 @@
  * TODO: When enabling gAppUseNvm_d to 1, the serial manager semaphore stay stuck.
  * We can disable the semaphore but it's not a very good fix...
  */
-#define gSMGR_UseOsSemForSynchronization_c 1
+#define gSMGR_UseOsSemForSynchronization_c 0
 
 /* Defines Size for Timer Task*/
 #define gTmrTaskStackSize_c  750
@@ -173,7 +173,7 @@
 
 /* Offset to the first instant register. */
 #define mcOffsetToFirstInstant_c        0x00      /* 625usec */           
-#define BD_ADDR             0x01,0x00,0x00,0x37,0x60,0x00
+#define BD_ADDR             0x02,0x00,0x00,0x37,0x60,0x00
 
 /*! *********************************************************************************
  * 	Auto Configuration
