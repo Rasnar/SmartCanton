@@ -9,4 +9,6 @@
     <color name="colorTextSecondary">#FFFFFF</color>
     <color name="colorTextPrimaryDark">#455A64</color>
     <color name="colorTextPrimaryLightDark">#78909C</color>
+
+    <color name="colorTextPrimaryInverse">#000000</color>
 </resources>

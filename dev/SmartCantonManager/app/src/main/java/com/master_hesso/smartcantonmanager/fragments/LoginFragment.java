@@ -20,13 +20,10 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.master_hesso.smartcantonmanager.BluetoothActivity;
-import com.master_hesso.smartcantonmanager.ProfileActivity;
 import com.master_hesso.smartcantonmanager.R;
 import com.master_hesso.smartcantonmanager.model.Response;
 import com.master_hesso.smartcantonmanager.network.NetworkUtil;
 import com.master_hesso.smartcantonmanager.utils.Constants;
-
-import java.io.IOException;
 
 import retrofit2.adapter.rxjava.HttpException;
 import rx.android.schedulers.AndroidSchedulers;
@@ -97,13 +94,13 @@ public class LoginFragment extends Fragment {
         if (!validateUsername(username)) {
 
             err++;
-            mTiUsername.setError("Username should not be empty !");
+            mTiUsername.setError(getString(R.string.ti_username_should_not_be_empty));
         }
 
         if (!validateFields(password)) {
 
             err++;
-            mTiPassword.setError("Password should not be empty !");
+            mTiPassword.setError(getString(R.string.ti_password_should_not_be_empty));
         }
 
         if (err == 0) {
@@ -113,7 +110,7 @@ public class LoginFragment extends Fragment {
 
         } else {
 
-            showSnackBarMessage("Enter Valid Details !");
+            showSnackBarMessage(getString(R.string.snack_enter_valid_details));
         }
     }
 
@@ -164,20 +161,21 @@ public class LoginFragment extends Fragment {
 
                 switch (((HttpException) error).response().code()) {
                     case 401 :
-                        mTiUsername.setError("Username may be not valid !");
-                        mTiPassword.setError("Password may be not valid !");
-                        showSnackBarMessage("Username or password not valid !");
+                        mTiUsername.setError(getString(R.string.tx_username_login_invalid));
+                        mTiPassword.setError(getString(R.string.tx_password_login_invalid));
+                        showSnackBarMessage(getString(R.string.snack_password_or_username_not_valid));
                         break;
                     default:
                         showSnackBarMessage(((HttpException) error).response().code() + " : " +
                                 response.getMessage());
                 }
 
-            } catch (IOException e) {
+            } catch (Exception e) {
+                showSnackBarMessage(getString(R.string.snack_unexpected_response_from_server));
                 e.printStackTrace();
             }
         } else {
-            showSnackBarMessage("Network Error !");
+            showSnackBarMessage(getString(R.string.snack_network_error));
         }
     }
 
@@ -185,7 +183,7 @@ public class LoginFragment extends Fragment {
 
         if (getView() != null) {
 
-            Snackbar.make(getView(),message,Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(getView(),message,Snackbar.LENGTH_LONG).show();
         }
     }
 

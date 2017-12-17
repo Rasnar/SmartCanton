@@ -3,6 +3,9 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="android:alertDialogTheme">@style/AppTheme.Dialog.Alert</item>
+        <item name="android:dialogTheme">@style/AppTheme.Dialog</item>
     </style>
 
     <style name="AppTheme.LoginRegister" parent="AppTheme">
@@ -45,8 +48,12 @@
         <item name="android:colorAccent">@color/colorAccent</item>
         <item name="android:textColorPrimary">@color/colorTextPrimary</item>
         <item name="android:windowBackground">@color/colorPrimary</item>
+        <item name="android:background">@color/colorPrimary</item>
         <item name="android:negativeButtonText">@color/colorAccent</item>
         <item name="android:positiveButtonText">@color/colorAccent</item>
+        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+        <item name="android:textAppearanceButton">@color/colorAccent</item>
         <item name="android:editTextColor">@color/colorTextPrimary</item>
         <item name="android:textColor">@color/colorTextPrimary</item>
     </style>
@@ -56,9 +63,20 @@
         <item name="android:colorAccent">@color/colorAccent</item>
         <item name="android:textColorPrimary">@color/colorTextPrimary</item>
         <item name="android:windowBackground">@color/colorPrimary</item>
+        <item name="android:background">@color/colorPrimary</item>
         <item name="android:negativeButtonText">@color/colorAccent</item>
         <item name="android:positiveButtonText">@color/colorAccent</item>
+        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
         <item name="android:editTextColor">@color/colorTextPrimary</item>
+        <item name="android:textColor">@color/colorTextPrimary</item>
+    </style>
+
+    <style name="NegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/colorTextPrimary</item>
+    </style>
+
+    <style name="PositiveButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
         <item name="android:textColor">@color/colorTextPrimary</item>
     </style>
 </resources>

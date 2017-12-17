@@ -18,14 +18,20 @@ package com.master_hesso.smartcantonmanager.fragments;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.ContextThemeWrapper;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,6 +39,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -42,7 +49,6 @@ import com.auth0.android.jwt.JWT;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.idevicesinc.sweetblue.BleDevice;
-import com.idevicesinc.sweetblue.BleDevice.StateListener;
 import com.idevicesinc.sweetblue.BleDeviceState;
 import com.idevicesinc.sweetblue.BleManager;
 import com.idevicesinc.sweetblue.BleManagerConfig;
@@ -65,7 +71,7 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 import static com.idevicesinc.sweetblue.BleDevice.ReadWriteListener.Status;
-import static com.idevicesinc.sweetblue.BleDevice.StateListener.*;
+import static com.idevicesinc.sweetblue.BleDevice.StateListener.StateEvent;
 
 
 /**
@@ -75,8 +81,9 @@ public class BLEConnectFragment extends Fragment {
 
     public static final String TAG = BLEConnectFragment.class.getSimpleName();
 
-    private static final int LORA_BLE_SERVICE_NUMBER_OF_CHARACTERISTICS = 4;
-    private static final int GPS_BLE_SERVICE_NUMBER_OF_CHARACTERISTICS = 5;
+    private static final int GPS_BLE_SERVICE_NUMBER_OF_READ_CHARACTERISTICS = 5;
+    private static final int LORA_BLE_SERVICE_NUMBER_OF_READ_CHARACTERISTICS = 4;
+    private static final int LORA_BLE_SERVICE_NUMBER_OF_WRITE_CHARACTERISTICS = 3;
     /**
      * SweetBlue BLE configuration
      */
@@ -90,8 +97,10 @@ public class BLEConnectFragment extends Fragment {
         this.stopScanOnPause = true;
     }};
 
-    ProgressDialog bleReadWriteProgressDialog;
-    ProgressDialog bleConnectionProgressDialog;
+    private ProgressDialog bleReadWriteProgressDialog;
+    private ProgressDialog bleConnectionProgressDialog;
+
+    private SmartCantonDevBoxDevice smartCantonDevBoxDevice;
 
     private BleDevice mBleDevice = null;
     private BleManager mBleManager;
@@ -138,6 +147,30 @@ public class BLEConnectFragment extends Fragment {
     private TextView tvGpsServiceDateDevice;
     private TextView tvGpsServiceTimeDevice;
     private Button btnBleConnectDevice;
+
+    View.OnClickListener listenerConnectMode = view1 -> {
+        if (smartCantonDevBoxDevice.getBlePassKey().isEmpty()) {
+            mBleDevice.connect(connectionFailEvent -> {
+                bleConnectionProgressDialog.dismiss();
+                BLEConnectFragment.this.showSnackBarMessage("Connection fail event with number : "
+                        + connectionFailEvent.bondFailReason());
+                return null;
+            });
+        } else {
+            BLEConnectFragment.this.showBleConnectionConfirmationDialog((dialogInterface, i) -> {
+                dialogInterface.dismiss();
+                mBleDevice.connect(connectionFailEvent -> {
+                    bleConnectionProgressDialog.dismiss();
+                    BLEConnectFragment.this.showSnackBarMessage("Connection fail event with number : "
+                            + connectionFailEvent.bondFailReason());
+                    return null;
+                });
+            });
+        }
+    };
+
+    View.OnClickListener listenerDisconnectMode = view1 -> mBleDevice.disconnect();
+
     private DeviceStateListener deviceStateListener = new DeviceStateListener() {
         @Override
         public void onEvent(StateEvent
@@ -159,6 +192,7 @@ public class BLEConnectFragment extends Fragment {
             }
             if (e.didEnter(BleDeviceState.DISCONNECTED)) {
                 Log.i(TAG, "DISCONNECTED");
+                setBtnBleConnectDeviceToConnectMode();
             }
             if (e.didEnter(BleDeviceState.UNBONDED)) {
                 Log.i(TAG, "UNBONDED");
@@ -197,6 +231,8 @@ public class BLEConnectFragment extends Fragment {
             if (e.didEnter(BleDeviceState.INITIALIZED)) {
                 Log.i(TAG, "INITIALIZED");
 
+                setBtnBleConnectDeviceToDisconnectMode();
+
                 bleConnectionProgressDialog.dismiss();
 
 //                e.device().getNativeServices_List().contains()
@@ -216,10 +252,10 @@ public class BLEConnectFragment extends Fragment {
                  *-------------------------------------*/
                 readBleGpsCharacteristics();
 
-                showBleReadWriteProgressDialog("GPS and LoRa characteristics",
+                showBleReadWriteProgressDialog("Reading GPS and LoRa characteristics",
                         "Please be patient, the read command can take a few seconds to retrieve results...",
-                        LORA_BLE_SERVICE_NUMBER_OF_CHARACTERISTICS +
-                                GPS_BLE_SERVICE_NUMBER_OF_CHARACTERISTICS);
+                        LORA_BLE_SERVICE_NUMBER_OF_READ_CHARACTERISTICS +
+                                GPS_BLE_SERVICE_NUMBER_OF_READ_CHARACTERISTICS);
             }
             if (e.didEnter(BleDeviceState.PERFORMING_OTA)) {
                 Log.i(TAG, "PERFORMING_OTA");
@@ -236,8 +272,6 @@ public class BLEConnectFragment extends Fragment {
         // First it enables bluetooth itself, then location permissions, then location services. The latter two
         // are only needed in Android M. This must be called from an Activity instance.
         BluetoothEnabler.start(getActivity());
-
-        ProgressDialog bleProgressDialog = new ProgressDialog(getActivity());
 
         mBleManager = BleManager.get(getActivity());
         mBleManager.setConfig(mBleManagerConfig);
@@ -289,24 +323,26 @@ public class BLEConnectFragment extends Fragment {
 //        });
 
         mBleDevice.setListener_State(deviceStateListener);
-        btnBleConnectDevice.setOnClickListener((View view1) -> mBleDevice.connect(
-                connectionFailEvent -> {
-                    bleConnectionProgressDialog.dismiss();
-                    showSnackBarMessage("Connection fail event with number : "
-                            + connectionFailEvent.bondFailReason());
-                    return null;
-                })
-        );
 
+        setBtnBleConnectDeviceToConnectMode();
 
         btnBleLoraDownloadDevice.setOnClickListener(view14 -> {
             readBleLoraCharacteristics();
-            showBleReadWriteProgressDialog("LoRa characteristics",
+            showBleReadWriteProgressDialog("Reading LoRa characteristics",
                     "Please be patient, the read command can take a few seconds to retrieve results...",
-                    LORA_BLE_SERVICE_NUMBER_OF_CHARACTERISTICS);
+                    LORA_BLE_SERVICE_NUMBER_OF_READ_CHARACTERISTICS);
+
+            setBtnBleConnectDeviceToDisconnectMode();
         });
 
         btnBleLoraUploadDevice.setOnClickListener(view16 -> {
+            // TODO : Implement a dialog to create or modify a device on the server
+
+
+            writeBleLoraCharacteristicsFromServer();
+            showBleReadWriteProgressDialog("Writing LoRa configuration",
+                    "Please be patient, the write command can take a few seconds to finish his process...",
+                    GPS_BLE_SERVICE_NUMBER_OF_READ_CHARACTERISTICS);
         });
 
         btnDownloadServ.setOnClickListener(view15 -> loadDevice());
@@ -317,9 +353,9 @@ public class BLEConnectFragment extends Fragment {
 
         btnBleGpsDownloadDevice.setOnClickListener(view13 -> {
             readBleGpsCharacteristics();
-            showBleReadWriteProgressDialog("GPS characteristics",
+            showBleReadWriteProgressDialog("Reading GPS characteristics",
                     "Please be patient, the read command can take a few seconds to retrieve results...",
-                    GPS_BLE_SERVICE_NUMBER_OF_CHARACTERISTICS);
+                    GPS_BLE_SERVICE_NUMBER_OF_READ_CHARACTERISTICS);
         });
 
 
@@ -360,6 +396,58 @@ public class BLEConnectFragment extends Fragment {
                 e.printStackTrace();
             }
         }).start();
+    }
+
+    private void showBleConnectionConfirmationDialog(DialogInterface.OnClickListener onClickListener) {
+
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(new ContextThemeWrapper(
+                getActivity(), R.style.AppTheme_Dialog_Alert));
+
+        // Setting Dialog Title
+        alertDialog.setTitle("Pairing Passkey Entry");
+
+        LinearLayout linearLayout = new LinearLayout(getActivity());
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+
+        TextView message = new TextView(getActivity());
+        TextView passKey = new TextView(getActivity());
+        message.setText(R.string.passkey_dialog_msg);
+
+
+        passKey.setText(smartCantonDevBoxDevice.getBlePassKey());
+        passKey.setGravity(Gravity.CENTER_HORIZONTAL);
+        passKey.setTextAppearance(getActivity(), R.style.TextAppearance_AppCompat_Large);
+        passKey.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 48);
+        passKey.setTextColor(getResources().getColor(R.color.colorAccent));
+        passKey.setTypeface(passKey.getTypeface(), Typeface.BOLD);
+
+        message.setPadding((int)getResources().getDimension(R.dimen.card_padding),
+                (int)getResources().getDimension(R.dimen.card_padding),
+                (int)getResources().getDimension(R.dimen.card_padding),
+                (int)getResources().getDimension(R.dimen.card_padding));
+        passKey.setPadding((int)getResources().getDimension(R.dimen.card_padding),
+                (int)getResources().getDimension(R.dimen.card_padding),
+                (int)getResources().getDimension(R.dimen.card_padding),
+                (int)getResources().getDimension(R.dimen.card_padding));
+
+        linearLayout.addView(message);
+        linearLayout.addView(passKey);
+
+        // Setting Dialog Message
+        alertDialog.setView(linearLayout);
+
+        // Setting Icon to Dialog
+        alertDialog.setIcon(R.drawable.ic_bluetooth_connect_white);
+
+        // Setting Positive "Yes" Button
+        alertDialog.setPositiveButton("Connect", onClickListener);
+
+        // Setting Negative "NO" Button
+        alertDialog.setNegativeButton("Cancel",
+                (dialogInterface, i) -> dialogInterface.dismiss());
+
+        // Showing Alert Message
+        alertDialog.show();
     }
 
     private void showBleConnectionProgressDialog() {
@@ -457,6 +545,35 @@ public class BLEConnectFragment extends Fragment {
         tvLoraDeviceAddressDevice.setVisibility(visibility);
     }
 
+    private void setBtnBleConnectDeviceToConnectMode(){
+        btnBleConnectDevice.setOnClickListener(listenerConnectMode);
+        btnBleConnectDevice.setText(R.string.ble_btn_default_connect_msg);
+        btnBleConnectDevice.setCompoundDrawablesWithIntrinsicBounds( 0, 0,
+                R.drawable.ic_bluetooth_disconnect_white, 0);
+    }
+
+    private void setBtnBleConnectDeviceToDisconnectMode(){
+        btnBleConnectDevice.setOnClickListener(listenerDisconnectMode);
+        btnBleConnectDevice.setText(R.string.ble_btn_disconnect_msg);
+        btnBleConnectDevice.setCompoundDrawablesWithIntrinsicBounds( 0, 0,
+                R.drawable.ic_bluetooth_disconnect_white, 0);
+    }
+
+    private void setBtnBleConnectDeviceToDisabled() {
+        btnBleConnectDevice.setAlpha(.5f);
+        btnBleConnectDevice.setClickable(false);
+    }
+
+    private void setBtnBleConnectDeviceToEnable() {
+        btnBleConnectDevice.setAlpha(1f);
+        btnBleConnectDevice.setClickable(true);
+    }
+
+    private String extractDataStringFromTextView(TextView tv) {
+        String tvText = tv.getText().toString();
+        return tvText.substring(tvText.lastIndexOf(": ") + 2);
+    }
+
     private void getDataFromArguments() {
 
         Bundle bundle = getArguments();
@@ -482,16 +599,11 @@ public class BLEConnectFragment extends Fragment {
 
     private void handleResponse(SmartCantonDevBoxDevice device) {
 
+        smartCantonDevBoxDevice = device;
+
         mProgressDialog.dismiss();
 
         tvMessageServ.setVisibility(View.GONE);
-
-        // If we want double colors on the same text
-//        tvBleMacAddrServ.setText( Html.fromHtml(
-//                getColoredSpanned("Mac Address : %s",
-//                        getResources().getColor(R.color.colorTextPrimaryLightDark)) +
-//                        getColoredSpanned(device.getBleMacAddr(),
-//                                getResources().getColor(R.color.colorTextPrimaryDark))));
 
         tvBleMacAddrServ.setText(String.format("Mac Address : %s", device.getBleMacAddr()));
         tvBlePasskeyServ.setText(String.format("Passkey : %s", device.getBlePassKey()));
@@ -755,7 +867,7 @@ public class BLEConnectFragment extends Fragment {
                 e1 -> {
                     if (e1.wasSuccess()) {
                         tvLoraAppEuiDevice.setText(String.format("App EUI : %s",
-                                FormatConversions.bytesToHex(e1.data())));
+                                FormatConversions.bytesArrayToHexString(e1.data())));
                     }
                     bleReadWriteProgressDialog.incrementProgressBy(1);
                 });
@@ -765,7 +877,7 @@ public class BLEConnectFragment extends Fragment {
                 e1 -> {
                     if (e1.wasSuccess()) {
                         tvLoraDevEuiDevice.setText(String.format("Dev EUI : %s",
-                                FormatConversions.bytesToHex(e1.data())));
+                                FormatConversions.bytesArrayToHexString(e1.data())));
                     }
                     bleReadWriteProgressDialog.incrementProgressBy(1);
                 });
@@ -775,7 +887,7 @@ public class BLEConnectFragment extends Fragment {
                 e1 -> {
                     if (e1.wasSuccess()) {
                         tvLoraDeviceAddressDevice.setText(String.format("Dev Addr : %s",
-                                FormatConversions.bytesToHex(e1.data())));
+                                FormatConversions.bytesArrayToHexString(e1.data())));
                     }
                     bleReadWriteProgressDialog.incrementProgressBy(1);
                 });
@@ -785,54 +897,34 @@ public class BLEConnectFragment extends Fragment {
                 e1 -> {
                     if (e1.wasSuccess()) {
                         tvLoraNetworkJoinStatusDevice.setText(String.format("Network Join : %s",
-                                FormatConversions.bytesToHex(e1.data())));
+                                FormatConversions.bytesArrayToHexString(e1.data())));
                     }
                     bleReadWriteProgressDialog.incrementProgressBy(1);
                 });
     }
 
     private void writeBleLoraCharacteristicsFromServer() {
-        mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_SERVICE,
+
+        mBleDevice.write(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_SERVICE,
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_APP_EUI,
+                FormatConversions.hexStringToByteArray(smartCantonDevBoxDevice.getAppEui()),
                 e1 -> {
-                    if (e1.wasSuccess()) {
-                        tvLoraAppEuiDevice.setText(
-                                String.format("App EUI : %s", e1.data_utf8()));
+                    if (!e1.wasSuccess()) {
+                        showSnackBarMessage(String.format("Error while writing characteristics %s",
+                                "LORA APP EUI"));
                     }
                     bleReadWriteProgressDialog.incrementProgressBy(1);
                 });
 
-        mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_SERVICE,
-                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_DEVICE_EUI,
-                e1 -> {
-                    if (e1.wasSuccess()) {
-                        tvLoraDevEuiDevice.setText(
-                                String.format("Dev EUI : %s", e1.data_utf8()));
-                    }
-                    bleReadWriteProgressDialog.incrementProgressBy(1);
-                });
-
-        mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_SERVICE,
-                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_NETWORK_DEVICE_ADDRESS,
-                e1 -> {
-                    if (e1.wasSuccess()) {
-                        tvLoraDeviceAddressDevice.setText(
-                                String.format("Dev Addr : %s", e1.data_utf8()));
-                    }
-                    bleReadWriteProgressDialog.incrementProgressBy(1);
-                });
-
-        mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_SERVICE,
+        mBleDevice.write(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_SERVICE,
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_NETWORK_NWTORK_SESSION_KEY,
+                FormatConversions.hexStringToByteArray(smartCantonDevBoxDevice.getAppKey()),
                 e1 -> {
-                    if (e1.wasSuccess()) {
-                        tvLoraNetworkJoinStatusDevice.setText(
-                                String.format("Network Join : %s", e1.data_byte()));
+                    if (!e1.wasSuccess()) {
+                        showSnackBarMessage(String.format("Error while writing characteristics %s",
+                                "LORA APP KEY"));
                     }
                     bleReadWriteProgressDialog.incrementProgressBy(1);
                 });
     }
-
 }
-
-
