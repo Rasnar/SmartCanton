@@ -22,6 +22,7 @@
         <activity
             android:name=".MainActivity"
             android:theme="@style/AppTheme.LoginRegister"
+            android:screenOrientation="sensorPortrait"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -37,10 +38,12 @@
         <activity
             android:name=".ProfileActivity"
             android:label="@string/activity_title_profile"
+            android:screenOrientation="sensorPortrait"
             android:theme="@style/AppTheme.Profile"/>
         <activity
             android:name=".BluetoothActivity"
             android:label="@string/activity_title_bluetooth"
+            android:screenOrientation="sensorPortrait"
             android:theme="@style/AppTheme.Bluetooth"/>
     </application>
 </manifest>
