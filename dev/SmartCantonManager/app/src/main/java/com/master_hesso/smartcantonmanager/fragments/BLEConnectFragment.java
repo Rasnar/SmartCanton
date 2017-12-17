@@ -52,6 +52,7 @@ import com.idevicesinc.sweetblue.BleDevice;
 import com.idevicesinc.sweetblue.BleDeviceState;
 import com.idevicesinc.sweetblue.BleManager;
 import com.idevicesinc.sweetblue.BleManagerConfig;
+import com.idevicesinc.sweetblue.BleNodeConfig;
 import com.idevicesinc.sweetblue.DeviceStateListener;
 import com.idevicesinc.sweetblue.utils.BluetoothEnabler;
 import com.master_hesso.smartcantonmanager.R;
@@ -92,11 +93,17 @@ public class BLEConnectFragment extends Fragment {
 //        this.useLeTransportForBonding
 //        this.alwaysBondOnConnect = true;
 
-
         this.forceBondDialog = true;
 //        this.bondingFailFailsConnection = true;
 //        this.connectFailRetryConnectingOverall = true;
         this.stopScanOnPause = true;
+        this.autoBondFixes = false;
+//        this.taskTimeoutRequestFilter = new TaskTimeoutRequestFilter() {
+//            @Override
+//            public Please onEvent(TaskTimeoutRequestEvent taskTimeoutRequestEvent) {
+//                return null;
+//            }
+//        };
     }};
 
     private ProgressDialog bleReadWriteProgressDialog;
@@ -156,6 +163,8 @@ public class BLEConnectFragment extends Fragment {
                 bleConnectionProgressDialog.dismiss();
                 BLEConnectFragment.this.showSnackBarMessage("Connection fail event with number : "
                         + connectionFailEvent.bondFailReason());
+//                mBleDevice.unbond();
+                mBleDevice.disconnect();
                 return null;
             });
         } else {
@@ -165,13 +174,18 @@ public class BLEConnectFragment extends Fragment {
                     bleConnectionProgressDialog.dismiss();
                     BLEConnectFragment.this.showSnackBarMessage("Connection fail event with number : "
                             + connectionFailEvent.bondFailReason());
+//                    mBleDevice.unbond();
+                    mBleDevice.disconnect();
                     return null;
                 });
             });
         }
     };
 
-    View.OnClickListener listenerDisconnectMode = view1 -> mBleDevice.disconnect();
+    View.OnClickListener listenerDisconnectMode = view1 -> {
+//        mBleDevice.unbond();
+        mBleDevice.disconnect();
+    };
 
     private DeviceStateListener deviceStateListener = new DeviceStateListener() {
         @Override
@@ -378,6 +392,10 @@ public class BLEConnectFragment extends Fragment {
 
 
     private void showBleReadWriteProgressDialog(String title, String message, int maxValue) {
+        if(bleReadWriteProgressDialog != null) {
+            bleReadWriteProgressDialog.dismiss();
+        }
+
         bleReadWriteProgressDialog = new ProgressDialog(getContext());
         bleReadWriteProgressDialog.setIndeterminate(false);
         bleReadWriteProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -457,6 +475,10 @@ public class BLEConnectFragment extends Fragment {
     }
 
     private void showBleConnectionProgressDialog() {
+        if(bleConnectionProgressDialog != null) {
+            bleConnectionProgressDialog.dismiss();
+        }
+
         bleConnectionProgressDialog = new ProgressDialog(getContext());
         bleConnectionProgressDialog.setIndeterminate(true);
 
@@ -552,17 +574,17 @@ public class BLEConnectFragment extends Fragment {
     }
 
     private void setBtnBleConnectDeviceToConnectMode(){
-        btnBleConnectDevice.setOnClickListener(listenerConnectMode);
         btnBleConnectDevice.setText(R.string.ble_btn_default_connect_msg);
         btnBleConnectDevice.setCompoundDrawablesWithIntrinsicBounds( 0, 0,
                 R.drawable.ic_bluetooth_connect_white, 0);
+        btnBleConnectDevice.setOnClickListener(listenerConnectMode);
     }
 
     private void setBtnBleConnectDeviceToDisconnectMode(){
-        btnBleConnectDevice.setOnClickListener(listenerDisconnectMode);
         btnBleConnectDevice.setText(R.string.ble_btn_disconnect_msg);
         btnBleConnectDevice.setCompoundDrawablesWithIntrinsicBounds( 0, 0,
                 R.drawable.ic_bluetooth_disconnect_white, 0);
+        btnBleConnectDevice.setOnClickListener(listenerDisconnectMode);
     }
 
     private void setBtnBleConnectDeviceToDisabled() {
@@ -586,6 +608,8 @@ public class BLEConnectFragment extends Fragment {
         String ble_mac_addr = bundle.getString(Constants.BLE_DEVICE_MAC);
         if (ble_mac_addr != null) {
             mBleDevice = mBleManager.getDevice(ble_mac_addr);
+//            mBleDevice.unbond();
+            mBleDevice.disconnect();
         }
     }
 
@@ -702,7 +726,8 @@ public class BLEConnectFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mBleManager.disconnectAll();
+//        mBleDevice.unbond();
+        mBleDevice.disconnect();
     }
 
     private String getColoredSpanned(String text, int color) {
