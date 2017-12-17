@@ -59,15 +59,15 @@ public class RegisterFragment extends Fragment {
 
     private void initViews(View v) {
 
-        mEtUsername = (EditText) v.findViewById(R.id.et_name);
-        mEtEmail = (EditText) v.findViewById(R.id.et_username);
-        mEtPassword = (EditText) v.findViewById(R.id.et_password);
-        mBtRegister = (Button) v.findViewById(R.id.btn_register);
-        mTvLogin = (TextView) v.findViewById(R.id.tv_login);
-        mTiUsername = (TextInputLayout) v.findViewById(R.id.ti_name);
-        mTiEmail = (TextInputLayout) v.findViewById(R.id.ti_username);
-        mTiPassword = (TextInputLayout) v.findViewById(R.id.ti_password);
-        mProgressbar = (ProgressBar) v.findViewById(R.id.progress);
+        mEtUsername = v.findViewById(R.id.et_name);
+        mEtEmail = v.findViewById(R.id.et_username);
+        mEtPassword = v.findViewById(R.id.et_password);
+        mBtRegister = v.findViewById(R.id.btn_register);
+        mTvLogin = v.findViewById(R.id.tv_login);
+        mTiUsername = v.findViewById(R.id.ti_name);
+        mTiEmail = v.findViewById(R.id.ti_username);
+        mTiPassword = v.findViewById(R.id.ti_password);
+        mProgressbar = v.findViewById(R.id.progress);
 
         mBtRegister.setOnClickListener(view -> register());
         mTvLogin.setOnClickListener(view -> goToLogin());

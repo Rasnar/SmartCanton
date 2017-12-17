@@ -70,12 +70,12 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
 
     private void initViews() {
 
-        mTvName = (TextView) findViewById(R.id.tv_name);
-        mTvUsername = (TextView) findViewById(R.id.tv_username);
-        mTvDate = (TextView) findViewById(R.id.tv_date);
-        mBtChangePassword = (Button) findViewById(R.id.btn_change_password);
-        mBtLogout = (Button) findViewById(R.id.btn_logout);
-        mProgressbar = (ProgressBar) findViewById(R.id.progress);
+        mTvName = findViewById(R.id.tv_name);
+        mTvUsername = findViewById(R.id.tv_username);
+        mTvDate = findViewById(R.id.tv_date);
+        mBtChangePassword = findViewById(R.id.btn_change_password);
+        mBtLogout = findViewById(R.id.btn_logout);
+        mProgressbar = findViewById(R.id.progress);
 
         mBtChangePassword.setOnClickListener(view -> showDialog());
         mBtLogout.setOnClickListener(view -> logout());

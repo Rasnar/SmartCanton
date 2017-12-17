@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.2"
+    buildToolsVersion '27.0.2'
     defaultConfig {
         applicationId "com.smartcantonmanager"
         minSdkVersion 22
@@ -32,6 +32,7 @@ android {
 }
 
 dependencies {
+    compile fileTree(include: '*.jar', dir: 'libs')
     compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -47,6 +48,4 @@ dependencies {
     compile 'com.auth0.android:jwtdecode:1.1.1'
     compile 'org.json:json:20171018'
     testCompile 'junit:junit:4.12'
-
-    compile fileTree(dir: 'libs', include: '*.jar')
 }

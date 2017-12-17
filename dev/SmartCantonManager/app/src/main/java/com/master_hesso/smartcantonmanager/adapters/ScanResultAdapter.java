@@ -72,9 +72,9 @@ public class ScanResultAdapter extends BaseAdapter {
             view = mInflater.inflate(R.layout.listitem_scanresult, null);
         }
 
-        TextView deviceNameView = (TextView) view.findViewById(R.id.device_name);
-        TextView deviceAddressView = (TextView) view.findViewById(R.id.device_address);
-        TextView lastSeenView = (TextView) view.findViewById(R.id.last_seen);
+        TextView deviceNameView = view.findViewById(R.id.device_name);
+        TextView deviceAddressView = view.findViewById(R.id.device_address);
+        TextView lastSeenView = view.findViewById(R.id.last_seen);
 
         BleDevice device = mArrayList.get(position);
 

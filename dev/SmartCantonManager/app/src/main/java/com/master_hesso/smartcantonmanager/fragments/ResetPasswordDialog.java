@@ -70,15 +70,15 @@ public class ResetPasswordDialog extends DialogFragment {
 
     private void initViews(View v) {
 
-        mEtEmail = (EditText) v.findViewById(R.id.et_username);
-        mEtToken = (EditText) v.findViewById(R.id.et_token);
-        mEtPassword = (EditText) v.findViewById(R.id.et_password);
-        mBtResetPassword = (Button) v.findViewById(R.id.btn_reset_password);
-        mProgressBar = (ProgressBar) v.findViewById(R.id.progress);
-        mTvMessage = (TextView) v.findViewById(R.id.tv_message);
-        mTiEmail = (TextInputLayout) v.findViewById(R.id.ti_username);
-        mTiToken = (TextInputLayout) v.findViewById(R.id.ti_token);
-        mTiPassword = (TextInputLayout) v.findViewById(R.id.ti_password);
+        mEtEmail = v.findViewById(R.id.et_username);
+        mEtToken = v.findViewById(R.id.et_token);
+        mEtPassword = v.findViewById(R.id.et_password);
+        mBtResetPassword = v.findViewById(R.id.btn_reset_password);
+        mProgressBar = v.findViewById(R.id.progress);
+        mTvMessage = v.findViewById(R.id.tv_message);
+        mTiEmail = v.findViewById(R.id.ti_username);
+        mTiToken = v.findViewById(R.id.ti_token);
+        mTiPassword = v.findViewById(R.id.ti_password);
 
         mBtResetPassword.setOnClickListener(view -> {
             if (isInit) resetPasswordInit();

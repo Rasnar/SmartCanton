@@ -7,14 +7,7 @@ public class Validation {
 
     public static boolean validateFields(String name){
 
-        if (TextUtils.isEmpty(name)) {
-
-            return false;
-
-        } else {
-
-            return true;
-        }
+        return !TextUtils.isEmpty(name);
     }
 
     public static boolean validateUsername(String string) {

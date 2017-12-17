@@ -83,14 +83,14 @@ public class ChangePasswordDialog extends DialogFragment {
 
     private void initViews(View v) {
 
-        mEtOldPassword = (EditText) v.findViewById(R.id.et_old_password);
-        mEtNewPassword = (EditText) v.findViewById(R.id.et_new_password);
-        mTiOldPassword = (TextInputLayout) v.findViewById(R.id.ti_old_password);
-        mTiNewPassword = (TextInputLayout) v.findViewById(R.id.ti_new_password);
-        mTvMessage = (TextView) v.findViewById(R.id.tv_message);
-        mBtChangePassword = (Button) v.findViewById(R.id.btn_change_password);
-        mBtCancel = (Button) v.findViewById(R.id.btn_cancel);
-        mProgressBar = (ProgressBar) v.findViewById(R.id.progress);
+        mEtOldPassword = v.findViewById(R.id.et_old_password);
+        mEtNewPassword = v.findViewById(R.id.et_new_password);
+        mTiOldPassword = v.findViewById(R.id.ti_old_password);
+        mTiNewPassword = v.findViewById(R.id.ti_new_password);
+        mTvMessage = v.findViewById(R.id.tv_message);
+        mBtChangePassword = v.findViewById(R.id.btn_change_password);
+        mBtCancel = v.findViewById(R.id.btn_cancel);
+        mProgressBar = v.findViewById(R.id.progress);
 
         mBtChangePassword.setOnClickListener(view -> changePassword());
         mBtCancel.setOnClickListener(view -> dismiss());

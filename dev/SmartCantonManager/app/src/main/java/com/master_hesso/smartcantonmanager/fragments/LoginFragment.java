@@ -66,14 +66,14 @@ public class LoginFragment extends Fragment {
 
     private void initViews(View v) {
 
-        mEtUsername = (EditText) v.findViewById(R.id.et_username);
-        mEtPassword = (EditText) v.findViewById(R.id.et_password);
-        mBtLogin = (Button) v.findViewById(R.id.btn_login);
-        mTiUsername = (TextInputLayout) v.findViewById(R.id.ti_username);
-        mTiPassword = (TextInputLayout) v.findViewById(R.id.ti_password);
-        mProgressBar = (ProgressBar) v.findViewById(R.id.progress);
-        mTvRegister = (TextView) v.findViewById(R.id.tv_register);
-        mTvForgotPassword = (TextView) v.findViewById(R.id.tv_forgot_password);
+        mEtUsername = v.findViewById(R.id.et_username);
+        mEtPassword = v.findViewById(R.id.et_password);
+        mBtLogin = v.findViewById(R.id.btn_login);
+        mTiUsername = v.findViewById(R.id.ti_username);
+        mTiPassword = v.findViewById(R.id.ti_password);
+        mProgressBar = v.findViewById(R.id.progress);
+        mTvRegister = v.findViewById(R.id.tv_register);
+        mTvForgotPassword = v.findViewById(R.id.tv_forgot_password);
 
         mBtLogin.setOnClickListener(view -> login());
         mTvRegister.setOnClickListener(view -> goToRegister());

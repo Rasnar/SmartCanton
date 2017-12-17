@@ -46,12 +46,14 @@ import com.idevicesinc.sweetblue.BleDevice.StateListener;
 import com.idevicesinc.sweetblue.BleDeviceState;
 import com.idevicesinc.sweetblue.BleManager;
 import com.idevicesinc.sweetblue.BleManagerConfig;
+import com.idevicesinc.sweetblue.DeviceStateListener;
 import com.idevicesinc.sweetblue.utils.BluetoothEnabler;
 import com.master_hesso.smartcantonmanager.R;
 import com.master_hesso.smartcantonmanager.model.Response;
 import com.master_hesso.smartcantonmanager.model.SmartCantonDevBoxDevice;
 import com.master_hesso.smartcantonmanager.network.NetworkUtil;
 import com.master_hesso.smartcantonmanager.utils.Constants;
+import com.master_hesso.smartcantonmanager.utils.FormatConversions;
 import com.master_hesso.smartcantonmanager.utils.SmartCantonDevBoxBLEServices;
 
 import java.io.IOException;
@@ -63,6 +65,7 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 import static com.idevicesinc.sweetblue.BleDevice.ReadWriteListener.Status;
+import static com.idevicesinc.sweetblue.BleDevice.StateListener.*;
 
 
 /**
@@ -72,20 +75,34 @@ public class BLEConnectFragment extends Fragment {
 
     public static final String TAG = BLEConnectFragment.class.getSimpleName();
 
+    private static final int LORA_BLE_SERVICE_NUMBER_OF_CHARACTERISTICS = 4;
+    private static final int GPS_BLE_SERVICE_NUMBER_OF_CHARACTERISTICS = 5;
+    /**
+     * SweetBlue BLE configuration
+     */
+    private final BleManagerConfig mBleManagerConfig = new BleManagerConfig() {{
+//        this.scanApi = BleScanApi.POST_LOLLIPOP;
+//        this.useLeTransportForBonding
+//        this.alwaysBondOnConnect = true;
+
+//        this.forceBondDialog = true;
+        this.connectFailRetryConnectingOverall = true;
+        this.stopScanOnPause = true;
+    }};
+
+    ProgressDialog bleReadWriteProgressDialog;
+    ProgressDialog bleConnectionProgressDialog;
+
     private BleDevice mBleDevice = null;
     private BleManager mBleManager;
-
     private CompositeSubscription mSubscriptions;
-
     private ProgressDialog mProgressDialog;
-
     private SharedPreferences mSharedPreferences;
     private String mToken;
     private String mUsername;
     private String mUserId;
     private Date mTokenExpiresAt;
     private JWT mJwt;
-
     private CardView cvDeviceServer;
     private TextView tvCvTitleServ;
     private ImageButton btnDownloadServ;
@@ -100,7 +117,6 @@ public class BLEConnectFragment extends Fragment {
     private TextView tvAppKeyServ;
     private TextView tvDeviceOwnerTitleServ;
     private TextView tvPublicIdServ;
-
     private CardView cvDeviceBLELora;
     private TextView tvCvTitleBleLora;
     private ImageButton btnBleLoraDownloadDevice;
@@ -110,7 +126,6 @@ public class BLEConnectFragment extends Fragment {
     private TextView tvLoraAppEuiDevice;
     private TextView tvLoraNetworkJoinStatusDevice;
     private TextView tvLoraDeviceAddressDevice;
-
     private CardView cvDeviceBleGps;
     private TextView tvCvTitleBleGps;
     private ImageButton btnBleGpsDownloadDevice;
@@ -122,25 +137,10 @@ public class BLEConnectFragment extends Fragment {
     private TextView tvGpsServiceCourseDevice;
     private TextView tvGpsServiceDateDevice;
     private TextView tvGpsServiceTimeDevice;
-
     private Button btnBleConnectDevice;
-
-    /**
-     * SweetBlue BLE configuration
-     */
-    private final BleManagerConfig mBleManagerConfig = new BleManagerConfig() {{
-//        this.scanApi = BleScanApi.POST_LOLLIPOP;
-//        this.useLeTransportForBonding
-//        this.alwaysBondOnConnect = true;
-
-//        this.forceBondDialog = true;
-        this.stopScanOnPause = true;
-    }};
-
-
-    private StateListener stateListener = new StateListener() {
+    private DeviceStateListener deviceStateListener = new DeviceStateListener() {
         @Override
-        public void onEvent(StateListener.StateEvent
+        public void onEvent(StateEvent
                                     e) {
             if (e.didEnter(BleDeviceState.UNDISCOVERED)) {
                 Log.i(TAG, "UNDISCOVERED");
@@ -174,6 +174,7 @@ public class BLEConnectFragment extends Fragment {
             }
             if (e.didEnter(BleDeviceState.CONNECTING)) {
                 Log.i(TAG, "CONNECTING");
+                showBleConnectionProgressDialog();
             }
             if (e.didEnter(BleDeviceState.CONNECTED)) {
                 Log.i(TAG, "CONNECTED");
@@ -196,6 +197,8 @@ public class BLEConnectFragment extends Fragment {
             if (e.didEnter(BleDeviceState.INITIALIZED)) {
                 Log.i(TAG, "INITIALIZED");
 
+                bleConnectionProgressDialog.dismiss();
+
 //                e.device().getNativeServices_List().contains()
 
                 tvGpsMessageDevice.setVisibility(View.GONE);
@@ -206,46 +209,17 @@ public class BLEConnectFragment extends Fragment {
                 /*--------------------------------------
                  *      LoRa Service
                  *-------------------------------------*/
-                e.device().read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_SERVICE,
-                        SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_APP_EUI,
-                        e1 -> {
-                            if (e1.wasSuccess()) {
-                                tvLoraAppEuiDevice.setText(
-                                        String.format("App EUI : %s", e1.data_utf8()));
-                            }
-                        });
-
-                e.device().read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_SERVICE,
-                        SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_DEVICE_EUI,
-                        e1 -> {
-                            if (e1.wasSuccess()) {
-                                tvLoraDevEuiDevice.setText(
-                                        String.format("Dev EUI : %s", e1.data_utf8()));
-                            }
-                        });
-
-                e.device().read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_SERVICE,
-                        SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_NETWORK_DEVICE_ADDRESS,
-                        e1 -> {
-                            if (e1.wasSuccess()) {
-                                tvLoraDeviceAddressDevice.setText(
-                                        String.format("Dev Addr : %s", e1.data_utf8()));
-                            }
-                        });
-
-                e.device().read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_SERVICE,
-                        SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_NETWORK_NWTORK_SESSION_KEY,
-                        e1 -> {
-                            if (e1.wasSuccess()) {
-                                tvLoraNetworkJoinStatusDevice.setText(
-                                        String.format("Network Join : %s", e1.data_byte()));
-                            }
-                        });
+                readBleLoraCharacteristics();
 
                 /*--------------------------------------
                  *      GPS Service
                  *-------------------------------------*/
                 readBleGpsCharacteristics();
+
+                showBleReadWriteProgressDialog("GPS and LoRa characteristics",
+                        "Please be patient, the read command can take a few seconds to retrieve results...",
+                        LORA_BLE_SERVICE_NUMBER_OF_CHARACTERISTICS +
+                                GPS_BLE_SERVICE_NUMBER_OF_CHARACTERISTICS);
             }
             if (e.didEnter(BleDeviceState.PERFORMING_OTA)) {
                 Log.i(TAG, "PERFORMING_OTA");
@@ -257,6 +231,13 @@ public class BLEConnectFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+
+        // This class helps you navigate the treacherous waters of Android M Location requirements for scanning.
+        // First it enables bluetooth itself, then location permissions, then location services. The latter two
+        // are only needed in Android M. This must be called from an Activity instance.
+        BluetoothEnabler.start(getActivity());
+
+        ProgressDialog bleProgressDialog = new ProgressDialog(getActivity());
 
         mBleManager = BleManager.get(getActivity());
         mBleManager.setConfig(mBleManagerConfig);
@@ -302,52 +283,108 @@ public class BLEConnectFragment extends Fragment {
 //
 //                showSnackBarMessage("BOND EVENT WITH CODE : " + bondEvent.failReason());
 //                Log.i(TAG, "BOND EVENT WITH CODE : " + bondEvent.failReason());
-//
+//7
 ////                mBleManager.reset();
 //            }
 //        });
 
+        mBleDevice.setListener_State(deviceStateListener);
         btnBleConnectDevice.setOnClickListener((View view1) -> mBleDevice.connect(
-                stateListener,
                 connectionFailEvent -> {
+                    bleConnectionProgressDialog.dismiss();
                     showSnackBarMessage("Connection fail event with number : "
                             + connectionFailEvent.bondFailReason());
-
                     return null;
                 })
         );
 
 
-        btnBleGpsDownloadDevice.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                readBleGpsCharacteristics();
-            }
+        btnBleLoraDownloadDevice.setOnClickListener(view14 -> {
+            readBleLoraCharacteristics();
+            showBleReadWriteProgressDialog("LoRa characteristics",
+                    "Please be patient, the read command can take a few seconds to retrieve results...",
+                    LORA_BLE_SERVICE_NUMBER_OF_CHARACTERISTICS);
         });
 
-        btnBleLoraDownloadDevice.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // TODO : Implement define edition and creation to the server
-            }
+        btnBleLoraUploadDevice.setOnClickListener(view16 -> {
         });
 
-        btnDownloadServ.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                loadDevice();
-            }
+        btnDownloadServ.setOnClickListener(view15 -> loadDevice());
+
+        btnUploadServ.setOnClickListener(view15 -> {
+            // TODO : Implement a dialog to create or modify a device on the server
         });
+
+        btnBleGpsDownloadDevice.setOnClickListener(view13 -> {
+            readBleGpsCharacteristics();
+            showBleReadWriteProgressDialog("GPS characteristics",
+                    "Please be patient, the read command can take a few seconds to retrieve results...",
+                    GPS_BLE_SERVICE_NUMBER_OF_CHARACTERISTICS);
+        });
+
 
         swGpsEnableNotifications.setOnClickListener(view12 -> {
             if (swGpsEnableNotifications.isChecked()) {
                 enableBleGpsNotifications();
             } else {
-                diableBleGpsNotifications();
+                disableBleGpsNotifications();
             }
         });
 
         return view;
+    }
+
+
+    private void showBleReadWriteProgressDialog(String title, String message, int maxValue) {
+        bleReadWriteProgressDialog = new ProgressDialog(getContext());
+        bleReadWriteProgressDialog.setIndeterminate(false);
+        bleReadWriteProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+
+        bleReadWriteProgressDialog.setTitle(title);
+        bleReadWriteProgressDialog.setMessage(message);
+
+        bleReadWriteProgressDialog.setMax(maxValue);
+        bleReadWriteProgressDialog.show();
+
+        new Thread(() -> {
+            try {
+                while (bleReadWriteProgressDialog.getProgress() <= bleReadWriteProgressDialog
+                        .getMax()) {
+                    Thread.sleep(100);
+                    if (bleReadWriteProgressDialog.getProgress() == bleReadWriteProgressDialog
+                            .getMax()) {
+                        bleReadWriteProgressDialog.dismiss();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    private void showBleConnectionProgressDialog() {
+        bleConnectionProgressDialog = new ProgressDialog(getContext());
+        bleConnectionProgressDialog.setIndeterminate(true);
+
+        bleConnectionProgressDialog.setTitle("BLE connection in progress");
+        bleConnectionProgressDialog.setMessage("Please be patient, the connection can take a few seconds to be set...");
+
+        bleConnectionProgressDialog.show();
+
+        new Thread(() -> {
+            try {
+                while (bleConnectionProgressDialog.getProgress() <= bleConnectionProgressDialog
+                        .getMax()) {
+                    Thread.sleep(100);
+                    if (bleConnectionProgressDialog.getProgress() == bleConnectionProgressDialog
+                            .getMax()) {
+                        bleConnectionProgressDialog.dismiss();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     private void initViews(View view) {
@@ -394,6 +431,9 @@ public class BLEConnectFragment extends Fragment {
         tvGpsServiceDateDevice = view.findViewById(R.id.tv_gps_service_date_device);
         tvGpsServiceTimeDevice = view.findViewById(R.id.tv_gps_service_time_device);
 
+        /* Start the app by masking the 2 cards
+         * If the device as been found on the server, the cards will be shown
+         */
         setGpsCardFieldsVisibility(View.GONE);
         setLoraCardFieldsVisibility(View.GONE);
     }
@@ -459,19 +499,6 @@ public class BLEConnectFragment extends Fragment {
         tvAppEuiServ.setText(String.format("AppEUI : %s", device.getAppEui()));
         tvAppKeyServ.setText(String.format("AppKey : %s", device.getAppKey()));
         tvPublicIdServ.setText(String.format("Owner ID : %s", device.getOwnerPublicId()));
-
-        // This class helps you navigate the treacherous waters of Android M Location requirements for scanning.
-        // First it enables bluetooth itself, then location permissions, then location services. The latter two
-        // are only needed in Android M. This must be called from an Activity instance.
-        BluetoothEnabler.start(getActivity(), new BluetoothEnabler.DefaultBluetoothEnablerFilter() {
-            @Override
-            public Please onEvent(BluetoothEnablerEvent e) {
-                if (e.isDone()) {
-
-                }
-                return super.onEvent(e);
-            }
-        });
     }
 
     private void handleError(Throwable error) {
@@ -494,8 +521,6 @@ public class BLEConnectFragment extends Fragment {
         tvAppEuiServ.setVisibility(View.GONE);
         tvAppKeyServ.setVisibility(View.GONE);
         tvPublicIdServ.setVisibility(View.GONE);
-
-//        btnBleConnectDevice.setClickable(false);
 
         if (error instanceof HttpException) {
 
@@ -627,78 +652,7 @@ public class BLEConnectFragment extends Fragment {
                 });
     }
 
-    private void readBleGpsCharacteristics() {
-        mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
-                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_POSITION,
-                e1 -> {
-                    if (e1.wasSuccess()) {
-                        tvGpsServicePositionDevice.setText(
-                                String.format("Position : %s", e1.data_utf8()));
-                    } else if (e1.status() == Status.EMPTY_DATA) {
-                        tvGpsServicePositionDevice.setText(
-                                String.format("Position : %s", "<no signal yet>"));
-                    }
-                });
-        mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
-                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SPEED,
-                e1 -> {
-                    if (e1.wasSuccess()) {
-                        tvGpsServiceSpeedDevice.setText(
-                                String.format("Speed : %s", e1.data_utf8()));
-                    } else if (e1.status() == Status.EMPTY_DATA) {
-                        tvGpsServiceSpeedDevice.setText(
-                                String.format("Speed : %s", "<no signal yet>"));
-                    }
-                });
-        mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
-                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_COURSE,
-                e1 -> {
-                    if (e1.wasSuccess()) {
-                        tvGpsServiceCourseDevice.setText(
-                                String.format("Course : %s", e1.data_utf8()));
-                    } else if (e1.status() == Status.EMPTY_DATA) {
-                        tvGpsServiceCourseDevice.setText(
-                                String.format("Course : %s", "<no signal yet>"));
-                    }
-                });
-        mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
-                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_DATE,
-                e1 -> {
-                    if (e1.wasSuccess()) {
-                        tvGpsServiceDateDevice.setText(
-                                String.format("Date : %s", e1.data_utf8()));
-                    } else if (e1.status() == Status.EMPTY_DATA) {
-                        tvGpsServiceDateDevice.setText(
-                                String.format("Date : %s", "<no signal yet>"));
-                    }
-                });
-
-        mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
-                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_DATE,
-                e1 -> {
-                    if (e1.wasSuccess()) {
-                        tvGpsServiceDateDevice.setText(
-                                String.format("Date : %s", e1.data_utf8()));
-                    } else if (e1.status() == Status.EMPTY_DATA) {
-                        tvGpsServiceDateDevice.setText(
-                                String.format("Date : %s", "<no signal yet>"));
-                    }
-                });
-
-        mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
-                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_TIME,
-                e1 -> {
-                    if (e1.wasSuccess()) {
-                        tvGpsServiceTimeDevice.setText(
-                                String.format("Time : %s", e1.data_utf8()));
-                    } else if (e1.status() == Status.EMPTY_DATA) {
-                        tvGpsServiceTimeDevice.setText(
-                                String.format("Time : %s", "<no signal yet>"));
-                    }
-                });
-    }
-
-    private void diableBleGpsNotifications() {
+    private void disableBleGpsNotifications() {
         mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_POSITION);
 
@@ -717,4 +671,168 @@ public class BLEConnectFragment extends Fragment {
         mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_TIME);
     }
+
+    private void readBleGpsCharacteristics() {
+        mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_POSITION,
+                e1 -> {
+                    if (e1.wasSuccess()) {
+                        tvGpsServicePositionDevice.setText(
+                                String.format("Position : %s", e1.data_utf8()));
+                    } else if (e1.status() == Status.EMPTY_DATA) {
+                        tvGpsServicePositionDevice.setText(
+                                String.format("Position : %s", "<no signal yet>"));
+                    }
+                    bleReadWriteProgressDialog.incrementProgressBy(1);
+                });
+        mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SPEED,
+                e1 -> {
+                    if (e1.wasSuccess()) {
+                        tvGpsServiceSpeedDevice.setText(
+                                String.format("Speed : %s", e1.data_utf8()));
+                    } else if (e1.status() == Status.EMPTY_DATA) {
+                        tvGpsServiceSpeedDevice.setText(
+                                String.format("Speed : %s", "<no signal yet>"));
+                    }
+                    bleReadWriteProgressDialog.incrementProgressBy(1);
+                });
+        mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_COURSE,
+                e1 -> {
+                    if (e1.wasSuccess()) {
+                        tvGpsServiceCourseDevice.setText(
+                                String.format("Course : %s", e1.data_utf8()));
+                    } else if (e1.status() == Status.EMPTY_DATA) {
+                        tvGpsServiceCourseDevice.setText(
+                                String.format("Course : %s", "<no signal yet>"));
+                    }
+                    bleReadWriteProgressDialog.incrementProgressBy(1);
+                });
+        mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_DATE,
+                e1 -> {
+                    if (e1.wasSuccess()) {
+                        tvGpsServiceDateDevice.setText(
+                                String.format("Date : %s", e1.data_utf8()));
+                    } else if (e1.status() == Status.EMPTY_DATA) {
+                        tvGpsServiceDateDevice.setText(
+                                String.format("Date : %s", "<no signal yet>"));
+                    }
+                    bleReadWriteProgressDialog.incrementProgressBy(1);
+                });
+
+        mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_DATE,
+                e1 -> {
+                    if (e1.wasSuccess()) {
+                        tvGpsServiceDateDevice.setText(
+                                String.format("Date : %s", e1.data_utf8()));
+                    } else if (e1.status() == Status.EMPTY_DATA) {
+                        tvGpsServiceDateDevice.setText(
+                                String.format("Date : %s", "<no signal yet>"));
+                    }
+                    bleReadWriteProgressDialog.incrementProgressBy(1);
+                });
+
+        mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_TIME,
+                e1 -> {
+                    if (e1.wasSuccess()) {
+                        tvGpsServiceTimeDevice.setText(
+                                String.format("Time : %s", e1.data_utf8()));
+                    } else if (e1.status() == Status.EMPTY_DATA) {
+                        tvGpsServiceTimeDevice.setText(
+                                String.format("Time : %s", "<no signal yet>"));
+                    }
+                    bleReadWriteProgressDialog.incrementProgressBy(1);
+                });
+    }
+
+    private void readBleLoraCharacteristics() {
+        mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_APP_EUI,
+                e1 -> {
+                    if (e1.wasSuccess()) {
+                        tvLoraAppEuiDevice.setText(String.format("App EUI : %s",
+                                FormatConversions.bytesToHex(e1.data())));
+                    }
+                    bleReadWriteProgressDialog.incrementProgressBy(1);
+                });
+
+        mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_DEVICE_EUI,
+                e1 -> {
+                    if (e1.wasSuccess()) {
+                        tvLoraDevEuiDevice.setText(String.format("Dev EUI : %s",
+                                FormatConversions.bytesToHex(e1.data())));
+                    }
+                    bleReadWriteProgressDialog.incrementProgressBy(1);
+                });
+
+        mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_NETWORK_DEVICE_ADDRESS,
+                e1 -> {
+                    if (e1.wasSuccess()) {
+                        tvLoraDeviceAddressDevice.setText(String.format("Dev Addr : %s",
+                                FormatConversions.bytesToHex(e1.data())));
+                    }
+                    bleReadWriteProgressDialog.incrementProgressBy(1);
+                });
+
+        mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_NETWORK_NWTORK_SESSION_KEY,
+                e1 -> {
+                    if (e1.wasSuccess()) {
+                        tvLoraNetworkJoinStatusDevice.setText(String.format("Network Join : %s",
+                                FormatConversions.bytesToHex(e1.data())));
+                    }
+                    bleReadWriteProgressDialog.incrementProgressBy(1);
+                });
+    }
+
+    private void writeBleLoraCharacteristicsFromServer() {
+        mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_APP_EUI,
+                e1 -> {
+                    if (e1.wasSuccess()) {
+                        tvLoraAppEuiDevice.setText(
+                                String.format("App EUI : %s", e1.data_utf8()));
+                    }
+                    bleReadWriteProgressDialog.incrementProgressBy(1);
+                });
+
+        mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_DEVICE_EUI,
+                e1 -> {
+                    if (e1.wasSuccess()) {
+                        tvLoraDevEuiDevice.setText(
+                                String.format("Dev EUI : %s", e1.data_utf8()));
+                    }
+                    bleReadWriteProgressDialog.incrementProgressBy(1);
+                });
+
+        mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_NETWORK_DEVICE_ADDRESS,
+                e1 -> {
+                    if (e1.wasSuccess()) {
+                        tvLoraDeviceAddressDevice.setText(
+                                String.format("Dev Addr : %s", e1.data_utf8()));
+                    }
+                    bleReadWriteProgressDialog.incrementProgressBy(1);
+                });
+
+        mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_NETWORK_NWTORK_SESSION_KEY,
+                e1 -> {
+                    if (e1.wasSuccess()) {
+                        tvLoraNetworkJoinStatusDevice.setText(
+                                String.format("Network Join : %s", e1.data_byte()));
+                    }
+                    bleReadWriteProgressDialog.incrementProgressBy(1);
+                });
+    }
+
 }
+
+
