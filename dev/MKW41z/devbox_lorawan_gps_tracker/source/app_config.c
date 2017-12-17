@@ -126,7 +126,7 @@ gapScanResponseData_t gAppScanRspData =
 /* SMP Data */
 gapPairingParameters_t gPairingParameters = {
     .withBonding = gAppUseBonding_d,
-    .securityModeAndLevel = gSecurityMode_1_Level_4_c,
+    .securityModeAndLevel = gSecurityMode_1_Level_3_c,
     .maxEncryptionKeySize = mcEncryptionKeySize_c,
     .localIoCapabilities = gIoDisplayOnly_c,
     .oobAvailable = FALSE,
@@ -167,7 +167,7 @@ gapSmpKeys_t gSmpKeys = {
 
 /* Device Security Requirements */
 static const gapSecurityRequirements_t masterSecurity = {
-		gSecurityMode_1_Level_4_c,
+		gSecurityMode_1_Level_3_c,
         FALSE,
         gDefaultEncryptionKeySize_d
 };
@@ -177,7 +177,7 @@ static const gapSecurityRequirements_t masterSecurity = {
 static const gapServiceSecurityRequirements_t serviceSecurity[1] = {
 	{
 	.requirements = {
-		.securityModeLevel = gSecurityMode_1_Level_4_c,
+		.securityModeLevel = gSecurityMode_1_Level_3_c,
 		.authorization = FALSE,
 		.minimumEncryptionKeySize = gDefaultEncryptionKeySize_d
 	},
