@@ -1,5 +1,6 @@
 import uuid
 from datetime import timedelta
+from time import sleep
 
 from flask import Flask, request, jsonify
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
@@ -143,19 +144,48 @@ def create_user():
 
 @app.route('/user/<public_id>', methods=['PUT'])
 @jwt_required
-def promote_user(public_id):
-    if not user_from_public_id(get_jwt_identity()).admin:
-        return jsonify({'message': 'Cannot perform that function!'}), 403
+def change_user_information(public_id):
+    # if not user_from_public_id(get_jwt_identity()).admin:
+    #     return jsonify({'message': 'Cannot perform that function!'}), 403
 
     user = User.query.filter_by(public_id=public_id).first()
 
     if not user:
         return jsonify({'message': 'No user found!'}), 404
 
-    user.admin = True
+    try:
+        data = request.get_json()
+        print(data)
+    except:
+        return jsonify({'message': 'Wrongly formed JSON!'}), 400
+
+    try:
+        if ('new_password' in data) and data['new_password']:
+            new_hashed_password = generate_password_hash(data['new_password'], method='sha256')
+        else:
+            return jsonify({'message': 'New password not valid!'}), 400
+    except:
+        return jsonify({'message': 'New password not valid!'}), 400
+
+    # If the current JWT identity is an admin, we don't need to know the password to update a new password
+    if user_from_public_id(get_jwt_identity()).admin:
+        if 'new_password' in data:
+            user.password = new_hashed_password
+        if 'admin' in data:
+            user.admin = data['admin']
+    # Else if the authenticated user is the one updated
+    elif user_from_public_id(get_jwt_identity()).public_id == user.public_id:
+        if 'new_password' in data:
+            if check_password_hash(user.password, data['password']):
+                user.password = new_hashed_password
+            else:
+                return jsonify({'message': 'Wrong password!'}), 404
+    else:
+        return jsonify({'message': 'Cannot perform that function!'}), 403
+
     db.session.commit()
 
-    return jsonify({'message': 'The user password has been changed!'})
+    return jsonify({'message': 'User information updated!'})
 
 
 @app.route('/user/<public_id>', methods=['DELETE'])
@@ -222,7 +252,10 @@ def get_one_device_mac_addr(ble_mac_addr):
 @app.route('/device', methods=['POST'])
 @jwt_required
 def create_device():
-    data = request.get_json()
+    try:
+        data = request.get_json()
+    except:
+        return jsonify({'message': 'Wrongly formed JSON!'}), 400
 
     try:
         new_device = SmartcantonDevboxDevice(device_eui=data['dev_eui'],
@@ -230,7 +263,8 @@ def create_device():
                                              app_key=data['app_key'],
                                              ble_passkey=data['ble_passkey'],
                                              ble_mac_addr=data['ble_mac_addr'],
-                                             owner_id=User.query.filter_by(public_id=data['owner_public_id']).first().id)
+                                             owner_id=User.query.filter_by(
+                                                 public_id=data['owner_public_id']).first().id)
     except:
         return jsonify({'message': "New device could NOT be created!"}), 403
 
@@ -246,7 +280,10 @@ def create_device():
 @app.route('/device/<ble_mac_addr>', methods=['PUT'])
 @jwt_required
 def update_device(ble_mac_addr):
-    data = request.get_json()
+    try:
+        data = request.get_json()
+    except:
+        return jsonify({'message': 'Wrongly formed JSON!'}), 400
 
     if user_from_public_id(get_jwt_identity()).admin:
         device = SmartcantonDevboxDevice.query.filter_by(ble_mac_addr=ble_mac_addr).first()
@@ -259,12 +296,19 @@ def update_device(ble_mac_addr):
         return jsonify({'message': 'Device not found!'}), 403
 
     try:
-        device.device_eui = device['dev_eui']
-        device.app_eui = device['app_eui']
-        device.app_key = device['app_key']
-        device.public_id = device['owner_public_id']
-        device.ble_mac_addr = device['ble_mac_addr']
-        device.ble_passkey = device['ble_pass_key']
+        # Test of key is in the json and if it's not empty
+        if ('dev_eui' in data) and (bool(data['dev_eui'])):
+            device.device_eui = data['dev_eui']
+        if ('app_eui' in data) and (bool(data['app_eui'])):
+            device.app_eui = data['app_eui']
+        if ('app_key' in data) and (bool(data['app_key'])):
+            device.app_key = data['app_key']
+        if ('owner_public_id' in data) and (bool(data['owner_public_id'])):
+            device.public_id = data['owner_public_id']
+        if ('ble_mac_addr' in data) and (bool(data['ble_mac_addr'])):
+            device.ble_mac_addr = data['ble_mac_addr']
+        if ('ble_pass_key' in data) and (bool(data['ble_pass_key'])):
+            device.ble_passkey = data['ble_pass_key']
     except:
         return jsonify({'message': "Device parameter not valid!"}), 401
 
