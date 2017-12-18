@@ -83,7 +83,7 @@
                             android:id="@+id/btn_upload_serv"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:padding="3dp"
+                            android:padding="@dimen/card_view_title_textview_padding"
                             android:scaleType="fitStart"
                             android:layout_gravity="center"
                             android:layout_centerHorizontal="true"

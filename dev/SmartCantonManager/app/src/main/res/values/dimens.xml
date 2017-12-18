@@ -10,5 +10,5 @@
     <dimen name="card_items_margin">8dp</dimen>
 
     <dimen name="card_view_item_image_padding">48dp</dimen>
-    <dimen name="card_view_title_textview_padding">3dp</dimen>
+    <dimen name="card_view_title_textview_padding">5dp</dimen>
 </resources>
