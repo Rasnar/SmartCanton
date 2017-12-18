@@ -924,7 +924,7 @@ public class BLEConnectFragment extends Fragment {
                 });
 
         mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_SERVICE,
-                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_NETWORK_NWTORK_SESSION_KEY,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_NETWORK_JOIN_STATUS,
                 e1 -> {
                     if (e1.wasSuccess()) {
                         tvLoraNetworkJoinStatusDevice.setText(String.format("Network Join : %s",
