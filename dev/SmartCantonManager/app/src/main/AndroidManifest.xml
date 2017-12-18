@@ -23,6 +23,7 @@
             android:name=".MainActivity"
             android:theme="@style/AppTheme.LoginRegister"
             android:screenOrientation="sensorPortrait"
+            android:windowSoftInputMode="stateHidden"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

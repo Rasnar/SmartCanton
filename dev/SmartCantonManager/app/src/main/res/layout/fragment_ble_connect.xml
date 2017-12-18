@@ -49,13 +49,13 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:background="@color/colorPrimaryDark"
+                        android:textColor="@color/colorTextPrimary"
                         android:text="Server information"
                         android:textAlignment="center"
                         android:gravity="center"
                         android:paddingTop="@dimen/card_padding"
                         android:padding="@dimen/card_view_title_textview_padding"
                         android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:textColor="@color/colorTextPrimary"
                         android:textStyle="bold" />
 
                     <RelativeLayout
