@@ -9,7 +9,7 @@ public class User {
     private String public_id;
     private Boolean admin;
     //private String created_at;
-    private String newPassword;
+    private String new_Password;
     //private String token;
 
 //    public void setName(String name) {
@@ -44,8 +44,8 @@ public class User {
 //        return created_at;
 //    }
 
-    public void setNewPassword(String newPassword) {
-        this.newPassword = newPassword;
+    public void setNewPassword(String new_Password) {
+        this.new_Password = new_Password;
     }
 
 //    public void setToken(String token) {

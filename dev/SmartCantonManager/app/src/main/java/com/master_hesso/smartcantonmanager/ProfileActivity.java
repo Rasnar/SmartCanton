@@ -17,7 +17,6 @@ import com.auth0.android.jwt.JWT;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.master_hesso.smartcantonmanager.fragments.ChangePasswordDialog;
-import com.master_hesso.smartcantonmanager.fragments.LoginFragment;
 import com.master_hesso.smartcantonmanager.model.Response;
 import com.master_hesso.smartcantonmanager.model.User;
 import com.master_hesso.smartcantonmanager.network.NetworkUtil;
@@ -35,19 +34,24 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
 
     public static final String TAG = ProfileActivity.class.getSimpleName();
 
-    private TextView mTvName;
-    private TextView mTvUsername;
-    private TextView mTvDate;
-    private Button mBtChangePassword;
-    private Button mBtLogout;
+    private TextView tvJwtToken;
+    private TextView tvJwtType;
+    private TextView tvJwtAlg;
+    private TextView tvJwtExpiresAt;
+
+    private TextView tvAdmin;
+    private TextView tvUsername;
+    private TextView tvPublicId;
+
+    private Button btnChangePassword;
+    private Button btnLogout;
 
     private ProgressBar mProgressbar;
 
     private SharedPreferences mSharedPreferences;
     private String mToken;
     private String mUsername;
-    private String mUserId;
-    private Date mTokenExpiresAt;
+    private String mUserPublicId;
     private JWT mJwt;
 
     private CompositeSubscription mSubscriptions;
@@ -60,6 +64,8 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
         initViews();
         initSharedPreferences();
         extractTokenInformation();
+        showTokenInformation();
+
         loadProfile();
 
         try {
@@ -70,15 +76,22 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
 
     private void initViews() {
 
-        mTvName = findViewById(R.id.tv_name);
-        mTvUsername = findViewById(R.id.tv_username);
-        mTvDate = findViewById(R.id.tv_date);
-        mBtChangePassword = findViewById(R.id.btn_change_password);
-        mBtLogout = findViewById(R.id.btn_logout);
+        tvUsername = findViewById(R.id.tv_username);
+        tvAdmin = findViewById(R.id.tv_admin);
+        tvPublicId = findViewById(R.id.tv_public_id);
+
+
+        tvJwtToken = findViewById(R.id.tv_jwt_token);
+        tvJwtType = findViewById(R.id.tv_jwt_type);
+        tvJwtAlg = findViewById(R.id.tv_jwt_alg);
+        tvJwtExpiresAt = findViewById(R.id.tv_jwt_expires_at);
+
+        btnChangePassword = findViewById(R.id.btn_change_password);
+        btnLogout = findViewById(R.id.btn_logout);
         mProgressbar = findViewById(R.id.progress);
 
-        mBtChangePassword.setOnClickListener(view -> showDialog());
-        mBtLogout.setOnClickListener(view -> logout());
+        btnChangePassword.setOnClickListener(view -> showDialog());
+        btnLogout.setOnClickListener(view -> logout());
     }
 
     private void initSharedPreferences() {
@@ -92,11 +105,24 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
         try {
             mJwt = new JWT(mToken);
         } catch (DecodeException exception){
+            showSnackBarMessage("Token not valid !");
             logout();
         }
 
-        mUserId = mJwt.getClaim("public_id").asString();
-        mTokenExpiresAt = mJwt.getExpiresAt();
+        mUserPublicId = mJwt.getClaim("public_id").asString();
+    }
+
+    private void showTokenInformation(){
+
+        tvJwtToken.setText(mJwt.toString());
+        tvJwtType.setText("Type : JWT");
+        tvJwtAlg.setText("Algorithm : HS256");
+        try {
+            tvJwtExpiresAt.setText(String.format("Expires at : %s", mJwt.getExpiresAt().toString()));
+        } catch (Exception ignored){
+            tvJwtExpiresAt.setText("Expired time not available");
+        }
+
     }
 
     private void logout() {
@@ -126,7 +152,7 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
 
     private void loadProfile() {
 
-        mSubscriptions.add(NetworkUtil.getRetrofit(mToken).getProfile(mUserId)
+        mSubscriptions.add(NetworkUtil.getRetrofit(mToken).getProfile(mUserPublicId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(this::handleResponse,this::handleError));
@@ -135,10 +161,11 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
     private void handleResponse(User user) {
 
         mProgressbar.setVisibility(View.GONE);
-        mTvName.setText(user.getUsername());
-        mTvUsername.setText(user.getPublicId());
 
-        //mTvDate.setText(user.getCreated_at());
+        tvUsername.setText(String.format("Username : %s", user.getUsername()));
+        tvPublicId.setText(String.format("Public ID : %s", user.getPublicId()));
+        tvAdmin.setText(String.format("Is Admin : %b", user.getAdmin()));
+
     }
 
     private void handleError(Throwable error) {

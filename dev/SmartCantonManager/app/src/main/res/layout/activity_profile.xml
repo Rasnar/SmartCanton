@@ -1,78 +1,190 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_profile"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".ProfileActivity">
+    android:fillViewport="true">
 
-    <ProgressBar
-        android:id="@+id/progress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/button_margin" />
-
-    <android.support.v7.widget.CardView
-        android:id="@+id/card"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/activity_profile"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/progress">
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        tools:context=".ProfileActivity">
 
-        <RelativeLayout
+        <Button
+            android:id="@+id/btn_change_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/card_padding">
+            android:layout_marginTop="@dimen/button_margin"
+            android:drawableRight="@drawable/ic_lock"
+            android:paddingLeft="@dimen/button_padding"
+            android:text="Change Password" />
 
-            <TextView
-                android:id="@+id/tv_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:textColor="@android:color/black"
-                android:textAppearance="?android:attr/textAppearanceLarge"/>
+        <Button
+            android:id="@+id/btn_logout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btn_change_password"
+            android:layout_marginTop="@dimen/button_margin"
+            android:drawableRight="@drawable/ic_exit"
+            android:paddingLeft="@dimen/button_padding"
+            android:text="Logout" />
 
-            <TextView
-                android:id="@+id/tv_username"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/tv_name"
-                android:layout_marginTop="@dimen/card_items_margin"
-                android:layout_centerHorizontal="true"
-                android:textAppearance="?android:attr/textAppearanceMedium"/>
+        <ProgressBar
+            android:id="@+id/progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btn_logout"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/button_margin" />
 
-            <TextView
-                android:id="@+id/tv_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/tv_username"
-                android:layout_marginTop="@dimen/card_items_margin"
-                android:layout_centerHorizontal="true"/>
-        </RelativeLayout>
-    </android.support.v7.widget.CardView>
 
-    <Button
-        android:id="@+id/btn_change_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/card"
-        android:layout_marginTop="@dimen/button_margin"
-        android:drawableRight="@drawable/ic_lock"
-        android:paddingLeft="@dimen/button_padding"
-        android:text="Change Password" />
+        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/cv_user_information"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/progress"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            card_view:cardBackgroundColor="@color/colorCardViewBackground"
+            card_view:cardCornerRadius="8dp">
 
-    <Button
-        android:id="@+id/btn_logout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/btn_change_password"
-        android:layout_marginTop="@dimen/button_margin"
-        android:drawableRight="@drawable/ic_exit"
-        android:paddingLeft="@dimen/button_padding"
-        android:text="Logout" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-</RelativeLayout>
+                <TextView
+                    android:id="@+id/tv_cv_user_information"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:background="@color/colorPrimaryDark"
+                    android:padding="@dimen/card_view_title_textview_padding"
+                    android:paddingTop="@dimen/card_padding"
+                    android:text="User information"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@color/colorTextPrimary"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_cv_user_information"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/card_items_margin"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                <!--android:layout_below="@+id/tv_name"-->
+
+                <TextView
+                    android:id="@+id/tv_admin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_username"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/card_items_margin"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                <TextView
+                    android:id="@+id/tv_public_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_admin"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="@dimen/card_items_margin"
+                    android:layout_marginTop="@dimen/card_items_margin"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/cv_jwt_information"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/cv_user_information"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            card_view:cardBackgroundColor="@color/colorCardViewBackground"
+            card_view:cardCornerRadius="8dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tv_cv_jwt_information"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:background="@color/colorPrimaryDark"
+                    android:padding="@dimen/card_view_title_textview_padding"
+                    android:paddingTop="@dimen/card_padding"
+                    android:text="JSON Web Token"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@color/colorTextPrimary"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_jwt_token"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_cv_jwt_information"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/card_items_margin"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+                <!--android:layout_below="@+id/tv_name"-->
+
+
+                <TextView
+                    android:id="@+id/tv_jwt_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_jwt_token"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/card_items_margin"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+
+                <TextView
+                    android:id="@+id/tv_jwt_alg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_jwt_type"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/card_items_margin"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                <TextView
+                    android:id="@+id/tv_jwt_expires_at"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_jwt_alg"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="@dimen/card_items_margin"
+                    android:layout_marginTop="@dimen/card_items_margin"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
+    </RelativeLayout>
+</ScrollView>
