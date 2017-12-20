@@ -54,6 +54,8 @@ extern osaEventId_t gDevBoxAppEvent;
 #define gDevBoxTaskEvtNewGPSDataRdy_c       		(1 << 1)
 #define gDevBoxTaskEvtNewBME680Measure_c       		(1 << 2)
 #define gDevBoxTaskEvtNewBNO055Measure_c       		(1 << 3)
+#define gDevBoxEvtSendNewLoRaData_c       			(1 << 4)
+
 
 /************************************************************************************
  *************************************************************************************

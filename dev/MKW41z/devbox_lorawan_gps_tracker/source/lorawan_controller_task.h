@@ -21,12 +21,18 @@
 
 #include "lorawan_controller.h"
 
+typedef struct lorawanControllerDataFormat_tag
+{
+	uint8_t dataSize;
+	uint8_t data[128];
+} lorawanControllerData_t;
+
 /*
  * These values should be modified by the application as necessary.
  * They are used by the Lorawan Controller Task  initialization code from lorawan_controller_task.c.
  */
 /*! Idle Task Stack Size */
-#define gLorawanControllerTaskStackSize_c (1500)
+#define gLorawanControllerTaskStackSize_c (2048)
 
 /*! Lorawan Controller Task OS Abstraction Priority */
 #define gLorawanControllerTaskPriority_c  (3)
@@ -37,6 +43,10 @@
 #define gLoRaCtrlTaskEvtConfigureFromModuleConfig_c	(1 << 2)
 
 extern osaEventId_t gLoRaControllerEvent;
+extern osaMsgQId_t gLorawanCtrlNewMessageQ;
+
+/* This parameter should not exceed osNumberOfMessages defined in app_preinclude.h */
+#define LORAWAN_CTRL_TASK_QUEUE_SIZE 8
 
 void Lorawan_Controller_Task(osaTaskParam_t argument);
 osaStatus_t LorawanController_TaskInit(void);

@@ -9,6 +9,7 @@
 #include "lorawan_controller_task.h"
 #include "dev_box_app_task.h"
 #include "LED.h"
+#include "string_utils.h"
 
 #define mDelayPacketSentsSeconds	300
 
@@ -18,6 +19,7 @@ osaTaskId_t gLorawanControllerTaskId = 0;
 
 static tmrTimerID_t mLoraSendId;
 osaEventId_t gLoRaControllerEvent;
+osaMsgQId_t gLorawanCtrlNewMessageQ;
 
 static void TimerLoRaSendCallback(void * pParam);
 
@@ -36,10 +38,12 @@ void Lorawan_Controller_Task(osaTaskParam_t argument)
 	// Start by configuring the LoRa Module
 	OSA_EventSet(gLoRaControllerEvent, gLoRaCtrlTaskEvtConfigure_c);
 
-	// Once module configured, send the first message
-	OSA_EventSet(gLoRaControllerEvent, gLoRaCtrlTaskEvtNewMsgToSend_c);
+//	// Once module configured, send the first message
+//	OSA_EventSet(gLoRaControllerEvent, gLoRaCtrlTaskEvtNewMsgToSend_c);
 
 	osaEventFlags_t event;
+	lorawanControllerData_t* lorawanData;
+	char dataStr[128];
 
 	/**
 	 * Send data every DELAY_BEETWEEN_LORA_PACKETS_MS
@@ -82,14 +86,29 @@ void Lorawan_Controller_Task(osaTaskParam_t argument)
 		{
 			if (lorawan_controller_get_configuration_validity() == lorawanController_Success)
 			{
-				lorawan_controller_set_cmd(CMD_SEND_BINARYDATA
-				, "1", "00823D02C07741005D2E8B");
+
+				/* Retrieve data pointer */
+				if (OSA_MsgQGet(gLorawanCtrlNewMessageQ, &lorawanData, 100) == osaStatus_Success)
+				{
+
+					/* Convert byte array to a string of hex */
+					convertBytesArrayToHexString((lorawanData->data),
+							lorawanData->dataSize,
+							dataStr);
+
+					vPortFree(lorawanData);
+
+					/* Send data to the LoRaWAN module */
+					lorawan_controller_set_cmd(CMD_SEND_BINARYDATA,
+							"1", // PORT 1 by default
+							dataStr);
+				}
 			}
 			else
 			{
-				// Since the controller isn't in a valid state -> force a new configuration
-				OSA_EventSet(gLoRaControllerEvent, gLoRaCtrlTaskEvtConfigure_c);
-				// Resend a new event to send a message
+//				// Since the controller isn't in a valid state -> force a new configuration
+//				OSA_EventSet(gLoRaControllerEvent, gLoRaCtrlTaskEvtConfigure_c);
+				// Resend a new event to retry the message
 				OSA_EventSet(gLoRaControllerEvent, gLoRaCtrlTaskEvtNewMsgToSend_c);
 			}
 		}
@@ -99,7 +118,7 @@ void Lorawan_Controller_Task(osaTaskParam_t argument)
 static void TimerLoRaSendCallback(void * pParam)
 {
 
-	OSA_EventSet(gLoRaControllerEvent, gLoRaCtrlTaskEvtNewMsgToSend_c);
+	//OSA_EventSet(gLoRaControllerEvent, gLoRaCtrlTaskEvtNewMsgToSend_c);
 
 }
 
@@ -119,6 +138,14 @@ osaStatus_t LorawanController_TaskInit(void)
 	/* Create application event */
 	gLoRaControllerEvent = OSA_EventCreate(TRUE);
 	if ( NULL == gLoRaControllerEvent)
+	{
+		panic(0, 0, 0, 0);
+		return osaStatus_Error;
+	}
+
+	/* Create application Queue */
+	gLorawanCtrlNewMessageQ = OSA_MsgQCreate(LORAWAN_CTRL_TASK_QUEUE_SIZE);
+	if ( NULL == gLorawanCtrlNewMessageQ)
 	{
 		panic(0, 0, 0, 0);
 		return osaStatus_Error;
