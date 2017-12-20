@@ -1912,6 +1912,45 @@ States after connection with a **correct** passkey
 States after connection with a **wrong** passkey
 
 ````
+12-15 08:36:19.382 28405-28405/com.smartcantonmanager I/BLEConnectFragment: CONNECTING_OVERALL
+12-15 08:36:19.396 28405-28405/com.smartcantonmanager I/BLEConnectFragment: CONNECTING
+12-15 08:36:20.127 28405-28405/com.smartcantonmanager I/BLEConnectFragment: BONDING
+12-15 08:36:20.244 28405-28405/com.smartcantonmanager I/BLEConnectFragment: CONNECTED
+12-15 08:36:20.244 28405-28405/com.smartcantonmanager I/BLEConnectFragment: DISCOVERING_SERVICES
+12-15 08:36:25.520 28405-28405/com.smartcantonmanager I/BLEConnectFragment: ADVERTISING
+12-15 08:36:25.520 28405-28405/com.smartcantonmanager I/BLEConnectFragment: DISCONNECTED
+12-15 08:36:25.520 28405-28405/com.smartcantonmanager I/BLEConnectFragment: UNBONDED
+12-15 08:36:25.525 28405-28405/com.smartcantonmanager I/BLEConnectFragment: BOND EVENT WITH CODE : 1
+````
+
+
+
+States after bonding popup canceled : 
+
+````
+12-15 08:37:16.474 28405-28405/com.smartcantonmanager I/BLEConnectFragment: BONDING
+12-15 08:37:16.474 28405-28405/com.smartcantonmanager I/BLEConnectFragment: CONNECTING_OVERALL
+12-15 08:37:16.474 28405-28405/com.smartcantonmanager I/BLEConnectFragment: CONNECTING
+12-15 08:37:21.370 28405-28405/com.smartcantonmanager I/BLEConnectFragment: ADVERTISING
+12-15 08:37:21.370 28405-28405/com.smartcantonmanager I/BLEConnectFragment: DISCONNECTED
+12-15 08:37:21.370 28405-28405/com.smartcantonmanager I/BLEConnectFragment: UNBONDED
+12-15 08:37:21.378 28405-28405/com.smartcantonmanager I/BLEConnectFragment: BOND EVENT WITH CODE : 1
+````
+
+New bonding after bond canceled :
+
+````
+12-15 08:40:02.604 356-356/com.smartcantonmanager I/BLEConnectFragment: BONDING
+12-15 08:40:02.604 356-356/com.smartcantonmanager I/BLEConnectFragment: CONNECTING_OVERALL
+12-15 08:40:02.604 356-356/com.smartcantonmanager I/BLEConnectFragment: CONNECTING
+12-15 08:40:02.979 356-356/com.smartcantonmanager I/BLEConnectFragment: ADVERTISING
+12-15 08:40:02.979 356-356/com.smartcantonmanager I/BLEConnectFragment: UNBONDED
+12-15 08:40:03.674 356-356/com.smartcantonmanager I/BLEConnectFragment: BONDING
+12-15 08:40:08.756 356-356/com.smartcantonmanager I/BLEConnectFragment: DISCONNECTED
+12-15 08:40:08.757 356-356/com.smartcantonmanager I/BLEConnectFragment: UNBONDED
+12-15 08:40:08.773 356-356/com.smartcantonmanager I/BLEConnectFragment: BOND EVENT WITH CODE : 9
+12-15 08:40:11.757 356-356/com.smartcantonmanager I/BLEConnectFragment: UNDISCOVERED
+12-15 08:40:14.720 356-356/com.smartcantonmanager I/BLEConnectFragment: ADVERTISING
 
 ````
 
@@ -1919,7 +1958,98 @@ States after connection with a **wrong** passkey
 
 
 
+# 18.12.2017
+
+## SSL certificat with letsencrypt (certbot)
+
+download and installation : 
+
+https://certbot.eff.org/#debianjessie-other
+
+```
+# sudo certbot certonly --standalone --preferred-challenges http -d lsn.eig.ch
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
+Starting new HTTPS connection (1): acme-v01.api.letsencrypt.org
+Obtaining a new certificate
+Performing the following challenges:
+http-01 challenge for lsn.eig.ch
+Waiting for verification...
+Cleaning up challenges
+Generating key (2048 bits): /etc/letsencrypt/keys/0000_key-certbot.pem
+Creating CSR: /etc/letsencrypt/csr/0000_csr-certbot.pem
+
+IMPORTANT NOTES:
+ - Congratulations! Your certificate and chain have been saved at
+   /etc/letsencrypt/live/lsn.eig.ch/fullchain.pem. Your cert will
+   expire on 2018-03-20. To obtain a new or tweaked version of this
+   certificate in the future, simply run certbot again. To
+   non-interactively renew *all* of your certificates, run "certbot
+   renew"
+ - If you like Certbot, please consider supporting our work by:
+
+   Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
+   Donating to EFF:                    https://eff.org/donate-le
+
+```
+
+Once the certificates generated they can be listed using the following command : 
+
+````
+# certbot certificates
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
+
+-------------------------------------------------------------------------------
+Found the following certs:
+  Certificate Name: lsn.eig.ch
+    Domains: lsn.eig.ch
+    Expiry Date: 2018-03-20 12:11:40+00:00 (VALID: 89 days)
+    Certificate Path: /etc/letsencrypt/live/lsn.eig.ch/fullchain.pem
+    Private Key Path: /etc/letsencrypt/live/lsn.eig.ch/privkey.pem
+-------------------------------------------------------------------------------
+root@debian:/etc/letsencrypt/live/lsn.eig.ch# certbot certificates
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
+
+-------------------------------------------------------------------------------
+Found the following certs:
+  Certificate Name: lsn.eig.ch
+    Domains: lsn.eig.ch
+    Expiry Date: 2018-03-20 12:11:40+00:00 (VALID: 89 days)
+    Certificate Path: /etc/letsencrypt/live/lsn.eig.ch/fullchain.pem
+    Private Key Path: /etc/letsencrypt/live/lsn.eig.ch/privkey.pem
+-------------------------------------------------------------------------------
+````
 
 
 
+We can directly use them on our application, eg with flask : 
+
+````
+# Provide your own keys to sign the SSL connexion
+context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+chain_path = 'ssl_certificates/fullchain.pem'
+chain_path = os.path.join(os.path.dirname(__file__), chain_path)
+privkey_path = 'ssl_certificates/privkey.pem'
+privkey_path = os.path.join(os.path.dirname(__file__), privkey_path)
+context.load_cert_chain(chain_path, privkey_path)
+
+...
+
+app.run(host='0.0.0.0', debug=True, port=5000, ssl_context=context)
+````
+
+
+
+## My devices (cayenne)
+
+https://mydevices.com/cayenne/docs_stage/lora/#lora
+
+https://github.com/sabas1080/CayenneLPP
+
+
+
+
+
+## Lora serialization
+
+https://github.com/thesolarnomad/lora-serialization
 
