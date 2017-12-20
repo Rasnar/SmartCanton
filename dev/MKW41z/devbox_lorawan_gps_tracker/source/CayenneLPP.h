@@ -41,7 +41,7 @@
 #define LPP_GPS_SIZE 11                // 3 byte lon/lat 0.0001 °, 3 bytes alt 0.01 meter
 
 
-#define LPP_MAX_BUFFER_SIZE 	256
+#define LPP_MAX_BUFFER_SIZE 	128
 
 void cayenneLPPreset(void);
 uint8_t cayenneLPPgetSize(void);

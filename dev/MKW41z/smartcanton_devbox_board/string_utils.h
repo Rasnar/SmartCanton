@@ -13,6 +13,7 @@
 #include "stdio.h"
 
 int convertBytesArrayToHexString(uint8_t *buffer, uint16_t bufferLength, char* str);
+int convertBytesArrayToHexStringSeparatedByChar(uint8_t *buffer, uint16_t bufferLength, char* str);
 int convertHexStringToBytesArray(char *strHex, uint8_t* bytesArray);
 
 #endif /* __STRING_UTILS_H__ */

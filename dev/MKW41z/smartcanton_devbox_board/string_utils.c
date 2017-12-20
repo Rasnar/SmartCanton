@@ -23,7 +23,7 @@ int convertHexStringToBytesArray(char *strHex, uint8_t* bytesArray)
 	return idx;
 }
 
-int convertBytesArrayToHexString(uint8_t *buffer, uint16_t bufferLength, char* str)
+int convertBytesArrayToHexStringSeparatedByChar(uint8_t *buffer, uint16_t bufferLength, char* str)
 {
 
 	int i = 0;
@@ -38,4 +38,19 @@ int convertBytesArrayToHexString(uint8_t *buffer, uint16_t bufferLength, char* s
 
 	sprintf(&str[3 * i], "%02X", buffer[i]);
 	return 3 * i + 2; // String length
+}
+
+int convertBytesArrayToHexString(uint8_t *buffer, uint16_t bufferLength, char* str)
+{
+
+	int i = 0;
+
+	if (bufferLength > 1)
+	{
+		for (i = 0; i < bufferLength; i++)
+		{
+			sprintf(&str[2 * i], "%02X", buffer[i]);
+		};
+	}
+	return 2 * i + 2; // String length
 }

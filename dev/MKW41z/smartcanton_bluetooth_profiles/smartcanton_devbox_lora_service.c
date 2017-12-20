@@ -167,7 +167,7 @@ uint8_t ScDbLoRa_SetAppEui (scdbLoRaConfig_t *pScdbConfig, uint8_array_t appEui)
     char strAppEui[appEui.arrayLength*3];
     strAppEui[0] = '\0';
 
-    convertBytesArrayToHexString(appEui.pUint8_array, appEui.arrayLength, strAppEui);
+    convertBytesArrayToHexStringSeparatedByChar(appEui.pUint8_array, appEui.arrayLength, strAppEui);
 
     if (lorawan_controller_set_cmd(CMD_SET_APP_EUI, strAppEui) == lorawanController_Success) {
 		/* Update characteristic value*/
@@ -193,7 +193,7 @@ uint8_t ScDbLoRa_SetAppKey (scdbLoRaConfig_t *pScdbConfig, uint8_array_t appKey)
     char strAppKey[appKey.arrayLength*3];
     strAppKey[0] = '\0';
 
-	convertBytesArrayToHexString(appKey.pUint8_array, appKey.arrayLength, strAppKey);
+    convertBytesArrayToHexStringSeparatedByChar(appKey.pUint8_array, appKey.arrayLength, strAppKey);
 
 	if (lorawan_controller_set_cmd(CMD_SET_APP_KEY, strAppKey) == lorawanController_Success) {
 		/* Update characteristic value*/

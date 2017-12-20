@@ -7,7 +7,7 @@
 
 
 uint8_t buffer[LPP_MAX_BUFFER_SIZE];
-uint8_t maxsize;
+uint8_t maxsize = LPP_MAX_BUFFER_SIZE;
 uint8_t cursor;
 
 void cayenneLPPreset(void)

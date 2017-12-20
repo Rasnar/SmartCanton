@@ -1,6 +1,8 @@
 import uuid
 from datetime import timedelta
 from time import sleep
+import ssl
+import os
 
 from flask import Flask, request, jsonify
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
@@ -9,10 +11,10 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////Users/David/Dropbox/SmartCanton/dev/SmartCanton_AppKeyServer/' \
-                                        'smartcanton_users_devices.db'
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///E:/Dropbox/SmartCanton/dev/SmartCanton_AppKeyServer/' \
-#                                         'smartcanton_users_devices.db'
+chain_path = 'ssl_certificates/fullchain.pem'
+chain_path = os.path.join(os.path.dirname(__file__), chain_path)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///smartcanton_users_devices.db'
 
 app.config['SECRET_KEY'] = 'thisissecret'
 db = SQLAlchemy(app)
@@ -20,6 +22,15 @@ db = SQLAlchemy(app)
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=30)
 app.config['JWT_HEADER_TYPE'] = "JWT"
 app.config['JWT_IDENTITY_CLAIM'] = "public_id"
+
+# Provide your own keys to sign the SSL connexion
+context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+chain_path = 'ssl_certificates/fullchain.pem'
+chain_path = os.path.join(os.path.dirname(__file__), chain_path)
+privkey_path = 'ssl_certificates/privkey.pem'
+privkey_path = os.path.join(os.path.dirname(__file__), privkey_path)
+context.load_cert_chain(chain_path, privkey_path)
+
 
 jwt = JWTManager(app)
 
@@ -42,6 +53,10 @@ class SmartcantonDevboxDevice(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     owner = db.relationship('User', foreign_keys=owner_id)
 
+
+@app.route('/', methods=['GET'])
+def hello():
+    return "hello!"
 
 # Provide a method to create access tokens. The create_access_token()
 # function is used to actually generate the token, and you can return
@@ -338,4 +353,4 @@ def delete_device(ble_mac_addr):
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0', debug=True, port=5000, ssl_context=context)
