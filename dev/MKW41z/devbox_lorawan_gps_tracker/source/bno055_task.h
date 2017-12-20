@@ -12,6 +12,20 @@
 /* Fwk */
 #include "fsl_os_abstraction.h"
 #include "fsl_i2c_freertos.h"
+#include "BNO055_driver/bno055.h"
+
+
+#define BNO055_MEASURE_QUEUE_SIZE	8
+
+extern osaMsgQId_t gBno055NewMessageMeasureQ;
+
+typedef struct bno055Data_tag
+{
+	struct bno055_accel_t accel_xyz;
+	struct bno055_mag_t mag_xyz;
+	struct bno055_gyro_t gyro_xyz;
+	struct bno055_gravity_t gravity;
+} bno055Data_t;
 
 /*
  * These values should be modified by the application as necessary.

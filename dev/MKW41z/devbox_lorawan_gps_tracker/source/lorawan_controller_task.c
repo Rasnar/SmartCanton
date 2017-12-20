@@ -19,7 +19,7 @@ osaTaskId_t gLorawanControllerTaskId = 0;
 
 static tmrTimerID_t mLoraSendId;
 osaEventId_t gLoRaControllerEvent;
-osaMsgQId_t gLorawanCtrlNewMessageQ;
+osaMsgQId_t gLorawanCtrlSendNewMessageQ;
 
 static void TimerLoRaSendCallback(void * pParam);
 
@@ -88,7 +88,7 @@ void Lorawan_Controller_Task(osaTaskParam_t argument)
 			{
 
 				/* Retrieve data pointer */
-				if (OSA_MsgQGet(gLorawanCtrlNewMessageQ, &lorawanData, 100) == osaStatus_Success)
+				if (OSA_MsgQGet(gLorawanCtrlSendNewMessageQ, &lorawanData, 10) == osaStatus_Success)
 				{
 
 					/* Convert byte array to a string of hex */
@@ -144,8 +144,8 @@ osaStatus_t LorawanController_TaskInit(void)
 	}
 
 	/* Create application Queue */
-	gLorawanCtrlNewMessageQ = OSA_MsgQCreate(LORAWAN_CTRL_TASK_QUEUE_SIZE);
-	if ( NULL == gLorawanCtrlNewMessageQ)
+	gLorawanCtrlSendNewMessageQ = OSA_MsgQCreate(LORAWAN_CTRL_TASK_QUEUE_SIZE);
+	if ( NULL == gLorawanCtrlSendNewMessageQ)
 	{
 		panic(0, 0, 0, 0);
 		return osaStatus_Error;

@@ -43,7 +43,7 @@ typedef struct lorawanControllerDataFormat_tag
 #define gLoRaCtrlTaskEvtConfigureFromModuleConfig_c	(1 << 2)
 
 extern osaEventId_t gLoRaControllerEvent;
-extern osaMsgQId_t gLorawanCtrlNewMessageQ;
+extern osaMsgQId_t gLorawanCtrlSendNewMessageQ;
 
 /* This parameter should not exceed osNumberOfMessages defined in app_preinclude.h */
 #define LORAWAN_CTRL_TASK_QUEUE_SIZE 8

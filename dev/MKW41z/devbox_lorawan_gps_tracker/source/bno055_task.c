@@ -12,7 +12,7 @@
 #include "Panic.h"
 #include "bno055_support.h"
 
-#define mDelayPacketSentsSeconds	300
+#define mDelayNewMsgSentMilliSeconds	30000
 
 OSA_TASK_DEFINE(Bno055_Task, gBno055TaskPriority_c, 1, gBno055TaskStackSize_c, FALSE);
 osaTaskId_t gBno055TaskId = 0;
@@ -25,6 +25,8 @@ struct bno055_gyro_t gyro_xyz;
 struct bno055_gravity_t gravity;
 
 static i2c_rtos_handle_t* master_rtos_handle;
+
+osaMsgQId_t gBno055NewMessageMeasureQ;
 
 /**
  * Callback function called when an interruption as been received from the
@@ -47,18 +49,27 @@ void Bno055_Task(osaTaskParam_t argument)
 	bno055_kw41z_I2C_routines_init(&bno055, master_rtos_handle, bno055_new_data_available_callback);
 	rslt = bno055_init(&bno055);
 
+	// Data to be sent using the LoRaWAN module
+	static bno055Data_t* bno055Data;
+
 	while (1)
 	{
 		rslt = BNO055_SUCCESS;
 
+		bno055Data = pvPortMalloc(sizeof(bno055Data_t));
+
 		rslt += bno055_set_operation_mode(BNO055_OPERATION_MODE_AMG);
-		rslt += bno055_read_accel_xyz(&accel_xyz);
-		rslt += bno055_read_mag_xyz(&mag_xyz);
-		rslt += bno055_read_gyro_xyz(&gyro_xyz);
+		rslt += bno055_read_accel_xyz(&bno055Data->accel_xyz);
+		rslt += bno055_read_mag_xyz(&bno055Data->mag_xyz);
+		rslt += bno055_read_gyro_xyz(&bno055Data->gyro_xyz);
 
 		rslt += bno055_set_operation_mode(BNO055_OPERATION_MODE_NDOF);
-		rslt += bno055_read_gravity_xyz(&gravity);
-		OSA_TimeDelay(1000);
+		rslt += bno055_read_gravity_xyz(&bno055Data->gravity);
+
+		OSA_TimeDelay(mDelayNewMsgSentMilliSeconds);
+
+		OSA_MsgQPut(gBno055NewMessageMeasureQ, &bno055Data);
+		OSA_EventSet(gDevBoxAppEvent, gDevBoxTaskEvtNewBNO055Measure_c);
 	}
 }
 
@@ -70,6 +81,14 @@ osaStatus_t Bno055_TaskInit(i2c_rtos_handle_t* i2c_master_rtos_handle)
 	}
 
 	master_rtos_handle = i2c_master_rtos_handle;
+
+	/* Create application Queue */
+	gBno055NewMessageMeasureQ = OSA_MsgQCreate(BNO055_MEASURE_QUEUE_SIZE);
+	if ( NULL == gBno055NewMessageMeasureQ)
+	{
+		panic(0, 0, 0, 0);
+		return osaStatus_Error;
+	}
 
 	/* Task creation */
 	gBno055TaskId = OSA_TaskCreate(OSA_TASK(Bno055_Task), NULL);

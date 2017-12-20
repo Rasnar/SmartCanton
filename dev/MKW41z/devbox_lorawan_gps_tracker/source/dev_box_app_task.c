@@ -80,6 +80,8 @@
 
 /* Necessary to communicate to the LoRaWAN task */
 #include "lorawan_controller_task.h"
+#include "bno055_task.h"
+#include "bme680_task.h"
 
 /************************************************************************************
  *************************************************************************************
@@ -725,6 +727,9 @@ void DevBox_App_Task(osaTaskParam_t argument)
 	// Data to be sent using the LoRaWAN module
 	static lorawanControllerData_t* lorawanControllerData;
 
+	// Last data received from the bno055
+	bno055Data_t bno055Data;
+
 	gps_neo_m8_init(gps_neo_m8_new_data_available_callback);
 
 	while (1)
@@ -777,7 +782,17 @@ void DevBox_App_Task(osaTaskParam_t argument)
 		/* Event received when a new measure to the BNO055 as to be done */
 		if (event & gDevBoxTaskEvtNewBNO055Measure_c)
 		{
-			tmp_float1 = 0;
+			// Last data received from the bno055
+			struct bno055Data_tag* bno055Data_tmp;
+			/* Retrieve data pointer */
+			if (OSA_MsgQGet(gBno055NewMessageMeasureQ, &bno055Data_tmp, 10) == osaStatus_Success)
+			{
+
+				FLib_MemCpy(&bno055Data, bno055Data_tmp, sizeof(bno055Data));
+
+				/* Destroy tmp buffer allocated by the bno055_task */
+				vPortFree(bno055Data_tmp);
+			}
 		}
 
 		/* Event received when a new measure to the BNO055 as to be done */
@@ -798,10 +813,22 @@ void DevBox_App_Task(osaTaskParam_t argument)
 							0.0); // Altitude
 				}
 
-				cayenneLPPaddAnalogInput(2, (float)BOARD_GetBatteryLevel());
 
-				cayenneLPPaddAnalogOutput(3, 120.0);
-				cayenneLPPaddDigitalOutput(4, 1);
+				cayenneLPPaddAccelerometer(3,
+						bno055Data.gravity.x,
+						bno055Data.gravity.y,
+						bno055Data.gravity.z);
+
+				cayenneLPPaddGyrometer(4,
+						bno055Data.gyro_xyz.x,
+						bno055Data.gyro_xyz.y,
+						bno055Data.gyro_xyz.z);
+
+
+
+//				cayenneLPPaddAnalogInput(2, (float)BOARD_GetBatteryLevel());
+//				cayenneLPPaddAnalogOutput(3, 120.0);
+//				cayenneLPPaddDigitalOutput(4, 1);
 
 				/* Allocate data on the HEAP to send it to the LoRaWAN task */
 				lorawanControllerData = pvPortMalloc(sizeof(lorawanControllerData_t));
@@ -810,7 +837,7 @@ void DevBox_App_Task(osaTaskParam_t argument)
 				/* Copy data formatted previously inside the Cayenne functions */
 				FLib_MemCpy(lorawanControllerData->data, cayenneLPPgetBuffer(), lorawanControllerData->dataSize);
 
-				OSA_MsgQPut(gLorawanCtrlNewMessageQ, &lorawanControllerData);
+				OSA_MsgQPut(gLorawanCtrlSendNewMessageQ, &lorawanControllerData);
 				OSA_EventSet(gLoRaControllerEvent, gLoRaCtrlTaskEvtNewMsgToSend_c);
 			}
 		}
