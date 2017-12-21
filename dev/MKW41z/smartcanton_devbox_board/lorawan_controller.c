@@ -34,8 +34,8 @@
 #define LORA_SEND_PACKET_PORT		"1"		// Define port to use in Back-End: from 1 to 223
 #define LORA_NETWORK_JOINED_STATUS	"1"		// 0 : Network not yet joined, 1 : Network joined
 
-#define DELAY_BEETWEEN_ATTEMPTS_MS 	100		// Try 100 Attempts
-#define MAX_ATTEMPTS_TO_CONFIGURE 	100		// Try 100 Attempts
+#define DELAY_BEETWEEN_CHECK_MS 	100
+#define ATTEMPTS_TO_CHECK_NETWORK_STATUS 	200		// Try X Attempts
 
 /**
  * Serial Manager parameters
@@ -191,9 +191,9 @@ lorawanControllerStatus_t lorawan_controller_init_module()
 	{
 		bytesRead = lorawan_controller_get_cmd(CMD_GET_NETWORK_JOIN_STATUS
 		, data, sizeof(data));
-		OSA_TimeDelay(100);
+		OSA_TimeDelay(DELAY_BEETWEEN_CHECK_MS);
 
-		if ((nb_attempts++) > MAX_ATTEMPTS_TO_CONFIGURE)
+		if ((nb_attempts++) > ATTEMPTS_TO_CHECK_NETWORK_STATUS)
 			return lorawanController_Error;
 	} while (strcmp(data, LORA_NETWORK_JOINED_STATUS) != 0);
 
