@@ -28,7 +28,7 @@
 		<link>
 			<name>board</name>
 			<type>2</type>
-			<location>C:/Users/David/Dropbox/SmartCanton/dev/MKW41z/smartcanton_devbox_board</location>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/smartcanton_devbox_board</locationURI>
 		</link>
 		<link>
 			<name>doc/readme.txt</name>
@@ -53,7 +53,7 @@
 		<link>
 			<name>bluetooth/profiles/smartcanton_devbox</name>
 			<type>2</type>
-			<location>C:/Users/David/Dropbox/SmartCanton/dev/MKW41z/smartcanton_bluetooth_profiles</location>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/smartcanton_bluetooth_profiles</locationURI>
 		</link>
 		<link>
 			<name>doc/doc/freertos/include/stdint.readme</name>
