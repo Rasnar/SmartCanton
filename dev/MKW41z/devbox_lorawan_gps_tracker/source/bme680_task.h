@@ -13,6 +13,22 @@
 #include "fsl_os_abstraction.h"
 #include "fsl_i2c_freertos.h"
 
+#define BME680_MEASURE_QUEUE_SIZE	8
+
+extern osaMsgQId_t gBme680NewMessageMeasureQ;
+
+typedef struct bme680Data_tag
+{
+	float iaq;
+	uint8_t iaq_accuracy;
+	float temperature;
+	float humidity;
+	float pressure;
+	float raw_temperature;
+	float raw_humidity;
+	float gas;
+} bme680Data_t;
+
 /*
  * These values should be modified by the application as necessary.
  * They are used by the BME680 Task  initialization code from bme680_task.c.

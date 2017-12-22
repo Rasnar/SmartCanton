@@ -19,6 +19,7 @@ static i2c_rtos_handle_t* master_rtos_handle;
 
 struct bme680_dev bme680;
 
+osaMsgQId_t gBme680NewMessageMeasureQ;
 
 /*!
  * @brief           Handling of the ready outputs
@@ -39,15 +40,25 @@ struct bme680_dev bme680;
 void output_ready(int64_t timestamp, float iaq, uint8_t iaq_accuracy, float temperature, float humidity,
      float pressure, float raw_temperature, float raw_humidity, float gas, bsec_library_return_t bsec_status)
 {
-    // ...
-    // Please insert system specific code to further process or display the BSEC outputs
-    // ...
+	// Data to be sent to the main task
+	static bme680Data_t* bme680Data;
 
+	bme680Data = pvPortMalloc(sizeof(bme680Data_t));
 
+	bme680Data->iaq=iaq;
+	bme680Data->iaq_accuracy=iaq_accuracy;
+	bme680Data->temperature=temperature;
+	bme680Data->humidity=humidity;
+	bme680Data->pressure=pressure;
+	bme680Data->raw_temperature=raw_temperature;
+	bme680Data->raw_humidity=raw_humidity;
+	bme680Data->gas=gas;
 
-	/* Inform the DevBox Task that she can read the data avaible */
+	OSA_MsgQPut(gBme680NewMessageMeasureQ, &bme680Data);
+	/* Inform the DevBox Task that she can read the data available */
 	OSA_EventSet(gDevBoxAppEvent, gDevBoxTaskEvtNewBME680Measure_c);
 }
+
 
 /**
  * Main BME680 task function
@@ -63,7 +74,7 @@ void Bme680_Task(osaTaskParam_t argument)
 	// Should never be reached
 	while (1)
 	{
-		OSA_TimeDelay(1000);
+		OSA_TimeDelay(osaWaitForever_c);
 	}
 }
 
@@ -75,6 +86,14 @@ osaStatus_t Bme680_TaskInit(i2c_rtos_handle_t* i2c_master_rtos_handle)
 	}
 
 	master_rtos_handle = i2c_master_rtos_handle;
+
+	/* Create application Queue */
+	gBme680NewMessageMeasureQ = OSA_MsgQCreate(BME680_MEASURE_QUEUE_SIZE);
+	if ( NULL == gBme680NewMessageMeasureQ)
+	{
+		panic(0, 0, 0, 0);
+		return osaStatus_Error;
+	}
 
 	/* Task creation */
 	gBme680TaskId = OSA_TaskCreate(OSA_TASK(Bme680_Task), NULL);

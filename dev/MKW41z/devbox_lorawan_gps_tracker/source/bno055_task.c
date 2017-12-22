@@ -49,12 +49,14 @@ void Bno055_Task(osaTaskParam_t argument)
 	bno055_kw41z_I2C_routines_init(&bno055, master_rtos_handle, bno055_new_data_available_callback);
 	rslt = bno055_init(&bno055);
 
-	// Data to be sent using the LoRaWAN module
+	// Data to be sent to the main task
 	static bno055Data_t* bno055Data;
 
 	while (1)
 	{
 		rslt = BNO055_SUCCESS;
+
+		OSA_TimeDelay(mDelayNewMsgSentMilliSeconds);
 
 		bno055Data = pvPortMalloc(sizeof(bno055Data_t));
 
@@ -65,8 +67,6 @@ void Bno055_Task(osaTaskParam_t argument)
 
 		rslt += bno055_set_operation_mode(BNO055_OPERATION_MODE_NDOF);
 		rslt += bno055_read_gravity_xyz(&bno055Data->gravity);
-
-		OSA_TimeDelay(mDelayNewMsgSentMilliSeconds);
 
 		OSA_MsgQPut(gBno055NewMessageMeasureQ, &bno055Data);
 		OSA_EventSet(gDevBoxAppEvent, gDevBoxTaskEvtNewBNO055Measure_c);

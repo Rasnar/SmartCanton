@@ -153,7 +153,6 @@ static tmrTimerID_t mBatteryMeasurementTimerId;
 
 osaEventId_t gDevBoxAppEvent;
 
-
 /************************************************************************************
  *************************************************************************************
  * Private functions prototypes
@@ -553,27 +552,21 @@ static void BleApp_GattServerCallback(deviceId_t deviceId, gattServerEvent_t* pS
 		if (handle == value_lora_app_eui)
 		{
 			status = ScDbLoRa_SetAppEui(&scdbLoRaServiceConfig,
-					(uint8_array_t
-							)
-							{ pServerEvent->eventData.attributeWrittenEvent.cValueLength,
+					(uint8_array_t){ pServerEvent->eventData.attributeWrittenEvent.cValueLength,
 									pServerEvent->eventData.attributeWrittenEvent.aValue });
 		}
 
 		if (handle == value_lora_app_key)
 		{
 			status = ScDbLoRa_SetAppKey(&scdbLoRaServiceConfig,
-					(uint8_array_t
-							)
-							{ pServerEvent->eventData.attributeWrittenEvent.cValueLength,
+					(uint8_array_t){ pServerEvent->eventData.attributeWrittenEvent.cValueLength,
 									pServerEvent->eventData.attributeWrittenEvent.aValue });
 		}
 
 		if (handle == value_lora_confirm_mode)
 		{
 			status = ScDbLoRa_SetConfirmMode(&scdbLoRaServiceConfig,
-					(uint8_array_t
-							)
-							{ pServerEvent->eventData.attributeWrittenEvent.cValueLength,
+					(uint8_array_t){ pServerEvent->eventData.attributeWrittenEvent.cValueLength,
 									pServerEvent->eventData.attributeWrittenEvent.aValue });
 		}
 
@@ -711,7 +704,8 @@ void gps_neo_m8_new_data_available_callback(void)
 	Led2Toggle();
 
 	// TODO : Implement timer to generate timing
-	if(cnt_seconds++ == 60){
+	if (cnt_seconds++ == 60)
+	{
 		cnt_seconds = 0;
 		OSA_EventSet(gDevBoxAppEvent, gDevBoxEvtSendNewLoRaData_c);
 	}
@@ -729,6 +723,9 @@ void DevBox_App_Task(osaTaskParam_t argument)
 
 	// Last data received from the bno055
 	bno055Data_t bno055Data;
+
+	// Last data received from the bme680
+	bme680Data_t bme680Data;
 
 	gps_neo_m8_init(gps_neo_m8_new_data_available_callback);
 
@@ -776,10 +773,20 @@ void DevBox_App_Task(osaTaskParam_t argument)
 		/* Event received when a new measure to the BME680 as to be done */
 		if (event & gDevBoxTaskEvtNewBME680Measure_c)
 		{
-			tmp_float1 = 0;
+			// Last data received from the bme680
+			bme680Data_t* bme680Data_tmp;
+			/* Retrieve data pointer */
+			if (OSA_MsgQGet(gBme680NewMessageMeasureQ, &bme680Data_tmp, 10) == osaStatus_Success)
+			{
+
+				FLib_MemCpy(&bme680Data, bme680Data_tmp, sizeof(bme680Data));
+
+				/* Destroy tmp buffer allocated by the bno055_task */
+				vPortFree(bme680Data_tmp);
+			}
 		}
 
-		/* Event received when a new measure to the BNO055 as to be done */
+		/* Event received when a new measure to the BNO055 has been done */
 		if (event & gDevBoxTaskEvtNewBNO055Measure_c)
 		{
 			// Last data received from the bno055
@@ -799,32 +806,30 @@ void DevBox_App_Task(osaTaskParam_t argument)
 		if (event & gDevBoxEvtSendNewLoRaData_c)
 		{
 			// Only send data if the configuration is correct (the network as been joined)
-			if(lorawan_controller_get_configuration_validity() == lorawanController_Success) {
+			if (lorawan_controller_get_configuration_validity() == lorawanController_Success)
+			{
 
 				/**
 				 * USER CUSTOM PAYLOAD HERE
 				 */
 				cayenneLPPreset();
 
-				if(frame.latitude.value != 0){
-					cayenneLPPaddGPS(1,
-							minmea_tocoord(&frame.latitude), // Latitude
-							minmea_tocoord(&frame.longitude), // Longitude
-							0.0); // Altitude
+				if (frame.latitude.value != 0)
+				{
+					cayenneLPPaddGPS(1, minmea_tocoord(&frame.latitude), // Latitude
+					minmea_tocoord(&frame.longitude), // Longitude
+					0.0); // Altitude
 				}
 
+				cayenneLPPaddAccelerometer(2, bno055Data.accel_xyz.x / 100, bno055Data.accel_xyz.y / 100,
+						bno055Data.accel_xyz.z / 100);
 
-				cayenneLPPaddAccelerometer(3,
-						bno055Data.gravity.x,
-						bno055Data.gravity.y,
-						bno055Data.gravity.z);
-
-				cayenneLPPaddGyrometer(4,
-						bno055Data.gyro_xyz.x,
-						bno055Data.gyro_xyz.y,
+				cayenneLPPaddGyrometer(3, bno055Data.gyro_xyz.x, bno055Data.gyro_xyz.y,
 						bno055Data.gyro_xyz.z);
 
-
+				cayenneLPPaddTemperature(4, bme680Data.temperature);
+				cayenneLPPaddRelativeHumidity(5, bme680Data.humidity);
+				cayenneLPPaddBarometricPressure(6, bme680Data.pressure / 100);
 
 //				cayenneLPPaddAnalogInput(2, (float)BOARD_GetBatteryLevel());
 //				cayenneLPPaddAnalogOutput(3, 120.0);
@@ -835,15 +840,25 @@ void DevBox_App_Task(osaTaskParam_t argument)
 				lorawanControllerData->dataSize = cayenneLPPgetSize();
 
 				/* Copy data formatted previously inside the Cayenne functions */
-				FLib_MemCpy(lorawanControllerData->data, cayenneLPPgetBuffer(), lorawanControllerData->dataSize);
+				FLib_MemCpy(lorawanControllerData->data, cayenneLPPgetBuffer(),
+						lorawanControllerData->dataSize);
 
 				OSA_MsgQPut(gLorawanCtrlSendNewMessageQ, &lorawanControllerData);
 				OSA_EventSet(gLoRaControllerEvent, gLoRaCtrlTaskEvtNewMsgToSend_c);
 			}
 		}
-
 	}
 }
+
+///**
+// * TODO : Fix this random hardfault when starting the problem....
+// * Cf. documentation to see the stack trace of the error.
+// */
+//void HardFault_Handler(void)
+//{
+//
+//	NVIC_SystemReset();
+//}
 
 /*! *********************************************************************************
  * @}
