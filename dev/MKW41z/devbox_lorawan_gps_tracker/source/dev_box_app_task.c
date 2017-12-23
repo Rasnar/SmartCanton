@@ -713,8 +713,12 @@ void gps_neo_m8_new_data_available_callback(void)
 
 void DevBox_App_Task(osaTaskParam_t argument)
 {
+	static const struct minmea_sentence_rmc EmptyFrameGPS;
+	static const bme680Data_t EmptyBme680;
+	static const bno055Data_t EmptyBno055;
+
 	// Store last values from the sensors
-	struct minmea_sentence_rmc frame;
+	struct minmea_sentence_rmc frameGPS;
 	float tmp_float1, tmp_float2;
 	osaEventFlags_t event;
 
@@ -747,26 +751,26 @@ void DevBox_App_Task(osaTaskParam_t argument)
 		if (event & gDevBoxTaskEvtNewGPSDataRdy_c)
 		{
 			/* Update Bluetooth Service with new values */
-			if (gps_neo_m8_read_rmc(&frame) == gpsNeo_Success)
+			if (gps_neo_m8_read_rmc(&frameGPS) == gpsNeo_Success)
 			{
 
-				tmp_float1 = minmea_tocoord(&frame.latitude);
-				tmp_float2 = minmea_tocoord(&frame.longitude);
+				tmp_float1 = minmea_tocoord(&frameGPS.latitude);
+				tmp_float2 = minmea_tocoord(&frameGPS.longitude);
 				ScDbGPS_RecordGPSPosition(service_smartcanton_devbox_gps, &tmp_float1, &tmp_float2);
 
-				tmp_float1 = minmea_tofloat(&frame.course);
+				tmp_float1 = minmea_tofloat(&frameGPS.course);
 				if (isnanf(tmp_float1))
 				{
 					tmp_float1 = 0.0;
 				}
 				ScDbGPS_RecordGPSCourse(service_smartcanton_devbox_gps, &tmp_float1);
 
-				tmp_float1 = minmea_tofloat(&frame.speed);
+				tmp_float1 = minmea_tofloat(&frameGPS.speed);
 				ScDbGPS_RecordGPSSpeed(service_smartcanton_devbox_gps, &tmp_float1);
 
-				ScDbGPS_RecordGPSTime(service_smartcanton_devbox_gps, &frame.time);
+				ScDbGPS_RecordGPSTime(service_smartcanton_devbox_gps, &frameGPS.time);
 
-				ScDbGPS_RecordGPSDate(service_smartcanton_devbox_gps, &frame.date);
+				ScDbGPS_RecordGPSDate(service_smartcanton_devbox_gps, &frameGPS.date);
 			}
 		}
 
@@ -812,28 +816,50 @@ void DevBox_App_Task(osaTaskParam_t argument)
 				/**
 				 * USER CUSTOM PAYLOAD HERE
 				 */
+
+				// Reset the buffer for a new Cayenne frame
 				cayenneLPPreset();
 
-				if (frame.latitude.value != 0)
+				/* Send data only if new values since last transmission */
+				if (frameGPS.valid)
 				{
-					cayenneLPPaddGPS(1, minmea_tocoord(&frame.latitude), // Latitude
-					minmea_tocoord(&frame.longitude), // Longitude
-					0.0); // Altitude
+					cayenneLPPaddGPS(1,
+							minmea_tocoord(&frameGPS.latitude), // Latitude
+							minmea_tocoord(&frameGPS.longitude), // Longitude
+							0.0); // Altitude (not supported with RMC parsing)
+					frameGPS = EmptyFrameGPS;
 				}
 
-				cayenneLPPaddAccelerometer(2,
-						bno055Data.accel_xyz.x / 1000.0,
-						bno055Data.accel_xyz.y / 1000.0,
-						bno055Data.accel_xyz.z / 1000.0);
+				/* Send data only if new values since last transmission */
+				if((bno055Data.accel_xyz.x == 0.0) &&
+					(bno055Data.accel_xyz.y == 0.0) &&
+					(bno055Data.accel_xyz.z == 0.0) &&
+					(bno055Data.gyro_xyz.x == 0.0) &&
+					(bno055Data.gyro_xyz.y == 0.0) &&
+					(bno055Data.gyro_xyz.x == 0.0))
+				{
+					cayenneLPPaddAccelerometer(2,
+							bno055Data.accel_xyz.x / 1000.0,
+							bno055Data.accel_xyz.y / 1000.0,
+							bno055Data.accel_xyz.z / 1000.0);
 
-				cayenneLPPaddGyrometer(3,
-						bno055Data.gyro_xyz.x,
-						bno055Data.gyro_xyz.y,
-						bno055Data.gyro_xyz.z);
+					cayenneLPPaddGyrometer(3,
+							bno055Data.gyro_xyz.x,
+							bno055Data.gyro_xyz.y,
+							bno055Data.gyro_xyz.z);
+					bno055Data = EmptyBno055;
+				}
 
-				cayenneLPPaddTemperature(4, bme680Data.temperature);
-				cayenneLPPaddRelativeHumidity(5, bme680Data.humidity);
-				cayenneLPPaddBarometricPressure(6, bme680Data.pressure / 100.0);
+				/* Send data only if new values since last transmission */
+				if((bme680Data.temperature == 0.0) &&
+					(bme680Data.humidity == 0.0) &&
+					(bme680Data.pressure == 0.0))
+				{
+					cayenneLPPaddTemperature(4, bme680Data.temperature);
+					cayenneLPPaddRelativeHumidity(5, bme680Data.humidity);
+					cayenneLPPaddBarometricPressure(6, bme680Data.pressure / 100.0);
+					bme680Data = EmptyBme680;
+				}
 
 //				cayenneLPPaddAnalogInput(2, (float)BOARD_GetBatteryLevel());
 //				cayenneLPPaddAnalogOutput(3, 120.0);
