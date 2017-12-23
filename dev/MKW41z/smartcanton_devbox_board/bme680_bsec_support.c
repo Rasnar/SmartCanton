@@ -139,7 +139,7 @@ static void sleep(uint32_t t_ms)
  */
 int64_t get_timestamp_us()
 {
-	return OSA_TimeGetMsec() * 1000;
+	return ((int64_t)OSA_TimeGetMsec()) * ((int64_t)1000);
 }
 
 return_values_init bme680_bsec_kw41z_I2C_routines_init(struct bme680_dev *bme680,
