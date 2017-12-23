@@ -56,11 +56,17 @@ void Lorawan_Controller_Task(osaTaskParam_t argument)
 		if (event & gLoRaCtrlTaskEvtConfigure_c)
 		{
 			Led4Flashing();
-			if (lorawan_controller_init_module() == lorawanController_Success)
+			lorawanControllerStatus_t status = lorawan_controller_init_module();
+			if (status == lorawanController_Success)
 			{
 				OSA_EventSet(gDevBoxAppEvent, gDevBoxTaskEvtNewLoRaWANConfig_c);
 				StopLed4Flashing();
 				Led4On();
+			}
+			// The configuration is corrupted, load the default configuration
+			else if (status  == lorawanController_Error_Invalid_Configuration){
+				lorawan_controller_apply_default_configuration();
+				OSA_EventSet(gLoRaControllerEvent, gLoRaCtrlTaskEvtConfigure_c);
 			}
 			else
 			{

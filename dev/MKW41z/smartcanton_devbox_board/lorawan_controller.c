@@ -14,11 +14,11 @@
 /**
  * LoRa authentication app keys and EUI
  */
-#define ORBIWISE_APP_EUI 	"70:b3:d5:7e:f0:00:1a:f7"
-#define ORBIWISE_APP_KEY	"42:55:ac:76:2e:c1:d4:91:8a:04:e5:94:b2:55:80:40"
+#define ORBIWISE_APP_EUI 	"70:b3:d5:07:80:00:00:04"
+#define ORBIWISE_APP_KEY	"f1:fb:27:1f:3f:f2:d7:3b:c1:f5:a1:45:7c:56:c0:00"
 
-#define TTN_APP_EUI			"70:B3:D5:7E:D0:00:80:0D"
-#define TTN_APP_KEY 		"42:55:ac:76:2e:c1:d4:91:8a:04:e5:94:b2:55:80:40"
+#define TTN_APP_EUI			"70:B3:D5:7E:D0:00:8E:8C"
+#define TTN_APP_KEY 		"2B:62:B2:6C:09:52:27:36:8B:07:7D:D3:54:81:75:33"
 
 #define LORA_DEFAULT_CONFIG_APP_EUI			TTN_APP_EUI
 #define LORA_DEFAULT_CONFIG_APP_KEY			TTN_APP_KEY
@@ -79,7 +79,7 @@ lorawanControllerStatus_t lorawan_controller_read_module_configuration();
 static lorawanControllerStatus_t lorawan_controller_flash_init(void);
 static lorawanControllerConfiguration_t lorawan_controller_read_configuration_from_flash(void);
 static lorawanControllerStatus_t lorawan_controller_write_configuration_to_flash(void);
-static void lorawan_controller_apply_default_configuration();
+void lorawan_controller_apply_default_configuration();
 
 /**
  * Callback called by the ATCommander library to write bytes
@@ -161,15 +161,15 @@ lorawanControllerStatus_t lorawan_controller_init_module()
 	 */
 	if (lorawan_controller_set_cmd(CMD_SET_APP_EUI
 	, currentLoRaWanConfig.appEui) != lorawanController_Success)
-		return lorawanController_Error;
+		return lorawanController_Error_Invalid_Configuration;
 
 	if (lorawan_controller_set_cmd(CMD_SET_APP_KEY
 	, currentLoRaWanConfig.appKey) != lorawanController_Success)
-		return lorawanController_Error;
+		return lorawanController_Error_Invalid_Configuration;
 
 	if (lorawan_controller_set_cmd(CMD_SET_CONFIRM_MODE
 	, currentLoRaWanConfig.confirmMode) != lorawanController_Success) // 0 : unconfirmed, 1 : confirmed messages
-		return lorawanController_Error;
+		return lorawanController_Error_Invalid_Configuration;
 
 	if (lorawan_controller_set_cmd(CMD_SET_NETWORK_JOIN_MODE
 	, currentLoRaWanConfig.networkJoinMode) != lorawanController_Success) // 0 : ABP, 1 : OTAA
@@ -177,12 +177,11 @@ lorawanControllerStatus_t lorawan_controller_init_module()
 
 	if (lorawan_controller_set_cmd(CMD_SET_DUTYCYCLE_SETTINGS
 	, currentLoRaWanConfig.etsiDutyCycleEnable) != lorawanController_Success) // 0 : ETSI duty cycle disable, 1 : enable
-		return lorawanController_Error;
+		return lorawanController_Error_Invalid_Configuration;
 
 	/* Join network as configured before */
-	if (lorawan_controller_set_cmd(CMD_NETWORK_JOIN
-	) != lorawanController_Success)
-		return lorawanController_Error;
+	if (lorawan_controller_set_cmd(CMD_NETWORK_JOIN) != lorawanController_Success)
+		return lorawanController_Error_Invalid_Configuration;
 
 	uint8_t nb_attempts = 0;
 
@@ -265,7 +264,7 @@ osaStatus_t lorawan_controller_init(void)
 	return osaStatus_Success;
 }
 
-static void lorawan_controller_apply_default_configuration()
+void lorawan_controller_apply_default_configuration()
 {
 	char data[32];
 	uint16_t bytesRead;
@@ -398,9 +397,18 @@ static lorawanControllerStatus_t lorawan_controller_write_configuration_to_flash
 {
 	uint32_t failAddr, failDat;
 
+	// Disable hardware interrupts while accessing memory flash
+	OSA_DisableIRQGlobal();
+
+	// Equivalent to taskENTER_CRITICAL in freertos. It's means to disable all context
+	// switch in this code.
+	OSA_InterruptDisable();
+
 	status_t result = FLASH_Erase(&s_flashDriver, flashDestAdrss, pflashSectorSize, kFLASH_ApiEraseKey);
 	if (kStatus_FLASH_Success != result)
 	{
+		OSA_InterruptEnable();
+		OSA_EnableIRQGlobal();
 		return lorawanController_Error;
 	}
 
@@ -408,6 +416,8 @@ static lorawanControllerStatus_t lorawan_controller_write_configuration_to_flash
 	result = FLASH_VerifyErase(&s_flashDriver, flashDestAdrss, pflashSectorSize, kFLASH_MarginValueUser);
 	if (kStatus_FLASH_Success != result)
 	{
+		OSA_InterruptEnable();
+		OSA_EnableIRQGlobal();
 		return lorawanController_Error;
 	}
 
@@ -416,6 +426,8 @@ static lorawanControllerStatus_t lorawan_controller_write_configuration_to_flash
 			sizeof(lorawanControllerConfiguration_t));
 	if (kStatus_FLASH_Success != result)
 	{
+		OSA_InterruptEnable();
+		OSA_EnableIRQGlobal();
 		return lorawanController_Error;
 	}
 
@@ -424,9 +436,13 @@ static lorawanControllerStatus_t lorawan_controller_write_configuration_to_flash
 			(uint32_t *) &currentLoRaWanConfig, kFLASH_MarginValueUser, &failAddr, &failDat);
 	if (kStatus_FLASH_Success != result)
 	{
+		OSA_InterruptEnable();
+		OSA_EnableIRQGlobal();
 		return lorawanController_Error;
 	}
 
+	OSA_InterruptEnable();
+	OSA_EnableIRQGlobal();
 	return lorawanController_Success;
 }
 

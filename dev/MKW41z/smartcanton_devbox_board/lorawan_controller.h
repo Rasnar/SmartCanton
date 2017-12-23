@@ -19,7 +19,7 @@
 #include "SerialManager.h"
 #include "atcommander/atcommander.h"
 
-#define LORAWAN_CONTROLLER_MAGIC_WORD	0x2222
+#define LORAWAN_CONTROLLER_MAGIC_WORD	0x1111
 
 typedef struct lorawanControllerConfiguration_tag
 {
@@ -44,6 +44,7 @@ typedef enum lorawanControllerStatus_tag
 {
 	lorawanController_Success = 0U, /*!< Success */
 	lorawanController_Error = 1U, /*!< Failed */
+	lorawanController_Error_Invalid_Configuration = 2U, /*!< The configuration is invalid and need to be corrected */
 } lorawanControllerStatus_t;
 
 /**
@@ -94,4 +95,6 @@ lorawanControllerStatus_t lorawan_controller_get_configuration_validity();
 lorawanControllerConfiguration_t lorawan_controller_get_current_configuration(void);
 
 lorawanControllerStatus_t lorawan_controller_read_module_configuration(void);
+
+void lorawan_controller_apply_default_configuration();
 #endif /* __LORAWAN_CONTROLLER_H__ */
