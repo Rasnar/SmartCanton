@@ -831,12 +831,12 @@ void DevBox_App_Task(osaTaskParam_t argument)
 				}
 
 				/* Send data only if new values since last transmission */
-				if((bno055Data.accel_xyz.x == 0.0) &&
+				if(!((bno055Data.accel_xyz.x == 0.0) &&
 					(bno055Data.accel_xyz.y == 0.0) &&
 					(bno055Data.accel_xyz.z == 0.0) &&
 					(bno055Data.gyro_xyz.x == 0.0) &&
 					(bno055Data.gyro_xyz.y == 0.0) &&
-					(bno055Data.gyro_xyz.x == 0.0))
+					(bno055Data.gyro_xyz.x == 0.0)))
 				{
 					cayenneLPPaddAccelerometer(2,
 							bno055Data.accel_xyz.x / 1000.0,
@@ -851,9 +851,9 @@ void DevBox_App_Task(osaTaskParam_t argument)
 				}
 
 				/* Send data only if new values since last transmission */
-				if((bme680Data.temperature == 0.0) &&
+				if((!(bme680Data.temperature == 0.0) &&
 					(bme680Data.humidity == 0.0) &&
-					(bme680Data.pressure == 0.0))
+					(bme680Data.pressure == 0.0)))
 				{
 					cayenneLPPaddTemperature(4, bme680Data.temperature);
 					cayenneLPPaddRelativeHumidity(5, bme680Data.humidity);
