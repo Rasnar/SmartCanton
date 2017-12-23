@@ -821,15 +821,19 @@ void DevBox_App_Task(osaTaskParam_t argument)
 					0.0); // Altitude
 				}
 
-				cayenneLPPaddAccelerometer(2, bno055Data.accel_xyz.x / 100, bno055Data.accel_xyz.y / 100,
-						bno055Data.accel_xyz.z / 100);
+				cayenneLPPaddAccelerometer(2,
+						bno055Data.accel_xyz.x / 1000.0,
+						bno055Data.accel_xyz.y / 1000.0,
+						bno055Data.accel_xyz.z / 1000.0);
 
-				cayenneLPPaddGyrometer(3, bno055Data.gyro_xyz.x, bno055Data.gyro_xyz.y,
+				cayenneLPPaddGyrometer(3,
+						bno055Data.gyro_xyz.x,
+						bno055Data.gyro_xyz.y,
 						bno055Data.gyro_xyz.z);
 
 				cayenneLPPaddTemperature(4, bme680Data.temperature);
 				cayenneLPPaddRelativeHumidity(5, bme680Data.humidity);
-				cayenneLPPaddBarometricPressure(6, bme680Data.pressure / 100);
+				cayenneLPPaddBarometricPressure(6, bme680Data.pressure / 100.0);
 
 //				cayenneLPPaddAnalogInput(2, (float)BOARD_GetBatteryLevel());
 //				cayenneLPPaddAnalogOutput(3, 120.0);

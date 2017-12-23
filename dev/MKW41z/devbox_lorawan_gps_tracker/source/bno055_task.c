@@ -12,7 +12,7 @@
 #include "Panic.h"
 #include "bno055_support.h"
 
-#define mDelayNewMsgSentMilliSeconds	30000
+#define mDelayNewMsgSentMilliSeconds	10
 
 OSA_TASK_DEFINE(Bno055_Task, gBno055TaskPriority_c, 1, gBno055TaskStackSize_c, FALSE);
 osaTaskId_t gBno055TaskId = 0;
@@ -57,16 +57,17 @@ void Bno055_Task(osaTaskParam_t argument)
 		rslt = BNO055_SUCCESS;
 
 		OSA_TimeDelay(mDelayNewMsgSentMilliSeconds);
+		OSA_TaskYield();
 
 		bno055Data = pvPortMalloc(sizeof(bno055Data_t));
 
 		rslt += bno055_set_operation_mode(BNO055_OPERATION_MODE_AMG);
-		rslt += bno055_read_accel_xyz(&bno055Data->accel_xyz);
-		rslt += bno055_read_mag_xyz(&bno055Data->mag_xyz);
-		rslt += bno055_read_gyro_xyz(&bno055Data->gyro_xyz);
+		rslt += bno055_convert_float_accel_xyz_mg(&bno055Data->accel_xyz);
+		rslt += bno055_convert_float_gyro_x_dps(&bno055Data->gyro_xyz);
+		rslt += bno055_convert_float_mag_xyz_uT(&bno055Data->mag_xyz);
 
 		rslt += bno055_set_operation_mode(BNO055_OPERATION_MODE_NDOF);
-		rslt += bno055_read_gravity_xyz(&bno055Data->gravity);
+		rslt += bno055_convert_float_gravity_xyz_msq(&bno055Data->gravity);
 
 		OSA_MsgQPut(gBno055NewMessageMeasureQ, &bno055Data);
 		OSA_EventSet(gDevBoxAppEvent, gDevBoxTaskEvtNewBNO055Measure_c);

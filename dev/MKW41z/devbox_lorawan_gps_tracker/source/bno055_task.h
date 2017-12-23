@@ -21,10 +21,10 @@ extern osaMsgQId_t gBno055NewMessageMeasureQ;
 
 typedef struct bno055Data_tag
 {
-	struct bno055_accel_t accel_xyz;
-	struct bno055_mag_t mag_xyz;
-	struct bno055_gyro_t gyro_xyz;
-	struct bno055_gravity_t gravity;
+	struct bno055_accel_float_t accel_xyz;
+	struct bno055_mag_float_t mag_xyz;
+	struct bno055_gyro_float_t gyro_xyz;
+	struct bno055_gravity_float_t gravity;
 } bno055Data_t;
 
 /*
