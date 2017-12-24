@@ -73,7 +73,9 @@ void Bme680_Task(osaTaskParam_t argument)
 		bme680_bsec_kw41z_I2C_routines_init(&bme680, master_rtos_handle);
 
 		/**
-		 * Only quit when the Get MSEC is too small for the library
+		 * By default this function is an inifinte loop but there is a bug
+		 * with the current implementation.
+		 * It will quit when the Get MSEC is too small for the library
 		 * After 1h, we restart the library with a clean configuration.
 		 * TODO: Try to find a better way to do this. The ideal will be to
 		 * have a Get MSEC in 64bits instead of 32 bits for now.

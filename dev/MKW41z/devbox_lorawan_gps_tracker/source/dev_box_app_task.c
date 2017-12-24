@@ -713,12 +713,12 @@ void gps_neo_m8_new_data_available_callback(void)
 
 void DevBox_App_Task(osaTaskParam_t argument)
 {
-	static const struct minmea_sentence_rmc EmptyFrameGPS;
+	static const struct minmea_sentence_rmc EmptyframeRmcGps;
 	static const bme680Data_t EmptyBme680;
 	static const bno055Data_t EmptyBno055;
 
 	// Store last values from the sensors
-	struct minmea_sentence_rmc frameGPS;
+	struct minmea_sentence_rmc frameRmcGps;
 	float tmp_float1, tmp_float2;
 	osaEventFlags_t event;
 
@@ -751,26 +751,26 @@ void DevBox_App_Task(osaTaskParam_t argument)
 		if (event & gDevBoxTaskEvtNewGPSDataRdy_c)
 		{
 			/* Update Bluetooth Service with new values */
-			if (gps_neo_m8_read_rmc(&frameGPS) == gpsNeo_Success)
+			if (gps_neo_m8_read_rmc(&frameRmcGps) == gpsNeo_Success)
 			{
 
-				tmp_float1 = minmea_tocoord(&frameGPS.latitude);
-				tmp_float2 = minmea_tocoord(&frameGPS.longitude);
+				tmp_float1 = minmea_tocoord(&frameRmcGps.latitude);
+				tmp_float2 = minmea_tocoord(&frameRmcGps.longitude);
 				ScDbGPS_RecordGPSPosition(service_smartcanton_devbox_gps, &tmp_float1, &tmp_float2);
 
-				tmp_float1 = minmea_tofloat(&frameGPS.course);
+				tmp_float1 = minmea_tofloat(&frameRmcGps.course);
 				if (isnanf(tmp_float1))
 				{
 					tmp_float1 = 0.0;
 				}
 				ScDbGPS_RecordGPSCourse(service_smartcanton_devbox_gps, &tmp_float1);
 
-				tmp_float1 = minmea_tofloat(&frameGPS.speed);
+				tmp_float1 = minmea_tofloat(&frameRmcGps.speed);
 				ScDbGPS_RecordGPSSpeed(service_smartcanton_devbox_gps, &tmp_float1);
 
-				ScDbGPS_RecordGPSTime(service_smartcanton_devbox_gps, &frameGPS.time);
+				ScDbGPS_RecordGPSTime(service_smartcanton_devbox_gps, &frameRmcGps.time);
 
-				ScDbGPS_RecordGPSDate(service_smartcanton_devbox_gps, &frameGPS.date);
+				ScDbGPS_RecordGPSDate(service_smartcanton_devbox_gps, &frameRmcGps.date);
 			}
 		}
 
@@ -812,22 +812,17 @@ void DevBox_App_Task(osaTaskParam_t argument)
 			// Only send data if the configuration is correct (the network as been joined)
 			if (lorawan_controller_get_configuration_validity() == lorawanController_Success)
 			{
-
-				/**
-				 * USER CUSTOM PAYLOAD HERE
-				 */
-
 				// Reset the buffer for a new Cayenne frame
 				cayenneLPPreset();
 
 				/* Send data only if new values since last transmission */
-				if (frameGPS.valid)
+				if (frameRmcGps.valid)
 				{
 					cayenneLPPaddGPS(1,
-							minmea_tocoord(&frameGPS.latitude), // Latitude
-							minmea_tocoord(&frameGPS.longitude), // Longitude
+							minmea_tocoord(&frameRmcGps.latitude), // Latitude
+							minmea_tocoord(&frameRmcGps.longitude), // Longitude
 							0.0); // Altitude (not supported with RMC parsing)
-					frameGPS = EmptyFrameGPS;
+					frameRmcGps = EmptyframeRmcGps;
 				}
 
 				/* Send data only if new values since last transmission */
