@@ -2053,3 +2053,36 @@ https://github.com/sabas1080/CayenneLPP
 
 https://github.com/thesolarnomad/lora-serialization
 
+
+
+# 24.12.2017
+
+## Bug BSEC 
+
+The function that generate a timing in ms isn't counting to 2^32. In fact, it will count the number of ticks to 2^32 but the real time in ms will not be encoded in this value. It generate a big problem for the BESC library that needs a time in nanoseconds. The time from the OSA_TimeGetMsec only is correct for approximately one hour. After that the counter is set to 0. The BSEC library does not like this kind of beahvear and generate a big sleep (4297718ms....). How to debug the problem inside the function bsec_iot_loop : 
+
+````C
+time_stamp_interval_ms = (sensor_settings.next_call - get_timestamp_us() * 1000) / 1000000;
+
+// How to prove the bug :
+int64_t time = (int64_t)get_timestamp_us();
+int64_t tmp1 = time * 1000;
+int64_t tmp2 = (int64_t)sensor_settings.next_call;
+int64_t tmp3 = tmp2 - tmp1;
+tmp3 = tmp3 / (int64_t)1000000;
+//time_stamp_interval_ms = tmp3;
+````
+
+Result : 
+
+````C
+time	int64_t	96000	
+tmp1	int64_t	96000000	
+tmp2	int64_t	4297814000000	
+tmp3	int64_t	4297718	
+time_stamp	int64_t	4294814000000	
+time_stamp_interval_ms	volatile int64_t	4297718	
+
+````
+
+To fix it: the easiest way is to qui the function and restart the process. It only happens every hour, so it's acceptable. But to make it cleaner we should implement a nanoseconds counter in 64bit! 
