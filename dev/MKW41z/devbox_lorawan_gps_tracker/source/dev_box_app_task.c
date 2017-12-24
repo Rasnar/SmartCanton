@@ -851,7 +851,7 @@ void DevBox_App_Task(osaTaskParam_t argument)
 				}
 
 				/* Send data only if new values since last transmission */
-				if((!(bme680Data.temperature == 0.0) &&
+				if(!((bme680Data.temperature == 0.0) &&
 					(bme680Data.humidity == 0.0) &&
 					(bme680Data.pressure == 0.0)))
 				{
