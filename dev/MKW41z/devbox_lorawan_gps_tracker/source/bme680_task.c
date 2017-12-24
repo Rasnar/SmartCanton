@@ -68,13 +68,18 @@ void Bme680_Task(osaTaskParam_t argument)
 	int8_t rslt = 0;
 	(void)rslt;
 
-	bme680_bsec_kw41z_I2C_routines_init(&bme680, master_rtos_handle);
-
-	bme680_bsec_kw41z_iot_loop(output_ready);
-	// Should never be reached
 	while (1)
 	{
-		OSA_TimeDelay(osaWaitForever_c);
+		bme680_bsec_kw41z_I2C_routines_init(&bme680, master_rtos_handle);
+
+		/**
+		 * Only quit when the Get MSEC is too small for the library
+		 * After 1h, we restart the library with a clean configuration.
+		 * TODO: Try to find a better way to do this. The ideal will be to
+		 * have a Get MSEC in 64bits instead of 32 bits for now.
+		 * See inside the function to have a peak where the calucul fails.
+		 */
+		bme680_bsec_kw41z_iot_loop(output_ready);
 	}
 }
 

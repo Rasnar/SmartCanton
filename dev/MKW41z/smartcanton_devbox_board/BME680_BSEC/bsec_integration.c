@@ -96,6 +96,8 @@ static struct bme680_dev bme680_g;
 /* Global temperature offset to be subtracted */
 static float bme680_temperature_offset_g = 0.0f;
 
+#define MAX_SLEEP_TIME_MS 10000 /* ms */
+
 /**********************************************************************************************************************/
 /* functions */
 /**********************************************************************************************************************/
@@ -265,8 +267,13 @@ static void bme680_bsec_trigger_measurement(bsec_bme_settings_t *sensor_settings
 		/* Get the total measurement duration so as to sleep or wait till the measurement is complete */
 		bme680_get_profile_dur(&meas_period, &bme680_g);
 
-        /* Delay till the measurement is ready. Timestamp resolution in ms */
-        sleep((uint32_t)meas_period);
+		/* Delay till the measurement is ready. Timestamp resolution in ms */
+		if((meas_period > 0) && (meas_period < MAX_SLEEP_TIME_MS))
+		{
+			sleep((uint32_t)meas_period);
+		}else {
+        	while(1);
+        }
     }
 
     /* Call the API to get current operation mode of the sensor */
@@ -456,7 +463,7 @@ void bsec_iot_loop(sleep_fct sleep, get_timestamp_us_fct get_timestamp_us, outpu
 {
     /* Timestamp variables */
     int64_t time_stamp = 0;
-    int64_t time_stamp_interval_ms = 0;
+    volatile int64_t time_stamp_interval_ms = 0;
 
     /* Allocate enough memory for up to BSEC_MAX_PHYSICAL_SENSOR physical inputs*/
     bsec_input_t bsec_inputs[BSEC_MAX_PHYSICAL_SENSOR];
@@ -507,13 +514,40 @@ void bsec_iot_loop(sleep_fct sleep, get_timestamp_us_fct get_timestamp_us, outpu
             n_samples = 0;
         }
 
-
         /* Compute how long we can sleep until we need to call bsec_sensor_control() next */
         /* Time_stamp is converted from microseconds to nanoseconds first and then the difference to milliseconds */
+        // Bug with this line, see bug a bit up in this function
+        // Below : orignal decleration
         time_stamp_interval_ms = (sensor_settings.next_call - get_timestamp_us() * 1000) / 1000000;
-        if (time_stamp_interval_ms > 0)
+
+//        // How to prove the bug described below :
+//        int64_t time = (int64_t)get_timestamp_us();
+//        int64_t tmp1 = time * 1000;
+//        int64_t tmp2 = (int64_t)sensor_settings.next_call;
+//		int64_t tmp3 = tmp2 - tmp1;
+//		tmp3 = tmp3 / (int64_t)1000000;
+//        //time_stamp_interval_ms = tmp3;
+
+        if ((time_stamp_interval_ms > 0) && (time_stamp_interval_ms < MAX_SLEEP_TIME_MS))
         {
             sleep((uint32_t)time_stamp_interval_ms);
+        }
+        /**
+		* TODO : TOFIX :
+		* There is a bug inside the libary. When you give it a time in nanoseconds that has reset (return to 0)
+		* This function bsec_sensor_control will calculate the time that you can make the next call
+		* (cf time_stamp_interval_ms below). It will add 3 seconds to the time. But to reset the internal
+		* counter inside the library the only solution found was to reinitilize the library. This has to
+		* be done once every 1 hour approximately.
+		* The only way to fix it will that we can get a real time in int64_t. The function by
+		* default is OSA_TimeGetMsec says it give us a 32bits value but in fact it's more like a 2^22
+		* because the value stored is the number of ticks that are then converted in MSEC.
+		* To fix this problem for now, we restart the library by returning from this function.
+		*/
+        else {
+        	time_stamp_interval_ms = time_stamp_interval_ms;
+			sleep((uint32_t)3); // By default the wait time is 3s
+			return;
         }
     }
 }
