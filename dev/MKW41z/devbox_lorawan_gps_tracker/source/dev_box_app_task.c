@@ -853,10 +853,11 @@ void DevBox_App_Task(osaTaskParam_t argument)
 					cayenneLPPaddTemperature(4, bme680Data.temperature);
 					cayenneLPPaddRelativeHumidity(5, bme680Data.humidity);
 					cayenneLPPaddBarometricPressure(6, bme680Data.pressure / 100.0);
+					cayenneLPPaddAnalogInput(7, bme680Data.iaq);
 					bme680Data = EmptyBme680;
 				}
 
-//				cayenneLPPaddAnalogInput(2, (float)BOARD_GetBatteryLevel());
+				cayenneLPPaddAnalogInput(10, (float)BOARD_GetBatteryLevel());
 //				cayenneLPPaddAnalogOutput(3, 120.0);
 //				cayenneLPPaddDigitalOutput(4, 1);
 

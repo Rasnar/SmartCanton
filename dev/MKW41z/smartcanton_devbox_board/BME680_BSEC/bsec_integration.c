@@ -271,9 +271,7 @@ static void bme680_bsec_trigger_measurement(bsec_bme_settings_t *sensor_settings
 		if((meas_period > 0) && (meas_period < MAX_SLEEP_TIME_MS))
 		{
 			sleep((uint32_t)meas_period);
-		}else {
-        	while(1);
-        }
+		}
     }
 
     /* Call the API to get current operation mode of the sensor */
