@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Descriptor xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/descriptor.xsd"
+  type="org.bluetooth.descriptor.es_configuration"
+  uuid="290B"
+  name="Environmental Sensing Configuration"
+  last-modified="2014-11-20"
+  approved="Yes">
+  <InformativeText>
+    <Summary> This definition is shown in the Environmental Sensing Service Section 3.1.2.3</Summary>
+  </InformativeText>
+</Descriptor>

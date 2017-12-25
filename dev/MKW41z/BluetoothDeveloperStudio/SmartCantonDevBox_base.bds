@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<BDSProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="SmartCantonDevBox_base" LastModified="2017-12-14T21:55:04.0467111+01:00">
+<BDSProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="SmartCantonDevBox_base" LastModified="2017-12-25T18:12:30.2446132+01:00">
   <Namespace>com.hepia</Namespace>
   <BaseGuid>df900000-4a83-4c1f-bb33-b623b734763f</BaseGuid>
   <Profile Name="com.hepia.profile.smartcanton_devbox" XMLFile="Profiles\com.hepia.profile.smartcanton_devbox.xml" />
@@ -132,6 +132,99 @@
             <Descriptor UID="ee655ceb-160e-45c4-af06-c12e8611f008" XMLFile="Descriptors\org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml" UUIDMode="Short" />
           </DescriptorFiles>
         </Characteristic>
+      </CharacteristicFiles>
+    </Service>
+    <Service UID="49059b93-0741-4866-89ea-acea3a6e6674" XMLFile="Services\com.hepia.service.smartcanton_devbox_bme680.xml" UUIDMode="Full">
+      <UUIDDisplayMode>Full</UUIDDisplayMode>
+      <CharacteristicFiles>
+        <Characteristic UID="40242153-725d-4282-963d-92f2e9b596e8" XMLFile="Characteristics\com.hepia.characteristic.bme680_iaq.xml" UUIDMode="Full">
+          <DescriptorFiles>
+            <Descriptor UID="805bdea2-3c79-488a-827e-6ba621e68712" XMLFile="Descriptors\org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml" UUIDMode="Short" />
+            <Descriptor UID="9cca6385-e06e-4f5b-97ef-df50703a24fc" XMLFile="Descriptors\com.hepia.descriptor.characteristic_user_description.xml" UUIDMode="Short" />
+          </DescriptorFiles>
+        </Characteristic>
+        <Characteristic UID="02bc2f96-09c4-4161-a858-385bfdd50c25" XMLFile="Characteristics\com.hepia.characteristic.bme680_iaq_accuracy.xml" UUIDMode="Full">
+          <DescriptorFiles>
+            <Descriptor UID="b1647e68-f5be-4fea-bd70-fbe038151989" XMLFile="Descriptors\org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml" UUIDMode="Short" />
+            <Descriptor UID="a559545e-6ed6-4677-a250-5f62bd192785" XMLFile="Descriptors\com.hepia.descriptor.characteristic_user_description.xml" UUIDMode="Short" />
+          </DescriptorFiles>
+        </Characteristic>
+        <Characteristic UID="c113a48d-48ce-486e-b82c-3706b88a4489" XMLFile="Characteristics\com.hepia.characteristic.bme680_temperature.xml" UUIDMode="Full">
+          <DescriptorFiles>
+            <Descriptor UID="de945b4e-92cc-47c3-8b40-afe5c20909ba" XMLFile="Descriptors\org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml" UUIDMode="Short" />
+            <Descriptor UID="4f664862-23bc-47b1-85ff-1b5b084b2e05" XMLFile="Descriptors\com.hepia.descriptor.characteristic_user_description.xml" UUIDMode="Short" />
+          </DescriptorFiles>
+        </Characteristic>
+        <Characteristic UID="e8f18e11-399d-4f7b-92fc-3c79e3acee51" XMLFile="Characteristics\com.hepia.characteristic.bme680_humidity.xml" UUIDMode="Full">
+          <DescriptorFiles>
+            <Descriptor UID="daea4707-4166-4d2c-bdb2-dadde8687095" XMLFile="Descriptors\org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml" UUIDMode="Short" />
+            <Descriptor UID="d9898dd7-5b20-449e-8b86-566f72d9930c" XMLFile="Descriptors\com.hepia.descriptor.characteristic_user_description.xml" UUIDMode="Short" />
+          </DescriptorFiles>
+        </Characteristic>
+        <Characteristic UID="cceff329-3b99-4e73-a255-5030adc053f5" XMLFile="Characteristics\com.hepia.characteristic.bme680_pressure.xml" UUIDMode="Full">
+          <DescriptorFiles>
+            <Descriptor UID="64d64a13-64a8-4c65-acf8-9cfd6bdf4821" XMLFile="Descriptors\org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml" UUIDMode="Short" />
+            <Descriptor UID="f9e3e0b3-4d5f-4f21-a761-c1af0e63d452" XMLFile="Descriptors\com.hepia.descriptor.characteristic_user_description.xml" UUIDMode="Short" />
+          </DescriptorFiles>
+        </Characteristic>
+        <Characteristic UID="4e392be6-1030-4348-816a-d3b827b93fc1" XMLFile="Characteristics\com.hepia.characteristic.bme680_raw_temperature1.xml" UUIDMode="Full">
+          <DescriptorFiles>
+            <Descriptor UID="aa354750-6e42-4930-8734-4436ead17732" XMLFile="Descriptors\org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml" UUIDMode="Short" />
+            <Descriptor UID="0d53dc26-b1ed-4b64-bdfc-47a9d521e9eb" XMLFile="Descriptors\com.hepia.descriptor.characteristic_user_description.xml" UUIDMode="Short" />
+          </DescriptorFiles>
+        </Characteristic>
+        <Characteristic UID="2c31f8d6-57f8-42f7-96c6-7989eaa97126" XMLFile="Characteristics\com.hepia.characteristic.bme680_raw_humidity.xml" UUIDMode="Full">
+          <DescriptorFiles>
+            <Descriptor UID="e040d476-bf19-4a95-a283-36a5027e1f40" XMLFile="Descriptors\org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml" UUIDMode="Short" />
+            <Descriptor UID="95e9a72b-e3d6-4474-8c82-e426ccc5dcc8" XMLFile="Descriptors\com.hepia.descriptor.characteristic_user_description.xml" UUIDMode="Short" />
+          </DescriptorFiles>
+        </Characteristic>
+        <Characteristic UID="686c8c94-cdd6-4c2e-b664-4e1166695621" XMLFile="Characteristics\com.hepia.characteristic.bme680_raw_gas.xml" UUIDMode="Full">
+          <DescriptorFiles>
+            <Descriptor UID="ced88494-0e94-42b1-8c46-87e5ea6e52ae" XMLFile="Descriptors\org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml" UUIDMode="Short" />
+            <Descriptor UID="fe00b266-10de-40b5-8400-6d099ba5e319" XMLFile="Descriptors\com.hepia.descriptor.characteristic_user_description.xml" UUIDMode="Short" />
+          </DescriptorFiles>
+        </Characteristic>
+      </CharacteristicFiles>
+    </Service>
+    <Service UID="45754a99-3820-446e-99bf-88b81aefd59f" XMLFile="Services\com.hepia.service.smartcanton_devbox_bno0551.xml" UUIDMode="Full">
+      <UUIDDisplayMode>Full</UUIDDisplayMode>
+      <CharacteristicFiles>
+        <Characteristic UID="de58599c-b991-49a0-8a78-0697e3fcbdd8" XMLFile="Characteristics\com.hepia.characteristic.bno055_accelerometer.xml" UUIDMode="Full">
+          <DescriptorFiles>
+            <Descriptor UID="c3d05615-5ff0-4117-aba3-eda8dd7bc9ef" XMLFile="Descriptors\org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml" UUIDMode="Short" />
+            <Descriptor UID="d935548c-d778-48ff-b45d-180df73094c6" XMLFile="Descriptors\com.hepia.descriptor.characteristic_user_description.xml" UUIDMode="Short" />
+          </DescriptorFiles>
+        </Characteristic>
+        <Characteristic UID="5ee996c9-10ec-4c5e-bbbc-0236859b22dc" XMLFile="Characteristics\com.hepia.characteristic.bno055_gyroscope.xml" UUIDMode="Full">
+          <DescriptorFiles>
+            <Descriptor UID="0b8e16d8-5369-420b-853a-0fb83c641d8b" XMLFile="Descriptors\org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml" UUIDMode="Short" />
+            <Descriptor UID="52e5c505-386a-42f4-8231-1f5611842157" XMLFile="Descriptors\com.hepia.descriptor.characteristic_user_description.xml" UUIDMode="Short" />
+          </DescriptorFiles>
+        </Characteristic>
+        <Characteristic UID="4ddf76e0-101f-40e0-a54e-f54951fe42c0" XMLFile="Characteristics\com.hepia.characteristic.bno055_magnetometer.xml" UUIDMode="Full">
+          <DescriptorFiles>
+            <Descriptor UID="61bffe9e-2c93-467c-af11-7c6d6a833ceb" XMLFile="Descriptors\org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml" UUIDMode="Short" />
+            <Descriptor UID="1c0e62b0-a9d8-447b-90f2-7de47b42b39e" XMLFile="Descriptors\com.hepia.descriptor.characteristic_user_description.xml" UUIDMode="Short" />
+          </DescriptorFiles>
+        </Characteristic>
+        <Characteristic UID="686ff30e-fac2-4699-b440-0a00aeada498" XMLFile="Characteristics\com.hepia.characteristic.bno055_measure_delay.xml" UUIDMode="Full">
+          <DescriptorFiles>
+            <Descriptor UID="309a6600-29df-44d3-a424-8c74971fae99" XMLFile="Descriptors\com.hepia.descriptor.characteristic_user_description.xml" UUIDMode="Short" />
+          </DescriptorFiles>
+        </Characteristic>
+      </CharacteristicFiles>
+    </Service>
+    <Service UID="ec1798a2-4b3d-4324-904b-a76f309595d4" XMLFile="Services\com.hepia.service.smartcanton_devbox_ble.xml" UUIDMode="Full">
+      <UUIDDisplayMode>Full</UUIDDisplayMode>
+      <CharacteristicFiles>
+        <Characteristic UID="106f422a-e362-4ec3-a84d-96bd5a01d770" XMLFile="Characteristics\com.hepia.characteristic.ble_devices_scanned.xml" UUIDMode="Full">
+          <DescriptorFiles>
+            <Descriptor UID="3fdfe9be-42eb-4240-97cc-c0802a3ddf3d" XMLFile="Descriptors\org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml" UUIDMode="Short" />
+            <Descriptor UID="dfce46f3-df98-4d90-b873-f39af1f19c91" XMLFile="Descriptors\com.hepia.descriptor.characteristic_user_description.xml" UUIDMode="Short" />
+          </DescriptorFiles>
+        </Characteristic>
+        <Characteristic UID="ba25b758-2d6a-4872-888c-4ff3f4b99bc7" XMLFile="Characteristics\com.hepia.characteristic.ble_scan_window.xml" UUIDMode="Full" />
       </CharacteristicFiles>
     </Service>
   </ServiceFiles>

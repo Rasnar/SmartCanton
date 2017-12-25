@@ -96,6 +96,77 @@
         <Requirement>Mandatory</Requirement>
       </Characteristic>
     </Service>
+    <Service
+      type="com.hepia.service.smartcanton_devbox_bme680">
+      <Declaration>Primary</Declaration>
+      <Requirement>Mandatory</Requirement>
+      <Characteristic
+        type="com.hepia.characteristic.bme680_iaq">
+        <Requirement>Mandatory</Requirement>
+      </Characteristic>
+      <Characteristic
+        type="com.hepia.characteristic.bme680_iaq_accuracy">
+        <Requirement>Mandatory</Requirement>
+      </Characteristic>
+      <Characteristic
+        type="com.hepia.characteristic.bme680_temperature">
+        <Requirement>Mandatory</Requirement>
+      </Characteristic>
+      <Characteristic
+        type="com.hepia.characteristic.bme680_humidity">
+        <Requirement>Mandatory</Requirement>
+      </Characteristic>
+      <Characteristic
+        type="com.hepia.characteristic.bme680_pressure">
+        <Requirement>Mandatory</Requirement>
+      </Characteristic>
+      <Characteristic
+        type="com.hepia.characteristic.bme680_raw_temperature1">
+        <Requirement>Mandatory</Requirement>
+      </Characteristic>
+      <Characteristic
+        type="com.hepia.characteristic.bme680_raw_humidity">
+        <Requirement>Mandatory</Requirement>
+      </Characteristic>
+      <Characteristic
+        type="com.hepia.characteristic.bme680_raw_gas">
+        <Requirement>Mandatory</Requirement>
+      </Characteristic>
+    </Service>
+    <Service
+      type="com.hepia.service.smartcanton_devbox_bno0551">
+      <Declaration>Primary</Declaration>
+      <Requirement>Mandatory</Requirement>
+      <Characteristic
+        type="com.hepia.characteristic.bno055_accelerometer">
+        <Requirement>Mandatory</Requirement>
+      </Characteristic>
+      <Characteristic
+        type="com.hepia.characteristic.bno055_gyroscope">
+        <Requirement>Mandatory</Requirement>
+      </Characteristic>
+      <Characteristic
+        type="com.hepia.characteristic.bno055_magnetometer">
+        <Requirement>Mandatory</Requirement>
+      </Characteristic>
+      <Characteristic
+        type="com.hepia.characteristic.bno055_measure_delay">
+        <Requirement>Mandatory</Requirement>
+      </Characteristic>
+    </Service>
+    <Service
+      type="com.hepia.service.smartcanton_devbox_ble">
+      <Declaration>Primary</Declaration>
+      <Requirement>Mandatory</Requirement>
+      <Characteristic
+        type="com.hepia.characteristic.ble_devices_scanned">
+        <Requirement>Mandatory</Requirement>
+      </Characteristic>
+      <Characteristic
+        type="com.hepia.characteristic.smartcanton_devbox_ble_new_characteristic">
+        <Requirement>Mandatory</Requirement>
+      </Characteristic>
+    </Service>
   </Role>
   <Role
     name="COLLECTOR">
@@ -125,6 +196,18 @@
     </Client>
     <Client
       type="com.hepia.service.smartcanton_devbox_gps">
+      <Requirement>Mandatory</Requirement>
+    </Client>
+    <Client
+      type="com.hepia.service.smartcanton_devbox_bme680">
+      <Requirement>Mandatory</Requirement>
+    </Client>
+    <Client
+      type="com.hepia.service.smartcanton_devbox_bno0551">
+      <Requirement>Mandatory</Requirement>
+    </Client>
+    <Client
+      type="com.hepia.service.smartcanton_devbox_ble">
       <Requirement>Mandatory</Requirement>
     </Client>
   </Role>

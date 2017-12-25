@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Characteristic xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd"
+  type="org.bluetooth.characteristic.uv_index"
+  uuid="2A76"
+  name="UV Index"
+  last-modified="2014-11-20"
+  approved="Yes">
+  <Value>
+    <Field
+      name="UV Index">
+      <Requirement>Mandatory</Requirement>
+      <Format>uint8</Format>
+      <Unit>org.bluetooth.unit.unitless</Unit>
+      <DecimalExponent>0</DecimalExponent>
+    </Field>
+  </Value>
+</Characteristic>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Characteristic xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd"
+  type="org.bluetooth.characteristic.descriptor_value_changed"
+  uuid="2A7D"
+  name="Descriptor Value Changed"
+  last-modified="2014-11-20"
+  approved="Yes">
+  <InformativeText />
+</Characteristic>

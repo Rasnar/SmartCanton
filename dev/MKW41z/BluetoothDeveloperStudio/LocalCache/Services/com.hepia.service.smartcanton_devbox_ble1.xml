@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Service xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/service.xsd"
+  type="com.hepia.service.smartcanton_devbox_ble1"
+  uuid="40000000-aaaa-bbbb-cccc-dddddddddddd"
+  name="SmartCanton DevBox BLE">
+  <Characteristics>
+    <Characteristic
+      type="com.hepia.characteristic.ble_devices_scanned"
+      name="BLE Devices Scanned">
+      <Requirement>Optional</Requirement>
+      <Properties>
+        <Read>Mandatory</Read>
+        <Write>Excluded</Write>
+        <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+        <SignedWrite>Excluded</SignedWrite>
+        <ReliableWrite>Excluded</ReliableWrite>
+        <Notify>Mandatory</Notify>
+        <Indicate>Excluded</Indicate>
+        <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+        <Broadcast>Excluded</Broadcast>
+        <ExtendedProperties>Excluded</ExtendedProperties>
+      </Properties>
+      <Descriptors>
+        <Descriptor
+          type="org.bluetooth.descriptor.gatt.client_characteristic_configuration"
+          name="Client Characteristic Configuration">
+          <Properties>
+            <Read>Mandatory</Read>
+            <Write>Mandatory</Write>
+          </Properties>
+        </Descriptor>
+        <Descriptor
+          type="com.hepia.descriptor.characteristic_user_description"
+          name="Characteristic User Description">
+          <Properties>
+            <Read>Mandatory</Read>
+            <Write>Mandatory</Write>
+          </Properties>
+        </Descriptor>
+      </Descriptors>
+    </Characteristic>
+    <Characteristic
+      type="com.hepia.characteristic.ble_scan_window"
+      name="BLE Scan Window">
+      <Requirement>Optional</Requirement>
+      <Properties>
+        <Read>Excluded</Read>
+        <Write>Mandatory</Write>
+        <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+        <SignedWrite>Excluded</SignedWrite>
+        <ReliableWrite>Excluded</ReliableWrite>
+        <Notify>Excluded</Notify>
+        <Indicate>Excluded</Indicate>
+        <WritableAuxiliaries>Excluded</WritableAuxiliaries>
+        <Broadcast>Excluded</Broadcast>
+        <ExtendedProperties>Excluded</ExtendedProperties>
+      </Properties>
+    </Characteristic>
+  </Characteristics>
+</Service>
