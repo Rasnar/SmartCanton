@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Service xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/service.xsd"
-  type="com.hepia.service.smartcanton_devbox_ble"
+  type="com.hepia.service.smartcanton_devbox_ble1"
   uuid="40000000-aaaa-bbbb-cccc-dddddddddddd"
   name="SmartCanton DevBox BLE">
   <Characteristics>
@@ -45,7 +45,7 @@
       name="BLE Scan Window">
       <Requirement>Optional</Requirement>
       <Properties>
-        <Read>Excluded</Read>
+        <Read>Mandatory</Read>
         <Write>Mandatory</Write>
         <WriteWithoutResponse>Excluded</WriteWithoutResponse>
         <SignedWrite>Excluded</SignedWrite>
@@ -56,6 +56,16 @@
         <Broadcast>Excluded</Broadcast>
         <ExtendedProperties>Excluded</ExtendedProperties>
       </Properties>
+      <Descriptors>
+        <Descriptor
+          type="com.hepia.descriptor.characteristic_user_description"
+          name="Characteristic User Description">
+          <Properties>
+            <Read>Mandatory</Read>
+            <Write>Mandatory</Write>
+          </Properties>
+        </Descriptor>
+      </Descriptors>
     </Characteristic>
   </Characteristics>
 </Service>

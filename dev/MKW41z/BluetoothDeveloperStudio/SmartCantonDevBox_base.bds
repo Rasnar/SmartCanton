@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<BDSProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="SmartCantonDevBox_base" LastModified="2017-12-25T18:12:30.2446132+01:00">
+<BDSProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="SmartCantonDevBox_base" LastModified="2017-12-25T20:55:49.7930027+01:00">
   <Namespace>com.hepia</Namespace>
   <BaseGuid>df900000-4a83-4c1f-bb33-b623b734763f</BaseGuid>
   <Profile Name="com.hepia.profile.smartcanton_devbox" XMLFile="Profiles\com.hepia.profile.smartcanton_devbox.xml" />
@@ -187,7 +187,7 @@
         </Characteristic>
       </CharacteristicFiles>
     </Service>
-    <Service UID="45754a99-3820-446e-99bf-88b81aefd59f" XMLFile="Services\com.hepia.service.smartcanton_devbox_bno0551.xml" UUIDMode="Full">
+    <Service UID="45754a99-3820-446e-99bf-88b81aefd59f" XMLFile="Services\com.hepia.service.smartcanton_devbox_bno055.xml" UUIDMode="Full">
       <UUIDDisplayMode>Full</UUIDDisplayMode>
       <CharacteristicFiles>
         <Characteristic UID="de58599c-b991-49a0-8a78-0697e3fcbdd8" XMLFile="Characteristics\com.hepia.characteristic.bno055_accelerometer.xml" UUIDMode="Full">
@@ -210,12 +210,12 @@
         </Characteristic>
         <Characteristic UID="686ff30e-fac2-4699-b440-0a00aeada498" XMLFile="Characteristics\com.hepia.characteristic.bno055_measure_delay.xml" UUIDMode="Full">
           <DescriptorFiles>
-            <Descriptor UID="309a6600-29df-44d3-a424-8c74971fae99" XMLFile="Descriptors\com.hepia.descriptor.characteristic_user_description.xml" UUIDMode="Short" />
+            <Descriptor UID="75154885-7270-4dc4-8431-7836ca08c0ae" XMLFile="Descriptors\com.hepia.descriptor.characteristic_user_description.xml" UUIDMode="Short" />
           </DescriptorFiles>
         </Characteristic>
       </CharacteristicFiles>
     </Service>
-    <Service UID="ec1798a2-4b3d-4324-904b-a76f309595d4" XMLFile="Services\com.hepia.service.smartcanton_devbox_ble.xml" UUIDMode="Full">
+    <Service UID="ec1798a2-4b3d-4324-904b-a76f309595d4" XMLFile="Services\com.hepia.service.smartcanton_devbox_ble1.xml" UUIDMode="Full">
       <UUIDDisplayMode>Full</UUIDDisplayMode>
       <CharacteristicFiles>
         <Characteristic UID="106f422a-e362-4ec3-a84d-96bd5a01d770" XMLFile="Characteristics\com.hepia.characteristic.ble_devices_scanned.xml" UUIDMode="Full">
@@ -224,7 +224,11 @@
             <Descriptor UID="dfce46f3-df98-4d90-b873-f39af1f19c91" XMLFile="Descriptors\com.hepia.descriptor.characteristic_user_description.xml" UUIDMode="Short" />
           </DescriptorFiles>
         </Characteristic>
-        <Characteristic UID="ba25b758-2d6a-4872-888c-4ff3f4b99bc7" XMLFile="Characteristics\com.hepia.characteristic.ble_scan_window.xml" UUIDMode="Full" />
+        <Characteristic UID="ba25b758-2d6a-4872-888c-4ff3f4b99bc7" XMLFile="Characteristics\com.hepia.characteristic.ble_scan_window.xml" UUIDMode="Full">
+          <DescriptorFiles>
+            <Descriptor UID="6aa908a0-6d66-4b61-a342-01e01c58ce4c" XMLFile="Descriptors\com.hepia.descriptor.characteristic_user_description.xml" UUIDMode="Short" />
+          </DescriptorFiles>
+        </Characteristic>
       </CharacteristicFiles>
     </Service>
   </ServiceFiles>
