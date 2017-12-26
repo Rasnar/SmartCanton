@@ -63,7 +63,7 @@ void Bno055_Task(osaTaskParam_t argument)
 
 		rslt += bno055_set_operation_mode(BNO055_OPERATION_MODE_AMG);
 		rslt += bno055_convert_float_accel_xyz_mg(&bno055Data->accel_xyz);
-		rslt += bno055_convert_float_gyro_x_dps(&bno055Data->gyro_xyz);
+		rslt += bno055_convert_float_gyro_xyz_dps(&bno055Data->gyro_xyz);
 		rslt += bno055_convert_float_mag_xyz_uT(&bno055Data->mag_xyz);
 
 		rslt += bno055_set_operation_mode(BNO055_OPERATION_MODE_NDOF);
