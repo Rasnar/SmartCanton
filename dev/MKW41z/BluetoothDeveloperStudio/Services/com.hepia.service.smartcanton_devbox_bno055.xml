@@ -35,7 +35,7 @@
           name="Characteristic User Description">
           <Properties>
             <Read>Mandatory</Read>
-            <Write>Mandatory</Write>
+            <Write>Excluded</Write>
           </Properties>
         </Descriptor>
       </Descriptors>
@@ -70,7 +70,7 @@
           name="Characteristic User Description">
           <Properties>
             <Read>Mandatory</Read>
-            <Write>Mandatory</Write>
+            <Write>Excluded</Write>
           </Properties>
         </Descriptor>
       </Descriptors>
@@ -105,7 +105,7 @@
           name="Characteristic User Description">
           <Properties>
             <Read>Mandatory</Read>
-            <Write>Mandatory</Write>
+            <Write>Excluded</Write>
           </Properties>
         </Descriptor>
       </Descriptors>
@@ -132,7 +132,7 @@
           name="Characteristic User Description">
           <Properties>
             <Read>Mandatory</Read>
-            <Write>Mandatory</Write>
+            <Write>Excluded</Write>
           </Properties>
         </Descriptor>
       </Descriptors>
