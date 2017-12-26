@@ -106,8 +106,6 @@ extern "C" {
 *
 * \param[in]    pServiceConfig  Pointer to structure that contains server 
 *                               configuration information.
-* \param[in]    pServiceConfig  Pointer to structure that contains server
-*                               configuration information.
 *
 * \return       gBleSuccess_c or error.
 ************************************************************************************/

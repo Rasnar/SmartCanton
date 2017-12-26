@@ -64,8 +64,9 @@
 /* Profile / Services */
 #include "battery_interface.h"
 #include "device_info_interface.h"
-#include <smartcanton_devbox_lora_interface.h>
-#include <smartcanton_devbox_gps_interface.h>
+#include "smartcanton_devbox_lora_interface.h"
+#include "smartcanton_devbox_gps_interface.h"
+#include "smartcanton_devbox_bme680_interface.h"
 #include "lorawan_controller.h"
 
 #include "pin_mux.h"
@@ -134,6 +135,9 @@ static basConfig_t basServiceConfig =
 
 static scdbGPSConfig_t scdbGPSServiceConfig =
 { service_smartcanton_devbox_gps };
+
+static scdbBme680Config_t scdbBme680ServiceConfig =
+{ service_smartcanton_devbox_bme680 };
 
 static lorawanControllerConfiguration_t loraConfig;
 static scdbLoRaConfig_t scdbLoRaServiceConfig =
@@ -282,9 +286,9 @@ void BleApp_GenericCallback(gapGenericEvent_t* pGenericEvent)
 	}
 		break;
 
-		/**
-		 * TODO : Only here for developpement. No need to press button to start advertissements
-		 */
+	/**
+	 * TODO : Only here for developpement. No need to press button to start advertissements
+	 */
 	case gAdvertisingDataSetupComplete_c:
 	{
 		BleApp_Start();
@@ -333,6 +337,8 @@ static void BleApp_Config()
 	ScDbLoRa_Start(&scdbLoRaServiceConfig);
 
 	ScDbGPS_Start(&scdbGPSServiceConfig);
+
+	ScDbBme680_Start(&scdbBme680ServiceConfig);
 
 	/* Allocate application timers */
 	mAdvTimerId = TMR_AllocateTimer();
@@ -469,6 +475,7 @@ static void BleApp_ConnectionCallback(deviceId_t peerDeviceId, gapConnectionEven
 		Bas_Subscribe(peerDeviceId);
 		ScDbLoRa_Subscribe(peerDeviceId);
 		ScDbGPS_Subscribe(peerDeviceId);
+		ScDbBme680_Subscribe(peerDeviceId);
 
 #if (!cPWR_UsePowerDownMode)  
 		/* UI */
@@ -499,6 +506,7 @@ static void BleApp_ConnectionCallback(deviceId_t peerDeviceId, gapConnectionEven
 		Bas_Unsubscribe();
 		ScDbLoRa_Unsubscribe();
 		ScDbGPS_Unsubscribe();
+		ScDbBme680_Unsubscribe();
 
 		mPeerDeviceId = gInvalidDeviceId_c;
 
@@ -585,15 +593,24 @@ static void BleApp_GattServerCallback(deviceId_t deviceId, gattServerEvent_t* pS
 		handle = pServerEvent->eventData.attributeWrittenEvent.handle;
 		status = gAttErrCodeNoError_c;
 
+		/*
+		 * To be sure to have the last value of the state we ask directly the
+		 * LoRaWAN module to know the state of the connection.
+		 * TODO: It's not a clean thing to do. Event if it's only a read and
+		 * the read is thread safe, we should only access the LoRaWAN module
+		 * inside the LoRaWAN task. Should be modified in the futur to be
+		 * integrated to the LoRaWAN task.
+		 */
 		if (handle == value_lora_network_join_status)
 		{
 			char strJoinStatus[32];
 			uint8_t joinStatus = 0;
 			uint8_array_t joinStatusArray =
-			{ .arrayLength = 1, .pUint8_array = &joinStatus };
+				{ .arrayLength = 1,
+				  .pUint8_array = &joinStatus };
 			int bytesRead = lorawan_controller_get_cmd(
-			CMD_GET_NETWORK_JOIN_STATUS
-			, strJoinStatus, sizeof(strJoinStatus));
+					CMD_GET_NETWORK_JOIN_STATUS,
+					strJoinStatus, sizeof(strJoinStatus));
 			if (bytesRead < 0)
 			{
 				break;
@@ -787,6 +804,9 @@ void DevBox_App_Task(osaTaskParam_t argument)
 
 				/* Destroy tmp buffer allocated by the bno055_task */
 				vPortFree(bme680Data_tmp);
+
+				ScDbBme680_InstantValueAll(service_smartcanton_devbox_bme680, &bme680Data);
+
 			}
 		}
 
@@ -852,7 +872,7 @@ void DevBox_App_Task(osaTaskParam_t argument)
 				{
 					cayenneLPPaddTemperature(4, bme680Data.temperature);
 					cayenneLPPaddRelativeHumidity(5, bme680Data.humidity);
-					cayenneLPPaddBarometricPressure(6, bme680Data.pressure / 100.0);
+					cayenneLPPaddBarometricPressure(6, bme680Data.pressure);
 					cayenneLPPaddAnalogInput(7, bme680Data.iaq);
 					bme680Data = EmptyBme680;
 				}

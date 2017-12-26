@@ -45,14 +45,14 @@ void output_ready(int64_t timestamp, float iaq, uint8_t iaq_accuracy, float temp
 
 	bme680Data = pvPortMalloc(sizeof(bme680Data_t));
 
-	bme680Data->iaq=iaq;
-	bme680Data->iaq_accuracy=iaq_accuracy;
-	bme680Data->temperature=temperature;
-	bme680Data->humidity=humidity;
-	bme680Data->pressure=pressure;
-	bme680Data->raw_temperature=raw_temperature;
-	bme680Data->raw_humidity=raw_humidity;
-	bme680Data->gas=gas;
+	bme680Data->iaq = iaq;
+	bme680Data->iaq_accuracy = iaq_accuracy;
+	bme680Data->temperature = temperature;
+	bme680Data->humidity = humidity;
+	bme680Data->pressure = pressure / 100; // Convert Pa to hPa
+	bme680Data->raw_temperature = raw_temperature;
+	bme680Data->raw_humidity = raw_humidity;
+	bme680Data->gas = gas;
 
 	OSA_MsgQPut(gBme680NewMessageMeasureQ, &bme680Data);
 	/* Inform the DevBox Task that she can read the data available */
