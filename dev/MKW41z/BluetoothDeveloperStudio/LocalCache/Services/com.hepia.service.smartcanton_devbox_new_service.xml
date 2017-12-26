@@ -2,7 +2,23 @@
 <Service xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/service.xsd"
   type="com.hepia.service.smartcanton_devbox_new_service"
-  uuid="df90e2c8-4a83-4c1f-bb33-b623b734763f"
+  uuid="df90a176-4a83-4c1f-bb33-b623b734763f"
   name="SmartCanton DevBox new service">
-  <Characteristics />
+  <Characteristics>
+    <Characteristic
+      type="com.hepia.characteristic.smartcanton_devbox_new_service_new_characteristic"
+      name="SmartCanton DevBox new service new characteristic">
+      <Requirement>Optional</Requirement>
+      <Properties>
+        <Read>Excluded</Read>
+        <Write>Excluded</Write>
+        <WriteWithoutResponse>Excluded</WriteWithoutResponse>
+        <SignedWrite>Excluded</SignedWrite>
+        <ReliableWrite>Excluded</ReliableWrite>
+        <Notify>Excluded</Notify>
+        <Indicate>Excluded</Indicate>
+        <Broadcast>Excluded</Broadcast>
+      </Properties>
+    </Characteristic>
+  </Characteristics>
 </Service>

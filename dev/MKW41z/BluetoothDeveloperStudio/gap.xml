@@ -17,7 +17,7 @@
   <AdvertisingChannel38>true</AdvertisingChannel38>
   <AdvertisingChannel39>true</AdvertisingChannel39>
   <AdvertisingPolicy>0</AdvertisingPolicy>
-  <AssociationModel>0</AssociationModel>
+  <AssociationModel>2</AssociationModel>
   <SecurityMode>2</SecurityMode>
   <AddressType>0</AddressType>
   <PeripheralPrivacy>false</PeripheralPrivacy>
@@ -88,6 +88,27 @@
       <SelectedSolicitation>false</SelectedSolicitation>
       <Name>SmartCanton DevBox GPS</Name>
       <UUID>10000000-aaaa-bbbb-cccc-dddddddddddd</UUID>
+    </GAPServiceSettings>
+    <GAPServiceSettings>
+      <SelectedAdvertise>false</SelectedAdvertise>
+      <SelectedData>false</SelectedData>
+      <SelectedSolicitation>false</SelectedSolicitation>
+      <Name>SmartCanton DevBox BME680</Name>
+      <UUID>20000000-aaaa-bbbb-cccc-dddddddddddd</UUID>
+    </GAPServiceSettings>
+    <GAPServiceSettings>
+      <SelectedAdvertise>false</SelectedAdvertise>
+      <SelectedData>false</SelectedData>
+      <SelectedSolicitation>false</SelectedSolicitation>
+      <Name>SmartCanton DevBox BNO055</Name>
+      <UUID>30000000-aaaa-bbbb-cccc-dddddddddddd</UUID>
+    </GAPServiceSettings>
+    <GAPServiceSettings>
+      <SelectedAdvertise>false</SelectedAdvertise>
+      <SelectedData>false</SelectedData>
+      <SelectedSolicitation>false</SelectedSolicitation>
+      <Name>SmartCanton DevBox BLE</Name>
+      <UUID>40000000-aaaa-bbbb-cccc-dddddddddddd</UUID>
     </GAPServiceSettings>
   </Services>
 </GAPSettings>
