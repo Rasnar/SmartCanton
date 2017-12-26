@@ -52,7 +52,6 @@ import com.idevicesinc.sweetblue.BleDevice;
 import com.idevicesinc.sweetblue.BleDeviceState;
 import com.idevicesinc.sweetblue.BleManager;
 import com.idevicesinc.sweetblue.BleManagerConfig;
-import com.idevicesinc.sweetblue.BleNodeConfig;
 import com.idevicesinc.sweetblue.DeviceStateListener;
 import com.idevicesinc.sweetblue.utils.BluetoothEnabler;
 import com.master_hesso.smartcantonmanager.R;
@@ -64,7 +63,10 @@ import com.master_hesso.smartcantonmanager.utils.FormatConversions;
 import com.master_hesso.smartcantonmanager.utils.SmartCantonDevBoxBLEServices;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.Date;
+import java.util.Locale;
 
 import retrofit2.adapter.rxjava.HttpException;
 import rx.android.schedulers.AndroidSchedulers;
@@ -135,6 +137,7 @@ public class BLEConnectFragment extends Fragment {
     private TextView tvAppKeyServ;
     private TextView tvDeviceOwnerTitleServ;
     private TextView tvPublicIdServ;
+
     private CardView cvDeviceBLELora;
     private TextView tvCvTitleBleLora;
     private ImageButton btnBleLoraDownloadDevice;
@@ -144,6 +147,7 @@ public class BLEConnectFragment extends Fragment {
     private TextView tvLoraAppEuiDevice;
     private TextView tvLoraNetworkJoinStatusDevice;
     private TextView tvLoraDeviceAddressDevice;
+
     private CardView cvDeviceBleGps;
     private TextView tvCvTitleBleGps;
     private ImageButton btnBleGpsDownloadDevice;
@@ -155,6 +159,39 @@ public class BLEConnectFragment extends Fragment {
     private TextView tvGpsServiceCourseDevice;
     private TextView tvGpsServiceDateDevice;
     private TextView tvGpsServiceTimeDevice;
+
+    private CardView cardBleBme680;
+    private TextView tvCvTitleBme680;
+    private RelativeLayout rlBleBme680NotifsSwitch;
+    private Switch swBme680EnableNotifications;
+    private TextView tvBme680MessageDevice;
+    private TextView tvBme680ServiceIaqDevice;
+    private TextView tvBme680ServiceIaqAccuracyDevice;
+    private TextView tvBme680ServiceTemperatureDevice;
+    private TextView tvBme680ServiceHumidityDevice;
+    private TextView tvBme680ServicePressureDevice;
+    private TextView tvBme680ServiceRawTemperatureDevice;
+    private TextView tvBme680ServiceRawHumidityDevice;
+    private TextView tvBme680ServiceRawGasDevice;
+    private TextView tvBno055ServiceMeasureDelayDevice;
+
+    private CardView cardBleBno055;
+    private TextView tvCvTitleBno055;
+    private RelativeLayout rlBleBno055NotifsSwitch;
+    private Switch swBno055EnableNotifications;
+    private TextView tvBno055MessageDevice;
+    private TextView tvBno055ServiceAccelerometerDevice;
+    private TextView tvBno055ServiceGyroscopeDevice;
+    private TextView tvBno055ServiceMagnetometerDevice;
+
+    private CardView cardBleScan;
+    private TextView tvCvTitleBleScan;
+    private RelativeLayout rlBleScanNotifsSwitch;
+    private Switch swBleScanEnableNotifications;
+    private TextView tvBleScanMessageDevice;
+    private TextView tvBleScanServiceDevicesScannedDevice;
+    private TextView tvBleScanServiceScanWindowDevice;
+
     private Button btnBleConnectDevice;
 
     View.OnClickListener listenerConnectMode = view1 -> {
@@ -163,7 +200,6 @@ public class BLEConnectFragment extends Fragment {
                 bleConnectionProgressDialog.dismiss();
                 BLEConnectFragment.this.showSnackBarMessage("Connection fail event with number : "
                         + connectionFailEvent.bondFailReason());
-//                mBleDevice.unbond();
                 mBleDevice.disconnect();
                 return null;
             });
@@ -174,7 +210,6 @@ public class BLEConnectFragment extends Fragment {
                     bleConnectionProgressDialog.dismiss();
                     BLEConnectFragment.this.showSnackBarMessage("Connection fail event with number : "
                             + connectionFailEvent.bondFailReason());
-//                    mBleDevice.unbond();
                     mBleDevice.disconnect();
                     return null;
                 });
@@ -183,7 +218,6 @@ public class BLEConnectFragment extends Fragment {
     };
 
     View.OnClickListener listenerDisconnectMode = view1 -> {
-//        mBleDevice.unbond();
         mBleDevice.disconnect();
     };
 
@@ -210,8 +244,14 @@ public class BLEConnectFragment extends Fragment {
                 Log.i(TAG, "DISCONNECTED");
                 tvGpsMessageDevice.setVisibility(View.VISIBLE);
                 tvLoraMessageDevice.setVisibility(View.VISIBLE);
+                tvBme680MessageDevice.setVisibility(View.VISIBLE);
+                tvBno055MessageDevice.setVisibility(View.VISIBLE);
+                tvBleScanMessageDevice.setVisibility(View.VISIBLE);
                 setGpsCardFieldsVisibility(View.GONE);
                 setLoraCardFieldsVisibility(View.GONE);
+                setBme680CardFieldsVisibility(View.GONE);
+                setBno055CardFieldsVisibility(View.GONE);
+                setBleScannerCardFieldsVisibility(View.GONE);
                 setBtnBleConnectDeviceToConnectMode();
             }
             if (e.didEnter(BleDeviceState.UNBONDED)) {
@@ -255,12 +295,19 @@ public class BLEConnectFragment extends Fragment {
 
                 bleConnectionProgressDialog.dismiss();
 
+                // TODO : Only show supported services cards
 //                e.device().getNativeServices_List().contains()
 
                 tvGpsMessageDevice.setVisibility(View.GONE);
                 tvLoraMessageDevice.setVisibility(View.GONE);
+                tvBme680MessageDevice.setVisibility(View.GONE);
+                tvBno055MessageDevice.setVisibility(View.GONE);
+                tvBleScanMessageDevice.setVisibility(View.GONE);
                 setGpsCardFieldsVisibility(View.VISIBLE);
                 setLoraCardFieldsVisibility(View.VISIBLE);
+                setBme680CardFieldsVisibility(View.VISIBLE);
+                setBno055CardFieldsVisibility(View.VISIBLE);
+                setBleScannerCardFieldsVisibility(View.VISIBLE);
 
                 /*--------------------------------------
                  *      LoRa Service
@@ -356,9 +403,6 @@ public class BLEConnectFragment extends Fragment {
         });
 
         btnBleLoraUploadDevice.setOnClickListener(view16 -> {
-            // TODO : Implement a dialog to create or modify a device on the server
-
-
             writeBleLoraCharacteristicsFromServer();
             showBleReadWriteProgressDialog("Writing LoRa configuration",
                     "Please be patient, the write command can take a few seconds to finish his process...",
@@ -378,7 +422,6 @@ public class BLEConnectFragment extends Fragment {
                     GPS_BLE_SERVICE_NUMBER_OF_READ_CHARACTERISTICS);
         });
 
-
         swGpsEnableNotifications.setOnClickListener(view12 -> {
             if (swGpsEnableNotifications.isChecked()) {
                 enableBleGpsNotifications();
@@ -387,12 +430,36 @@ public class BLEConnectFragment extends Fragment {
             }
         });
 
+        swBme680EnableNotifications.setOnClickListener(view12 -> {
+            if (swBme680EnableNotifications.isChecked()) {
+                enableBleBme680Notifications();
+            } else {
+                disableBleBme680Notifications();
+            }
+        });
+
+        swBno055EnableNotifications.setOnClickListener(view12 -> {
+            if (swBno055EnableNotifications.isChecked()) {
+                enableBleBno055Notifications();
+            } else {
+                disableBleBno055Notifications();
+            }
+        });
+
+        swBleScanEnableNotifications.setOnClickListener(view12 -> {
+            if (swBleScanEnableNotifications.isChecked()) {
+                enableBleScannerNotifications();
+            } else {
+                disableBleScannerNotifications();
+            }
+        });
+
         return view;
     }
 
 
     private void showBleReadWriteProgressDialog(String title, String message, int maxValue) {
-        if(bleReadWriteProgressDialog != null) {
+        if (bleReadWriteProgressDialog != null) {
             bleReadWriteProgressDialog.dismiss();
         }
 
@@ -445,14 +512,14 @@ public class BLEConnectFragment extends Fragment {
         passKey.setTextColor(getResources().getColor(R.color.colorAccent));
         passKey.setTypeface(passKey.getTypeface(), Typeface.BOLD);
 
-        message.setPadding((int)getResources().getDimension(R.dimen.card_padding),
-                (int)getResources().getDimension(R.dimen.card_padding),
-                (int)getResources().getDimension(R.dimen.card_padding),
-                (int)getResources().getDimension(R.dimen.card_padding));
-        passKey.setPadding((int)getResources().getDimension(R.dimen.card_padding),
-                (int)getResources().getDimension(R.dimen.card_padding),
-                (int)getResources().getDimension(R.dimen.card_padding),
-                (int)getResources().getDimension(R.dimen.card_padding));
+        message.setPadding((int) getResources().getDimension(R.dimen.card_padding),
+                (int) getResources().getDimension(R.dimen.card_padding),
+                (int) getResources().getDimension(R.dimen.card_padding),
+                (int) getResources().getDimension(R.dimen.card_padding));
+        passKey.setPadding((int) getResources().getDimension(R.dimen.card_padding),
+                (int) getResources().getDimension(R.dimen.card_padding),
+                (int) getResources().getDimension(R.dimen.card_padding),
+                (int) getResources().getDimension(R.dimen.card_padding));
 
         linearLayout.addView(message);
         linearLayout.addView(passKey);
@@ -475,7 +542,7 @@ public class BLEConnectFragment extends Fragment {
     }
 
     private void showBleConnectionProgressDialog() {
-        if(bleConnectionProgressDialog != null) {
+        if (bleConnectionProgressDialog != null) {
             bleConnectionProgressDialog.dismiss();
         }
 
@@ -547,11 +614,48 @@ public class BLEConnectFragment extends Fragment {
         tvGpsServiceDateDevice = view.findViewById(R.id.tv_gps_service_date_device);
         tvGpsServiceTimeDevice = view.findViewById(R.id.tv_gps_service_time_device);
 
-        /* Start the app by masking the 2 cards
+        cardBleBme680 = view.findViewById(R.id.card_ble_bme680);
+        tvCvTitleBme680 = view.findViewById(R.id.tv_cv_title_bme680);
+        rlBleBme680NotifsSwitch = view.findViewById(R.id.rl_ble_bme680_notifs_switch);
+        swBme680EnableNotifications = view.findViewById(R.id.sw_bme680_enable_notifications);
+        tvBme680MessageDevice = view.findViewById(R.id.tv_bme680_message_device);
+        tvBme680ServiceIaqDevice = view.findViewById(R.id.tv_bme680_service_iaq_device);
+        tvBme680ServiceIaqAccuracyDevice = view.findViewById(R.id.tv_bme680_service_iaq_accuracy_device);
+        tvBme680ServiceTemperatureDevice = view.findViewById(R.id.tv_bme680_service_temperature_device);
+        tvBme680ServiceHumidityDevice = view.findViewById(R.id.tv_bme680_service_humidity_device);
+        tvBme680ServicePressureDevice = view.findViewById(R.id.tv_bme680_service_pressure_device);
+        tvBme680ServiceRawTemperatureDevice = view.findViewById(R.id.tv_bme680_service_raw_temperature_device);
+        tvBme680ServiceRawHumidityDevice = view.findViewById(R.id.tv_bme680_service_raw_humidity_device);
+        tvBme680ServiceRawGasDevice = view.findViewById(R.id.tv_bme680_service_raw_gas_device);
+
+        cardBleBno055 = view.findViewById(R.id.card_ble_bno055);
+        tvCvTitleBno055 = view.findViewById(R.id.tv_cv_title_bno055);
+        rlBleBno055NotifsSwitch = view.findViewById(R.id.rl_ble_bno055_notifs_switch);
+        swBno055EnableNotifications = view.findViewById(R.id.sw_bno055_enable_notifications);
+        tvBno055MessageDevice = view.findViewById(R.id.tv_bno055_message_device);
+        tvBno055ServiceAccelerometerDevice = view.findViewById(R.id.tv_bno055_service_accelerometer_device);
+        tvBno055ServiceGyroscopeDevice = view.findViewById(R.id.tv_bno055_service_gyroscope_device);
+        tvBno055ServiceMagnetometerDevice = view.findViewById(R.id.tv_bno055_service_magnetometer_device);
+        tvBno055ServiceMeasureDelayDevice = view.findViewById(R.id.tv_bno055_service_measure_delay_device);
+
+        cardBleScan = view.findViewById(R.id.card_ble_scan);
+        tvCvTitleBleScan = view.findViewById(R.id.tv_cv_title_ble_scan);
+        rlBleScanNotifsSwitch = view.findViewById(R.id.rl_ble_scan_notifs_switch);
+        swBleScanEnableNotifications = view.findViewById(R.id.sw_ble_scan_enable_notifications);
+        tvBleScanMessageDevice = view.findViewById(R.id.tv_ble_scan_message_device);
+        tvBleScanServiceDevicesScannedDevice = view.findViewById(R.id.tv_ble_scan_service_devices_scanned_device);
+        tvBleScanServiceScanWindowDevice = view.findViewById(R.id.tv_ble_scan_service_scan_window_device);
+
+
+        /* Start the app by masking the 5 cards
          * If the device as been found on the server, the cards will be shown
          */
         setGpsCardFieldsVisibility(View.GONE);
         setLoraCardFieldsVisibility(View.GONE);
+        setBme680CardFieldsVisibility(View.GONE);
+        setBno055CardFieldsVisibility(View.GONE);
+        setBleScannerCardFieldsVisibility(View.GONE);
+
     }
 
     private void setGpsCardFieldsVisibility(int visibility) {
@@ -564,6 +668,34 @@ public class BLEConnectFragment extends Fragment {
         tvGpsServiceTimeDevice.setVisibility(visibility);
     }
 
+    private void setBme680CardFieldsVisibility(int visibility) {
+        rlBleBme680NotifsSwitch.setVisibility(visibility);
+        tvBme680ServiceIaqDevice.setVisibility(visibility);
+        tvBme680ServiceIaqAccuracyDevice.setVisibility(visibility);
+        tvBme680ServiceTemperatureDevice.setVisibility(visibility);
+        tvBme680ServiceHumidityDevice.setVisibility(visibility);
+        tvBme680ServicePressureDevice.setVisibility(visibility);
+        tvBme680ServiceRawTemperatureDevice.setVisibility(visibility);
+        tvBme680ServiceRawHumidityDevice.setVisibility(visibility);
+        tvBme680ServiceRawGasDevice.setVisibility(visibility);
+        tvBno055ServiceMeasureDelayDevice.setVisibility(visibility);
+    }
+
+    private void setBno055CardFieldsVisibility(int visibility) {
+        rlBleBno055NotifsSwitch.setVisibility(visibility);
+        swBno055EnableNotifications.setVisibility(visibility);
+        tvBno055ServiceAccelerometerDevice.setVisibility(visibility);
+        tvBno055ServiceGyroscopeDevice.setVisibility(visibility);
+        tvBno055ServiceMagnetometerDevice.setVisibility(visibility);
+    }
+
+    private void setBleScannerCardFieldsVisibility(int visibility) {
+
+        rlBleScanNotifsSwitch.setVisibility(visibility);
+        tvBleScanServiceDevicesScannedDevice.setVisibility(visibility);
+        tvBleScanServiceScanWindowDevice.setVisibility(visibility);
+    }
+
     private void setLoraCardFieldsVisibility(int visibility) {
         tvLoraDevEuiDevice.setVisibility(visibility);
         tvLoraAppEuiDevice.setVisibility(visibility);
@@ -573,16 +705,16 @@ public class BLEConnectFragment extends Fragment {
         tvLoraDeviceAddressDevice.setVisibility(visibility);
     }
 
-    private void setBtnBleConnectDeviceToConnectMode(){
+    private void setBtnBleConnectDeviceToConnectMode() {
         btnBleConnectDevice.setText(R.string.ble_btn_default_connect_msg);
-        btnBleConnectDevice.setCompoundDrawablesWithIntrinsicBounds( 0, 0,
+        btnBleConnectDevice.setCompoundDrawablesWithIntrinsicBounds(0, 0,
                 R.drawable.ic_bluetooth_connect_white, 0);
         btnBleConnectDevice.setOnClickListener(listenerConnectMode);
     }
 
-    private void setBtnBleConnectDeviceToDisconnectMode(){
+    private void setBtnBleConnectDeviceToDisconnectMode() {
         btnBleConnectDevice.setText(R.string.ble_btn_disconnect_msg);
-        btnBleConnectDevice.setCompoundDrawablesWithIntrinsicBounds( 0, 0,
+        btnBleConnectDevice.setCompoundDrawablesWithIntrinsicBounds(0, 0,
                 R.drawable.ic_bluetooth_disconnect_white, 0);
         btnBleConnectDevice.setOnClickListener(listenerDisconnectMode);
     }
@@ -726,7 +858,6 @@ public class BLEConnectFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-//        mBleDevice.unbond();
         mBleDevice.disconnect();
     }
 
@@ -796,22 +927,23 @@ public class BLEConnectFragment extends Fragment {
     }
 
     private void disableBleGpsNotifications() {
-        mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
+
+        mBleDevice.disableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_POSITION);
 
-        mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
+        mBleDevice.disableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SPEED);
 
-        mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
+        mBleDevice.disableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_COURSE);
 
-        mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
+        mBleDevice.disableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_DATE);
 
-        mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
+        mBleDevice.disableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_DATE);
 
-        mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
+        mBleDevice.disableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_TIME);
     }
 
@@ -969,5 +1101,206 @@ public class BLEConnectFragment extends Fragment {
                     }
                     bleReadWriteProgressDialog.incrementProgressBy(1);
                 });
+    }
+
+    private void enableBleBme680Notifications() {
+        mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_IAQ_ACCURACY,
+                e1 -> {
+                    if (e1.wasSuccess()) {
+                        if (e1.data().length > 0)
+                            tvBme680ServiceIaqAccuracyDevice.setText(String.format(Locale.getDefault(),
+                                    "IAQ accuracy : %d", e1.data_byte()));
+                    }
+                });
+
+        mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_IAQ,
+                e1 -> {
+                    if (e1.wasSuccess()) {
+                        if (e1.data().length == 4) { // Only display if it can be transformed to float
+                            tvBme680ServiceIaqDevice.setText(String.format(Locale.getDefault(),
+                                    "IAQ : %.2f",
+                                    ByteBuffer.wrap(e1.data()).order(ByteOrder.LITTLE_ENDIAN).getFloat()));
+                        }
+                    }
+                });
+
+        mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_TEMPERATURE,
+                e1 -> {
+                    if (e1.wasSuccess()) {
+                        if (e1.data().length == 4) { // Only display if it can be transformed to float
+                            tvBme680ServiceTemperatureDevice.setText(
+                                    String.format(Locale.getDefault(), "Temperature : %.2f °C",
+                                            ByteBuffer.wrap(e1.data()).
+                                                    order(ByteOrder.LITTLE_ENDIAN).getFloat()));
+                        }
+                    }
+                });
+
+        mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_HUMIDITY,
+                e1 -> {
+                    if (e1.wasSuccess()) {
+                        if (e1.data().length == 4) { // Only display if it can be transformed to float
+                            tvBme680ServiceHumidityDevice.setText(
+                                    String.format(Locale.getDefault(), "Humidity : %.2f %%",
+                                            ByteBuffer.wrap(e1.data()).
+                                                    order(ByteOrder.LITTLE_ENDIAN).getFloat()));
+                        }
+                    }
+                });
+
+        mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_PRESSURE,
+                e1 -> {
+                    if (e1.wasSuccess()) {
+                        if (e1.data().length == 4) { // Only display if it can be transformed to float
+                            tvBme680ServicePressureDevice.setText(
+                                    String.format(Locale.getDefault(), "Pressure : %.2f hPa",
+                                            ByteBuffer.wrap(e1.data()).
+                                                    order(ByteOrder.LITTLE_ENDIAN).getFloat()));
+                        }
+                    }
+                });
+
+        mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_RAW_TEMPERATURE,
+                e1 -> {
+                    if (e1.wasSuccess()) {
+                        if (e1.data().length == 4) { // Only display if it can be transformed to float
+                            tvBme680ServiceRawTemperatureDevice.setText(
+                                    String.format(Locale.getDefault(), "Raw temperature : %.2f °C",
+                                            ByteBuffer.wrap(e1.data()).
+                                                    order(ByteOrder.LITTLE_ENDIAN).getFloat()));
+                        }
+                    }
+                });
+
+        mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_RAW_HUDMITIY,
+                e1 -> {
+                    if (e1.wasSuccess()) {
+                        if (e1.data().length == 4) { // Only display if it can be transformed to float
+                            tvBme680ServiceRawHumidityDevice.setText(
+                                    String.format(Locale.getDefault(), "Raw humidity : %.2f %%",
+                                            ByteBuffer.wrap(e1.data()).
+                                                    order(ByteOrder.LITTLE_ENDIAN).getFloat()));
+                        }
+                    }
+                });
+
+        mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_RAW_GAS,
+                e1 -> {
+                    if (e1.wasSuccess()) {
+                        if (e1.data().length == 4) { // Only display if it can be transformed to float
+                            tvBme680ServiceRawGasDevice.setText(
+                                    String.format(Locale.getDefault(), "Gas resistance : %.0f Ω",
+                                            ByteBuffer.wrap(e1.data()).
+                                                    order(ByteOrder.LITTLE_ENDIAN).getFloat()));
+                        }
+                    }
+                });
+    }
+
+    private void disableBleBme680Notifications() {
+        mBleDevice.disableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_IAQ_ACCURACY);
+
+        mBleDevice.disableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_IAQ);
+
+        mBleDevice.disableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_TEMPERATURE);
+
+        mBleDevice.disableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_HUMIDITY);
+
+        mBleDevice.disableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_PRESSURE);
+
+        mBleDevice.disableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_RAW_TEMPERATURE);
+
+        mBleDevice.disableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_RAW_HUDMITIY);
+
+        mBleDevice.disableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_RAW_GAS);
+    }
+
+    private void writeBleBme680MeasureDelay() {
+        // TODO : pop up dialog to inter delay ms for the measure
+//        mBleDevice.write(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_SERVICE,
+//                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_MEASURE_DELAY,
+//                FormatConversions.hexStringToByteArray(smartCantonDevBoxDevice.getAppEui()),
+//                e1 -> {
+//                    if (!e1.wasSuccess()) {
+//                        showSnackBarMessage(String.format("Error while writing characteristics %s",
+//                                "BNO055 MEASURE DELAY"));
+//                    }
+//                });
+    }
+
+    private void enableBleBno055Notifications() {
+        mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_ACCELEROMETER,
+                e1 -> {
+                    if (e1.wasSuccess()) {
+                        if (e1.data_utf8().length() > 0) {
+
+                        }
+                    }
+                });
+
+        mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_GYROSCOPE,
+                e1 -> {
+                    if (e1.wasSuccess()) {
+                        if (e1.data_utf8().length() > 0) {
+
+                        }
+                    }
+                });
+
+        mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_MAGNETOMETER,
+                e1 -> {
+                    if (e1.wasSuccess()) {
+                        if (e1.data_utf8().length() > 0) {
+
+                        }
+                    }
+                });
+    }
+
+    private void disableBleBno055Notifications() {
+        mBleDevice.disableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_ACCELEROMETER);
+
+        mBleDevice.disableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_GYROSCOPE);
+
+        mBleDevice.disableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_MAGNETOMETER);
+    }
+
+    private void enableBleScannerNotifications() {
+        mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BLE_SCAN_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BLE_DEVICES_SCANNED,
+                e1 -> {
+                    if (e1.wasSuccess()) {
+                        if (e1.data_utf8().length() > 0) {
+
+                        }
+                    }
+                });
+    }
+
+    private void disableBleScannerNotifications() {
+        mBleDevice.disableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BLE_SCAN_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BLE_DEVICES_SCANNED);
     }
 }

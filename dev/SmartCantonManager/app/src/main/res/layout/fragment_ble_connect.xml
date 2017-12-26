@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:fillViewport="true">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin">
+        android:paddingBottom="@dimen/activity_vertical_margin">
+        <!--android:paddingLeft="@dimen/activity_horizontal_margin"-->
+        <!--android:paddingRight="@dimen/activity_horizontal_margin">-->
         <!--android:paddingTop="@dimen/activity_vertical_margin"-->
 
         <Button
@@ -545,6 +545,459 @@
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textColor="@color/colorTextPrimaryLightDark" />
 
+                </RelativeLayout>
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/card_ble_bme680"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/card_ble_gps"
+            android:layout_marginTop="@dimen/child_margin_top"
+            android:textAlignment="center"
+            card_view:cardBackgroundColor="@color/colorCardViewBackground"
+            card_view:cardCornerRadius="8dp">
+            <!--card_view:contentPadding="25dp"-->
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:id="@+id/rl_cv_title_ble_bme680"
+                    android:layout_width="match_parent"
+                    android:background="@color/colorPrimaryDark"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/tv_cv_title_bme680"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:background="@color/colorPrimaryDark"
+                        android:text="BLE BME680 Service"
+                        android:textAlignment="center"
+                        android:gravity="center"
+                        android:padding="@dimen/card_view_title_textview_padding"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:textColor="@color/colorTextPrimary"
+                        android:textStyle="bold" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rl_ble_bme680_notifs_switch"
+                    android:layout_below="@+id/rl_cv_title_ble_bme680"
+                    android:layout_width="match_parent"
+                    android:background="@color/colorPrimaryDark"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/tv_bme680_enable_notifications"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:text="BLE Notifications"
+                        android:textAlignment="center"
+                        android:gravity="center"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/colorAccent"
+                        android:textStyle="bold"
+                        tools:ignore="RtlSymmetry" />
+                    <!--android:paddingTop="@dimen/card_items_margin"-->
+                    <!--android:paddingBottom="@dimen/card_items_margin"-->
+
+                    <Switch
+                        android:id="@+id/sw_bme680_enable_notifications"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentEnd="true"
+                        android:paddingEnd="1dp"
+                        android:layout_alignStart="@+id/tv_bme680_enable_notifications"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/rl_ble_bme680_notifs_switch"
+                    android:layout_margin="@dimen/card_padding">
+
+                    <TextView
+                        android:id="@+id/tv_bme680_message_device"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:textAlignment="center"
+                        android:paddingEnd="@dimen/card_items_margin"
+                        android:paddingStart="@dimen/card_items_margin"
+                        android:layout_marginTop="@dimen/card_items_margin"
+                        android:text="@string/card_msg_connect_bluetooth_first"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/colorAccent" />
+
+                    <TextView
+                        android:id="@+id/tv_bme680_service_iaq_device"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_bme680_message_device"
+                        android:layout_centerHorizontal="true"
+                        android:textAlignment="center"
+                        android:paddingEnd="@dimen/card_items_margin"
+                        android:paddingStart="@dimen/card_items_margin"
+                        android:layout_marginTop="@dimen/card_items_margin"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColor="@color/colorTextPrimaryLightDark" />
+
+                    <TextView
+                        android:id="@+id/tv_bme680_service_iaq_accuracy_device"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_bme680_service_iaq_device"
+                        android:layout_centerHorizontal="true"
+                        android:textAlignment="center"
+                        android:paddingEnd="@dimen/card_items_margin"
+                        android:paddingStart="@dimen/card_items_margin"
+                        android:layout_marginTop="@dimen/card_items_margin"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColor="@color/colorTextPrimaryLightDark" />
+
+                    <TextView
+                        android:id="@+id/tv_bme680_service_temperature_device"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_bme680_service_iaq_accuracy_device"
+                        android:layout_centerHorizontal="true"
+                        android:textAlignment="center"
+                        android:paddingEnd="@dimen/card_items_margin"
+                        android:paddingStart="@dimen/card_items_margin"
+                        android:layout_marginTop="@dimen/card_items_margin"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColor="@color/colorTextPrimaryLightDark" />
+
+                    <TextView
+                        android:id="@+id/tv_bme680_service_humidity_device"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_bme680_service_temperature_device"
+                        android:layout_centerHorizontal="true"
+                        android:textAlignment="center"
+                        android:paddingEnd="@dimen/card_items_margin"
+                        android:paddingStart="@dimen/card_items_margin"
+                        android:layout_marginTop="@dimen/card_items_margin"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColor="@color/colorTextPrimaryLightDark" />
+
+                    <TextView
+                        android:id="@+id/tv_bme680_service_pressure_device"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_bme680_service_humidity_device"
+                        android:layout_centerHorizontal="true"
+                        android:textAlignment="center"
+                        android:paddingEnd="@dimen/card_items_margin"
+                        android:paddingStart="@dimen/card_items_margin"
+                        android:layout_marginTop="@dimen/card_items_margin"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColor="@color/colorTextPrimaryLightDark" />
+
+                    <TextView
+                        android:id="@+id/tv_bme680_service_raw_temperature_device"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_bme680_service_pressure_device"
+                        android:layout_centerHorizontal="true"
+                        android:textAlignment="center"
+                        android:paddingEnd="@dimen/card_items_margin"
+                        android:paddingStart="@dimen/card_items_margin"
+                        android:layout_marginTop="@dimen/card_items_margin"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColor="@color/colorTextPrimaryLightDark" />
+
+                    <TextView
+                        android:id="@+id/tv_bme680_service_raw_humidity_device"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_bme680_service_raw_temperature_device"
+                        android:layout_centerHorizontal="true"
+                        android:textAlignment="center"
+                        android:paddingEnd="@dimen/card_items_margin"
+                        android:paddingStart="@dimen/card_items_margin"
+                        android:layout_marginTop="@dimen/card_items_margin"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColor="@color/colorTextPrimaryLightDark" />
+
+                    <TextView
+                        android:id="@+id/tv_bme680_service_raw_gas_device"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_bme680_service_raw_humidity_device"
+                        android:layout_centerHorizontal="true"
+                        android:textAlignment="center"
+                        android:paddingEnd="@dimen/card_items_margin"
+                        android:paddingStart="@dimen/card_items_margin"
+                        android:layout_marginBottom="@dimen/card_items_margin"
+                        android:layout_marginTop="@dimen/card_items_margin"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColor="@color/colorTextPrimaryLightDark" />
+                </RelativeLayout>
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/card_ble_bno055"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/card_ble_bme680"
+            android:layout_marginTop="@dimen/child_margin_top"
+            android:textAlignment="center"
+            card_view:cardBackgroundColor="@color/colorCardViewBackground"
+            card_view:cardCornerRadius="8dp">
+            <!--card_view:contentPadding="25dp"-->
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:id="@+id/rl_cv_title_ble_bno055"
+                    android:layout_width="match_parent"
+                    android:background="@color/colorPrimaryDark"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/tv_cv_title_bno055"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:background="@color/colorPrimaryDark"
+                        android:text="BLE BNO055 Service"
+                        android:textAlignment="center"
+                        android:gravity="center"
+                        android:padding="@dimen/card_view_title_textview_padding"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:textColor="@color/colorTextPrimary"
+                        android:textStyle="bold" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rl_ble_bno055_notifs_switch"
+                    android:layout_below="@+id/rl_cv_title_ble_bno055"
+                    android:layout_width="match_parent"
+                    android:background="@color/colorPrimaryDark"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/tv_bno055_enable_notifications"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:text="BLE Notifications"
+                        android:textAlignment="center"
+                        android:gravity="center"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/colorAccent"
+                        android:textStyle="bold"
+                        tools:ignore="RtlSymmetry" />
+                    <!--android:paddingTop="@dimen/card_items_margin"-->
+                    <!--android:paddingBottom="@dimen/card_items_margin"-->
+
+                    <Switch
+                        android:id="@+id/sw_bno055_enable_notifications"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentEnd="true"
+                        android:paddingEnd="1dp"
+                        android:layout_alignStart="@+id/tv_bno055_enable_notifications"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/rl_ble_bno055_notifs_switch"
+                    android:layout_margin="@dimen/card_padding">
+
+                    <TextView
+                        android:id="@+id/tv_bno055_message_device"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:textAlignment="center"
+                        android:paddingEnd="@dimen/card_items_margin"
+                        android:paddingStart="@dimen/card_items_margin"
+                        android:layout_marginTop="@dimen/card_items_margin"
+                        android:text="@string/card_msg_connect_bluetooth_first"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/colorAccent" />
+
+                    <TextView
+                        android:id="@+id/tv_bno055_service_accelerometer_device"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_bno055_message_device"
+                        android:layout_centerHorizontal="true"
+                        android:textAlignment="center"
+                        android:paddingEnd="@dimen/card_items_margin"
+                        android:paddingStart="@dimen/card_items_margin"
+                        android:layout_marginTop="@dimen/card_items_margin"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColor="@color/colorTextPrimaryLightDark" />
+
+                    <TextView
+                        android:id="@+id/tv_bno055_service_gyroscope_device"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_bno055_service_accelerometer_device"
+                        android:layout_centerHorizontal="true"
+                        android:textAlignment="center"
+                        android:paddingEnd="@dimen/card_items_margin"
+                        android:paddingStart="@dimen/card_items_margin"
+                        android:layout_marginTop="@dimen/card_items_margin"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColor="@color/colorTextPrimaryLightDark" />
+
+                    <TextView
+                        android:id="@+id/tv_bno055_service_magnetometer_device"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_bno055_service_gyroscope_device"
+                        android:layout_centerHorizontal="true"
+                        android:textAlignment="center"
+                        android:paddingEnd="@dimen/card_items_margin"
+                        android:paddingStart="@dimen/card_items_margin"
+                        android:layout_marginTop="@dimen/card_items_margin"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColor="@color/colorTextPrimaryLightDark" />
+
+                    <TextView
+                        android:id="@+id/tv_bno055_service_measure_delay_device"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_bno055_service_magnetometer_device"
+                        android:layout_centerHorizontal="true"
+                        android:textAlignment="center"
+                        android:paddingEnd="@dimen/card_items_margin"
+                        android:paddingStart="@dimen/card_items_margin"
+                        android:layout_marginTop="@dimen/card_items_margin"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColor="@color/colorTextPrimaryLightDark" />
+                </RelativeLayout>
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/card_ble_scan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/card_ble_bno055"
+            android:layout_marginTop="@dimen/child_margin_top"
+            android:textAlignment="center"
+            card_view:cardBackgroundColor="@color/colorCardViewBackground"
+            card_view:cardCornerRadius="8dp">
+            <!--card_view:contentPadding="25dp"-->
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:id="@+id/rl_cv_title_ble_scan"
+                    android:layout_width="match_parent"
+                    android:background="@color/colorPrimaryDark"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/tv_cv_title_ble_scan"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:background="@color/colorPrimaryDark"
+                        android:text="BLE Scanner Service"
+                        android:textAlignment="center"
+                        android:gravity="center"
+                        android:padding="@dimen/card_view_title_textview_padding"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:textColor="@color/colorTextPrimary"
+                        android:textStyle="bold" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rl_ble_scan_notifs_switch"
+                    android:layout_below="@+id/rl_cv_title_ble_scan"
+                    android:layout_width="match_parent"
+                    android:background="@color/colorPrimaryDark"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/tv_ble_scan_enable_notifications"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:text="BLE Notifications"
+                        android:textAlignment="center"
+                        android:gravity="center"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/colorAccent"
+                        android:textStyle="bold"
+                        tools:ignore="RtlSymmetry" />
+                    <!--android:paddingTop="@dimen/card_items_margin"-->
+                    <!--android:paddingBottom="@dimen/card_items_margin"-->
+
+                    <Switch
+                        android:id="@+id/sw_ble_scan_enable_notifications"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentEnd="true"
+                        android:paddingEnd="1dp"
+                        android:layout_alignStart="@+id/tv_ble_scan_enable_notifications"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/rl_ble_scan_notifs_switch"
+                    android:layout_margin="@dimen/card_padding">
+
+                    <TextView
+                        android:id="@+id/tv_ble_scan_message_device"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:textAlignment="center"
+                        android:paddingEnd="@dimen/card_items_margin"
+                        android:paddingStart="@dimen/card_items_margin"
+                        android:layout_marginTop="@dimen/card_items_margin"
+                        android:text="@string/card_msg_connect_bluetooth_first"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/colorAccent" />
+
+                    <TextView
+                        android:id="@+id/tv_ble_scan_service_devices_scanned_device"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_ble_scan_message_device"
+                        android:layout_centerHorizontal="true"
+                        android:textAlignment="center"
+                        android:paddingEnd="@dimen/card_items_margin"
+                        android:paddingStart="@dimen/card_items_margin"
+                        android:layout_marginTop="@dimen/card_items_margin"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColor="@color/colorTextPrimaryLightDark" />
+
+                    <TextView
+                        android:id="@+id/tv_ble_scan_service_scan_window_device"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_ble_scan_service_devices_scanned_device"
+                        android:layout_centerHorizontal="true"
+                        android:textAlignment="center"
+                        android:paddingEnd="@dimen/card_items_margin"
+                        android:paddingStart="@dimen/card_items_margin"
+                        android:layout_marginTop="@dimen/card_items_margin"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColor="@color/colorTextPrimaryLightDark" />
                 </RelativeLayout>
             </RelativeLayout>
         </android.support.v7.widget.CardView>
