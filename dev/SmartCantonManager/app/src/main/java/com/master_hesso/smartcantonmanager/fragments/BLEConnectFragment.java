@@ -65,6 +65,7 @@ import com.master_hesso.smartcantonmanager.utils.SmartCantonDevBoxBLEServices;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
@@ -1248,30 +1249,45 @@ public class BLEConnectFragment extends Fragment {
         mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_SERVICE,
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_ACCELEROMETER,
                 e1 -> {
-                    if (e1.wasSuccess()) {
-                        if (e1.data_utf8().length() > 0) {
-
-                        }
+                    if (e1.data().length == 12) { // Only display if it can be transformed to float
+                        tvBno055ServiceAccelerometerDevice.setText(
+                                String.format(Locale.getDefault(), "Accel {x,y,z} : %.2f,%.2f,%.2f [g] ",
+                                    ByteBuffer.wrap(Arrays.copyOfRange(e1.data(), 0, 4))
+                                            .order(ByteOrder.LITTLE_ENDIAN).getFloat(),
+                                ByteBuffer.wrap(Arrays.copyOfRange(e1.data(), 4, 8))
+                                        .order(ByteOrder.LITTLE_ENDIAN).getFloat(),
+                                ByteBuffer.wrap(Arrays.copyOfRange(e1.data(), 8, 12))
+                                        .order(ByteOrder.LITTLE_ENDIAN).getFloat()));
                     }
                 });
 
         mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_SERVICE,
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_GYROSCOPE,
                 e1 -> {
-                    if (e1.wasSuccess()) {
-                        if (e1.data_utf8().length() > 0) {
-
-                        }
+                    if (e1.data().length == 12) { // Only display if it can be transformed to float
+                        tvBno055ServiceGyroscopeDevice.setText(
+                                String.format(Locale.getDefault(), "Gyro {x,y,z} : %.2f,%.2f,%.2f [deg/s] ",
+                                        ByteBuffer.wrap(Arrays.copyOfRange(e1.data(), 0, 4))
+                                                .order(ByteOrder.LITTLE_ENDIAN).getFloat(),
+                                        ByteBuffer.wrap(Arrays.copyOfRange(e1.data(), 4, 8))
+                                                .order(ByteOrder.LITTLE_ENDIAN).getFloat(),
+                                        ByteBuffer.wrap(Arrays.copyOfRange(e1.data(), 8, 12))
+                                                .order(ByteOrder.LITTLE_ENDIAN).getFloat()));
                     }
                 });
 
         mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_SERVICE,
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_MAGNETOMETER,
                 e1 -> {
-                    if (e1.wasSuccess()) {
-                        if (e1.data_utf8().length() > 0) {
-
-                        }
+                    if (e1.data().length == 12) { // Only display if it can be transformed to float
+                        tvBno055ServiceMagnetometerDevice.setText(
+                                String.format(Locale.getDefault(), "Mag {x,y,z} : %.2f,%.2f,%.2f [μT] ",
+                                        ByteBuffer.wrap(Arrays.copyOfRange(e1.data(), 0, 4))
+                                                .order(ByteOrder.LITTLE_ENDIAN).getFloat(),
+                                        ByteBuffer.wrap(Arrays.copyOfRange(e1.data(), 4, 8))
+                                                .order(ByteOrder.LITTLE_ENDIAN).getFloat(),
+                                        ByteBuffer.wrap(Arrays.copyOfRange(e1.data(), 8, 12))
+                                                .order(ByteOrder.LITTLE_ENDIAN).getFloat()));
                     }
                 });
     }
@@ -1292,9 +1308,10 @@ public class BLEConnectFragment extends Fragment {
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BLE_DEVICES_SCANNED,
                 e1 -> {
                     if (e1.wasSuccess()) {
-                        if (e1.data_utf8().length() > 0) {
-
-                        }
+                            tvBme680ServiceRawGasDevice.setText(
+                                    String.format(Locale.getDefault(),
+                                            "BLE device scanned : %d",
+                                            e1.data_short(false)));
                     }
                 });
     }
