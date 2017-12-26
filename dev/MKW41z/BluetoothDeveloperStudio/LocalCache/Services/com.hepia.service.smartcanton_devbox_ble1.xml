@@ -35,7 +35,7 @@
           name="Characteristic User Description">
           <Properties>
             <Read>Mandatory</Read>
-            <Write>Mandatory</Write>
+            <Write>Excluded</Write>
           </Properties>
         </Descriptor>
       </Descriptors>
@@ -45,7 +45,7 @@
       name="BLE Scan Window">
       <Requirement>Optional</Requirement>
       <Properties>
-        <Read>Excluded</Read>
+        <Read>Mandatory</Read>
         <Write>Mandatory</Write>
         <WriteWithoutResponse>Excluded</WriteWithoutResponse>
         <SignedWrite>Excluded</SignedWrite>
@@ -56,6 +56,16 @@
         <Broadcast>Excluded</Broadcast>
         <ExtendedProperties>Excluded</ExtendedProperties>
       </Properties>
+      <Descriptors>
+        <Descriptor
+          type="com.hepia.descriptor.characteristic_user_description"
+          name="Characteristic User Description">
+          <Properties>
+            <Read>Mandatory</Read>
+            <Write>Excluded</Write>
+          </Properties>
+        </Descriptor>
+      </Descriptors>
     </Characteristic>
   </Characteristics>
 </Service>

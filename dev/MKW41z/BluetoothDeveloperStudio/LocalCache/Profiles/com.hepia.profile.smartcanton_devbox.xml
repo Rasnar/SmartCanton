@@ -134,7 +134,7 @@
       </Characteristic>
     </Service>
     <Service
-      type="com.hepia.service.smartcanton_devbox_bno0551">
+      type="com.hepia.service.smartcanton_devbox_bno055">
       <Declaration>Primary</Declaration>
       <Requirement>Mandatory</Requirement>
       <Characteristic
@@ -155,7 +155,7 @@
       </Characteristic>
     </Service>
     <Service
-      type="com.hepia.service.smartcanton_devbox_ble">
+      type="com.hepia.service.smartcanton_devbox_ble1">
       <Declaration>Primary</Declaration>
       <Requirement>Mandatory</Requirement>
       <Characteristic
@@ -163,7 +163,7 @@
         <Requirement>Mandatory</Requirement>
       </Characteristic>
       <Characteristic
-        type="com.hepia.characteristic.smartcanton_devbox_ble_new_characteristic">
+        type="com.hepia.characteristic.ble_scan_window">
         <Requirement>Mandatory</Requirement>
       </Characteristic>
     </Service>
@@ -203,11 +203,11 @@
       <Requirement>Mandatory</Requirement>
     </Client>
     <Client
-      type="com.hepia.service.smartcanton_devbox_bno0551">
+      type="com.hepia.service.smartcanton_devbox_bno055">
       <Requirement>Mandatory</Requirement>
     </Client>
     <Client
-      type="com.hepia.service.smartcanton_devbox_ble">
+      type="com.hepia.service.smartcanton_devbox_ble1">
       <Requirement>Mandatory</Requirement>
     </Client>
   </Role>
