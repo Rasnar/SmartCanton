@@ -342,9 +342,9 @@ static void BleApp_Config()
 
 	ScDbGPS_Start(&scdbGPSServiceConfig);
 
-	ScDbBme680_Start(&scdbBme680ServiceConfig);
-
 	ScDbBno055_Start(&scdbBno055ServiceConfig);
+
+	ScDbBme680_Start(&scdbBme680ServiceConfig);
 
 	/* Allocate application timers */
 	mAdvTimerId = TMR_AllocateTimer();
@@ -481,8 +481,8 @@ static void BleApp_ConnectionCallback(deviceId_t peerDeviceId, gapConnectionEven
 		Bas_Subscribe(peerDeviceId);
 		ScDbLoRa_Subscribe(peerDeviceId);
 		ScDbGPS_Subscribe(peerDeviceId);
-		ScDbBme680_Subscribe(peerDeviceId);
 		ScDbBno055_Subscribe(peerDeviceId);
+		ScDbBme680_Subscribe(peerDeviceId);
 
 #if (!cPWR_UsePowerDownMode)  
 		/* UI */
@@ -560,6 +560,22 @@ static void BleApp_GattServerCallback(deviceId_t deviceId, gattServerEvent_t* pS
 
 	switch (pServerEvent->eventType)
 	{
+
+	/**
+	 * The gEvtCharacteristicCccdWritten_c is only used for debugging. We can see
+	 * when we have reached the maximum CCCD element when the result from Gap_SaveCccd
+	 * is gDevDbCccdLimitReached_c. In this case, we need to remove a notification
+	 * characteristic.
+	 */
+	case gEvtCharacteristicCccdWritten_c:
+	{
+		handle = pServerEvent->eventData.charCccdWrittenEvent.handle;
+		gattCccdFlags_t cccd = pServerEvent->eventData.charCccdWrittenEvent.newCccd;
+		volatile bleResult_t result = Gap_SaveCccd(deviceId, handle, cccd);
+		result = result;
+	}
+		break;
+
 	case gEvtAttributeWritten_c:
 	{
 		handle = pServerEvent->eventData.attributeWrittenEvent.handle;
@@ -778,7 +794,6 @@ void DevBox_App_Task(osaTaskParam_t argument)
 			/* Update Bluetooth Service with new values */
 			if (gps_neo_m8_read_rmc(&frameRmcGps) == gpsNeo_Success)
 			{
-
 				tmp_float1 = minmea_tocoord(&frameRmcGps.latitude);
 				tmp_float2 = minmea_tocoord(&frameRmcGps.longitude);
 				ScDbGPS_RecordGPSPosition(service_smartcanton_devbox_gps, &tmp_float1, &tmp_float2);
@@ -805,16 +820,15 @@ void DevBox_App_Task(osaTaskParam_t argument)
 			// Last data received from the bme680
 			bme680Data_t* bme680Data_tmp;
 			/* Retrieve data pointer */
-			if (OSA_MsgQGet(gBme680NewMessageMeasureQ, &bme680Data_tmp, 1) == osaStatus_Success)
+			while (OSA_MsgQGet(gBme680NewMessageMeasureQ, &bme680Data_tmp, 1) == osaStatus_Success)
 			{
-
+				/* Store value in local in case we want to use it later on */
 				FLib_MemCpy(&bme680Data, bme680Data_tmp, sizeof(bme680Data));
 
-				/* Destroy tmp buffer allocated by the bno055_task */
+				/* Destroy tmp buffer allocated by the bme680_task */
 				vPortFree(bme680Data_tmp);
 
-				ScDbBme680_InstantValueAll(service_smartcanton_devbox_bme680, &bme680Data);
-
+				ScDbBme680_InstantValueNotificationAll(service_smartcanton_devbox_bme680, &bme680Data);
 			}
 		}
 
@@ -824,9 +838,9 @@ void DevBox_App_Task(osaTaskParam_t argument)
 			// Last data received from the bno055
 			struct bno055Data_tag* bno055Data_tmp;
 			/* Retrieve data pointer */
-			if (OSA_MsgQGet(gBno055NewMessageMeasureQ, &bno055Data_tmp, 1) == osaStatus_Success)
+			while (OSA_MsgQGet(gBno055NewMessageMeasureQ, &bno055Data_tmp, 1) == osaStatus_Success)
 			{
-
+				/* Store value in local in case we want to use it later on */
 				FLib_MemCpy(&bno055Data, bno055Data_tmp, sizeof(bno055Data));
 
 				/* Destroy tmp buffer allocated by the bno055_task */
