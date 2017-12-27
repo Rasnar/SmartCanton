@@ -145,7 +145,7 @@ bleResult_t ScDbBme680_Unsubscribe();
  *
  * \return       gBleSuccess_c or error.
  ************************************************************************************/
-bleResult_t ScDbBme680_InstantValueIaq(uint16_t serviceHandle, float* iaq);
+bleResult_t ScDbBme680_InstantValueNotificationIaq(uint16_t serviceHandle, float* iaq);
 
 /*!**********************************************************************************
  * \brief        Sends Indoor air quality accuracy value notification to a peer GATT
@@ -155,7 +155,7 @@ bleResult_t ScDbBme680_InstantValueIaq(uint16_t serviceHandle, float* iaq);
  *
  * \return       gBleSuccess_c or error.
  ************************************************************************************/
-bleResult_t ScDbBme680_InstantValueIaqAccuracy(uint16_t serviceHandle, uint8_t* iaq_accuracy);
+bleResult_t ScDbBme680_InstantValueNotificationIaqAccuracy(uint16_t serviceHandle, uint8_t* iaq_accuracy);
 
 /*!**********************************************************************************
  * \brief        Sends temperature value notification to a peer GATT Client with data
@@ -165,7 +165,7 @@ bleResult_t ScDbBme680_InstantValueIaqAccuracy(uint16_t serviceHandle, uint8_t* 
  *
  * \return       gBleSuccess_c or error.
  ************************************************************************************/
-bleResult_t ScDbBme680_InstantValueTemperature(uint16_t serviceHandle, float* temperature);
+bleResult_t ScDbBme680_InstantValueNotificationTemperature(uint16_t serviceHandle, float* temperature);
 
 /*!**********************************************************************************
  * \brief        Sends humidity value notification to a peer GATT Client with data
@@ -185,7 +185,7 @@ bleResult_t ScDbBme680_InstanHumidity(uint16_t serviceHandle, float* humidity);
  *
  * \return       gBleSuccess_c or error.
  ************************************************************************************/
-bleResult_t ScDbBme680_InstantValuePressure(uint16_t serviceHandle, float* pressure);
+bleResult_t ScDbBme680_InstantValueNotificationPressure(uint16_t serviceHandle, float* pressure);
 
 /*!**********************************************************************************
  * \brief        Sends raw temperature value notification to a peer GATT Client with data
@@ -195,7 +195,7 @@ bleResult_t ScDbBme680_InstantValuePressure(uint16_t serviceHandle, float* press
  *
  * \return       gBleSuccess_c or error.
  ************************************************************************************/
-bleResult_t ScDbBme680_InstantValueRawTemperature(uint16_t serviceHandle, float* raw_temperature);
+bleResult_t ScDbBme680_InstantValueNotificationRawTemperature(uint16_t serviceHandle, float* raw_temperature);
 
 /*!**********************************************************************************
  * \brief        Sends raw humidity value notification to a peer GATT Client with data
@@ -205,7 +205,7 @@ bleResult_t ScDbBme680_InstantValueRawTemperature(uint16_t serviceHandle, float*
  *
  * \return       gBleSuccess_c or error.
  ************************************************************************************/
-bleResult_t ScDbBme680_InstantValueRawHumidity(uint16_t serviceHandle, float* raw_humidity);
+bleResult_t ScDbBme680_InstantValueNotificationRawHumidity(uint16_t serviceHandle, float* raw_humidity);
 
 /*!**********************************************************************************
  * \brief        Save the current raw temperature to the GATT database.
@@ -233,7 +233,7 @@ bleResult_t ScDbBme680_RecordValueRawHumidity(uint16_t serviceHandle, float* raw
  *
  * \return       gBleSuccess_c or error.
  ************************************************************************************/
-bleResult_t ScDbBme680_InstantValueRawGas(uint16_t serviceHandle, float* raw_gas);
+bleResult_t ScDbBme680_InstantValueNotificationRawGas(uint16_t serviceHandle, float* raw_gas);
 
 /*!**********************************************************************************
  * \brief        Send all BME680 data to the connected peer. Will call all the Instant
@@ -243,7 +243,7 @@ bleResult_t ScDbBme680_InstantValueRawGas(uint16_t serviceHandle, float* raw_gas
  *
  * \return       gBleSuccess_c or error.
  ************************************************************************************/
-bleResult_t ScDbBme680_InstantValueAll(uint16_t serviceHandle, bme680Data_t* bme680Data);
+bleResult_t ScDbBme680_InstantValueNotificationAll(uint16_t serviceHandle, bme680Data_t* bme680Data);
 
 #ifdef __cplusplus
 }

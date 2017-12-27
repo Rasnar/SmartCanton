@@ -79,18 +79,18 @@ bleResult_t ScDbBme680_Unsubscribe()
 	return gBleSuccess_c;
 }
 
-bleResult_t ScDbBme680_InstantValueAll(uint16_t serviceHandle, bme680Data_t* bme680Data){
+bleResult_t ScDbBme680_InstantValueNotificationAll(uint16_t serviceHandle, bme680Data_t* bme680Data){
 	bleResult_t result;
 
-	result = ScDbBme680_InstantValueIaq(serviceHandle, &bme680Data->iaq);
+	result = ScDbBme680_InstantValueNotificationIaq(serviceHandle, &bme680Data->iaq);
 	if(result != gBleSuccess_c)
 		return result;
 
-	result = ScDbBme680_InstantValueIaqAccuracy(serviceHandle, &bme680Data->iaq_accuracy);
+	result = ScDbBme680_InstantValueNotificationIaqAccuracy(serviceHandle, &bme680Data->iaq_accuracy);
 	if(result != gBleSuccess_c)
 		return result;
 
-	result = ScDbBme680_InstantValueTemperature(serviceHandle, &bme680Data->temperature);
+	result = ScDbBme680_InstantValueNotificationTemperature(serviceHandle, &bme680Data->temperature);
 	if(result != gBleSuccess_c)
 		return result;
 
@@ -98,7 +98,7 @@ bleResult_t ScDbBme680_InstantValueAll(uint16_t serviceHandle, bme680Data_t* bme
 	if(result != gBleSuccess_c)
 		return result;
 
-	result = ScDbBme680_InstantValuePressure(serviceHandle, &bme680Data->pressure);
+	result = ScDbBme680_InstantValueNotificationPressure(serviceHandle, &bme680Data->pressure);
 	if(result != gBleSuccess_c)
 		return result;
 
@@ -118,26 +118,26 @@ bleResult_t ScDbBme680_InstantValueAll(uint16_t serviceHandle, bme680Data_t* bme
 	result = ScDbBme680_RecordValueRawTemperature(serviceHandle, &bme680Data->raw_temperature);
 	if(result != gBleSuccess_c)
 		return result;
-//	result = ScDbBme680_InstantValueRawHumidity(serviceHandle, &bme680Data->raw_humidity);
+//	result = ScDbBme680_InstantValueNotificationRawHumidity(serviceHandle, &bme680Data->raw_humidity);
 //	if(result != gBleSuccess_c)
 //		return result;
 
-//	result = ScDbBme680_InstantValueRawTemperature(serviceHandle, &bme680Data->raw_temperature);
+//	result = ScDbBme680_InstantValueNotificationRawTemperature(serviceHandle, &bme680Data->raw_temperature);
 //	if(result != gBleSuccess_c)
 //		return result;
 
-	result = ScDbBme680_InstantValueRawGas(serviceHandle, &bme680Data->gas);
+	result = ScDbBme680_InstantValueNotificationRawGas(serviceHandle, &bme680Data->gas);
 
 	return result;
 }
 
-bleResult_t ScDbBme680_InstantValueIaq(uint16_t serviceHandle, float* iaq){
+bleResult_t ScDbBme680_InstantValueNotificationIaq(uint16_t serviceHandle, float* iaq){
 
 	return ScDbBme680_SendInstantValueNotifications((bleUuid_t*) uuid_bme680_iaq,
 			&serviceHandle, iaq);
 }
 
-bleResult_t ScDbBme680_InstantValueIaqAccuracy(uint16_t serviceHandle, uint8_t* iaq_accuracy){
+bleResult_t ScDbBme680_InstantValueNotificationIaqAccuracy(uint16_t serviceHandle, uint8_t* iaq_accuracy){
 
 	uint16_t cccdHandle;
 	bool_t isNotifActive;
@@ -170,7 +170,7 @@ bleResult_t ScDbBme680_InstantValueIaqAccuracy(uint16_t serviceHandle, uint8_t* 
 	return result;
 }
 
-bleResult_t ScDbBme680_InstantValueTemperature(uint16_t serviceHandle, float* temperature){
+bleResult_t ScDbBme680_InstantValueNotificationTemperature(uint16_t serviceHandle, float* temperature){
 
 	return ScDbBme680_SendInstantValueNotifications((bleUuid_t*) uuid_bme680_temperature,
 			&serviceHandle, temperature);
@@ -182,19 +182,19 @@ bleResult_t ScDbBme680_InstanHumidity(uint16_t serviceHandle, float* humidity){
 			&serviceHandle, humidity);
 }
 
-bleResult_t ScDbBme680_InstantValuePressure(uint16_t serviceHandle, float* pressure){
+bleResult_t ScDbBme680_InstantValueNotificationPressure(uint16_t serviceHandle, float* pressure){
 
 	return ScDbBme680_SendInstantValueNotifications((bleUuid_t*) uuid_bme680_pressure,
 			&serviceHandle, pressure);
 }
 
-bleResult_t ScDbBme680_InstantValueRawTemperature(uint16_t serviceHandle, float* raw_temperature){
+bleResult_t ScDbBme680_InstantValueNotificationRawTemperature(uint16_t serviceHandle, float* raw_temperature){
 
 	return ScDbBme680_SendInstantValueNotifications((bleUuid_t*) uuid_bme680_raw_temperature,
 			&serviceHandle, raw_temperature);
 }
 
-bleResult_t ScDbBme680_InstantValueRawHumidity(uint16_t serviceHandle, float* raw_humidity){
+bleResult_t ScDbBme680_InstantValueNotificationRawHumidity(uint16_t serviceHandle, float* raw_humidity){
 
 	return ScDbBme680_SendInstantValueNotifications((bleUuid_t*) uuid_bme680_raw_humidity,
 			&serviceHandle, raw_humidity);
@@ -203,7 +203,6 @@ bleResult_t ScDbBme680_InstantValueRawHumidity(uint16_t serviceHandle, float* ra
 bleResult_t ScDbBme680_RecordValueRawTemperature(uint16_t serviceHandle, float* raw_temperature){
 
 	uint16_t handle;
-	int arrayLength = 0;
 
 	bleResult_t result = GattDb_FindCharValueHandleInService(serviceHandle,
 			gBleUuidType128_c, (bleUuid_t*) uuid_bme680_raw_temperature, &handle);
@@ -223,7 +222,6 @@ bleResult_t ScDbBme680_RecordValueRawTemperature(uint16_t serviceHandle, float* 
 bleResult_t ScDbBme680_RecordValueRawHumidity(uint16_t serviceHandle, float* raw_humidity){
 
 	uint16_t handle;
-	int arrayLength = 0;
 
 	bleResult_t result = GattDb_FindCharValueHandleInService(serviceHandle,
 			gBleUuidType128_c, (bleUuid_t*) uuid_bme680_raw_humidity, &handle);
@@ -240,7 +238,7 @@ bleResult_t ScDbBme680_RecordValueRawHumidity(uint16_t serviceHandle, float* raw
 	return gBleSuccess_c;
 }
 
-bleResult_t ScDbBme680_InstantValueRawGas(uint16_t serviceHandle, float* raw_gas){
+bleResult_t ScDbBme680_InstantValueNotificationRawGas(uint16_t serviceHandle, float* raw_gas){
 
 	return ScDbBme680_SendInstantValueNotifications((bleUuid_t*) uuid_bme680_raw_gas,
 			&serviceHandle, raw_gas);

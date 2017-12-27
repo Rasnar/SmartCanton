@@ -75,37 +75,37 @@ bleResult_t ScDbBno055_Unsubscribe()
 	return gBleSuccess_c;
 }
 
-bleResult_t ScDbBno055_InstantValueAccel(uint16_t serviceHandle, struct bno055_accel_float_t* accel){
+bleResult_t ScDbBno055_InstantValueNotificationAccel(uint16_t serviceHandle, struct bno055_accel_float_t* accel){
 
 	return ScDbBno055_SendInstantValueNotifications((bleUuid_t*) uuid_bno055_accelerometer,
 			&serviceHandle, (uint8_t*)accel, sizeof(struct bno055_accel_float_t));
 }
 
-bleResult_t ScDbBno055_InstantValueGyro(uint16_t serviceHandle, struct bno055_gyro_float_t* gyro){
+bleResult_t ScDbBno055_InstantValueNotificationGyro(uint16_t serviceHandle, struct bno055_gyro_float_t* gyro){
 
 	return ScDbBno055_SendInstantValueNotifications((bleUuid_t*) uuid_bno055_gyroscope,
 			&serviceHandle, (uint8_t*)gyro, sizeof(struct bno055_gyro_float_t));
 }
 
-bleResult_t ScDbBno055_InstantValueMag(uint16_t serviceHandle, struct bno055_mag_float_t* mag){
+bleResult_t ScDbBno055_InstantValueNotificationMag(uint16_t serviceHandle, struct bno055_mag_float_t* mag){
 
 	return ScDbBno055_SendInstantValueNotifications((bleUuid_t*) uuid_bno055_magnetometer,
 			&serviceHandle, (uint8_t*)mag, sizeof(struct bno055_mag_float_t));
 }
 
 
-bleResult_t ScDbBno055_InstantValueAll(uint16_t serviceHandle, bno055Data_t* bno055Data){
+bleResult_t ScDbBno055_InstantValueNotificationAll(uint16_t serviceHandle, bno055Data_t* bno055Data){
 	bleResult_t result;
 
-	result = ScDbBno055_InstantValueAccel(serviceHandle, &bno055Data->accel_xyz);
+	result = ScDbBno055_InstantValueNotificationAccel(serviceHandle, &bno055Data->accel_xyz);
 	if(result != gBleSuccess_c)
 		return result;
 
-	result = ScDbBno055_InstantValueGyro(serviceHandle, &bno055Data->gyro_xyz);
+	result = ScDbBno055_InstantValueNotificationGyro(serviceHandle, &bno055Data->gyro_xyz);
 	if(result != gBleSuccess_c)
 		return result;
 
-	result = ScDbBno055_InstantValueMag(serviceHandle, &bno055Data->mag_xyz);
+	result = ScDbBno055_InstantValueNotificationMag(serviceHandle, &bno055Data->mag_xyz);
 
 	return result;
 }

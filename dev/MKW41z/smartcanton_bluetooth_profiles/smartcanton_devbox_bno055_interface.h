@@ -146,7 +146,7 @@ bleResult_t ScDbBno055_Unsubscribe();
  *
  * \return       gBleSuccess_c or error.
  ************************************************************************************/
-bleResult_t ScDbBno055_InstantValueAccel(uint16_t serviceHandle, struct bno055_accel_float_t* accel);
+bleResult_t ScDbBno055_InstantValueNotificationAccel(uint16_t serviceHandle, struct bno055_accel_float_t* accel);
 
 /*!**********************************************************************************
  * \brief        Sends Indoor air quality value notification to a peer GATT
@@ -156,7 +156,7 @@ bleResult_t ScDbBno055_InstantValueAccel(uint16_t serviceHandle, struct bno055_a
  *
  * \return       gBleSuccess_c or error.
  ************************************************************************************/
-bleResult_t ScDbBno055_InstantValueGyro(uint16_t serviceHandle, struct bno055_gyro_float_t* gyro);
+bleResult_t ScDbBno055_InstantValueNotificationGyro(uint16_t serviceHandle, struct bno055_gyro_float_t* gyro);
 
 /*!**********************************************************************************
  * \brief        Sends magnetometer values notification to a peer GATT
@@ -166,7 +166,7 @@ bleResult_t ScDbBno055_InstantValueGyro(uint16_t serviceHandle, struct bno055_gy
  *
  * \return       gBleSuccess_c or error.
  ************************************************************************************/
-bleResult_t ScDbBno055_InstantValueMag(uint16_t serviceHandle, struct bno055_mag_float_t* mag);
+bleResult_t ScDbBno055_InstantValueNotificationMag(uint16_t serviceHandle, struct bno055_mag_float_t* mag);
 
 
 /*!**********************************************************************************
@@ -177,7 +177,7 @@ bleResult_t ScDbBno055_InstantValueMag(uint16_t serviceHandle, struct bno055_mag
  *
  * \return       gBleSuccess_c or error.
  ************************************************************************************/
-bleResult_t ScDbBno055_InstantValueAll(uint16_t serviceHandle, bno055Data_t* bno055Data);
+bleResult_t ScDbBno055_InstantValueNotificationAll(uint16_t serviceHandle, bno055Data_t* bno055Data);
 
 #ifdef __cplusplus
 }
