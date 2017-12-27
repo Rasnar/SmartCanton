@@ -39,7 +39,7 @@ static void ScDbGPS_SendNotifications(uint16_t *charHandle);
 
 static inline bleResult_t ScDbGPS_UpdateGPSCharacteristicUTF8s(uint16_t *handle, char *data);
 
-static bleResult_t ScDbGPS_RecordCharacteristicFloatToString(uint16_t serviceHandle, bleUuid_t* uuid_char,
+static bleResult_t ScDbGPS_RecordNotificationCharacteristicFloatToString(uint16_t serviceHandle, bleUuid_t* uuid_char,
 		float* floatVal);
 
 /************************************************************************************
@@ -81,7 +81,7 @@ bleResult_t ScDbGPS_Unsubscribe()
 	return gBleSuccess_c;
 }
 
-bleResult_t ScDbGPS_RecordGPSPosition(uint16_t serviceHandle, float* latitude, float* longitude)
+bleResult_t ScDbGPS_RecordNotificationGPSPosition(uint16_t serviceHandle, float* latitude, float* longitude)
 {
 
 	uint16_t handle;
@@ -105,17 +105,17 @@ bleResult_t ScDbGPS_RecordGPSPosition(uint16_t serviceHandle, float* latitude, f
 	return gBleSuccess_c;
 }
 
-bleResult_t ScDbGPS_RecordGPSSpeed(uint16_t serviceHandle, float* speed)
+bleResult_t ScDbGPS_RecordNotificationGPSSpeed(uint16_t serviceHandle, float* speed)
 {
-	return ScDbGPS_RecordCharacteristicFloatToString(serviceHandle, (bleUuid_t*) uuid_gps_speed, speed);
+	return ScDbGPS_RecordNotificationCharacteristicFloatToString(serviceHandle, (bleUuid_t*) uuid_gps_speed, speed);
 }
 
-bleResult_t ScDbGPS_RecordGPSCourse(uint16_t serviceHandle, float* course)
+bleResult_t ScDbGPS_RecordNotificationGPSCourse(uint16_t serviceHandle, float* course)
 {
-	return ScDbGPS_RecordCharacteristicFloatToString(serviceHandle, (bleUuid_t*) uuid_gps_course, course);
+	return ScDbGPS_RecordNotificationCharacteristicFloatToString(serviceHandle, (bleUuid_t*) uuid_gps_course, course);
 }
 
-bleResult_t ScDbGPS_RecordGPSTime(uint16_t serviceHandle, struct minmea_time *time)
+bleResult_t ScDbGPS_RecordNotificationGPSTime(uint16_t serviceHandle, struct minmea_time *time)
 {
 	uint16_t handle;
 	bleResult_t result;
@@ -138,7 +138,7 @@ bleResult_t ScDbGPS_RecordGPSTime(uint16_t serviceHandle, struct minmea_time *ti
 	return gBleSuccess_c;
 }
 
-bleResult_t ScDbGPS_RecordGPSDate(uint16_t serviceHandle, struct minmea_date *date)
+bleResult_t ScDbGPS_RecordNotificationGPSDate(uint16_t serviceHandle, struct minmea_date *date)
 {
 	uint16_t handle;
 	bleResult_t result;
@@ -161,13 +161,13 @@ bleResult_t ScDbGPS_RecordGPSDate(uint16_t serviceHandle, struct minmea_date *da
 	return gBleSuccess_c;
 }
 
-bleResult_t ScDbGPS_RecordFrameRmcAll(uint16_t serviceHandle, struct minmea_sentence_rmc *rmcFrame){
+bleResult_t ScDbGPS_RecordNotificationFrameRmcAll(uint16_t serviceHandle, struct minmea_sentence_rmc *rmcFrame){
 	bleResult_t result;
 	float tmp_float1, tmp_float2;
 
 	tmp_float1 = minmea_tocoord(&rmcFrame->latitude);
 	tmp_float2 = minmea_tocoord(&rmcFrame->longitude);
-	result = ScDbGPS_RecordGPSPosition(service_smartcanton_devbox_gps, &tmp_float1, &tmp_float2);
+	result = ScDbGPS_RecordNotificationGPSPosition(serviceHandle, &tmp_float1, &tmp_float2);
 	if(result != gBleSuccess_c)
 		return result;
 
@@ -176,22 +176,21 @@ bleResult_t ScDbGPS_RecordFrameRmcAll(uint16_t serviceHandle, struct minmea_sent
 	{
 		tmp_float1 = 0.0;
 	}
-	result = ScDbGPS_RecordGPSCourse(service_smartcanton_devbox_gps, &tmp_float1);
+	result = ScDbGPS_RecordNotificationGPSCourse(serviceHandle, &tmp_float1);
 	if(result != gBleSuccess_c)
 		return result;
 
-	tmp_float1 = minmea_tofloat(&frameRmcGps.speed);
-	result = ScDbGPS_RecordGPSSpeed(service_smartcanton_devbox_gps, &tmp_float1);
+	tmp_float1 = minmea_tofloat(&rmcFrame->speed);
+	result = ScDbGPS_RecordNotificationGPSSpeed(serviceHandle, &tmp_float1);
 	if(result != gBleSuccess_c)
 		return result;
 
-	result = ScDbGPS_RecordGPSTime(service_smartcanton_devbox_gps, &rmcFrame->time);
+	result = ScDbGPS_RecordNotificationGPSTime(serviceHandle, &rmcFrame->time);
 	if(result != gBleSuccess_c)
 		return result;
 
-	result = ScDbGPS_RecordGPSDate(service_smartcanton_devbox_gps, &rmcFrame->date);
-	if(result != gBleSuccess_c)
-		return result;
+	result = ScDbGPS_RecordNotificationGPSDate(serviceHandle, &rmcFrame->date);
+	return result;
 }
 
 /************************************************************************************
@@ -200,7 +199,7 @@ bleResult_t ScDbGPS_RecordFrameRmcAll(uint16_t serviceHandle, struct minmea_sent
  *************************************************************************************
  ************************************************************************************/
 
-static bleResult_t ScDbGPS_RecordCharacteristicFloatToString(uint16_t serviceHandle, bleUuid_t* uuid_char,
+static bleResult_t ScDbGPS_RecordNotificationCharacteristicFloatToString(uint16_t serviceHandle, bleUuid_t* uuid_char,
 		float *floatVal)
 {
 	uint16_t handle;

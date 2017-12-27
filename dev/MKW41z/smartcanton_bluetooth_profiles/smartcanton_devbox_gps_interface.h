@@ -140,7 +140,7 @@ bleResult_t ScDbGPS_Unsubscribe();
  *
  * \return       gBleSuccess_c or error.
  ************************************************************************************/
-bleResult_t ScDbGPS_RecordGPSPosition(uint16_t serviceHandle, float* latitude, float* longitude);
+bleResult_t ScDbGPS_RecordNotificationGPSPosition(uint16_t serviceHandle, float* latitude, float* longitude);
 
 /*!**********************************************************************************
  * \brief        Record a new GPS speed the GATT database and send a notification
@@ -149,7 +149,7 @@ bleResult_t ScDbGPS_RecordGPSPosition(uint16_t serviceHandle, float* latitude, f
  *
  * \return       gBleSuccess_c or error.
  ************************************************************************************/
-bleResult_t ScDbGPS_RecordGPSSpeed(uint16_t serviceHandle, float* speed);
+bleResult_t ScDbGPS_RecordNotificationGPSSpeed(uint16_t serviceHandle, float* speed);
 
 /*!**********************************************************************************
  * \brief        Record a new GPS course the GATT database and send a notification
@@ -158,7 +158,7 @@ bleResult_t ScDbGPS_RecordGPSSpeed(uint16_t serviceHandle, float* speed);
  *
  * \return       gBleSuccess_c or error.
  ************************************************************************************/
-bleResult_t ScDbGPS_RecordGPSCourse(uint16_t serviceHandle, float* course);
+bleResult_t ScDbGPS_RecordNotificationGPSCourse(uint16_t serviceHandle, float* course);
 
 /*!**********************************************************************************
  * \brief        Record a new GPS Time the GATT database and send a notification
@@ -167,7 +167,7 @@ bleResult_t ScDbGPS_RecordGPSCourse(uint16_t serviceHandle, float* course);
  *
  * \return       gBleSuccess_c or error.
  ************************************************************************************/
-bleResult_t ScDbGPS_RecordGPSTime(uint16_t serviceHandle, struct minmea_time *time);
+bleResult_t ScDbGPS_RecordNotificationGPSTime(uint16_t serviceHandle, struct minmea_time *time);
 
 /*!**********************************************************************************
  * \brief        Record a new GPS Date the GATT database and send a notification
@@ -176,7 +176,7 @@ bleResult_t ScDbGPS_RecordGPSTime(uint16_t serviceHandle, struct minmea_time *ti
  *
  * \return       gBleSuccess_c or error.
  ************************************************************************************/
-bleResult_t ScDbGPS_RecordGPSDate(uint16_t serviceHandle, struct minmea_date *date);
+bleResult_t ScDbGPS_RecordNotificationGPSDate(uint16_t serviceHandle, struct minmea_date *date);
 
 /*!**********************************************************************************
  * \brief        Record a complete RMC frame to the GATT database and send all
@@ -186,7 +186,7 @@ bleResult_t ScDbGPS_RecordGPSDate(uint16_t serviceHandle, struct minmea_date *da
  *
  * \return       gBleSuccess_c or error.
  ************************************************************************************/
-bleResult_t ScDbGPS_RecordFrameRmcAll(uint16_t serviceHandle, struct minmea_sentence_rmc *rmcFrame){
+bleResult_t ScDbGPS_RecordNotificationFrameRmcAll(uint16_t serviceHandle, struct minmea_sentence_rmc *rmcFrame);
 
 #ifdef __cplusplus
 }

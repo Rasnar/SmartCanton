@@ -791,26 +791,10 @@ void DevBox_App_Task(osaTaskParam_t argument)
 		/* Event received when a new GPS frame is available to be read */
 		if (event & gDevBoxTaskEvtNewGPSDataRdy_c)
 		{
-			/* Update Bluetooth Service with new values */
 			if (gps_neo_m8_read_rmc(&frameRmcGps) == gpsNeo_Success)
 			{
-				tmp_float1 = minmea_tocoord(&frameRmcGps.latitude);
-				tmp_float2 = minmea_tocoord(&frameRmcGps.longitude);
-				ScDbGPS_RecordGPSPosition(service_smartcanton_devbox_gps, &tmp_float1, &tmp_float2);
-
-				tmp_float1 = minmea_tofloat(&frameRmcGps.course);
-				if (isnanf(tmp_float1))
-				{
-					tmp_float1 = 0.0;
-				}
-				ScDbGPS_RecordGPSCourse(service_smartcanton_devbox_gps, &tmp_float1);
-
-				tmp_float1 = minmea_tofloat(&frameRmcGps.speed);
-				ScDbGPS_RecordGPSSpeed(service_smartcanton_devbox_gps, &tmp_float1);
-
-				ScDbGPS_RecordGPSTime(service_smartcanton_devbox_gps, &frameRmcGps.time);
-
-				ScDbGPS_RecordGPSDate(service_smartcanton_devbox_gps, &frameRmcGps.date);
+				/* Update Bluetooth Service with new values */
+				ScDbGPS_RecordNotificationFrameRmcAll(service_smartcanton_devbox_gps, &frameRmcGps);
 			}
 		}
 
@@ -846,7 +830,7 @@ void DevBox_App_Task(osaTaskParam_t argument)
 				/* Destroy tmp buffer allocated by the bno055_task */
 				vPortFree(bno055Data_tmp);
 
-				ScDbBno055_InstantValueAll(service_smartcanton_devbox_bno055, &bno055Data);
+				ScDbBno055_InstantValueNotificationAll(service_smartcanton_devbox_bno055, &bno055Data);
 			}
 		}
 
