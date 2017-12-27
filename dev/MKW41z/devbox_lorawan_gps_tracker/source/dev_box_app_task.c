@@ -804,7 +804,7 @@ void DevBox_App_Task(osaTaskParam_t argument)
 			// Last data received from the bme680
 			bme680Data_t* bme680Data_tmp;
 			/* Retrieve data pointer */
-			while (OSA_MsgQGet(gBme680NewMessageMeasureQ, &bme680Data_tmp, 1) == osaStatus_Success)
+			while (OSA_MsgQGet(gBme680NewMessageMeasureQ, &bme680Data_tmp, 0) == osaStatus_Success)
 			{
 				/* Store value in local in case we want to use it later on */
 				FLib_MemCpy(&bme680Data, bme680Data_tmp, sizeof(bme680Data));
@@ -822,7 +822,7 @@ void DevBox_App_Task(osaTaskParam_t argument)
 			// Last data received from the bno055
 			struct bno055Data_tag* bno055Data_tmp;
 			/* Retrieve data pointer */
-			while (OSA_MsgQGet(gBno055NewMessageMeasureQ, &bno055Data_tmp, 1) == osaStatus_Success)
+			while (OSA_MsgQGet(gBno055NewMessageMeasureQ, &bno055Data_tmp, 0) == osaStatus_Success)
 			{
 				/* Store value in local in case we want to use it later on */
 				FLib_MemCpy(&bno055Data, bno055Data_tmp, sizeof(bno055Data));
