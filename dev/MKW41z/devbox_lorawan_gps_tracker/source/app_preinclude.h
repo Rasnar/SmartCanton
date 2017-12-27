@@ -63,7 +63,8 @@
 #define gPasskeyValue_c                111100
 
 #define gSerialMgrRxBufSize_c          	(128)
-#define gSerialTaskPriority_c          	(10)
+//#define gSerialTaskPriority_c          	(OSA_PRIORITY_BELOW_NORMAL)
+#define gHost_TaskPriority_c		OSA_PRIORITY_ABOVE_NORMAL
 
 #if (gAppUseBonding_d) && (!gAppUsePairing_d)
   #error "Enable pairing to make use of bonding"

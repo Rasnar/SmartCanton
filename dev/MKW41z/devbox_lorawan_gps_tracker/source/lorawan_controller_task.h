@@ -35,7 +35,7 @@ typedef struct lorawanControllerDataFormat_tag
 #define gLorawanControllerTaskStackSize_c (2048)
 
 /*! Lorawan Controller Task OS Abstraction Priority */
-#define gLorawanControllerTaskPriority_c  (3)
+#define gLorawanControllerTaskPriority_c  (OSA_PRIORITY_NORMAL)
 
 /* Task Events */
 #define gLoRaCtrlTaskEvtNewMsgToSend_c       		(1 << 0)

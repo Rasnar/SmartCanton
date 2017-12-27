@@ -35,7 +35,7 @@ typedef struct bno055Data_tag
 #define gBno055TaskStackSize_c (1500)
 
 /*! Bno55 Task OS Abstraction Priority */
-#define gBno055TaskPriority_c  (3)
+#define gBno055TaskPriority_c  (OSA_PRIORITY_LOW)
 
 void Bno055_Task(osaTaskParam_t argument);
 osaStatus_t Bno055_TaskInit(i2c_rtos_handle_t* i2c_master_rtos_handle);

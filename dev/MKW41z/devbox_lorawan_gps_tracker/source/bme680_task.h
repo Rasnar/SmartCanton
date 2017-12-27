@@ -37,7 +37,7 @@ typedef struct bme680Data_tag
 #define gBme680TaskStackSize_c (4096)
 
 /*! Bno55 Task OS Abstraction Priority */
-#define gBme680TaskPriority_c  (3)
+#define gBme680TaskPriority_c  (OSA_PRIORITY_BELOW_NORMAL)
 
 void Bme680_Task(osaTaskParam_t argument);
 osaStatus_t Bme680_TaskInit(i2c_rtos_handle_t* i2c_master_rtos_handle);
