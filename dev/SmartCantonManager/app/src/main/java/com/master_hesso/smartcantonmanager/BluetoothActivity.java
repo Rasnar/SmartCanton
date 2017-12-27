@@ -55,7 +55,7 @@ public class BluetoothActivity extends AppCompatActivity implements ChangePasswo
 
         // Update Action title with current username
         MenuItem profileMenuItem = menu.findItem(R.id.action_profile);
-        profileMenuItem.setTitle(mUsername);
+        profileMenuItem.setTitle(" " + mUsername);
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -136,7 +136,7 @@ public class BluetoothActivity extends AppCompatActivity implements ChangePasswo
 
     private void showSnackBarMessage(String message) {
 
-        Snackbar.make(findViewById(R.id.activity_profile), message, Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(findViewById(R.id.activity_bluetooth), message, Snackbar.LENGTH_SHORT).show();
 
     }
 

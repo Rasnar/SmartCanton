@@ -4,6 +4,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".BluetoothActivity">
 
+    <item android:id="@+id/action_beacon_broadcast"
+        android:title="@string/ic_beacon_broadcast_name"
+        android:icon="@drawable/ic_antenna_broadcast"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom|withText" />
+
     <item android:id="@+id/action_profile"
         android:title="@string/profile_settings_menu_title"
         android:icon="@drawable/ic_stat_name"
