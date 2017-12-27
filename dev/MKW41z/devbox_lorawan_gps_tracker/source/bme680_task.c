@@ -54,9 +54,17 @@ void output_ready(int64_t timestamp, float iaq, uint8_t iaq_accuracy, float temp
 	bme680Data->raw_humidity = raw_humidity;
 	bme680Data->gas = gas;
 
-	OSA_MsgQPut(gBme680NewMessageMeasureQ, &bme680Data);
-	/* Inform the DevBox Task that she can read the data available */
-	OSA_EventSet(gDevBoxAppEvent, gDevBoxTaskEvtNewBME680Measure_c);
+	if(OSA_MsgQPut(gBme680NewMessageMeasureQ, &bme680Data) == osaStatus_Success)
+	{
+		/* Only notify main task if the message can be added successfully to the Queue */
+		/* Inform the DevBox Task that she can read the data available */
+		OSA_EventSet(gDevBoxAppEvent, gDevBoxTaskEvtNewBME680Measure_c);
+	}
+	else
+	{
+		/* Otherwise, free the reserved memory */
+		vPortFree(bme680Data);
+	}
 }
 
 

@@ -12,7 +12,7 @@
 #include "Panic.h"
 #include "bno055_support.h"
 
-#define mDelayNewMsgSentMilliSeconds	100
+#define mDelayNewMsgSentMilliSeconds	10
 
 OSA_TASK_DEFINE(Bno055_Task, gBno055TaskPriority_c, 1, gBno055TaskStackSize_c, FALSE);
 osaTaskId_t gBno055TaskId = 0;
@@ -66,8 +66,13 @@ void Bno055_Task(osaTaskParam_t argument)
 		rslt += bno055_convert_float_mag_xyz_uT(&bno055Data->mag_xyz);
 		rslt += bno055_convert_float_gravity_xyz_msq(&bno055Data->gravity);
 
-		OSA_MsgQPut(gBno055NewMessageMeasureQ, &bno055Data);
-		OSA_EventSet(gDevBoxAppEvent, gDevBoxTaskEvtNewBNO055Measure_c);
+		if(OSA_MsgQPut(gBno055NewMessageMeasureQ, &bno055Data) == osaStatus_Success) {
+			/* Only notify main task if the message can be added successfully to the Queue */
+			OSA_EventSet(gDevBoxAppEvent, gDevBoxTaskEvtNewBNO055Measure_c);
+		} else {
+			/* Otherwise, free the reserved memory */
+			vPortFree(bno055Data);
+		}
 	}
 }
 
