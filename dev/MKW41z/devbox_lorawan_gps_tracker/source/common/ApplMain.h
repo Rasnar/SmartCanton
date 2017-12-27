@@ -76,7 +76,7 @@ typedef void (*appCallbackHandler_t)(appCallbackParam_t param);
  */
 /*! Idle Task Stack Size */
 #ifndef gAppIdleTaskStackSize_c
-#define gAppIdleTaskStackSize_c (500)
+#define gAppIdleTaskStackSize_c (750)
 #endif
 
 /*! Idle Task OS Abstraction Priority */
