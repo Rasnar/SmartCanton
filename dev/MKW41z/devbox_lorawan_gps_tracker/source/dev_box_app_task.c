@@ -67,6 +67,7 @@
 #include "smartcanton_devbox_lora_interface.h"
 #include "smartcanton_devbox_gps_interface.h"
 #include "smartcanton_devbox_bme680_interface.h"
+#include "smartcanton_devbox_bno055_interface.h"
 #include "lorawan_controller.h"
 
 #include "pin_mux.h"
@@ -138,6 +139,9 @@ static scdbGPSConfig_t scdbGPSServiceConfig =
 
 static scdbBme680Config_t scdbBme680ServiceConfig =
 { service_smartcanton_devbox_bme680 };
+
+static scdbBno055Config_t scdbBno055ServiceConfig =
+{ service_smartcanton_devbox_bno055 };
 
 static lorawanControllerConfiguration_t loraConfig;
 static scdbLoRaConfig_t scdbLoRaServiceConfig =
@@ -340,6 +344,8 @@ static void BleApp_Config()
 
 	ScDbBme680_Start(&scdbBme680ServiceConfig);
 
+	ScDbBno055_Start(&scdbBno055ServiceConfig);
+
 	/* Allocate application timers */
 	mAdvTimerId = TMR_AllocateTimer();
 	mBatteryMeasurementTimerId = TMR_AllocateTimer();
@@ -476,6 +482,7 @@ static void BleApp_ConnectionCallback(deviceId_t peerDeviceId, gapConnectionEven
 		ScDbLoRa_Subscribe(peerDeviceId);
 		ScDbGPS_Subscribe(peerDeviceId);
 		ScDbBme680_Subscribe(peerDeviceId);
+		ScDbBno055_Subscribe(peerDeviceId);
 
 #if (!cPWR_UsePowerDownMode)  
 		/* UI */
@@ -507,6 +514,7 @@ static void BleApp_ConnectionCallback(deviceId_t peerDeviceId, gapConnectionEven
 		ScDbLoRa_Unsubscribe();
 		ScDbGPS_Unsubscribe();
 		ScDbBme680_Unsubscribe();
+		ScDbBno055_Unsubscribe();
 
 		mPeerDeviceId = gInvalidDeviceId_c;
 
@@ -797,7 +805,7 @@ void DevBox_App_Task(osaTaskParam_t argument)
 			// Last data received from the bme680
 			bme680Data_t* bme680Data_tmp;
 			/* Retrieve data pointer */
-			if (OSA_MsgQGet(gBme680NewMessageMeasureQ, &bme680Data_tmp, 10) == osaStatus_Success)
+			if (OSA_MsgQGet(gBme680NewMessageMeasureQ, &bme680Data_tmp, 1) == osaStatus_Success)
 			{
 
 				FLib_MemCpy(&bme680Data, bme680Data_tmp, sizeof(bme680Data));
@@ -816,13 +824,15 @@ void DevBox_App_Task(osaTaskParam_t argument)
 			// Last data received from the bno055
 			struct bno055Data_tag* bno055Data_tmp;
 			/* Retrieve data pointer */
-			if (OSA_MsgQGet(gBno055NewMessageMeasureQ, &bno055Data_tmp, 10) == osaStatus_Success)
+			if (OSA_MsgQGet(gBno055NewMessageMeasureQ, &bno055Data_tmp, 1) == osaStatus_Success)
 			{
 
 				FLib_MemCpy(&bno055Data, bno055Data_tmp, sizeof(bno055Data));
 
 				/* Destroy tmp buffer allocated by the bno055_task */
 				vPortFree(bno055Data_tmp);
+
+				ScDbBno055_InstantValueAll(service_smartcanton_devbox_bno055, &bno055Data);
 			}
 		}
 

@@ -8,7 +8,7 @@
  *
  * \file
  *
- * This file is the interface file for the BME680 Service
+ * This file is the interface file for the BNO055 Service
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -36,8 +36,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _SMARTCANTON_DEVBOX_BME_680_INTERFACE_H_
-#define _SMARTCANTON_DEVBOX_BME_680_INTERFACE_H_
+#ifndef _SMARTCANTON_DEVBOX_BNO_055_INTERFACE_H_
+#define _SMARTCANTON_DEVBOX_BNO_055_INTERFACE_H_
 
 /************************************************************************************
  *************************************************************************************
@@ -60,11 +60,12 @@
 #include "device_info_interface.h"
 
 /**
- * Only included to have access to the bme680Data_t structure. In the future we should
+ * Only included to have access to the bno055Data_t structure. In the future we should
  * implement a commun interface to provide this structure to all needed files.
- * TODO: Implement a commun interface with the implementation of bme680Data_t
+ * TODO: Implement a commun interface with the implementation of bno055Data_t
  */
-#include "bme680_task.h"
+#include "bno055_task.h"
+#include "BNO055_driver/bno055.h"
 
 /************************************************************************************
  *************************************************************************************
@@ -79,10 +80,10 @@
  ************************************************************************************/
 
 /*! Smart Canton Dev Box Service - Configuration */
-typedef struct scdbBme680Config_tag
+typedef struct scdbBno055Config_tag
 {
 	uint16_t serviceHandle;
-} scdbBme680Config_t;
+} scdbBno055Config_t;
 
 /************************************************************************************
  *************************************************************************************
@@ -109,7 +110,7 @@ extern "C"
  *
  * \return       gBleSuccess_c or error.
  ************************************************************************************/
-bleResult_t ScDbBme680_Start(scdbBme680Config_t *pServiceConfig);
+bleResult_t ScDbBno055_Start(scdbBno055Config_t *pServiceConfig);
 
 /*!**********************************************************************************
  * \brief        Stops Smart Canton Dev Box Service functionality
@@ -119,7 +120,7 @@ bleResult_t ScDbBme680_Start(scdbBme680Config_t *pServiceConfig);
  *
  * \return       gBleSuccess_c or error.
  ************************************************************************************/
-bleResult_t ScDbBme680_Stop(scdbBme680Config_t *pServiceConfig);
+bleResult_t ScDbBno055_Stop(scdbBno055Config_t *pServiceConfig);
 
 /*!**********************************************************************************
  * \brief        Subscribes a GATT client to the Smart Canton Dev Box service
@@ -128,110 +129,61 @@ bleResult_t ScDbBme680_Stop(scdbBme680Config_t *pServiceConfig);
  *
  * \return       gBleSuccess_c or error.
  ************************************************************************************/
-bleResult_t ScDbBme680_Subscribe(deviceId_t clientDeviceId);
+bleResult_t ScDbBno055_Subscribe(deviceId_t clientDeviceId);
 
 /*!**********************************************************************************
  * \brief        Unsubscribes a GATT client from the Smart Canton Dev Box service
  *
  * \return       gBleSuccess_c or error.
  ************************************************************************************/
-bleResult_t ScDbBme680_Unsubscribe();
+bleResult_t ScDbBno055_Unsubscribe();
 
 /*!**********************************************************************************
  * \brief        Sends Indoor air quality value notification to a peer GATT
- * 				 Client with data given as parameter, ignoring the GATT Database.
- * \param[in]	 serviceHandle Handle to the Smart Canton Dev Box BME680 service
- * \param[in]	 iaq Indoor air quality value
+ * 				 client with data given as parameter, ignoring the GATT Database.
+ * \param[in]	 serviceHandle Handle to the Smart Canton Dev Box BNO055 service
+ * \param[in]	 accel Accelerometer 3 axis
  *
  * \return       gBleSuccess_c or error.
  ************************************************************************************/
-bleResult_t ScDbBme680_InstantValueIaq(uint16_t serviceHandle, float* iaq);
+bleResult_t ScDbBno055_InstantValueAccel(uint16_t serviceHandle, struct bno055_accel_float_t* accel);
 
 /*!**********************************************************************************
- * \brief        Sends Indoor air quality accuracy value notification to a peer GATT
- * 				 Client with data given as parameter, ignoring the GATT Database.
- * \param[in]	 serviceHandle Handle to the Smart Canton Dev Box BME680 service
- * \param[in]	 iaq_accuracy Indoor air quality accuracy value
+ * \brief        Sends Indoor air quality value notification to a peer GATT
+ * 				 client with data given as parameter, ignoring the GATT Database.
+ * \param[in]	 serviceHandle Handle to the Smart Canton Dev Box BNO055 service
+ * \param[in]	 gyro Gyroscope 3 axis
  *
  * \return       gBleSuccess_c or error.
  ************************************************************************************/
-bleResult_t ScDbBme680_InstantValueIaqAccuracy(uint16_t serviceHandle, uint8_t* iaq_accuracy);
+bleResult_t ScDbBno055_InstantValueGyro(uint16_t serviceHandle, struct bno055_gyro_float_t* gyro);
 
 /*!**********************************************************************************
- * \brief        Sends temperature value notification to a peer GATT Client with data
- * 				 given as parameter, ignoring the GATT Database.
- * \param[in]	 serviceHandle Handle to the Smart Canton Dev Box BME680 service
- * \param[in]	 temperature Temperature value
+ * \brief        Sends magnetometer values notification to a peer GATT
+ * 				 client with data given as parameter, ignoring the GATT Database.
+ * \param[in]	 serviceHandle Handle to the Smart Canton Dev Box BNO055 service
+ * \param[in]	 mag Magnetometer 3 axis
  *
  * \return       gBleSuccess_c or error.
  ************************************************************************************/
-bleResult_t ScDbBme680_InstantValueTemperature(uint16_t serviceHandle, float* temperature);
+bleResult_t ScDbBno055_InstantValueMag(uint16_t serviceHandle, struct bno055_mag_float_t* mag);
+
 
 /*!**********************************************************************************
- * \brief        Sends humidity value notification to a peer GATT Client with data
- * 				 given as parameter, ignoring the GATT Database.
- * \param[in]	 serviceHandle Handle to the Smart Canton Dev Box BME680 service
- * \param[in]	 humidity Humidity value
- *
- * \return       gBleSuccess_c or error.
- ************************************************************************************/
-bleResult_t ScDbBme680_InstanHumidity(uint16_t serviceHandle, float* humidity);
-
-/*!**********************************************************************************
- * \brief        Sends pressure value notification to a peer GATT Client with data
- * 				 given as parameter, ignoring the GATT Database.
- * \param[in]	 serviceHandle Handle to the Smart Canton Dev Box BME680 service
- * \param[in]	 pressure Pressure value
- *
- * \return       gBleSuccess_c or error.
- ************************************************************************************/
-bleResult_t ScDbBme680_InstantValuePressure(uint16_t serviceHandle, float* pressure);
-
-/*!**********************************************************************************
- * \brief        Sends raw temperature value notification to a peer GATT Client with data
- * 				 given as parameter, ignoring the GATT Database.
- * \param[in]	 serviceHandle Handle to the Smart Canton Dev Box BME680 service
- * \param[in]	 raw_temperature Raw temperature value
- *
- * \return       gBleSuccess_c or error.
- ************************************************************************************/
-bleResult_t ScDbBme680_InstantValueRawTemperature(uint16_t serviceHandle, float* raw_temperature);
-
-/*!**********************************************************************************
- * \brief        Sends raw humidity value notification to a peer GATT Client with data
- * 				 given as parameter, ignoring the GATT Database.
- * \param[in]	 serviceHandle Handle to the Smart Canton Dev Box BME680 service
- * \param[in]	 raw_humidity Raw humidity value
- *
- * \return       gBleSuccess_c or error.
- ************************************************************************************/
-bleResult_t ScDbBme680_InstantValueRawHumidity(uint16_t serviceHandle, float* raw_humidity);
-
-/*!**********************************************************************************
- * \brief        Sends raw gas value notification to a peer GATT Client with data
- * 				 given as parameter, ignoring the GATT Database.
- * \param[in]	 serviceHandle Handle to the Smart Canton Dev Box BME680 service
- * \param[in]	 raw_gas Gas value
- *
- * \return       gBleSuccess_c or error.
- ************************************************************************************/
-bleResult_t ScDbBme680_InstantValueRawGas(uint16_t serviceHandle, float* raw_gas);
-
-/*!**********************************************************************************
- * \brief        Send all BME680 data to the connected peer. Will call all the Instant
+ * \brief        Send all BNO055 data to the connected peer. Will call all the Instant
  * 				 Value functions implemented to provide all the notifications.
- * \param[in]	 serviceHandle Handle to the Smart Canton Dev Box BME680 service
- * \param[in]	 bme680Data Struct with all the BME680 data
+ * \param[in]	 serviceHandle Handle to the Smart Canton Dev Box BNO055 service
+ * \param[in]	 Bno055 Struct with all the BNO055 data
  *
  * \return       gBleSuccess_c or error.
  ************************************************************************************/
-bleResult_t ScDbBme680_InstantValueAll(uint16_t serviceHandle, bme680Data_t* bme680Data);
+bleResult_t ScDbBno055_InstantValueAll(uint16_t serviceHandle, bno055Data_t* bno055Data);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* _SMARTCANTON_DEVBOX_BME_680_INTERFACE_H_ */
+#endif /* _SMARTCANTON_DEVBOX_BNO_055_INTERFACE_H_ */
 
 /*! **********************************************************************************
  * @}
