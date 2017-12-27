@@ -161,6 +161,39 @@ bleResult_t ScDbGPS_RecordGPSDate(uint16_t serviceHandle, struct minmea_date *da
 	return gBleSuccess_c;
 }
 
+bleResult_t ScDbGPS_RecordFrameRmcAll(uint16_t serviceHandle, struct minmea_sentence_rmc *rmcFrame){
+	bleResult_t result;
+	float tmp_float1, tmp_float2;
+
+	tmp_float1 = minmea_tocoord(&rmcFrame->latitude);
+	tmp_float2 = minmea_tocoord(&rmcFrame->longitude);
+	result = ScDbGPS_RecordGPSPosition(service_smartcanton_devbox_gps, &tmp_float1, &tmp_float2);
+	if(result != gBleSuccess_c)
+		return result;
+
+	tmp_float1 = minmea_tofloat(&rmcFrame->course);
+	if (isnanf(tmp_float1))
+	{
+		tmp_float1 = 0.0;
+	}
+	result = ScDbGPS_RecordGPSCourse(service_smartcanton_devbox_gps, &tmp_float1);
+	if(result != gBleSuccess_c)
+		return result;
+
+	tmp_float1 = minmea_tofloat(&frameRmcGps.speed);
+	result = ScDbGPS_RecordGPSSpeed(service_smartcanton_devbox_gps, &tmp_float1);
+	if(result != gBleSuccess_c)
+		return result;
+
+	result = ScDbGPS_RecordGPSTime(service_smartcanton_devbox_gps, &rmcFrame->time);
+	if(result != gBleSuccess_c)
+		return result;
+
+	result = ScDbGPS_RecordGPSDate(service_smartcanton_devbox_gps, &rmcFrame->date);
+	if(result != gBleSuccess_c)
+		return result;
+}
+
 /************************************************************************************
  *************************************************************************************
  * Private functions

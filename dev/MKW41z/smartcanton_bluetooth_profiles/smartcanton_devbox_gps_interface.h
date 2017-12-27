@@ -178,6 +178,16 @@ bleResult_t ScDbGPS_RecordGPSTime(uint16_t serviceHandle, struct minmea_time *ti
  ************************************************************************************/
 bleResult_t ScDbGPS_RecordGPSDate(uint16_t serviceHandle, struct minmea_date *date);
 
+/*!**********************************************************************************
+ * \brief        Record a complete RMC frame to the GATT database and send all
+ * 				 the required notifications.
+ * \param[in]	 serviceHandle Handle to the Smart Canton Dev Box GPS service
+ * \param[in]	 course New GPS Date
+ *
+ * \return       gBleSuccess_c or error.
+ ************************************************************************************/
+bleResult_t ScDbGPS_RecordFrameRmcAll(uint16_t serviceHandle, struct minmea_sentence_rmc *rmcFrame){
+
 #ifdef __cplusplus
 }
 #endif
