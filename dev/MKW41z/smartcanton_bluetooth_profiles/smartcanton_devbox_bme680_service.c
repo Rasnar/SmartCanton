@@ -102,13 +102,29 @@ bleResult_t ScDbBme680_InstantValueAll(uint16_t serviceHandle, bme680Data_t* bme
 	if(result != gBleSuccess_c)
 		return result;
 
-	result = ScDbBme680_InstantValueRawHumidity(serviceHandle, &bme680Data->raw_humidity);
+	/**
+	 * The raw humidity and raw temperature have been removed from notifications because we
+	 * can only have maximum 16 CCCDs. To enable it juste change the file gatt_db.h and
+	 * uncomment the 2 following comment blocks.
+	 * The maximum value of 16 comes from the constant gcGapMaximumSavedCccds_c defined
+	 * in the file "ble_constants.h". It can't be changed.
+	 */
+	// Save data to database
+	result = ScDbBme680_RecordValueRawHumidity(serviceHandle, &bme680Data->raw_humidity);
 	if(result != gBleSuccess_c)
 		return result;
 
-	result = ScDbBme680_InstantValueRawTemperature(serviceHandle, &bme680Data->raw_temperature);
+	// Save data to database
+	result = ScDbBme680_RecordValueRawTemperature(serviceHandle, &bme680Data->raw_temperature);
 	if(result != gBleSuccess_c)
 		return result;
+//	result = ScDbBme680_InstantValueRawHumidity(serviceHandle, &bme680Data->raw_humidity);
+//	if(result != gBleSuccess_c)
+//		return result;
+
+//	result = ScDbBme680_InstantValueRawTemperature(serviceHandle, &bme680Data->raw_temperature);
+//	if(result != gBleSuccess_c)
+//		return result;
 
 	result = ScDbBme680_InstantValueRawGas(serviceHandle, &bme680Data->gas);
 
@@ -172,10 +188,56 @@ bleResult_t ScDbBme680_InstantValuePressure(uint16_t serviceHandle, float* press
 			&serviceHandle, pressure);
 }
 
+bleResult_t ScDbBme680_InstantValueRawTemperature(uint16_t serviceHandle, float* raw_temperature){
+
+	return ScDbBme680_SendInstantValueNotifications((bleUuid_t*) uuid_bme680_raw_temperature,
+			&serviceHandle, raw_temperature);
+}
+
 bleResult_t ScDbBme680_InstantValueRawHumidity(uint16_t serviceHandle, float* raw_humidity){
 
 	return ScDbBme680_SendInstantValueNotifications((bleUuid_t*) uuid_bme680_raw_humidity,
 			&serviceHandle, raw_humidity);
+}
+
+bleResult_t ScDbBme680_RecordValueRawTemperature(uint16_t serviceHandle, float* raw_temperature){
+
+	uint16_t handle;
+	int arrayLength = 0;
+
+	bleResult_t result = GattDb_FindCharValueHandleInService(serviceHandle,
+			gBleUuidType128_c, (bleUuid_t*) uuid_bme680_raw_temperature, &handle);
+
+	if (result != gBleSuccess_c)
+		return result;
+
+	/* Update characteristic value */
+	result = GattDb_WriteAttribute(handle, sizeof(float), (uint8_t*)raw_temperature);
+
+	if (result != gBleSuccess_c)
+		return result;
+
+	return gBleSuccess_c;
+}
+
+bleResult_t ScDbBme680_RecordValueRawHumidity(uint16_t serviceHandle, float* raw_humidity){
+
+	uint16_t handle;
+	int arrayLength = 0;
+
+	bleResult_t result = GattDb_FindCharValueHandleInService(serviceHandle,
+			gBleUuidType128_c, (bleUuid_t*) uuid_bme680_raw_humidity, &handle);
+
+	if (result != gBleSuccess_c)
+		return result;
+
+	/* Update characteristic value */
+	result = GattDb_WriteAttribute(handle, sizeof(float), (uint8_t*)raw_humidity);
+
+	if (result != gBleSuccess_c)
+		return result;
+
+	return gBleSuccess_c;
 }
 
 bleResult_t ScDbBme680_InstantValueRawGas(uint16_t serviceHandle, float* raw_gas){
@@ -184,11 +246,8 @@ bleResult_t ScDbBme680_InstantValueRawGas(uint16_t serviceHandle, float* raw_gas
 			&serviceHandle, raw_gas);
 }
 
-bleResult_t ScDbBme680_InstantValueRawTemperature(uint16_t serviceHandle, float* raw_temperature){
 
-	return ScDbBme680_SendInstantValueNotifications((bleUuid_t*) uuid_bme680_raw_temperature,
-			&serviceHandle, raw_temperature);
-}
+
 
 /************************************************************************************
  *************************************************************************************

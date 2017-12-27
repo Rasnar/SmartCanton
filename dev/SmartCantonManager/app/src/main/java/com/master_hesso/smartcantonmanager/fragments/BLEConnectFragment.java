@@ -676,8 +676,8 @@ public class BLEConnectFragment extends Fragment {
         tvBme680ServiceTemperatureDevice.setVisibility(visibility);
         tvBme680ServiceHumidityDevice.setVisibility(visibility);
         tvBme680ServicePressureDevice.setVisibility(visibility);
-        tvBme680ServiceRawTemperatureDevice.setVisibility(visibility);
-        tvBme680ServiceRawHumidityDevice.setVisibility(visibility);
+//        tvBme680ServiceRawTemperatureDevice.setVisibility(visibility);
+//        tvBme680ServiceRawHumidityDevice.setVisibility(visibility);
         tvBme680ServiceRawGasDevice.setVisibility(visibility);
         tvBno055ServiceMeasureDelayDevice.setVisibility(visibility);
     }
@@ -1166,31 +1166,37 @@ public class BLEConnectFragment extends Fragment {
                     }
                 });
 
-        mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_SERVICE,
-                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_RAW_TEMPERATURE,
-                e1 -> {
-                    if (e1.wasSuccess()) {
-                        if (e1.data().length == 4) { // Only display if it can be transformed to float
-                            tvBme680ServiceRawTemperatureDevice.setText(
-                                    String.format(Locale.getDefault(), "Raw temperature : %.2f °C",
-                                            ByteBuffer.wrap(e1.data()).
-                                                    order(ByteOrder.LITTLE_ENDIAN).getFloat()));
-                        }
-                    }
-                });
+        /*
+         * These 2 lines are commented because it's not possible to save more than 16 characteristics
+         * as notifications/indications on the KW41z. This limitation comes from a hardcoded value
+         * inside the BLE stack. We disabled these 2 characteristics that can not only be accessed
+         * by read operations.
+         */
+//        mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_SERVICE,
+//                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_RAW_TEMPERATURE,
+//                e1 -> {
+//                    if (e1.wasSuccess()) {
+//                        if (e1.data().length == 4) { // Only display if it can be transformed to float
+//                            tvBme680ServiceRawTemperatureDevice.setText(
+//                                    String.format(Locale.getDefault(), "Raw temperature : %.2f °C",
+//                                            ByteBuffer.wrap(e1.data()).
+//                                                    order(ByteOrder.LITTLE_ENDIAN).getFloat()));
+//                        }
+//                    }
+//                });
 
-        mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_SERVICE,
-                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_RAW_HUDMITIY,
-                e1 -> {
-                    if (e1.wasSuccess()) {
-                        if (e1.data().length == 4) { // Only display if it can be transformed to float
-                            tvBme680ServiceRawHumidityDevice.setText(
-                                    String.format(Locale.getDefault(), "Raw humidity : %.2f %%",
-                                            ByteBuffer.wrap(e1.data()).
-                                                    order(ByteOrder.LITTLE_ENDIAN).getFloat()));
-                        }
-                    }
-                });
+//        mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_SERVICE,
+//                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_RAW_HUDMITIY,
+//                e1 -> {
+//                    if (e1.wasSuccess()) {
+//                        if (e1.data().length == 4) { // Only display if it can be transformed to float
+//                            tvBme680ServiceRawHumidityDevice.setText(
+//                                    String.format(Locale.getDefault(), "Raw humidity : %.2f %%",
+//                                            ByteBuffer.wrap(e1.data()).
+//                                                    order(ByteOrder.LITTLE_ENDIAN).getFloat()));
+//                        }
+//                    }
+//                });
 
         mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_SERVICE,
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_RAW_GAS,
@@ -1222,11 +1228,18 @@ public class BLEConnectFragment extends Fragment {
         mBleDevice.disableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_SERVICE,
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_PRESSURE);
 
-        mBleDevice.disableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_SERVICE,
-                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_RAW_TEMPERATURE);
 
-        mBleDevice.disableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_SERVICE,
-                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_RAW_HUDMITIY);
+        /*
+         * These 2 lines are commented because it's not possible to save more than 16 characteristics
+         * as notifications/indications on the KW41z. This limitation comes from a hardcoded value
+         * inside the BLE stack. We disabled these 2 characteristics that can not only be accessed
+         * by read operations.
+         */
+//        mBleDevice.disableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_SERVICE,
+//                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_RAW_TEMPERATURE);
+
+//        mBleDevice.disableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_SERVICE,
+//                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_RAW_HUDMITIY);
 
         mBleDevice.disableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_SERVICE,
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_RAW_GAS);

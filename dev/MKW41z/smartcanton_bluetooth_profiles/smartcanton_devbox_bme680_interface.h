@@ -208,6 +208,24 @@ bleResult_t ScDbBme680_InstantValueRawTemperature(uint16_t serviceHandle, float*
 bleResult_t ScDbBme680_InstantValueRawHumidity(uint16_t serviceHandle, float* raw_humidity);
 
 /*!**********************************************************************************
+ * \brief        Save the current raw temperature to the GATT database.
+ * \param[in]	 serviceHandle Handle to the Smart Canton Dev Box BME680 service
+ * \param[in]	 raw_temperature Raw temperature value
+ *
+ * \return       gBleSuccess_c or error.
+ ************************************************************************************/
+bleResult_t ScDbBme680_RecordValueRawTemperature(uint16_t serviceHandle, float* raw_temperature);
+
+/*!**********************************************************************************
+ * \brief        Save the current raw humidity to the GATT database
+ * \param[in]	 serviceHandle Handle to the Smart Canton Dev Box BME680 service
+ * \param[in]	 raw_humidity Raw humidity value
+ *
+ * \return       gBleSuccess_c or error.
+ ************************************************************************************/
+bleResult_t ScDbBme680_RecordValueRawHumidity(uint16_t serviceHandle, float* raw_humidity);
+
+/*!**********************************************************************************
  * \brief        Sends raw gas value notification to a peer GATT Client with data
  * 				 given as parameter, ignoring the GATT Database.
  * \param[in]	 serviceHandle Handle to the Smart Canton Dev Box BME680 service

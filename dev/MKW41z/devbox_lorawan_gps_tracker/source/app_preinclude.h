@@ -62,8 +62,8 @@
 
 #define gPasskeyValue_c                111100
 
-#define gSerialMgrRxBufSize_c               (128)
-#define gSerialTaskPriority_c               (10)
+#define gSerialMgrRxBufSize_c          	(128)
+#define gSerialTaskPriority_c          	(10)
 
 #if (gAppUseBonding_d) && (!gAppUsePairing_d)
   #error "Enable pairing to make use of bonding"
@@ -173,7 +173,7 @@
 
 /* Offset to the first instant register. */
 #define mcOffsetToFirstInstant_c        0x00      /* 625usec */           
-#define BD_ADDR             0x02,0x00,0x00,0x37,0x60,0x00
+#define BD_ADDR             0x01,0x00,0x00,0x37,0x60,0x00
 
 /*! *********************************************************************************
  * 	Auto Configuration
