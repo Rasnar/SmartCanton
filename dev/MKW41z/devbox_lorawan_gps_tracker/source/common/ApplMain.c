@@ -416,6 +416,14 @@ void main_task(uint32_t param)
         /* Initialize Serial Task */
         SerialManager_Init();
 
+        /**
+         * Erase all NVM memory
+         * To be used only when the CCCD are modified to restore a clean state for each device stored
+         */
+        for (uint8_t var = 0; var < gMaxBondedDevices_c; var++) {
+        	App_NvmErase(var);
+		}
+
         /* Initialize Lorawan Controller Task */
 		if (osaStatus_Success != LorawanController_TaskInit())
 		{
