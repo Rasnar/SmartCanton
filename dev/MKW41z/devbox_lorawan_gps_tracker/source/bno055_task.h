@@ -40,4 +40,8 @@ typedef struct bno055Data_tag
 void Bno055_Task(osaTaskParam_t argument);
 osaStatus_t Bno055_TaskInit(i2c_rtos_handle_t* i2c_master_rtos_handle);
 
+osaStatus_t Bno055Task_SetMeasureDelay(uint32_t delay);
+
+uint32_t Bno055Task_GetMeasureDelay();
+
 #endif /* __BNO055_TASK_H__ */

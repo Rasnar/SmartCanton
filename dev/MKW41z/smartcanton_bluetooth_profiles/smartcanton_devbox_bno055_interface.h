@@ -179,6 +179,15 @@ bleResult_t ScDbBno055_InstantValueNotificationMag(uint16_t serviceHandle, struc
  ************************************************************************************/
 bleResult_t ScDbBno055_InstantValueNotificationAll(uint16_t serviceHandle, bno055Data_t* bno055Data);
 
+/*!**********************************************************************************
+ * \brief        Update the value of the measure delay applied to the BNO055
+ * \param[in]	 serviceHandle Handle to the Smart Canton Dev Box BNO055 service
+ * \param[in]	 delay Delay in ms applied to the BNO055
+ *
+ * \return       gBleSuccess_c or error.
+ ************************************************************************************/
+bleResult_t ScDbBno055_RecordValueMeasureDelay(uint16_t serviceHandle, uint32_t delay);
+
 #ifdef __cplusplus
 }
 #endif

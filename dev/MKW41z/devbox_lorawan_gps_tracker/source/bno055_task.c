@@ -12,7 +12,8 @@
 #include "Panic.h"
 #include "bno055_support.h"
 
-#define mDelayNewMsgSentMilliSeconds	10
+#define BNO055_MAXIMUM_MEASURE_DELAY_MS 10000
+#define BNO055_MINIMUM_MEASURE_DELAY_MS 100
 
 OSA_TASK_DEFINE(Bno055_Task, gBno055TaskPriority_c, 1, gBno055TaskStackSize_c, FALSE);
 osaTaskId_t gBno055TaskId = 0;
@@ -27,6 +28,8 @@ struct bno055_gravity_t gravity;
 static i2c_rtos_handle_t* master_rtos_handle;
 
 osaMsgQId_t gBno055NewMessageMeasureQ;
+
+uint32_t mDelayNewMsgSentMilliSeconds = BNO055_MINIMUM_MEASURE_DELAY_MS * 10;
 
 /**
  * Callback function called when an interruption as been received from the
@@ -103,5 +106,21 @@ osaStatus_t Bno055_TaskInit(i2c_rtos_handle_t* i2c_master_rtos_handle)
 	}
 
 	return osaStatus_Success;
+}
+
+osaStatus_t Bno055Task_SetMeasureDelay(uint32_t delay)
+{
+	if ((delay >= BNO055_MINIMUM_MEASURE_DELAY_MS)
+			&& (delay <= BNO055_MAXIMUM_MEASURE_DELAY_MS))
+	{
+		mDelayNewMsgSentMilliSeconds = delay;
+		return osaStatus_Success;
+	}
+	return osaStatus_Error;
+}
+
+uint32_t Bno055Task_GetMeasureDelay()
+{
+	return mDelayNewMsgSentMilliSeconds;
 }
 

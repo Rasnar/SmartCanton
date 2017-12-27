@@ -147,13 +147,13 @@ static lorawanControllerConfiguration_t loraConfig;
 static scdbLoRaConfig_t scdbLoRaServiceConfig =
 { service_smartcanton_devbox_lora, &loraConfig };
 
-static uint16_t writeHandles[9] =
+static uint16_t writeHandles[10] =
 { value_lora_app_eui, value_lora_app_key, value_lora_device_eui, value_lora_confirm_mode,
 		value_lora_device_address, value_lora_network_session_key, value_lora_app_session_key,
-		value_lora_validate_new_configuration };
+		value_lora_validate_new_configuration, value_bno055_measure_delay };
 
-static uint16_t readHandles[1] =
-{ value_lora_network_join_status };
+static uint16_t readHandles[2] =
+{ value_lora_network_join_status, value_bno055_measure_delay };
 
 /* Application specific data*/
 static tmrTimerID_t mAdvTimerId;
@@ -608,6 +608,12 @@ static void BleApp_GattServerCallback(deviceId_t deviceId, gattServerEvent_t* pS
 			gLoRaCtrlTaskEvtConfigureFromModuleConfig_c);
 		}
 
+		if (handle == value_bno055_measure_delay)
+		{
+			status = Bno055Task_SetMeasureDelay(pServerEvent->eventData.attributeWrittenEvent.aValue[0] |
+					pServerEvent->eventData.attributeWrittenEvent.aValue[1] << 8);
+		}
+
 		GattServer_SendAttributeWrittenStatus(deviceId, handle, status);
 	}
 		break;
@@ -651,6 +657,13 @@ static void BleApp_GattServerCallback(deviceId_t deviceId, gattServerEvent_t* pS
 
 			status = ScDbLoRa_SetJoinStatus(&scdbLoRaServiceConfig, joinStatusArray);
 		}
+
+		/* Update the measure delay inside the database in case something else has changed it */
+		if (handle == value_bno055_measure_delay) {
+			ScDbBno055_RecordValueMeasureDelay(service_smartcanton_devbox_bno055,
+					Bno055Task_GetMeasureDelay());
+		}
+
 		GattServer_SendAttributeReadStatus(deviceId, handle, status);
 	}
 		break;
@@ -760,7 +773,6 @@ void DevBox_App_Task(osaTaskParam_t argument)
 
 	// Store last values from the sensors
 	struct minmea_sentence_rmc frameRmcGps;
-	float tmp_float1, tmp_float2;
 	osaEventFlags_t event;
 
 	// Data to be sent using the LoRaWAN module

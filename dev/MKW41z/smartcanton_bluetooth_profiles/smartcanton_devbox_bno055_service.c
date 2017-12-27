@@ -93,6 +93,20 @@ bleResult_t ScDbBno055_InstantValueNotificationMag(uint16_t serviceHandle, struc
 			&serviceHandle, (uint8_t*)mag, sizeof(struct bno055_mag_float_t));
 }
 
+bleResult_t ScDbBno055_RecordValueMeasureDelay(uint16_t serviceHandle, uint32_t delay){
+
+    uint16_t  handle;
+
+   	bleResult_t result = GattDb_FindCharValueHandleInService(serviceHandle,
+   		gBleUuidType128_c, (bleUuid_t*) uuid_bno055_measure_delay, &handle);
+
+   	if (result != gBleSuccess_c)
+   		return result;
+
+   	/* Update characteristic value */
+   	result = GattDb_WriteAttribute(handle, sizeof(uint32_t), (uint8_t*)&delay);
+   	return result;
+}
 
 bleResult_t ScDbBno055_InstantValueNotificationAll(uint16_t serviceHandle, bno055Data_t* bno055Data){
 	bleResult_t result;
