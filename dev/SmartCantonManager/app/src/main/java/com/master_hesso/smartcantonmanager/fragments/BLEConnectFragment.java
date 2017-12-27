@@ -441,6 +441,7 @@ public class BLEConnectFragment extends Fragment {
 
         swBno055EnableNotifications.setOnClickListener(view12 -> {
             if (swBno055EnableNotifications.isChecked()) {
+                readBleBno055MeasureDelay();
                 enableBleBno055Notifications();
             } else {
                 disableBleBno055Notifications();
@@ -875,27 +876,30 @@ public class BLEConnectFragment extends Fragment {
                     if (e1.wasSuccess()) {
                         if (e1.data_utf8().length() > 0)
                             tvGpsServicePositionDevice.setText(
-                                    String.format("Position : %s", e1.data_utf8()));
+                                    String.format("Position {Lat,Long} : %s [°]", e1.data_utf8()));
                     }
                 });
+
         mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SPEED,
                 e1 -> {
                     if (e1.wasSuccess()) {
                         if (e1.data_utf8().length() > 0)
                             tvGpsServiceSpeedDevice.setText(
-                                    String.format("Speed : %s", e1.data_utf8()));
+                                    String.format("Speed : %s [knots]", e1.data_utf8()));
                     }
                 });
+
         mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_COURSE,
                 e1 -> {
                     if (e1.wasSuccess()) {
                         if (e1.data_utf8().length() > 0)
                             tvGpsServiceCourseDevice.setText(
-                                    String.format("Course : %s", e1.data_utf8()));
+                                    String.format("Course : %s [°]", e1.data_utf8()));
                     }
                 });
+
         mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_DATE,
                 e1 -> {
@@ -954,7 +958,7 @@ public class BLEConnectFragment extends Fragment {
                 e1 -> {
                     if (e1.wasSuccess()) {
                         tvGpsServicePositionDevice.setText(
-                                String.format("Position : %s", e1.data_utf8()));
+                                String.format("Position {Lat,Long} : %s [°]", e1.data_utf8()));
                     } else if (e1.status() == Status.EMPTY_DATA) {
                         tvGpsServicePositionDevice.setText(
                                 String.format("Position : %s", "<no signal yet>"));
@@ -966,7 +970,7 @@ public class BLEConnectFragment extends Fragment {
                 e1 -> {
                     if (e1.wasSuccess()) {
                         tvGpsServiceSpeedDevice.setText(
-                                String.format("Speed : %s", e1.data_utf8()));
+                                String.format("Speed : %s [knots]", e1.data_utf8()));
                     } else if (e1.status() == Status.EMPTY_DATA) {
                         tvGpsServiceSpeedDevice.setText(
                                 String.format("Speed : %s", "<no signal yet>"));
@@ -978,7 +982,7 @@ public class BLEConnectFragment extends Fragment {
                 e1 -> {
                     if (e1.wasSuccess()) {
                         tvGpsServiceCourseDevice.setText(
-                                String.format("Course : %s", e1.data_utf8()));
+                                String.format("Course : %s [°]", e1.data_utf8()));
                     } else if (e1.status() == Status.EMPTY_DATA) {
                         tvGpsServiceCourseDevice.setText(
                                 String.format("Course : %s", "<no signal yet>"));
@@ -1109,7 +1113,7 @@ public class BLEConnectFragment extends Fragment {
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_IAQ_ACCURACY,
                 e1 -> {
                     if (e1.wasSuccess()) {
-                        if (e1.data().length > 0)
+                        if (e1.data().length == 1)
                             tvBme680ServiceIaqAccuracyDevice.setText(String.format(Locale.getDefault(),
                                     "IAQ accuracy : %d", e1.data_byte()));
                     }
@@ -1133,7 +1137,7 @@ public class BLEConnectFragment extends Fragment {
                     if (e1.wasSuccess()) {
                         if (e1.data().length == 4) { // Only display if it can be transformed to float
                             tvBme680ServiceTemperatureDevice.setText(
-                                    String.format(Locale.getDefault(), "Temperature : %.2f °C",
+                                    String.format(Locale.getDefault(), "Temperature : %.2f [°C]",
                                             ByteBuffer.wrap(e1.data()).
                                                     order(ByteOrder.LITTLE_ENDIAN).getFloat()));
                         }
@@ -1146,7 +1150,7 @@ public class BLEConnectFragment extends Fragment {
                     if (e1.wasSuccess()) {
                         if (e1.data().length == 4) { // Only display if it can be transformed to float
                             tvBme680ServiceHumidityDevice.setText(
-                                    String.format(Locale.getDefault(), "Humidity : %.2f %%",
+                                    String.format(Locale.getDefault(), "Humidity : %.2f [%%]",
                                             ByteBuffer.wrap(e1.data()).
                                                     order(ByteOrder.LITTLE_ENDIAN).getFloat()));
                         }
@@ -1159,7 +1163,7 @@ public class BLEConnectFragment extends Fragment {
                     if (e1.wasSuccess()) {
                         if (e1.data().length == 4) { // Only display if it can be transformed to float
                             tvBme680ServicePressureDevice.setText(
-                                    String.format(Locale.getDefault(), "Pressure : %.2f hPa",
+                                    String.format(Locale.getDefault(), "Pressure : %.2f [hPa]",
                                             ByteBuffer.wrap(e1.data()).
                                                     order(ByteOrder.LITTLE_ENDIAN).getFloat()));
                         }
@@ -1204,7 +1208,7 @@ public class BLEConnectFragment extends Fragment {
                     if (e1.wasSuccess()) {
                         if (e1.data().length == 4) { // Only display if it can be transformed to float
                             tvBme680ServiceRawGasDevice.setText(
-                                    String.format(Locale.getDefault(), "Gas resistance : %.0f Ω",
+                                    String.format(Locale.getDefault(), "Gas resistance : %.0f [Ω]",
                                             ByteBuffer.wrap(e1.data()).
                                                     order(ByteOrder.LITTLE_ENDIAN).getFloat()));
                         }
@@ -1245,7 +1249,7 @@ public class BLEConnectFragment extends Fragment {
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_RAW_GAS);
     }
 
-    private void writeBleBme680MeasureDelay() {
+    private void writeBleBno055MeasureDelay() {
         // TODO : pop up dialog to inter delay ms for the measure
 //        mBleDevice.write(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_SERVICE,
 //                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_MEASURE_DELAY,
@@ -1254,8 +1258,27 @@ public class BLEConnectFragment extends Fragment {
 //                    if (!e1.wasSuccess()) {
 //                        showSnackBarMessage(String.format("Error while writing characteristics %s",
 //                                "BNO055 MEASURE DELAY"));
+//
+//                    } else {
+//                        // Update the display with the new value
+//                        readBleBno055MeasureDelay();
 //                    }
 //                });
+    }
+
+    private void readBleBno055MeasureDelay() {
+        mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_MEASURE_DELAY,
+                e1 -> {
+                    if (e1.wasSuccess()) {
+                        if (FormatConversions.unsignedIntToLong(e1.data()) > 0) {
+                            tvBno055ServiceMeasureDelayDevice.setText(
+                                    String.format(Locale.getDefault(),
+                                            "Delay : %d [ms]",
+                                            FormatConversions.unsignedIntToLong(e1.data())));
+                        }
+                    }
+                });
     }
 
     private void enableBleBno055Notifications() {
@@ -1265,12 +1288,12 @@ public class BLEConnectFragment extends Fragment {
                     if (e1.data().length == 12) { // Only display if it can be transformed to float
                         tvBno055ServiceAccelerometerDevice.setText(
                                 String.format(Locale.getDefault(), "Accel {x,y,z} : %.2f,%.2f,%.2f [g] ",
-                                    ByteBuffer.wrap(Arrays.copyOfRange(e1.data(), 0, 4))
-                                            .order(ByteOrder.LITTLE_ENDIAN).getFloat(),
-                                ByteBuffer.wrap(Arrays.copyOfRange(e1.data(), 4, 8))
-                                        .order(ByteOrder.LITTLE_ENDIAN).getFloat(),
-                                ByteBuffer.wrap(Arrays.copyOfRange(e1.data(), 8, 12))
-                                        .order(ByteOrder.LITTLE_ENDIAN).getFloat()));
+                                        ByteBuffer.wrap(Arrays.copyOfRange(e1.data(), 0, 4))
+                                                .order(ByteOrder.LITTLE_ENDIAN).getFloat(),
+                                        ByteBuffer.wrap(Arrays.copyOfRange(e1.data(), 4, 8))
+                                                .order(ByteOrder.LITTLE_ENDIAN).getFloat(),
+                                        ByteBuffer.wrap(Arrays.copyOfRange(e1.data(), 8, 12))
+                                                .order(ByteOrder.LITTLE_ENDIAN).getFloat()));
                     }
                 });
 
@@ -1321,10 +1344,25 @@ public class BLEConnectFragment extends Fragment {
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BLE_DEVICES_SCANNED,
                 e1 -> {
                     if (e1.wasSuccess()) {
-                            tvBme680ServiceRawGasDevice.setText(
+                        tvBleScanServiceDevicesScannedDevice.setText(
+                                String.format(Locale.getDefault(),
+                                        "BLE device scanned : %d",
+                                        e1.data_short(false)));
+                    }
+                });
+    }
+
+    private void readBleScannerWindow() {
+        mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BLE_SCAN_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BLE_SCAN_WINDOW,
+                e1 -> {
+                    if (e1.wasSuccess()) {
+                        if (FormatConversions.unsignedIntToLong(e1.data()) > 0) {
+                            tvBno055ServiceMeasureDelayDevice.setText(
                                     String.format(Locale.getDefault(),
-                                            "BLE device scanned : %d",
-                                            e1.data_short(false)));
+                                            "Scan window : %d [ms]",
+                                            FormatConversions.unsignedIntToLong(e1.data())));
+                        }
                     }
                 });
     }
