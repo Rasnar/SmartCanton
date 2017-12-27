@@ -440,8 +440,12 @@ static inline uint32_t ADC16_BatLvlDCDC(void)
 
 static inline uint32_t ADC16_BatLvl(void)
 {
-	adcValue = ADC16_ReadValue(ADC16_BATLVL_CHN, false);
-	return adcValue;
+	uint32_t adcValueTmp = 0;
+
+	for (int i = 0; i < 10; i++) {
+		adcValueTmp += ADC16_ReadValue(ADC16_BATLVL_CHN, false);
+	}
+	return adcValueTmp/10;
 }
 
 /*!
@@ -475,8 +479,7 @@ static uint16_t ADC16_ReadValue(uint32_t chnIdx, uint8_t diffMode)
 	/* Software trigger the conversion */
 	ADC16_SetChannelConfig(ADC0, ADC16_CHN_GROUP, &chnConfig);
 	/* Wait for the conversion to be done */
-	while (0U == (kADC16_ChannelConversionDoneFlag & ADC16_GetChannelStatusFlags(ADC0, ADC16_CHN_GROUP)))
-		;
+	while (0U == (kADC16_ChannelConversionDoneFlag & ADC16_GetChannelStatusFlags(ADC0, ADC16_CHN_GROUP)));
 
 	/* Fetch the conversion value */
 	adcValue = ADC16_GetChannelConversionValue(ADC0, ADC16_CHN_GROUP);
