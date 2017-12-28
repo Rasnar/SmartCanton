@@ -442,10 +442,10 @@ static inline uint32_t ADC16_BatLvl(void)
 {
 	uint32_t adcValueTmp = 0;
 
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < 100; i++) {
 		adcValueTmp += ADC16_ReadValue(ADC16_BATLVL_CHN, false);
 	}
-	return adcValueTmp/10;
+	return adcValueTmp/100;
 }
 
 /*!
