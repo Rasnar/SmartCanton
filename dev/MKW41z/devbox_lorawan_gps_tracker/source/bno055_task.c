@@ -13,7 +13,7 @@
 #include "bno055_support.h"
 
 #define BNO055_MAXIMUM_MEASURE_DELAY_MS 10000
-#define BNO055_MINIMUM_MEASURE_DELAY_MS 100
+#define BNO055_MINIMUM_MEASURE_DELAY_MS 300
 
 OSA_TASK_DEFINE(Bno055_Task, gBno055TaskPriority_c, 1, gBno055TaskStackSize_c, FALSE);
 osaTaskId_t gBno055TaskId = 0;

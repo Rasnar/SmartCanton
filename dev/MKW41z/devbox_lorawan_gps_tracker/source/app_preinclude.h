@@ -82,6 +82,9 @@
 /* Defines Num of Serial Manager interfaces */
 #define gSerialManagerMaxInterfaces_c   1
 
+/* Bytes allowed to the Controller Task Stack */
+#define gControllerTaskStackSize_c 1024
+
 /**
  * TODO: When enabling gAppUseNvm_d to 1, the serial manager semaphore stay stuck.
  * We can disable the semaphore but it's not a very good fix...
@@ -174,7 +177,7 @@
 
 /* Offset to the first instant register. */
 #define mcOffsetToFirstInstant_c        0x00      /* 625usec */           
-#define BD_ADDR             0x01,0x00,0x00,0x37,0x60,0x00
+#define BD_ADDR             0x00,0x00,0x00,0x37,0x60,0x00
 
 /*! *********************************************************************************
  * 	Auto Configuration
