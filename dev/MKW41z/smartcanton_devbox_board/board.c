@@ -316,6 +316,11 @@ uint8_t BOARD_GetBatteryLevel(void)
 	batVal = ADC16_BatLvl() * 2; /* Need to multiply the value by 2 because the measured voltage is divided by 2*/
 	batVolt = VREF_REG * batVal / ADCR_VDD;
 
+	/* If the battery level is critical, return 1% */
+	if(batVolt <= MIN_VOLT_LI_ION_BAT){
+		return 1;
+	}
+
 	batLvl = (batVolt - MIN_VOLT_LI_ION_BAT) * (FULL_BAT - EMPTY_BAT)
 			/ (MAX_VOLT_LI_ION_BAT - MIN_VOLT_LI_ION_BAT);
 
