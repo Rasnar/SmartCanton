@@ -4,6 +4,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
 
+        <item name="android:textColorHint">@color/colorPrimaryDark</item>
         <item name="android:alertDialogTheme">@style/AppTheme.Dialog.Alert</item>
         <item name="android:dialogTheme">@style/AppTheme.Dialog</item>
     </style>
@@ -12,16 +13,22 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowBackground">@color/colorPrimary</item>
-        <item name="colorControlNormal">@android:color/white</item>
-        <item name="colorControlHighlight">@android:color/white</item>
-        <item name="colorControlActivated">@android:color/white</item>
-        <item name="colorButtonNormal">@color/colorAccent</item>
         <item name="android:textColor">@color/colorTextPrimary</item>
         <item name="android:textColorPrimary">@color/colorTextPrimary</item>
         <item name="android:editTextColor">@color/colorTextPrimary</item>
+
+        <item name="colorControlNormal">@color/colorTextPrimary</item>
+        <item name="colorControlHighlight">@color/colorTextPrimary</item>
+        <item name="colorControlActivated">@color/colorTextPrimary</item>
+        <item name="colorButtonNormal">@color/colorAccent</item>
+        <item name="android:textColorHint">@color/colorPrimaryDark</item>
     </style>
 
     <style name="AppTheme.Profile" parent="AppTheme">
+        <!--<item name="colorControlNormal">@color/colorTextPrimary</item>-->
+        <!--<item name="colorControlActivated">@color/colorAccent</item>-->
+        <!--<item name="colorControlHighlight">@color/colorAccent</item>-->
+
         <item name="android:windowBackground">@color/colorPrimary</item>
         <item name="colorButtonNormal">@color/colorAccent</item>
         <item name="android:textColorPrimary">@color/colorTextPrimary</item>
@@ -56,6 +63,12 @@
         <item name="android:textAppearanceButton">@color/colorAccent</item>
         <item name="android:editTextColor">@color/colorTextPrimary</item>
         <item name="android:textColor">@color/colorTextPrimary</item>
+
+        <item name="colorControlNormal">@color/colorTextPrimary</item>
+        <item name="colorControlHighlight">@color/colorTextPrimary</item>
+        <item name="colorControlActivated">@color/colorTextPrimary</item>
+        <item name="colorButtonNormal">@color/colorAccent</item>
+        <item name="android:textColorHint">@color/colorPrimaryDark</item>
     </style>
 
     <style name="AppTheme.Dialog" parent="Theme.AppCompat.Light.Dialog">
@@ -68,8 +81,15 @@
         <item name="android:positiveButtonText">@color/colorAccent</item>
         <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
         <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+        <item name="android:textAppearanceButton">@color/colorAccent</item>
         <item name="android:editTextColor">@color/colorTextPrimary</item>
         <item name="android:textColor">@color/colorTextPrimary</item>
+
+        <item name="colorControlNormal">@color/colorTextPrimary</item>
+        <item name="colorControlHighlight">@color/colorTextPrimary</item>
+        <item name="colorControlActivated">@color/colorTextPrimary</item>
+        <item name="colorButtonNormal">@color/colorAccent</item>
+        <item name="android:textColorHint">@color/colorPrimaryDark</item>
     </style>
 
     <style name="NegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">

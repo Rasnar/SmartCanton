@@ -38,6 +38,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -49,6 +50,7 @@ import com.auth0.android.jwt.JWT;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.idevicesinc.sweetblue.BleDevice;
+import com.idevicesinc.sweetblue.BleDevice.ConnectionFailListener;
 import com.idevicesinc.sweetblue.BleDeviceState;
 import com.idevicesinc.sweetblue.BleManager;
 import com.idevicesinc.sweetblue.BleManagerConfig;
@@ -93,14 +95,17 @@ public class BLEConnectFragment extends Fragment {
      */
     private final BleManagerConfig mBleManagerConfig = new BleManagerConfig() {{
 //        this.scanApi = BleScanApi.POST_LOLLIPOP;
-//        this.useLeTransportForBonding
+//        this.useLeTransportForBonding = true;
 //        this.alwaysBondOnConnect = true;
 
         this.forceBondDialog = true;
+
+//        this.connectFailRetryConnectingOverall = true;
+//        this.alwaysUseAutoConnect = true;
 //        this.bondingFailFailsConnection = true;
 //        this.connectFailRetryConnectingOverall = true;
         this.stopScanOnPause = true;
-        this.autoBondFixes = false;
+//        this.autoBondFixes = false;
 //        this.taskTimeoutRequestFilter = new TaskTimeoutRequestFilter() {
 //            @Override
 //            public Please onEvent(TaskTimeoutRequestEvent taskTimeoutRequestEvent) {
@@ -178,6 +183,7 @@ public class BLEConnectFragment extends Fragment {
 
     private CardView cardBleBno055;
     private TextView tvCvTitleBno055;
+    private ImageButton btnBno055BleWrite;
     private RelativeLayout rlBleBno055NotifsSwitch;
     private Switch swBno055EnableNotifications;
     private TextView tvBno055MessageDevice;
@@ -195,33 +201,64 @@ public class BLEConnectFragment extends Fragment {
 
     private Button btnBleConnectDevice;
 
+    /**
+     * Listener that is used when a connected is started. It will force the connection to the device
+     * and display if the connection has failed.
+     */
+    ConnectionFailListener connectionFailListener = new ConnectionFailListener() {
+        @Override
+        public Please onEvent(ConnectionFailEvent connectionFailEvent) {
+            /* TOFIX :
+             * The Gatt Status 133 error is a strange error that has been happening in android
+             * since the last versions. A thread on this error for the CC2650 can be found here :
+             * https://e2e.ti.com/support/wireless_connectivity/bluetooth_low_energy/f/538/t/534737
+             * There is no real fix, the only way to fix it is if it fail, try again...
+             * Some people say that it works better with AutoConnect set to try. So we activate it
+             * for the next retry
+             */
+            if (connectionFailEvent.gattStatus() == 133) {
+                return Please.retryWithAutoConnectTrue();
+            } else {
+//                bleConnectionProgressDialog.dismiss();
+//                BLEConnectFragment.this.showSnackBarMessage("Connection fail event with number : "
+//                        + connectionFailEvent.bondFailReason());
+//                mBleDevice.disconnect();
+                return Please.retryWithAutoConnectTrue();
+            }
+        }
+    };
+
+    /**
+     * This listener is used when the app is the disconnected state and that the button
+     * is not set to be able to connect to the device.
+     */
     View.OnClickListener listenerConnectMode = view1 -> {
+        // If there is no PassKey registered, do not inform the user
         if (smartCantonDevBoxDevice.getBlePassKey().isEmpty()) {
-            mBleDevice.connect(connectionFailEvent -> {
-                bleConnectionProgressDialog.dismiss();
-                BLEConnectFragment.this.showSnackBarMessage("Connection fail event with number : "
-                        + connectionFailEvent.bondFailReason());
-                mBleDevice.disconnect();
-                return null;
-            });
+            mBleDevice.connect(connectionFailListener);
         } else {
+            // Display a dialog with the PassKey to be used
             BLEConnectFragment.this.showBleConnectionConfirmationDialog((dialogInterface, i) -> {
                 dialogInterface.dismiss();
-                mBleDevice.connect(connectionFailEvent -> {
-                    bleConnectionProgressDialog.dismiss();
-                    BLEConnectFragment.this.showSnackBarMessage("Connection fail event with number : "
-                            + connectionFailEvent.bondFailReason());
-                    mBleDevice.disconnect();
-                    return null;
-                });
+                /* Connect to the device and handle failing connections */
+                mBleDevice.connect(connectionFailListener);
             });
         }
     };
 
+    /**
+     * This listener is used when the app is the connected state and that the button
+     * is not set to be able to disconnect from the device.
+     */
     View.OnClickListener listenerDisconnectMode = view1 -> {
         mBleDevice.disconnect();
     };
 
+    /**
+     * This listener contain the main state machine of the fragment. Every stage on the connection
+     * will be logged for debug if needed. It here that the fragment will change his state (connected
+     * or disconnected).
+     */
     private DeviceStateListener deviceStateListener = new DeviceStateListener() {
         @Override
         public void onEvent(StateEvent
@@ -346,6 +383,9 @@ public class BLEConnectFragment extends Fragment {
     }
 
 
+    /**
+     * Retrieve the token and username information from the shared preferences
+     */
     private void initSharedPreferences() {
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -353,6 +393,10 @@ public class BLEConnectFragment extends Fragment {
         mUsername = mSharedPreferences.getString(Constants.USERNAME, "");
     }
 
+    /**
+     * The token is parser to be able to retrieve the public_id information and the token expiration
+     * time.
+     */
     private void extractTokenInformation() {
         try {
             mJwt = new JWT(mToken);
@@ -378,17 +422,6 @@ public class BLEConnectFragment extends Fragment {
         getDataFromArguments();
 
         loadDevice();
-
-//        mBleDevice.setListener_Bond(new BleDevice.BondListener() {
-//            @Override
-//            public void onEvent(BondEvent bondEvent) {
-//
-//                showSnackBarMessage("BOND EVENT WITH CODE : " + bondEvent.failReason());
-//                Log.i(TAG, "BOND EVENT WITH CODE : " + bondEvent.failReason());
-//7
-////                mBleManager.reset();
-//            }
-//        });
 
         mBleDevice.setListener_State(deviceStateListener);
 
@@ -436,6 +469,13 @@ public class BLEConnectFragment extends Fragment {
                 enableBleBme680Notifications();
             } else {
                 disableBleBme680Notifications();
+            }
+        });
+
+        btnBno055BleWrite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showBno055WriteDialog();
             }
         });
 
@@ -543,6 +583,34 @@ public class BLEConnectFragment extends Fragment {
         alertDialog.show();
     }
 
+    private void showBno055WriteDialog() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(new ContextThemeWrapper(
+                getActivity(), R.style.AppTheme_Dialog_Alert));
+
+        // Setting Dialog Title
+        alertDialog.setTitle("Configure BNO055");
+
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_configure_bno055, null);
+        EditText etBno055DelayMs = view.findViewById(R.id.et_bno055_delay_ms);
+
+        alertDialog.setView(view);
+
+        // Setting Positive "Yes" Button
+        alertDialog.setPositiveButton("Update", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                writeBleBno055MeasureDelay(Integer.parseInt(etBno055DelayMs.getText().toString()));
+            }
+        });
+
+        // Setting Negative "NO" Button
+        alertDialog.setNegativeButton("Cancel",
+                (dialogInterface, i) -> dialogInterface.dismiss());
+
+        // Showing Alert Message
+        alertDialog.show();
+    }
+
     private void showBleConnectionProgressDialog() {
         if (bleConnectionProgressDialog != null) {
             bleConnectionProgressDialog.dismiss();
@@ -632,6 +700,7 @@ public class BLEConnectFragment extends Fragment {
 
         cardBleBno055 = view.findViewById(R.id.card_ble_bno055);
         tvCvTitleBno055 = view.findViewById(R.id.tv_cv_title_bno055);
+        btnBno055BleWrite = view.findViewById(R.id.btn_bno055_ble_write);
         rlBleBno055NotifsSwitch = view.findViewById(R.id.rl_ble_bno055_notifs_switch);
         swBno055EnableNotifications = view.findViewById(R.id.sw_bno055_enable_notifications);
         tvBno055MessageDevice = view.findViewById(R.id.tv_bno055_message_device);
@@ -685,6 +754,7 @@ public class BLEConnectFragment extends Fragment {
 
     private void setBno055CardFieldsVisibility(int visibility) {
         rlBleBno055NotifsSwitch.setVisibility(visibility);
+        btnBno055BleWrite.setVisibility(visibility);
         swBno055EnableNotifications.setVisibility(visibility);
         tvBno055ServiceAccelerometerDevice.setVisibility(visibility);
         tvBno055ServiceGyroscopeDevice.setVisibility(visibility);
@@ -1232,7 +1302,6 @@ public class BLEConnectFragment extends Fragment {
         mBleDevice.disableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_SERVICE,
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_PRESSURE);
 
-
         /*
          * These 2 lines are commented because it's not possible to save more than 16 characteristics
          * as notifications/indications on the KW41z. This limitation comes from a hardcoded value
@@ -1249,21 +1318,24 @@ public class BLEConnectFragment extends Fragment {
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_RAW_GAS);
     }
 
-    private void writeBleBno055MeasureDelay() {
-        // TODO : pop up dialog to inter delay ms for the measure
-//        mBleDevice.write(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_SERVICE,
-//                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_MEASURE_DELAY,
-//                FormatConversions.hexStringToByteArray(smartCantonDevBoxDevice.getAppEui()),
-//                e1 -> {
-//                    if (!e1.wasSuccess()) {
-//                        showSnackBarMessage(String.format("Error while writing characteristics %s",
-//                                "BNO055 MEASURE DELAY"));
-//
-//                    } else {
-//                        // Update the display with the new value
-//                        readBleBno055MeasureDelay();
-//                    }
-//                });
+    private void writeBleBno055MeasureDelay(int measureDelay) {
+        ByteBuffer byteBuffer = ByteBuffer.allocate(4);
+        byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+        byteBuffer.putInt(measureDelay);
+        byte[] bytes = byteBuffer.array();
+        mBleDevice.write(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_MEASURE_DELAY,
+                bytes,
+                e1 -> {
+                    if (!e1.wasSuccess()) {
+                        showSnackBarMessage(String.format("Error while writing characteristics %s",
+                                "BNO055 MEASURE DELAY"));
+
+                    } else {
+                        // Update the display with the new value
+                        readBleBno055MeasureDelay();
+                    }
+                });
     }
 
     private void readBleBno055MeasureDelay() {
@@ -1274,7 +1346,7 @@ public class BLEConnectFragment extends Fragment {
                         if (FormatConversions.unsignedIntToLong(e1.data()) > 0) {
                             tvBno055ServiceMeasureDelayDevice.setText(
                                     String.format(Locale.getDefault(),
-                                            "Delay : %d [ms]",
+                                            "Measure delay : %d [ms]",
                                             FormatConversions.unsignedIntToLong(e1.data())));
                         }
                     }

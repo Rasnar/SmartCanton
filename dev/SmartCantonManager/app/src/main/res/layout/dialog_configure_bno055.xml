@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rl_configure_bno055"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/activity_horizontal_margin">
+
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/ti_old_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/child_margin_top"
+        app:passwordToggleEnabled="true"
+        app:passwordToggleTint="@color/colorTextPrimary">
+
+        <EditText
+            android:id="@+id/et_bno055_delay_ms"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Measure delay in ms (300 - 10000)"
+            android:inputType="numberDecimal"/>
+
+    </android.support.design.widget.TextInputLayout>
+
+    <!--<Button-->
+        <!--android:id="@+id/btn_change_password"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@id/ti_new_password"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:text="Change Password"-->
+        <!--android:layout_marginTop="@dimen/button_margin"-->
+        <!--style="@style/Widget.AppCompat.Button.Borderless.Colored"/>-->
+
+    <!--<Button-->
+        <!--android:id="@+id/btn_cancel"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@id/ti_new_password"-->
+        <!--android:text="Cancel"-->
+        <!--android:layout_alignParentLeft="true"-->
+        <!--android:layout_marginTop="@dimen/button_margin"-->
+        <!--style="@style/Widget.AppCompat.Button.Borderless.Colored"/>-->
+
+    <!--<TextView-->
+        <!--android:id="@+id/tv_message"-->
+        <!--android:visibility="gone"-->
+        <!--android:layout_below="@+id/btn_change_password"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:textColor="@android:color/holo_red_dark"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content" />-->
+
+</RelativeLayout>
