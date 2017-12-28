@@ -54,6 +54,7 @@ import com.idevicesinc.sweetblue.BleDevice.ConnectionFailListener;
 import com.idevicesinc.sweetblue.BleDeviceState;
 import com.idevicesinc.sweetblue.BleManager;
 import com.idevicesinc.sweetblue.BleManagerConfig;
+import com.idevicesinc.sweetblue.BleNode;
 import com.idevicesinc.sweetblue.DeviceStateListener;
 import com.idevicesinc.sweetblue.utils.BluetoothEnabler;
 import com.master_hesso.smartcantonmanager.R;
@@ -94,10 +95,6 @@ public class BLEConnectFragment extends Fragment {
      * SweetBlue BLE configuration
      */
     private final BleManagerConfig mBleManagerConfig = new BleManagerConfig() {{
-//        this.scanApi = BleScanApi.POST_LOLLIPOP;
-//        this.useLeTransportForBonding = true;
-//        this.alwaysBondOnConnect = true;
-
         this.forceBondDialog = true;
 
 //        this.connectFailRetryConnectingOverall = true;
@@ -105,13 +102,6 @@ public class BLEConnectFragment extends Fragment {
 //        this.bondingFailFailsConnection = true;
 //        this.connectFailRetryConnectingOverall = true;
         this.stopScanOnPause = true;
-//        this.autoBondFixes = false;
-//        this.taskTimeoutRequestFilter = new TaskTimeoutRequestFilter() {
-//            @Override
-//            public Please onEvent(TaskTimeoutRequestEvent taskTimeoutRequestEvent) {
-//                return null;
-//            }
-//        };
     }};
 
     private ProgressDialog bleReadWriteProgressDialog;
@@ -205,26 +195,23 @@ public class BLEConnectFragment extends Fragment {
      * Listener that is used when a connected is started. It will force the connection to the device
      * and display if the connection has failed.
      */
-    ConnectionFailListener connectionFailListener = new ConnectionFailListener() {
-        @Override
-        public Please onEvent(ConnectionFailEvent connectionFailEvent) {
-            /* TOFIX :
-             * The Gatt Status 133 error is a strange error that has been happening in android
-             * since the last versions. A thread on this error for the CC2650 can be found here :
-             * https://e2e.ti.com/support/wireless_connectivity/bluetooth_low_energy/f/538/t/534737
-             * There is no real fix, the only way to fix it is if it fail, try again...
-             * Some people say that it works better with AutoConnect set to try. So we activate it
-             * for the next retry
-             */
-            if (connectionFailEvent.gattStatus() == 133) {
-                return Please.retryWithAutoConnectTrue();
-            } else {
+    ConnectionFailListener connectionFailListener = connectionFailEvent -> {
+        /* TOFIX :
+         * The Gatt Status 133 error is a strange error that has been happening in android
+         * since the last versions. A thread on this error for the CC2650 can be found here :
+         * https://e2e.ti.com/support/wireless_connectivity/bluetooth_low_energy/f/538/t/534737
+         * There is no real fix, the only way to fix it is if it fail, try again...
+         * Some people say that it works better with AutoConnect set to try. So we activate it
+         * for the next retry
+         */
+        if (connectionFailEvent.gattStatus() == 133) {
+            return BleNode.ConnectionFailListener.Please.retryWithAutoConnectTrue();
+        } else {
 //                bleConnectionProgressDialog.dismiss();
 //                BLEConnectFragment.this.showSnackBarMessage("Connection fail event with number : "
 //                        + connectionFailEvent.bondFailReason());
 //                mBleDevice.disconnect();
-                return Please.retryWithAutoConnectTrue();
-            }
+            return BleNode.ConnectionFailListener.Please.retryWithAutoConnectTrue();
         }
     };
 
@@ -250,9 +237,7 @@ public class BLEConnectFragment extends Fragment {
      * This listener is used when the app is the connected state and that the button
      * is not set to be able to disconnect from the device.
      */
-    View.OnClickListener listenerDisconnectMode = view1 -> {
-        mBleDevice.disconnect();
-    };
+    View.OnClickListener listenerDisconnectMode = view1 -> mBleDevice.disconnect();
 
     /**
      * This listener contain the main state machine of the fragment. Every stage on the connection
@@ -400,7 +385,7 @@ public class BLEConnectFragment extends Fragment {
     private void extractTokenInformation() {
         try {
             mJwt = new JWT(mToken);
-        } catch (DecodeException exception) {
+        } catch (DecodeException ignored) {
 
         }
 
@@ -472,12 +457,7 @@ public class BLEConnectFragment extends Fragment {
             }
         });
 
-        btnBno055BleWrite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showBno055WriteDialog();
-            }
-        });
+        btnBno055BleWrite.setOnClickListener(view1 -> showBno055WriteDialog());
 
         swBno055EnableNotifications.setOnClickListener(view12 -> {
             if (swBno055EnableNotifications.isChecked()) {
@@ -500,6 +480,12 @@ public class BLEConnectFragment extends Fragment {
     }
 
 
+    /**
+     * Show a loading dialog to be displayed when data are been write/read to/from the device
+     * @param title Dialog title
+     * @param message Message to display in the dialog
+     * @param maxValue The number of characteristics been acceded
+     */
     private void showBleReadWriteProgressDialog(String title, String message, int maxValue) {
         if (bleReadWriteProgressDialog != null) {
             bleReadWriteProgressDialog.dismiss();
@@ -531,6 +517,10 @@ public class BLEConnectFragment extends Fragment {
         }).start();
     }
 
+    /**
+     * Display a dialog showing the Passkey to enter if a passkey is required by the system
+     * @param onClickListener A listener to be called once the user press OK on the dialog
+     */
     private void showBleConnectionConfirmationDialog(DialogInterface.OnClickListener onClickListener) {
 
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(new ContextThemeWrapper(
@@ -583,6 +573,9 @@ public class BLEConnectFragment extends Fragment {
         alertDialog.show();
     }
 
+    /**
+     * Display a dialog that can edit all information on the BNO055 BLE service
+     */
     private void showBno055WriteDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(new ContextThemeWrapper(
                 getActivity(), R.style.AppTheme_Dialog_Alert));
@@ -596,12 +589,8 @@ public class BLEConnectFragment extends Fragment {
         alertDialog.setView(view);
 
         // Setting Positive "Yes" Button
-        alertDialog.setPositiveButton("Update", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                writeBleBno055MeasureDelay(Integer.parseInt(etBno055DelayMs.getText().toString()));
-            }
-        });
+        alertDialog.setPositiveButton("Update", (dialogInterface, i) ->
+                writeBleBno055MeasureDelay(Integer.parseInt(etBno055DelayMs.getText().toString())));
 
         // Setting Negative "NO" Button
         alertDialog.setNegativeButton("Cancel",
@@ -611,6 +600,9 @@ public class BLEConnectFragment extends Fragment {
         alertDialog.show();
     }
 
+    /**
+     * Display a dialog while the Ble Connection is in progress
+     */
     private void showBleConnectionProgressDialog() {
         if (bleConnectionProgressDialog != null) {
             bleConnectionProgressDialog.dismiss();
@@ -640,6 +632,10 @@ public class BLEConnectFragment extends Fragment {
         }).start();
     }
 
+    /**
+     * Extract all views from the current load layout
+     * @param view The current view displayed
+     */
     private void initViews(View view) {
 
         cvDeviceServer = view.findViewById(R.id.card_serv);
@@ -729,6 +725,10 @@ public class BLEConnectFragment extends Fragment {
 
     }
 
+    /**
+     * Change the visibility for all GPS fields
+     * @param visibility Visibility View.GONE or View.VISIBLE
+     */
     private void setGpsCardFieldsVisibility(int visibility) {
         rlBleGpsNotifsSwitch.setVisibility(visibility);
         btnBleGpsDownloadDevice.setVisibility(visibility);
@@ -739,6 +739,10 @@ public class BLEConnectFragment extends Fragment {
         tvGpsServiceTimeDevice.setVisibility(visibility);
     }
 
+    /**
+     * Change the visibility for all BME680 fields
+     * @param visibility Visibility View.GONE or View.VISIBLE
+     */
     private void setBme680CardFieldsVisibility(int visibility) {
         rlBleBme680NotifsSwitch.setVisibility(visibility);
         tvBme680ServiceIaqDevice.setVisibility(visibility);
@@ -752,6 +756,10 @@ public class BLEConnectFragment extends Fragment {
         tvBno055ServiceMeasureDelayDevice.setVisibility(visibility);
     }
 
+    /**
+     * Change the visibility for all BNO055 fields
+     * @param visibility Visibility View.GONE or View.VISIBLE
+     */
     private void setBno055CardFieldsVisibility(int visibility) {
         rlBleBno055NotifsSwitch.setVisibility(visibility);
         btnBno055BleWrite.setVisibility(visibility);
@@ -761,6 +769,10 @@ public class BLEConnectFragment extends Fragment {
         tvBno055ServiceMagnetometerDevice.setVisibility(visibility);
     }
 
+    /**
+     * Change the visibility for all Ble Scanner fields
+     * @param visibility Visibility View.GONE or View.VISIBLE
+     */
     private void setBleScannerCardFieldsVisibility(int visibility) {
 
         rlBleScanNotifsSwitch.setVisibility(visibility);
@@ -806,6 +818,10 @@ public class BLEConnectFragment extends Fragment {
         return tvText.substring(tvText.lastIndexOf(": ") + 2);
     }
 
+    /**
+     * Extract from the bundle the mac address of the device to connect.
+     * With this mac address, context the BLE manager to retrieve a BleDevice object.
+     */
     private void getDataFromArguments() {
 
         Bundle bundle = getArguments();
@@ -817,6 +833,10 @@ public class BLEConnectFragment extends Fragment {
         }
     }
 
+    /**
+     * Request the Server the server with the information from the device selected previously.
+     * The device is define by the attribute mBleDevice.
+     */
     private void loadDevice() {
         String macAddrURI = mBleDevice.getMacAddress().replaceAll(":", "");
         mSubscriptions.add(NetworkUtil.getRetrofit(mToken).getDevice(macAddrURI)
@@ -831,6 +851,10 @@ public class BLEConnectFragment extends Fragment {
         mProgressDialog.show();
     }
 
+    /**
+     * Handle all correct responses from the rest API when requesting a SmartCantonDevBoxDevice
+     * @param device A SmartCantonDevBoxDevice from the server with all his information
+     */
     private void handleResponse(SmartCantonDevBoxDevice device) {
 
         smartCantonDevBoxDevice = device;
@@ -847,6 +871,10 @@ public class BLEConnectFragment extends Fragment {
         tvPublicIdServ.setText(String.format("Owner ID : %s", device.getOwnerPublicId()));
     }
 
+    /**
+     * Handle error from the REST API throught the RetroFit interface
+     * @param error Error with the http exception
+     */
     private void handleError(Throwable error) {
 
         mProgressDialog.dismiss();
@@ -919,6 +947,10 @@ public class BLEConnectFragment extends Fragment {
         super.onPrepareOptionsMenu(menu);
     }
 
+    /**
+     * Display a snack bar with a custom message
+     * @param message Message to be displayed on the snack bar
+     */
     private void showSnackBarMessage(String message) {
 
         View view = getView();
@@ -933,12 +965,9 @@ public class BLEConnectFragment extends Fragment {
         mBleDevice.disconnect();
     }
 
-    private String getColoredSpanned(String text, int color) {
-        String colorHex = "#" + Integer.toHexString(color & 0x00ffffff);
-        String input = "<font color=" + color + ">" + text + "</font>";
-        return input;
-    }
-
+    /**
+     * Enable all notifications from the service SMARTCANTON_DEVBOX_GPS_SERVICE
+     */
     private void enableBleGpsNotifications() {
         mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_POSITION,
@@ -1001,6 +1030,9 @@ public class BLEConnectFragment extends Fragment {
                 });
     }
 
+    /**
+     * Disable all notifications from the service SMARTCANTON_DEVBOX_GPS_SERVICE
+     */
     private void disableBleGpsNotifications() {
 
         mBleDevice.disableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
@@ -1022,6 +1054,9 @@ public class BLEConnectFragment extends Fragment {
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_TIME);
     }
 
+    /**
+     * Read all characteristics from the service SMARTCANTON_DEVBOX_GPS_SERVICE
+     */
     private void readBleGpsCharacteristics() {
         mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_SERVICE,
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_GPS_POSITION,
@@ -1099,6 +1134,9 @@ public class BLEConnectFragment extends Fragment {
                 });
     }
 
+    /**
+     * Read LoRa characteristics from the service SMARTCANTON_DEVBOX_LORA_SERVICE
+     */
     private void readBleLoraCharacteristics() {
         mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_SERVICE,
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_APP_EUI,
@@ -1141,6 +1179,9 @@ public class BLEConnectFragment extends Fragment {
                 });
     }
 
+    /**
+     * Write all the LoRa information from the Server to the SMARTCANTON_DEVBOX_LORA_SERVICE
+     */
     private void writeBleLoraCharacteristicsFromServer() {
 
         mBleDevice.write(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_LORA_SERVICE,
@@ -1178,6 +1219,9 @@ public class BLEConnectFragment extends Fragment {
                 });
     }
 
+    /**
+     * Enable all notifications from the service SMARTCANTON_DEVBOX_BME680_SERVICE
+     */
     private void enableBleBme680Notifications() {
         mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_SERVICE,
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_IAQ_ACCURACY,
@@ -1286,6 +1330,9 @@ public class BLEConnectFragment extends Fragment {
                 });
     }
 
+    /**
+     * Disable all notifications from the service SMARTCANTON_DEVBOX_BME680_SERVICE
+     */
     private void disableBleBme680Notifications() {
         mBleDevice.disableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_SERVICE,
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_IAQ_ACCURACY);
@@ -1318,6 +1365,9 @@ public class BLEConnectFragment extends Fragment {
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BME680_RAW_GAS);
     }
 
+    /**
+     * Write the measure delay from the the service SMARTCANTON_DEVBOX_BNO055_SERVICE
+     */
     private void writeBleBno055MeasureDelay(int measureDelay) {
         ByteBuffer byteBuffer = ByteBuffer.allocate(4);
         byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
@@ -1338,6 +1388,9 @@ public class BLEConnectFragment extends Fragment {
                 });
     }
 
+    /**
+     * Read the measure delay from the the service SMARTCANTON_DEVBOX_BNO055_SERVICE
+     */
     private void readBleBno055MeasureDelay() {
         mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_SERVICE,
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_MEASURE_DELAY,
@@ -1353,6 +1406,9 @@ public class BLEConnectFragment extends Fragment {
                 });
     }
 
+    /**
+     * Enable all notifications from the service SMARTCANTON_DEVBOX_BNO055_SERVICE
+     */
     private void enableBleBno055Notifications() {
         mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_SERVICE,
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_ACCELEROMETER,
@@ -1400,6 +1456,9 @@ public class BLEConnectFragment extends Fragment {
                 });
     }
 
+    /**
+     * Disable all notifications from the service SMARTCANTON_DEVBOX_BNO055_SERVICE
+     */
     private void disableBleBno055Notifications() {
         mBleDevice.disableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_SERVICE,
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_ACCELEROMETER);
@@ -1411,6 +1470,9 @@ public class BLEConnectFragment extends Fragment {
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_MAGNETOMETER);
     }
 
+    /**
+     * Enable all notifications from the service SMARTCANTON_DEVBOX_BLE_SCAN_SERVICE
+     */
     private void enableBleScannerNotifications() {
         mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BLE_SCAN_SERVICE,
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BLE_DEVICES_SCANNED,
@@ -1424,6 +1486,9 @@ public class BLEConnectFragment extends Fragment {
                 });
     }
 
+    /**
+     * Read the characteristic scan window form the SMARTCANTON_DEVBOX_BLE_SCAN_SERVICE
+     */
     private void readBleScannerWindow() {
         mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BLE_SCAN_SERVICE,
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BLE_SCAN_WINDOW,
@@ -1439,6 +1504,9 @@ public class BLEConnectFragment extends Fragment {
                 });
     }
 
+    /**
+     * Disable all notifications from the service SMARTCANTON_DEVBOX_BLE_SCAN_SERVICE
+     */
     private void disableBleScannerNotifications() {
         mBleDevice.disableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BLE_SCAN_SERVICE,
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BLE_DEVICES_SCANNED);
