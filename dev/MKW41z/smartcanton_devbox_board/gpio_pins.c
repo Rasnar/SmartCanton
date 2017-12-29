@@ -55,14 +55,7 @@ gpioInputPinConfig_t switchPins[] = {
 gpioOutputPinConfig_t ledPins[] = {
     {
         .gpioPort = gpioPort_A_c,
-        .gpioPin = 16,
-        .outputLogic = 0,
-        .slewRate = pinSlewRate_Slow_c,
-        .driveStrength = pinDriveStrength_Low_c
-    },
-    {
-        .gpioPort = gpioPort_A_c,
-        .gpioPin = 17,
+        .gpioPin = 19,
         .outputLogic = 0,
         .slewRate = pinSlewRate_Slow_c,
         .driveStrength = pinDriveStrength_Low_c
@@ -76,7 +69,14 @@ gpioOutputPinConfig_t ledPins[] = {
     },
     {
         .gpioPort = gpioPort_A_c,
-        .gpioPin = 19,
+        .gpioPin = 17,
+        .outputLogic = 0,
+        .slewRate = pinSlewRate_Slow_c,
+        .driveStrength = pinDriveStrength_Low_c
+    },
+    {
+        .gpioPort = gpioPort_A_c,
+        .gpioPin = 16,
         .outputLogic = 0,
         .slewRate = pinSlewRate_Slow_c,
         .driveStrength = pinDriveStrength_Low_c

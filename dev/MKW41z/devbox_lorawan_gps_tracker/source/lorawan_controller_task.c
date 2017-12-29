@@ -62,7 +62,7 @@ void Lorawan_Controller_Task(osaTaskParam_t argument)
 		 */
 		if (event & gLoRaCtrlTaskEvtConfigure_c)
 		{
-			Led4Flashing();
+			Led1Flashing();
 			lorawanControllerStatus_t status = lorawan_controller_init_module();
 
 			/* The configuration is successfull because we joined a new network */
@@ -70,8 +70,8 @@ void Lorawan_Controller_Task(osaTaskParam_t argument)
 			{
 				/* Notify the main app that a the LoRaWAN module is ready to be used */
 				OSA_EventSet(gDevBoxAppEvent, gDevBoxTaskEvtNewLoRaWANConfig_c);
-				StopLed4Flashing();
-				Led4On();
+				StopLed1Flashing();
+				Led1On();
 			}
 			/* The configuration is corrupted, load the default configuration */
 			else if (status  == lorawanController_Error_Invalid_Configuration){
@@ -91,7 +91,7 @@ void Lorawan_Controller_Task(osaTaskParam_t argument)
 		 */
 		if (event & gLoRaCtrlTaskEvtConfigureFromModuleConfig_c)
 		{
-			Led4Flashing();
+			Led1Flashing();
 			/* Read the current configuration stored inside the module */
 			if (lorawan_controller_read_module_configuration() == lorawanController_Success)
 			{
@@ -100,7 +100,7 @@ void Lorawan_Controller_Task(osaTaskParam_t argument)
 			}
 			else
 			{
-				StopLed4Flashing();
+				StopLed1Flashing();
 			}
 		}
 

@@ -75,6 +75,7 @@
 #include "neo-m8.h"
 #include "bno055_support.h"
 #include "bme680_bsec_support.h"
+#include "gpio_pins.h"
 
 #include "ApplMain.h"
 
@@ -91,14 +92,42 @@
  *************************************************************************************
  ************************************************************************************/
 OSA_TASK_DEFINE(DevBox_App_Task, gDevBoxAppTaskPriority_c, 1, gDevBoxAppTaskStackSize_c, FALSE);
+
 osaTaskId_t gDevBoxAppTaskId = 0;
+
+/* Event ID to send new data to LoRaWAN task or save data from sensors */
+osaEventId_t gDevBoxAppEvent;
 
 /************************************************************************************
  *************************************************************************************
  * Private macros
  *************************************************************************************
  ************************************************************************************/
-#define mBatteryLevelReportInterval_c   (10)        /* battery level report interval in seconds  */
+#define mBatteryLevelReportInterval_c   (30)  /* battery level BLE report interval in seconds  */
+
+/************************************************************
+ * Cayenne application configuration
+ ************************************************************/
+/* This LoRaWAN downlink port can't be changed with Cayenne */
+#define mCayenneDefaultPortDownlinkLoRaWAN		99
+
+/* Uplink and downlink Cayenne ports */
+#define mCayenneChannelGps						1
+
+#define mCayenneChannelBno055Accelerometer		2
+#define mCayenneChannelBno055Gyroscope			3
+
+#define mCayenneChannelBme680Temperature		4
+#define mCayenneChannelBme680Humidity			5
+#define mCayenneChannelBme680Pressure			6
+#define mCayenneChannelBme680Iaq				8
+
+#define mCayenneChannelBatteryLevel				10
+
+#define mCayenneChannelLed2DigitalOutput		50
+
+#define mCayenneChannelMeasureDelayAnalogOutput	60
+
 /************************************************************************************
  *************************************************************************************
  * Private type definitions
@@ -159,7 +188,6 @@ static uint16_t readHandles[2] =
 static tmrTimerID_t mAdvTimerId;
 static tmrTimerID_t mBatteryMeasurementTimerId;
 
-osaEventId_t gDevBoxAppEvent;
 
 /************************************************************************************
  *************************************************************************************
@@ -421,7 +449,7 @@ static void BleApp_AdvertisingCallback(gapAdvertisingEvent_t* pAdvertisingEvent)
 #if (cPWR_UsePowerDownMode)
 		if(!mAdvState.advOn)
 		{
-			Led1Off();
+			Led4Off();
 			PWR_ChangeDeepSleepMode(3);
 			PWR_SetDeepSleepTimeInMs(cPWR_DeepSleepDurationMs);
 			PWR_AllowDeviceToSleep();
@@ -432,14 +460,14 @@ static void BleApp_AdvertisingCallback(gapAdvertisingEvent_t* pAdvertisingEvent)
 			/* Start advertising timer */
 			TMR_StartLowPowerTimer(mAdvTimerId,gTmrLowPowerSecondTimer_c,
 					TmrSeconds(mAdvTimeout), AdvertisingTimerCallback, NULL);
-			Led1On();
+			Led4On();
 		}
 #else
-		StopLed1Flashing();
+		StopLed4Flashing();
 
 		if (mAdvState.advOn)
 		{
-			Led1Flashing();
+			Led4Flashing();
 			TMR_StartLowPowerTimer(mAdvTimerId, gTmrLowPowerSecondTimer_c, TmrSeconds(mAdvTimeout),
 					AdvertisingTimerCallback, NULL);
 		}
@@ -487,8 +515,8 @@ static void BleApp_ConnectionCallback(deviceId_t peerDeviceId, gapConnectionEven
 
 #if (!cPWR_UsePowerDownMode)  
 		/* UI */
-		StopLed1Flashing();
-		Led1On();
+		StopLed4Flashing();
+		Led4On();
 #endif            
 
 		/* Stop Advertising Timer*/
@@ -523,7 +551,7 @@ static void BleApp_ConnectionCallback(deviceId_t peerDeviceId, gapConnectionEven
 
 #if (cPWR_UsePowerDownMode)            
 		/* UI */
-		Led1Off();
+		Led4Off();
 
 		/* Go to sleep */
 		PWR_ChangeDeepSleepMode(3); /* MCU=LLS3, LL=IDLE, wakeup on swithes/LL */
@@ -756,7 +784,7 @@ void gps_neo_m8_new_data_available_callback(void)
 	/* Inform the DevBox Task that she can read the data avaible */
 	OSA_EventSet(gDevBoxAppEvent, gDevBoxTaskEvtNewGPSDataRdy_c);
 
-	Led2Toggle();
+	Led3Toggle();
 
 	// TODO : Implement timer to generate timing
 	if (cnt_seconds++ == 300)
@@ -871,7 +899,7 @@ void DevBox_App_Task(osaTaskParam_t argument)
 				/* Send data only if new values since last transmission */
 				if (frameRmcGps.valid)
 				{
-					cayenneLPPaddGPS(1,
+					cayenneLPPaddGPS(mCayenneChannelGps,
 							minmea_tocoord(&frameRmcGps.latitude), // Latitude
 							minmea_tocoord(&frameRmcGps.longitude), // Longitude
 							0.0); // Altitude (not supported with RMC parsing)
@@ -887,12 +915,12 @@ void DevBox_App_Task(osaTaskParam_t argument)
 						(bno055Data.gyro_xyz.y == 0.0) &&
 						(bno055Data.gyro_xyz.x == 0.0)))
 				{
-					cayenneLPPaddAccelerometer(2,
+					cayenneLPPaddAccelerometer(mCayenneChannelBno055Accelerometer,
 							bno055Data.accel_xyz.x / 1000.0,
 							bno055Data.accel_xyz.y / 1000.0,
 							bno055Data.accel_xyz.z / 1000.0);
 
-					cayenneLPPaddGyrometer(3,
+					cayenneLPPaddGyrometer(mCayenneChannelBno055Gyroscope,
 							bno055Data.gyro_xyz.x,
 							bno055Data.gyro_xyz.y,
 							bno055Data.gyro_xyz.z);
@@ -904,19 +932,29 @@ void DevBox_App_Task(osaTaskParam_t argument)
 						(bme680Data.humidity == 0.0) &&
 						(bme680Data.pressure == 0.0)))
 				{
-					cayenneLPPaddTemperature(4, bme680Data.temperature);
-					cayenneLPPaddRelativeHumidity(5, bme680Data.humidity);
-					cayenneLPPaddBarometricPressure(6, bme680Data.pressure);
-					cayenneLPPaddAnalogInput(7, bme680Data.iaq);
+					cayenneLPPaddTemperature(mCayenneChannelBme680Temperature,
+							bme680Data.temperature);
+					cayenneLPPaddRelativeHumidity(mCayenneChannelBme680Humidity,
+							bme680Data.humidity);
+					cayenneLPPaddBarometricPressure(mCayenneChannelBme680Pressure,
+							bme680Data.pressure);
+					cayenneLPPaddAnalogInput(mCayenneChannelBme680Iaq,
+							bme680Data.iaq);
+
 					bme680Data = EmptyBme680; // Invalidate the local data for the next msg
 				}
 
-				cayenneLPPaddAnalogInput(10, (float)BOARD_GetBatteryLevel());
-				//				cayenneLPPaddAnalogOutput(3, 120.0);
-				//				cayenneLPPaddDigitalOutput(4, 1);
+				/* Read the current battery level */
+				cayenneLPPaddAnalogInput(mCayenneChannelBatteryLevel,
+						(float)BOARD_GetBatteryLevel());
 
-				cayenneLPPaddDigitalOutput(50, GPIO_ReadPinInput(GPIOA, LED3));
-				//				cayenneLPPaddAnalogOutput(3, );
+				/* Read the current LED3 state and send it */
+				cayenneLPPaddDigitalOutput(mCayenneChannelLed2DigitalOutput,
+						!GpioReadOutputPin(&ledPins[2]));
+						//(GPIOA->PDOR >> ledPins[2].gpioPin) & 0x01U);
+
+				//cayenneLPPaddAnalogOutput(3, 120.0);
+				//cayenneLPPaddDigitalOutput(4, 1);
 
 				/* Allocate data on the HEAP to send it to the LoRaWAN task */
 				lorawanControllerData = pvPortMalloc(sizeof(lorawanControllerDataToSend_t));
@@ -942,8 +980,8 @@ void DevBox_App_Task(osaTaskParam_t argument)
 			while (OSA_MsgQGet(gLorawanCtrlReceiveNewMessageQ, &lorawanDataReceived, 0)
 					== osaStatus_Success)
 			{
-//				/* Store value in local in case we want to use it later on */
-//				FLib_MemCpy(&bno055Data, bno055Data_tmp, sizeof(bno055Data));
+				/* Store value in local in case we want to use it later on */
+				//FLib_MemCpy(&bno055Data, bno055Data_tmp, sizeof(bno055Data));
 
 				switch (lorawanDataReceived->port)
 				{
@@ -954,8 +992,9 @@ void DevBox_App_Task(osaTaskParam_t argument)
 					/* The first byte define the Cayenne port */
 					switch (lorawanDataReceived->data[0])
 					{
-					case 50:
-						Led3Toggle();
+					case mCayenneChannelLed2DigitalOutput:
+						if(lorawanDataReceived->data[0] )
+						Led2Toggle();
 						break;
 					default:
 						break;

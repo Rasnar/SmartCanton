@@ -20,8 +20,8 @@
 #define gReducedPowerMinAdvInterval_c   1600 /* 1 s */
 #define gReducedPowerMaxAdvInterval_c   4000 /* 2.5 s */
 
-#define gFastConnAdvTime_c              3000  /* s */
-#define gReducedPowerAdvTime_c          30000 /* s */
+#define gFastConnAdvTime_c              300  /* s */
+#define gReducedPowerAdvTime_c          300  /* s */
 
 #if gAppUseBonding_d
 #define gFastConnWhiteListAdvTime_c     10 /* s */
@@ -41,12 +41,14 @@ extern gapSmpKeys_t gSmpKeys;
 extern gapPairingParameters_t gPairingParameters;
 extern gapDeviceSecurityRequirements_t deviceSecurityRequirements;
 
-/*! Idle Task Stack Size */
+/*! Dev Box App Task Stack Size */
 #define gDevBoxAppTaskStackSize_c (2048)
 
-/*! Lorawan Controller Task OS Abstraction Priority */
+/*! Dev Box App Task OS Abstraction Priority */
 #define gDevBoxAppTaskPriority_c  (OSA_PRIORITY_NORMAL)
 
+/* Event ID to sent new data to task or to request a new LoRaWAN to be sent
+ * cf. below to see the events possible */
 extern osaEventId_t gDevBoxAppEvent;
 
 /* Task Events */
