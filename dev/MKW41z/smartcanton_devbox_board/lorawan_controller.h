@@ -19,6 +19,10 @@
 #include "SerialManager.h"
 #include "atcommander/atcommander.h"
 
+/* Magic word used to store data in NVM.
+ * This word can be used to know if the data has been modified.
+ * TODO: Should be changed to a CRC.
+ */
 #define LORAWAN_CONTROLLER_MAGIC_WORD	0x1111
 
 typedef struct lorawanControllerConfiguration_tag
@@ -46,6 +50,9 @@ typedef enum lorawanControllerStatus_tag
 	lorawanController_Error = 1U, /*!< Failed */
 	lorawanController_Error_Invalid_Configuration = 2U, /*!< The configuration is invalid and need to be corrected */
 } lorawanControllerStatus_t;
+
+/* Default port used to send data to the network */
+#define LORAWAN_CONTROLLER_DATA_DEFAULT_PORT "1"
 
 /**
  * AT commands to communicate with the LoRa MCU
@@ -81,6 +88,11 @@ typedef enum lorawanControllerStatus_tag
 
 #define CMD_SEND_TEXTDATA 			(AtCommand){"AT+SEND=%s:%s\n", "OK", "AT_BUSY_ERROR"}
 #define CMD_SEND_BINARYDATA 		(AtCommand){"AT+SENDB=%s:%s\n", "OK", "AT_BUSY_ERROR"}
+
+#define CMD_DELAY_RECEIVE_WINDOW_1 	(AtCommand){"AT+RX1DL=?\n", "OK", " "}
+#define CMD_DELAY_RECEIVE_WINDOW_2 	(AtCommand){"AT+RX2DL=?\n", "OK", " "}
+
+#define CMD_LAST_RECEIVED_BIN_DATA 	(AtCommand){"AT+RECVB=?\n", "OK", " "}
 
 osaStatus_t lorawan_controller_init(void);
 

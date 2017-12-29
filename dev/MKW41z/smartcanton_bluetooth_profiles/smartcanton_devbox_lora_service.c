@@ -267,7 +267,7 @@ bleResult_t ScDbLoRa_SetCharacteristicValUTF8s (uint16_t *serviceHandle, bleUuid
    	if (result != gBleSuccess_c)
    		return result;
 
-   	arrayLength = convertHexStringToBytesArray(strVal, data);
+   	arrayLength = convertHexStringToBytesArraySeparatedByChar(strVal, data);
 
    	/* Update characteristic value */
    	result = GattDb_WriteAttribute(handle, arrayLength, data);

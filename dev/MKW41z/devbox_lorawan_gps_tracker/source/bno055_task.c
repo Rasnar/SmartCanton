@@ -37,9 +37,10 @@ uint32_t mDelayNewMsgSentMilliSeconds = BNO055_MINIMUM_MEASURE_DELAY_MS * 10;
  */
 void bno055_new_data_available_callback(void)
 {
-	/* Inform the DevBox Task that she can read the data available */
-
-	Led3Toggle();
+	/*
+	 * Use this callback if the BNO055 is configured to generate an interruption
+	 * when a event is detected or when a capture is finished
+	 */
 }
 
 /**

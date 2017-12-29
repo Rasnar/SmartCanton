@@ -183,7 +183,7 @@ lorawanControllerStatus_t lorawan_controller_init_module()
 	if (lorawan_controller_set_cmd(CMD_NETWORK_JOIN) != lorawanController_Success)
 		return lorawanController_Error_Invalid_Configuration;
 
-	uint8_t nb_attempts = 0;
+	uint8_t nbAttempts = 0;
 
 	/* Waiting to receive a join Accept from the server */
 	do
@@ -192,7 +192,7 @@ lorawanControllerStatus_t lorawan_controller_init_module()
 		, data, sizeof(data));
 		OSA_TimeDelay(DELAY_BEETWEEN_CHECK_MS);
 
-		if ((nb_attempts++) > ATTEMPTS_TO_CHECK_NETWORK_STATUS)
+		if ((nbAttempts++) > ATTEMPTS_TO_CHECK_NETWORK_STATUS)
 			return lorawanController_Error;
 	} while (strcmp(data, LORA_NETWORK_JOINED_STATUS) != 0);
 

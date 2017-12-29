@@ -213,9 +213,9 @@ void BleApp_Start(void)
 		else
 		{
 #endif
-		mAdvState.advType = fastAdvState_c;
+			mAdvState.advType = fastAdvState_c;
 #if gAppUseBonding_d
-	}
+		}
 #endif
 		BleApp_Advertise();
 	}
@@ -245,9 +245,10 @@ void BleApp_HandleKeys(key_event_t events)
 	}
 	case gKBD_EventPressPB2_c:
 	{
-
+		/* Force the task to send a new frame to the network */
+		OSA_EventSet(gDevBoxAppEvent, gDevBoxEvtSendNewLoRaData_c);
 	}
-		break;
+	break;
 	case gKBD_EventLongPB1_c:
 	{
 		if (mPeerDeviceId != gInvalidDeviceId_c)
@@ -282,13 +283,13 @@ void BleApp_GenericCallback(gapGenericEvent_t* pGenericEvent)
 	{
 		BleApp_Config();
 	}
-		break;
+	break;
 
 	case gAdvertisingParametersSetupComplete_c:
 	{
 		App_StartAdvertising(BleApp_AdvertisingCallback, BleApp_ConnectionCallback);
 	}
-		break;
+	break;
 
 	/**
 	 * TODO : Only here for developpement. No need to press button to start advertissements
@@ -297,7 +298,7 @@ void BleApp_GenericCallback(gapGenericEvent_t* pGenericEvent)
 	{
 		BleApp_Start();
 	}
-		break;
+	break;
 
 	default:
 		break;
@@ -382,7 +383,7 @@ static void BleApp_Advertise(void)
 		gAdvParams.filterPolicy = gProcessAll_c;
 		mAdvTimeout = gFastConnAdvTime_c - gFastConnWhiteListAdvTime_c;
 	}
-		break;
+	break;
 
 	case slowAdvState_c:
 	{
@@ -391,7 +392,7 @@ static void BleApp_Advertise(void)
 		gAdvParams.filterPolicy = gProcessAll_c;
 		mAdvTimeout = gReducedPowerAdvTime_c;
 	}
-		break;
+	break;
 	}
 
 	/* Set advertising parameters*/
@@ -444,13 +445,13 @@ static void BleApp_AdvertisingCallback(gapAdvertisingEvent_t* pAdvertisingEvent)
 		}
 #endif 
 	}
-		break;
+	break;
 
 	case gAdvertisingCommandFailed_c:
 	{
 		panic(0, 0, 0, 0);
 	}
-		break;
+	break;
 
 	default:
 		break;
@@ -496,7 +497,7 @@ static void BleApp_ConnectionCallback(deviceId_t peerDeviceId, gapConnectionEven
 
 		/* Start battery measurements */
 		TMR_StartLowPowerTimer(mBatteryMeasurementTimerId,
-		gTmrLowPowerIntervalMillisTimer_c, TmrSeconds(mBatteryLevelReportInterval_c),
+				gTmrLowPowerIntervalMillisTimer_c, TmrSeconds(mBatteryLevelReportInterval_c),
 				BatteryMeasurementTimerCallback, NULL);
 
 #if (cPWR_UsePowerDownMode)
@@ -505,7 +506,7 @@ static void BleApp_ConnectionCallback(deviceId_t peerDeviceId, gapConnectionEven
 		PWR_AllowDeviceToSleep();
 #endif
 	}
-		break;
+	break;
 
 	case gConnEvtDisconnected_c:
 	{
@@ -541,7 +542,7 @@ static void BleApp_ConnectionCallback(deviceId_t peerDeviceId, gapConnectionEven
 		}
 #endif			
 	}
-		break;
+	break;
 	default:
 		break;
 	}
@@ -574,7 +575,7 @@ static void BleApp_GattServerCallback(deviceId_t deviceId, gattServerEvent_t* pS
 		volatile bleResult_t result = Gap_SaveCccd(deviceId, handle, cccd);
 		result = result;
 	}
-		break;
+	break;
 
 	case gEvtAttributeWritten_c:
 	{
@@ -585,27 +586,27 @@ static void BleApp_GattServerCallback(deviceId_t deviceId, gattServerEvent_t* pS
 		{
 			status = ScDbLoRa_SetAppEui(&scdbLoRaServiceConfig,
 					(uint8_array_t){ pServerEvent->eventData.attributeWrittenEvent.cValueLength,
-									pServerEvent->eventData.attributeWrittenEvent.aValue });
+				pServerEvent->eventData.attributeWrittenEvent.aValue });
 		}
 
 		if (handle == value_lora_app_key)
 		{
 			status = ScDbLoRa_SetAppKey(&scdbLoRaServiceConfig,
 					(uint8_array_t){ pServerEvent->eventData.attributeWrittenEvent.cValueLength,
-									pServerEvent->eventData.attributeWrittenEvent.aValue });
+				pServerEvent->eventData.attributeWrittenEvent.aValue });
 		}
 
 		if (handle == value_lora_confirm_mode)
 		{
 			status = ScDbLoRa_SetConfirmMode(&scdbLoRaServiceConfig,
 					(uint8_array_t){ pServerEvent->eventData.attributeWrittenEvent.cValueLength,
-									pServerEvent->eventData.attributeWrittenEvent.aValue });
+				pServerEvent->eventData.attributeWrittenEvent.aValue });
 		}
 
 		if (handle == value_lora_validate_new_configuration)
 		{
 			OSA_EventSet(gLoRaControllerEvent,
-			gLoRaCtrlTaskEvtConfigureFromModuleConfig_c);
+					gLoRaCtrlTaskEvtConfigureFromModuleConfig_c);
 		}
 
 		if (handle == value_bno055_measure_delay)
@@ -616,7 +617,7 @@ static void BleApp_GattServerCallback(deviceId_t deviceId, gattServerEvent_t* pS
 
 		GattServer_SendAttributeWrittenStatus(deviceId, handle, status);
 	}
-		break;
+	break;
 	case gEvtAttributeRead_c:
 	{
 
@@ -628,7 +629,7 @@ static void BleApp_GattServerCallback(deviceId_t deviceId, gattServerEvent_t* pS
 		 * LoRaWAN module to know the state of the connection.
 		 * TODO: It's not a clean thing to do. Event if it's only a read and
 		 * the read is thread safe, we should only access the LoRaWAN module
-		 * inside the LoRaWAN task. Should be modified in the futur to be
+		 * inside the LoRaWAN task. Should be modified in the future to be
 		 * integrated to the LoRaWAN task.
 		 */
 		if (handle == value_lora_network_join_status)
@@ -636,8 +637,8 @@ static void BleApp_GattServerCallback(deviceId_t deviceId, gattServerEvent_t* pS
 			char strJoinStatus[32];
 			uint8_t joinStatus = 0;
 			uint8_array_t joinStatusArray =
-				{ .arrayLength = 1,
-				  .pUint8_array = &joinStatus };
+			{ .arrayLength = 1,
+					.pUint8_array = &joinStatus };
 			int bytesRead = lorawan_controller_get_cmd(
 					CMD_GET_NETWORK_JOIN_STATUS,
 					strJoinStatus, sizeof(strJoinStatus));
@@ -666,7 +667,7 @@ static void BleApp_GattServerCallback(deviceId_t deviceId, gattServerEvent_t* pS
 
 		GattServer_SendAttributeReadStatus(deviceId, handle, status);
 	}
-		break;
+	break;
 	default:
 		break;
 	}
@@ -697,13 +698,13 @@ static void AdvertisingTimerCallback(void * pParam)
 		mAdvState.advType = slowAdvState_c;
 		mRestartAdv = TRUE;
 	}
-		break;
+	break;
 
 	default:
 	{
 		mRestartAdv = FALSE;
 	}
-		break;
+	break;
 	}
 }
 
@@ -758,7 +759,7 @@ void gps_neo_m8_new_data_available_callback(void)
 	Led2Toggle();
 
 	// TODO : Implement timer to generate timing
-	if (cnt_seconds++ == 60)
+	if (cnt_seconds++ == 300)
 	{
 		cnt_seconds = 0;
 		OSA_EventSet(gDevBoxAppEvent, gDevBoxEvtSendNewLoRaData_c);
@@ -767,30 +768,37 @@ void gps_neo_m8_new_data_available_callback(void)
 
 void DevBox_App_Task(osaTaskParam_t argument)
 {
+	/* Constants to invalidate the data stored locally */
 	static const struct minmea_sentence_rmc EmptyframeRmcGps;
 	static const bme680Data_t EmptyBme680;
 	static const bno055Data_t EmptyBno055;
 
-	// Store last values from the sensors
+	/* Store last values from the sensors */
 	struct minmea_sentence_rmc frameRmcGps;
-	osaEventFlags_t event;
 
-	// Data to be sent using the LoRaWAN module
-	static lorawanControllerData_t* lorawanControllerData;
-
-	// Last data received from the bno055
+	/* Last data received from the bno055 */
 	bno055Data_t bno055Data;
 
-	// Last data received from the bme680
+	/* Last data received from the bme680 */
 	bme680Data_t bme680Data;
+
+	/* Data to be sent using the LoRaWAN module */
+	lorawanControllerDataToSend_t* lorawanControllerData;
 
 	gps_neo_m8_init(gps_neo_m8_new_data_available_callback);
 
+	/* Events received from multiples tasks */
+	osaEventFlags_t event;
+
+	/* Infinite loop */
 	while (1)
 	{
+		/* Wait to receive an event from a task to do an action */
 		OSA_EventWait(gDevBoxAppEvent, osaEventFlagsAll_c, FALSE, osaWaitForever_c, &event);
 
-		/* Event LoRaWAN controller to update the GATT table with the latest informations */
+		/* Event from the LoRaWAN controller indicating that the LoRaWAN module is ready to be used.
+		 * A valid network has been join and we can update the GATT table with the latest information.
+		 * We can also start sending data to this network. */
 		if (event & gDevBoxTaskEvtNewLoRaWANConfig_c)
 		{
 			if (lorawan_controller_get_configuration_validity() == lorawanController_Success)
@@ -805,7 +813,8 @@ void DevBox_App_Task(osaTaskParam_t argument)
 		{
 			if (gps_neo_m8_read_rmc(&frameRmcGps) == gpsNeo_Success)
 			{
-				/* Update Bluetooth Service with new values */
+				/* Send data as notification to connected BLE peer if there is one
+				 * and stored them inside the BLE database for future reads */
 				ScDbGPS_RecordNotificationFrameRmcAll(service_smartcanton_devbox_gps, &frameRmcGps);
 			}
 		}
@@ -813,8 +822,9 @@ void DevBox_App_Task(osaTaskParam_t argument)
 		/* Event received when a new measure to the BME680 as to be done */
 		if (event & gDevBoxTaskEvtNewBME680Measure_c)
 		{
-			// Last data received from the bme680
+			/* Last data received from the BME680 */
 			bme680Data_t* bme680Data_tmp;
+
 			/* Retrieve data pointer */
 			while (OSA_MsgQGet(gBme680NewMessageMeasureQ, &bme680Data_tmp, 0) == osaStatus_Success)
 			{
@@ -824,6 +834,7 @@ void DevBox_App_Task(osaTaskParam_t argument)
 				/* Destroy tmp buffer allocated by the bme680_task */
 				vPortFree(bme680Data_tmp);
 
+				/* Send data as notification to connected BLE peer if there is one */
 				ScDbBme680_InstantValueNotificationAll(service_smartcanton_devbox_bme680, &bme680Data);
 			}
 		}
@@ -831,8 +842,9 @@ void DevBox_App_Task(osaTaskParam_t argument)
 		/* Event received when a new measure to the BNO055 has been done */
 		if (event & gDevBoxTaskEvtNewBNO055Measure_c)
 		{
-			// Last data received from the bno055
-			struct bno055Data_tag* bno055Data_tmp;
+			/* Last data received from the BNO055 */
+			bno055Data_t* bno055Data_tmp;
+
 			/* Retrieve data pointer */
 			while (OSA_MsgQGet(gBno055NewMessageMeasureQ, &bno055Data_tmp, 0) == osaStatus_Success)
 			{
@@ -842,14 +854,15 @@ void DevBox_App_Task(osaTaskParam_t argument)
 				/* Destroy tmp buffer allocated by the bno055_task */
 				vPortFree(bno055Data_tmp);
 
+				/* Send data as notification to connected BLE peer if there is one */
 				ScDbBno055_InstantValueNotificationAll(service_smartcanton_devbox_bno055, &bno055Data);
 			}
 		}
 
-		/* Event received when a new measure to the BNO055 as to be done */
+		/* Event received when the user want to send a new data to the LoRaWAN module */
 		if (event & gDevBoxEvtSendNewLoRaData_c)
 		{
-			// Only send data if the configuration is correct (the network as been joined)
+			/* Only send data if the configuration is correct (the network as been joined) */
 			if (lorawan_controller_get_configuration_validity() == lorawanController_Success)
 			{
 				// Reset the buffer for a new Cayenne frame
@@ -862,16 +875,17 @@ void DevBox_App_Task(osaTaskParam_t argument)
 							minmea_tocoord(&frameRmcGps.latitude), // Latitude
 							minmea_tocoord(&frameRmcGps.longitude), // Longitude
 							0.0); // Altitude (not supported with RMC parsing)
-					frameRmcGps = EmptyframeRmcGps;
+
+					frameRmcGps = EmptyframeRmcGps; // Invalidate the local data for the next msg
 				}
 
 				/* Send data only if new values since last transmission */
 				if(!((bno055Data.accel_xyz.x == 0.0) &&
-					(bno055Data.accel_xyz.y == 0.0) &&
-					(bno055Data.accel_xyz.z == 0.0) &&
-					(bno055Data.gyro_xyz.x == 0.0) &&
-					(bno055Data.gyro_xyz.y == 0.0) &&
-					(bno055Data.gyro_xyz.x == 0.0)))
+						(bno055Data.accel_xyz.y == 0.0) &&
+						(bno055Data.accel_xyz.z == 0.0) &&
+						(bno055Data.gyro_xyz.x == 0.0) &&
+						(bno055Data.gyro_xyz.y == 0.0) &&
+						(bno055Data.gyro_xyz.x == 0.0)))
 				{
 					cayenneLPPaddAccelerometer(2,
 							bno055Data.accel_xyz.x / 1000.0,
@@ -882,49 +896,80 @@ void DevBox_App_Task(osaTaskParam_t argument)
 							bno055Data.gyro_xyz.x,
 							bno055Data.gyro_xyz.y,
 							bno055Data.gyro_xyz.z);
-					bno055Data = EmptyBno055;
+					bno055Data = EmptyBno055; // Invalidate the local data for the next msg
 				}
 
 				/* Send data only if new values since last transmission */
 				if(!((bme680Data.temperature == 0.0) &&
-					(bme680Data.humidity == 0.0) &&
-					(bme680Data.pressure == 0.0)))
+						(bme680Data.humidity == 0.0) &&
+						(bme680Data.pressure == 0.0)))
 				{
 					cayenneLPPaddTemperature(4, bme680Data.temperature);
 					cayenneLPPaddRelativeHumidity(5, bme680Data.humidity);
 					cayenneLPPaddBarometricPressure(6, bme680Data.pressure);
 					cayenneLPPaddAnalogInput(7, bme680Data.iaq);
-					bme680Data = EmptyBme680;
+					bme680Data = EmptyBme680; // Invalidate the local data for the next msg
 				}
 
 				cayenneLPPaddAnalogInput(10, (float)BOARD_GetBatteryLevel());
-//				cayenneLPPaddAnalogOutput(3, 120.0);
-//				cayenneLPPaddDigitalOutput(4, 1);
+				//				cayenneLPPaddAnalogOutput(3, 120.0);
+				//				cayenneLPPaddDigitalOutput(4, 1);
+
+				cayenneLPPaddDigitalOutput(50, GPIO_ReadPinInput(GPIOA, LED3));
+				//				cayenneLPPaddAnalogOutput(3, );
 
 				/* Allocate data on the HEAP to send it to the LoRaWAN task */
-				lorawanControllerData = pvPortMalloc(sizeof(lorawanControllerData_t));
-				lorawanControllerData->dataSize = cayenneLPPgetSize();
+				lorawanControllerData = pvPortMalloc(sizeof(lorawanControllerDataToSend_t));
+				lorawanControllerData->dataLength = cayenneLPPgetSize();
 
 				/* Copy data formatted previously inside the Cayenne functions */
 				FLib_MemCpy(lorawanControllerData->data, cayenneLPPgetBuffer(),
-						lorawanControllerData->dataSize);
+						lorawanControllerData->dataLength);
 
+				/* Send and notify LoRaWAN task to send this new message */
 				OSA_MsgQPut(gLorawanCtrlSendNewMessageQ, &lorawanControllerData);
 				OSA_EventSet(gLoRaControllerEvent, gLoRaCtrlTaskEvtNewMsgToSend_c);
 			}
 		}
+
+		/* Event received when the LoRaWAN as received a new Downlink message */
+		if (event & gDevBoxEvtNewLoRaDataReceived_c)
+		{
+			/* Last data received from the BNO055 */
+			lorawanControllerDataReceived_t* lorawanDataReceived;
+
+			/* Retrieve data pointer */
+			while (OSA_MsgQGet(gLorawanCtrlReceiveNewMessageQ, &lorawanDataReceived, 0)
+					== osaStatus_Success)
+			{
+//				/* Store value in local in case we want to use it later on */
+//				FLib_MemCpy(&bno055Data, bno055Data_tmp, sizeof(bno055Data));
+
+				switch (lorawanDataReceived->port)
+				{
+				/* Cayenne default port, can't be changed */
+				case 99:
+				{
+
+					/* The first byte define the Cayenne port */
+					switch (lorawanDataReceived->data[0])
+					{
+					case 50:
+						Led3Toggle();
+						break;
+					default:
+						break;
+					}
+				}
+					break;
+				}
+
+				/* Destroy tmp buffer allocated by the lorawan controller task */
+				vPortFree(lorawanDataReceived);
+			}
+		}
 	}
 }
-
-///**
-// * TODO : Fix this random hardfault when starting the problem....
-// * Cf. documentation to see the stack trace of the error.
-// */
-//void HardFault_Handler(void)
-//{
-//
-//	NVIC_SystemReset();
-//}
 
 /*! *********************************************************************************
  * @}
