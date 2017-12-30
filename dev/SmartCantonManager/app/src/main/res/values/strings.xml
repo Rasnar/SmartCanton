@@ -41,4 +41,5 @@
 
     <string name="number_picker_formatter">%02d</string>
     <string name="maximum_advertisers_disclaimer">We will try to start the number of parallel advertisers selected. If we can\'t start all of them, we will stop when the maximum number is reached. This maximum number can\'t be known before we start.</string>
+    <string name="tv_beacon_type">Beacon type : AltBeacon</string>
 </resources>

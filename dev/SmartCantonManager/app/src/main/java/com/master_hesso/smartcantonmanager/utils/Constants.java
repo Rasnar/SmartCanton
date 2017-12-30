@@ -29,6 +29,7 @@ public class Constants {
      * MANUFACTURER FEATURE : 0x00
      */
     public static final int BEACON_MANUFACTURER_ID = 0xFFFF;
+    public static final byte BEACON_MANUFACTURER_ID_BYTES[] = {(byte)0xFF, (byte)0xFF};
     public static final byte ALTBEACON_CODE[] = {(byte) 0xBE, (byte) 0xAC};
     public static final UUID ALTBEACON_UUID_STRING = UUID.fromString("00000000-AAAA-BBBB-CCCC-DDDDDDDDDDDD");
     public static final byte ALTBEACON_UUID_BYTES [] = {(byte) 0x00, (byte) 0x00, (byte) 0x00,
@@ -36,7 +37,7 @@ public class Constants {
             (byte) 0xCC, (byte) 0xDD, (byte) 0xDD, (byte) 0xDD, (byte) 0xDD, (byte) 0xDD,
             (byte) 0xDD};
     public static final byte ALTBEACON_MAJOR[] = {(byte) 0x11, (byte) 0x11};
-    public static final byte ALTBEACON_MINOR[] = {(byte) 0x11, (byte) 0x11};
-    public static final byte ALTBEACON_RSSI_1M[] = {(byte) 0x11};
-    public static final byte ALTBEACON_MANUFACTURER_FEATURE[]= {(byte) 0x11};
+    public static final byte ALTBEACON_MINOR[] = {(byte) 0x22, (byte) 0x22};
+    public static final byte ALTBEACON_RSSI_1M[] = {(byte) 0xBB};
+    public static final byte ALTBEACON_MANUFACTURER_FEATURE[]= {(byte) 0x00};
 }

@@ -11,14 +11,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.idevicesinc.sweetblue.BleManager;
 import com.idevicesinc.sweetblue.BleManagerConfig;
 import com.idevicesinc.sweetblue.utils.BluetoothEnabler;
 import com.master_hesso.smartcantonmanager.utils.Constants;
+import com.master_hesso.smartcantonmanager.utils.FormatConversions;
+import com.shawnlin.numberpicker.NumberPicker;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class BeaconActivity extends AppCompatActivity {
 
@@ -45,6 +49,16 @@ public class BeaconActivity extends AppCompatActivity {
     private FloatingActionButton fab;
     Toolbar toolbar;
 
+    private TextView tvBeaconType;
+    private TextView tvBeaconManufacturerId;
+    private TextView tvBeaconCode;
+    private TextView tvBeaconUuid;
+    private TextView tvBeaconMajor;
+    private TextView tvBeaconMinor;
+    private TextView tvBeaconRssi;
+    private TextView tvBeaconManufacturerFeature;
+
+    NumberPicker npParallelAdvertisers;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -88,7 +102,7 @@ public class BeaconActivity extends AppCompatActivity {
         fab.setOnClickListener(view -> {
 
             if (mAdvertisersSuccessfullyStarted == 0) {
-                startAdvertisers(10);
+                startAdvertisers(npParallelAdvertisers.getValue());
                 fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_stop_box_white));
             } else {
                 stopAdvertisers();
@@ -140,9 +154,38 @@ public class BeaconActivity extends AppCompatActivity {
         return advertiseData;
     }
 
-    private void initViews(){
+    private void initViews() {
         fab = findViewById(R.id.fab);
         toolbar = findViewById(R.id.toolbar);
+
+        tvBeaconType = findViewById(R.id.tv_beacon_type);
+        tvBeaconManufacturerId = findViewById(R.id.tv_beacon_manufacturer_id);
+        tvBeaconCode = findViewById(R.id.tv_beacon_code);
+        tvBeaconUuid = findViewById(R.id.tv_beacon_uuid);
+        tvBeaconMajor = findViewById(R.id.tv_beacon_major);
+        tvBeaconMinor = findViewById(R.id.tv_beacon_minor);
+        tvBeaconRssi = findViewById(R.id.tv_beacon_rssi);
+        tvBeaconManufacturerFeature = findViewById(R.id.tv_beacon_manufacturer_feature);
+
+        tvBeaconType.setText(R.string.tv_beacon_type);
+        tvBeaconManufacturerId.setText(String.format("Manufacture ID : 0x%s",
+                FormatConversions.bytesArrayToHexString(Constants.BEACON_MANUFACTURER_ID_BYTES)));
+        tvBeaconCode.setText(String.format("AltBeacon code : 0x%s",
+                FormatConversions.bytesArrayToHexString(Constants.ALTBEACON_CODE)));
+        tvBeaconUuid.setText(String.format("AltBeacon UUID : 0x%s",
+                Constants.ALTBEACON_UUID_STRING));
+        tvBeaconMajor.setText(String.format("AltBeacon major : 0x%s",
+                FormatConversions.bytesArrayToHexString(Constants.ALTBEACON_MAJOR)));
+        tvBeaconMinor.setText(String.format("AltBeacon minor : 0x%s",
+                FormatConversions.bytesArrayToHexString(Constants.ALTBEACON_MINOR)));
+        tvBeaconRssi.setText(String.format(Locale.getDefault(),
+                "RSSI at 1m : %d dBm", Constants.ALTBEACON_RSSI_1M[0]));
+        tvBeaconManufacturerFeature.setText(String.format("AltBeacon manufacturer feature : 0x%s",
+                FormatConversions.bytesArrayToHexString(Constants.ALTBEACON_MANUFACTURER_FEATURE)));
+
+
+        npParallelAdvertisers = findViewById(R.id.np_parallel_advertisers);
+
     }
 
     /**
@@ -163,6 +206,7 @@ public class BeaconActivity extends AppCompatActivity {
     /**
      * Start the number of wanted advertisers. We can't know in advance how many can be started on a
      * device. We need to start them to know.
+     *
      * @param numberOfAdvertisersWanted Maximum number of advertiser wanted.
      */
     private void startAdvertisers(int numberOfAdvertisersWanted) {
@@ -173,7 +217,7 @@ public class BeaconActivity extends AppCompatActivity {
                 public void onStartSuccess(AdvertiseSettings settingsInEffect) {
                     super.onStartSuccess(settingsInEffect);
                     Log.i(TAG, settingsInEffect.toString());
-                    synchronized (mAdvertisersSuccessfullyStarted){
+                    synchronized (mAdvertisersSuccessfullyStarted) {
                         mAdvertisersSuccessfullyStarted++;
                     }
                 }
@@ -185,7 +229,9 @@ public class BeaconActivity extends AppCompatActivity {
 
                     if (errorCode == AdvertiseCallback.ADVERTISE_FAILED_TOO_MANY_ADVERTISERS) {
 
-                        if(!isMessageAlreadyShown) {
+                        if (!isMessageAlreadyShown) {
+                            /* Update the numberpicker with the maximum value possible */
+                            npParallelAdvertisers.setValue(mAdvertisersSuccessfullyStarted);
                             isMessageAlreadyShown = true;
                             showSnackBarMessage("Number maximum of simultaneous advertisers reached " +
                                     "by your phone : " + mAdvertisersSuccessfullyStarted);
@@ -242,6 +288,7 @@ public class BeaconActivity extends AppCompatActivity {
 
     /**
      * Display a snackbar with a custom message
+     *
      * @param message Message to display
      */
     private void showSnackBarMessage(String message) {
