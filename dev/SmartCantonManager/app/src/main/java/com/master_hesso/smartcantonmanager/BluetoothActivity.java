@@ -66,8 +66,13 @@ public class BluetoothActivity extends AppCompatActivity implements ChangePasswo
         switch (item.getItemId()) {
             case R.id.action_profile:
 
-                Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
-                startActivity(intent);
+                Intent intentProfile = new Intent(getApplicationContext(), ProfileActivity.class);
+                startActivity(intentProfile);
+                return true;
+            case R.id.action_beacon_broadcast:
+
+                Intent intentBeacon = new Intent(getApplicationContext(), BeaconActivity.class);
+                startActivity(intentBeacon);
                 return true;
             case android.R.id.home:
                 onBackPressed();
@@ -133,7 +138,10 @@ public class BluetoothActivity extends AppCompatActivity implements ChangePasswo
         fragment.show(getFragmentManager(), ChangePasswordDialog.TAG);
     }
 
-
+    /**
+     * Display a snackbar with a custom message
+     * @param message Message to display
+     */
     private void showSnackBarMessage(String message) {
 
         Snackbar.make(findViewById(R.id.activity_bluetooth), message, Snackbar.LENGTH_SHORT).show();

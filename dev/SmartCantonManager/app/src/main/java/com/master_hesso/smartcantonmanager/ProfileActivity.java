@@ -23,7 +23,6 @@ import com.master_hesso.smartcantonmanager.network.NetworkUtil;
 import com.master_hesso.smartcantonmanager.utils.Constants;
 
 import java.io.IOException;
-import java.util.Date;
 
 import retrofit2.adapter.rxjava.HttpException;
 import rx.android.schedulers.AndroidSchedulers;
@@ -91,7 +90,7 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
         mProgressbar = findViewById(R.id.progress);
 
         btnChangePassword.setOnClickListener(view -> showDialog());
-        btnLogout.setOnClickListener(view -> logout());
+        btnLogout.setOnClickListener(view -> logoutAndRestartApp());
     }
 
     private void initSharedPreferences() {
@@ -106,7 +105,7 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
             mJwt = new JWT(mToken);
         } catch (DecodeException exception){
             showSnackBarMessage("Token not valid !");
-            logout();
+            logoutAndRestartApp();
         }
 
         mUserPublicId = mJwt.getClaim("public_id").asString();
@@ -125,17 +124,20 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
 
     }
 
-    private void logout() {
+    private void logoutAndRestartApp() {
 
         SharedPreferences.Editor editor = mSharedPreferences.edit();
         editor.putString(Constants.USERNAME,"");
         editor.putString(Constants.TOKEN,"");
         editor.apply();
 
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        finish(); // call this to finish the current activity
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        getApplicationContext().startActivity(intent);
+        if (getApplicationContext() instanceof AppCompatActivity) {
+            ((AppCompatActivity) getApplicationContext()).finish();
+        }
+
+        Runtime.getRuntime().exit(0);
     }
 
     private void showDialog(){
@@ -191,6 +193,10 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
         }
     }
 
+    /**
+     * Display a snackbar with a custom message
+     * @param message Message to display
+     */
     private void showSnackBarMessage(String message) {
 
         Snackbar.make(findViewById(R.id.activity_profile),message,Snackbar.LENGTH_SHORT).show();

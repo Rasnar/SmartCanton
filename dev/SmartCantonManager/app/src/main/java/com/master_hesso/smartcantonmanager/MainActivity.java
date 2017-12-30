@@ -40,13 +40,13 @@ public class MainActivity extends AppCompatActivity implements ResetPasswordDial
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
-        String data = intent.getData().getLastPathSegment();
-        Log.d(TAG, "onNewIntent: "+data);
-
-        mResetPasswordDialog = (ResetPasswordDialog) getFragmentManager().findFragmentByTag(ResetPasswordDialog.TAG);
-
-        if (mResetPasswordDialog != null)
-            mResetPasswordDialog.setToken(data);
+//        String data = intent.getData().getLastPathSegment();
+//        Log.d(TAG, "onNewIntent: "+data);
+//
+//        mResetPasswordDialog = (ResetPasswordDialog) getFragmentManager().findFragmentByTag(ResetPasswordDialog.TAG);
+//
+//        if (mResetPasswordDialog != null)
+//            mResetPasswordDialog.setToken(data);
     }
 
     @Override
@@ -55,6 +55,10 @@ public class MainActivity extends AppCompatActivity implements ResetPasswordDial
         showSnackBarMessage(message);
     }
 
+    /**
+     * Display a snackbar with a custom message
+     * @param message Message to display
+     */
     private void showSnackBarMessage(String message) {
 
         Snackbar.make(findViewById(R.id.activity_main),message,Snackbar.LENGTH_SHORT).show();

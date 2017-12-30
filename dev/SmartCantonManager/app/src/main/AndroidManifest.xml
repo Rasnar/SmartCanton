@@ -21,30 +21,37 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
-            android:theme="@style/AppTheme.LoginRegister"
+            android:launchMode="singleTask"
             android:screenOrientation="sensorPortrait"
-            android:windowSoftInputMode="stateHidden"
-            android:launchMode="singleTask">
+            android:theme="@style/AppTheme.LoginRegister"
+            android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-                <!--<action android:name="android.intent.action.VIEW" />-->
-                <!--<category android:name="android.intent.category.DEFAULT" />-->
-                <!--<category android:name="android.intent.category.BROWSABLE" />-->
 
-                <!--<data android:scheme="http"-->
-                    <!--android:host="smartcantonmanager" />-->
+                <category android:name="android.intent.category.LAUNCHER" />
+                <!-- <action android:name="android.intent.action.VIEW" /> -->
+                <!-- <category android:name="android.intent.category.DEFAULT" /> -->
+                <!-- <category android:name="android.intent.category.BROWSABLE" /> -->
+
+
+                <!-- <data android:scheme="http" -->
+                <!-- android:host="smartcantonmanager" /> -->
             </intent-filter>
         </activity>
         <activity
             android:name=".ProfileActivity"
             android:label="@string/activity_title_profile"
             android:screenOrientation="sensorPortrait"
-            android:theme="@style/AppTheme.Profile"/>
+            android:theme="@style/AppTheme.Profile" />
         <activity
             android:name=".BluetoothActivity"
             android:label="@string/activity_title_bluetooth"
             android:screenOrientation="sensorPortrait"
-            android:theme="@style/AppTheme.Bluetooth"/>
+            android:theme="@style/AppTheme.Bluetooth" />
+        <activity
+            android:name=".BeaconActivity"
+            android:label="@string/title_activity_beacon"
+            android:theme="@style/AppTheme.Beacon" />
     </application>
+
 </manifest>

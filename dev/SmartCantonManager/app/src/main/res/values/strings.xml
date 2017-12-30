@@ -29,4 +29,16 @@
     <string name="ti_username_should_not_be_empty">Username should not be empty !</string>
     <string name="passkey_dialog_msg">If the device is configured to be paired, please enter the following passkey when asked by the system : </string>
     <string name="ic_beacon_broadcast_name">"  Beacon"</string>
+    <string name="title_activity_beacon">BeaconActivity</string>
+
+
+    <!-- Font -->
+    <string name="roboto_regular">sans-serif</string>
+    <string name="roboto_light">sans-serif-light</string>
+    <string name="roboto_condensed">sans-serif-condensed</string>
+    <string name="roboto_thin">sans-serif-thin</string>
+    <string name="roboto_medium">sans-serif-medium</string>
+
+    <string name="number_picker_formatter">%02d</string>
+    <string name="maximum_advertisers_disclaimer">We will try to start the number of parallel advertisers selected. If we can\'t start all of them, we will stop when the maximum number is reached. This maximum number can\'t be known before we start.</string>
 </resources>
