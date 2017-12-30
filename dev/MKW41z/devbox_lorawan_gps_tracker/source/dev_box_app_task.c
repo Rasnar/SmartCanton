@@ -948,10 +948,9 @@ void DevBox_App_Task(osaTaskParam_t argument)
 				cayenneLPPaddAnalogInput(mCayenneChannelBatteryLevel,
 						(float)BOARD_GetBatteryLevel());
 
-				/* Read the current LED3 state and send it */
+				/* Read the current LED2 state and send it */
 				cayenneLPPaddDigitalOutput(mCayenneChannelLed2DigitalOutput,
-						!GpioReadOutputPin(&ledPins[2]));
-						//(GPIOA->PDOR >> ledPins[2].gpioPin) & 0x01U);
+						!GpioReadOutputPin(&ledPins[1]));
 
 				//cayenneLPPaddAnalogOutput(3, 120.0);
 				//cayenneLPPaddDigitalOutput(4, 1);
@@ -980,21 +979,27 @@ void DevBox_App_Task(osaTaskParam_t argument)
 			while (OSA_MsgQGet(gLorawanCtrlReceiveNewMessageQ, &lorawanDataReceived, 0)
 					== osaStatus_Success)
 			{
-				/* Store value in local in case we want to use it later on */
-				//FLib_MemCpy(&bno055Data, bno055Data_tmp, sizeof(bno055Data));
-
 				switch (lorawanDataReceived->port)
 				{
 				/* Cayenne default port, can't be changed */
-				case 99:
+				case mCayenneDefaultPortDownlinkLoRaWAN:
 				{
 
-					/* The first byte define the Cayenne port */
+					/* The first byte define the Cayenne port
+					 * Each port is assigned to a specific task*/
 					switch (lorawanDataReceived->data[0])
 					{
 					case mCayenneChannelLed2DigitalOutput:
-						if(lorawanDataReceived->data[0] )
-						Led2Toggle();
+
+						/* If the data ask to turn on the LED */
+						if (lorawanDataReceived->data[2] == 100)
+						{
+							Led2On();
+						}
+						else
+						{
+							Led2Off();
+						}
 						break;
 					default:
 						break;

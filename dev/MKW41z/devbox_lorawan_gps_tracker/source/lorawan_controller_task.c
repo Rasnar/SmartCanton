@@ -11,7 +11,13 @@
 #include "LED.h"
 #include "string_utils.h"
 
-#define mDelayPacketSentsSeconds	300
+#define mDelayPacketSentsSeconds				300		/* s */
+
+#define mConfirmStatusReadDelayBeetweenRetry	250 	/* ms */
+#define mConfirmStatusReadNumberOfAttempts		8
+
+#define mResendFrameDelayBeetweenRetry			1000 	/* ms */
+#define mResendFrameNumberOfAttempts			300
 
 OSA_TASK_DEFINE(Lorawan_Controller_Task, gLorawanControllerTaskPriority_c, 1,
 		gLorawanControllerTaskStackSize_c, FALSE);
@@ -39,14 +45,18 @@ void Lorawan_Controller_Task(osaTaskParam_t argument)
 	// Start by configuring the LoRa Module
 	OSA_EventSet(gLoRaControllerEvent, gLoRaCtrlTaskEvtConfigure_c);
 
-	// Once module configured, send the first message
-//	OSA_EventSet(gLoRaControllerEvent, gLoRaCtrlTaskEvtNewMsgToSend_c);
-
 	osaEventFlags_t event;
-	lorawanControllerDataToSend_t* lorawanDataToSend;
-	char dataStr[128];
 
-	// Data to be sent to the main task
+	/* Buffer to store the data from the module */
+	char dataStr[256];
+
+	/* Variable to store the length of a byte array when converting data from dataStr */
+	uint16_t bytesRead;
+
+	/* Pointer to hold the data received from the main task */
+	lorawanControllerDataToSend_t* lorawanDataToSend;
+
+	/* Pointer to hold the data to send to the main task */
 	lorawanControllerDataReceived_t* lorawanDataReceived;
 
 	/**
@@ -114,8 +124,6 @@ void Lorawan_Controller_Task(osaTaskParam_t argument)
 				/* Retrieve all messages from the queue */
 				while (OSA_MsgQGet(gLorawanCtrlSendNewMessageQ, &lorawanDataToSend, 1) == osaStatus_Success)
 				{
-					char data[16];
-					uint16_t bytesRead;
 					uint8_t nbAttempts = 0;
 					int delayReceiveWindow2 = 0;
 
@@ -126,47 +134,64 @@ void Lorawan_Controller_Task(osaTaskParam_t argument)
 
 					vPortFree(lorawanDataToSend);
 
-					bytesRead = lorawan_controller_get_cmd(CMD_DELAY_RECEIVE_WINDOW_2,
-														data, sizeof(data));
-
 					/* Send data to the LoRaWAN module */
 					while (lorawan_controller_set_cmd(CMD_SEND_BINARYDATA,
 							LORAWAN_CONTROLLER_DATA_DEFAULT_PORT, dataStr)
 							== lorawanController_Error)
 					{
-						/* Error when the last frame hasn't been proceeded correctly sent
-						 * yet. Try again one second later*/
-						OSA_TimeDelay(1000);
+						/* This error is when the last frame hasn't been proceeded correctly yet.
+						 * Try again one x ms */
+						OSA_TimeDelay(mResendFrameDelayBeetweenRetry);
+
+						if ((nbAttempts++) > mResendFrameNumberOfAttempts)
+							break;
 					}
 
+					/* Number maximum of attempt reached for this frame, discard content and try
+					 * with a new one
+					 * TODO : We can maybe inform the main APP through an error of this error.
+					 */
+					if ((nbAttempts++) > mResendFrameNumberOfAttempts)
+						continue;
 
 					/* If the message is a confirmed one, wait for the confirmation */
 					if (lorawan_controller_get_current_configuration().confirmMode[0] == '1')
 					{
 						do
 						{
-							OSA_TimeDelay(1000);
 
-							bytesRead = lorawan_controller_get_cmd(CMD_GET_CONFIRM_STATUS
-							, data, sizeof(data));
+							bytesRead = lorawan_controller_get_cmd(CMD_GET_CONFIRM_STATUS,
+									dataStr, sizeof(dataStr));
 
-							if ((nbAttempts++) > 10)
+							if(dataStr[0] == '1'){
 								break;
-						} while (data[0] != '1');
+							}
+
+							/* Wait again x ms for the confirm status */
+							OSA_TimeDelay(mConfirmStatusReadDelayBeetweenRetry);
+
+							if ((nbAttempts++) > mConfirmStatusReadNumberOfAttempts)
+								break;
+						} while (dataStr[0] != '1');
 					}
 
+					/* Read the delay configured for the receive window 2 */
+					bytesRead = lorawan_controller_get_cmd(CMD_DELAY_RECEIVE_WINDOW_2,
+							dataStr, sizeof(dataStr));
 
-					/* Wait the end of the receive window to check if data has been received*/
-					OSA_TimeDelay(delayReceiveWindow2 + 1000);
+					delayReceiveWindow2 = convertIntStringToInt(dataStr);
+
+					/* Wait the end of the receive window to check if data have been received */
+					OSA_TimeDelay(delayReceiveWindow2);
 
 					/* Read from the module Downlink data buffer */
 					bytesRead = lorawan_controller_get_cmd(CMD_LAST_RECEIVED_BIN_DATA,
-							data, sizeof(data));
+							dataStr, sizeof(dataStr));
 
 					/* Data are received with the following format : '<port>:<new_data>'
 					 * Check if there is any data after the ':'. If that is the case,
 					 * it means that new data are available. Otherwise, just ignore it.  */
-					uint8_t idxSeparator = strchr(data, ':') - data;
+					uint8_t idxSeparator = strchr(dataStr, ':') - dataStr;
 					if (bytesRead > (idxSeparator + 1))
 					{
 
@@ -174,16 +199,16 @@ void Lorawan_Controller_Task(osaTaskParam_t argument)
 
 						/* Extract the data from the module Downlink data */
 						lorawanDataReceived->dataLength = convertHexStringToBytesArray(
-								data + idxSeparator + 1,
+								dataStr + idxSeparator + 1,
 								lorawanDataReceived->data,
 								sizeof(lorawanDataReceived->data));
 
 						/* Add end of string where the ':' is located to be able to retrieve
 						 * the port number */
-						data[idxSeparator] = '\0';
+						dataStr[idxSeparator] = '\0';
 
 						/* Extract the port from the module Downlink data */
-						lorawanDataReceived->port = convertIntStringToInt(data);
+						lorawanDataReceived->port = convertIntStringToInt(dataStr);
 
 						/* Add message to the Queue */
 						if(OSA_MsgQPut(gLorawanCtrlReceiveNewMessageQ, &lorawanDataReceived)
