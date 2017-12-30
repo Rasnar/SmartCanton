@@ -2086,3 +2086,29 @@ time_stamp_interval_ms	volatile int64_t	4297718
 ````
 
 To fix it: the easiest way is to qui the function and restart the process. It only happens every hour, so it's acceptable. But to make it cleaner we should implement a nanoseconds counter in 64bit! 
+
+
+
+# 30.12.2017
+
+## Library feature not supported
+
+When trying to add the support for the BLE scan, with the following code : 
+
+````
+ShellGap_SetScanParameters();
+bleResult_t result = Gap_StartScanning(&gAppScanParams, ShellGap_ScanningCallback, TRUE);
+result = result;
+````
+
+Result had the value ` gBleFeatureNotSupported_c`. This is because the stack linked to the project does not support all the modes. See : https://community.nxp.com/thread/458322 
+
+
+
+To fix it : go to `Project` -> `Proprieties`
+
+`C/C++ Build` -> `Settings` -> `Libraries`
+
+Change `_ble_4-2_host_peripheral_cm0p` to `_ble_4-2_host_cm0p`.
+
+Copy the file `lib_ble_4-2_host_cm0p.a` from an existing project using this library (eg. the beacon) to the libs directory.

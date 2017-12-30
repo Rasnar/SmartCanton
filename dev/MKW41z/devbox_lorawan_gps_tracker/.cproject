@@ -287,7 +287,7 @@
 									<listOptionValue builtIn="false" value="gcc"/>
 									<listOptionValue builtIn="false" value="nosys"/>
 									<listOptionValue builtIn="false" value="_ble_kw41z_controller"/>
-									<listOptionValue builtIn="false" value="_ble_4-2_host_peripheral_cm0p"/>
+									<listOptionValue builtIn="false" value="_ble_4-2_host_cm0p"/>
 									<listOptionValue builtIn="false" value="_crypto_m0"/>
 									<listOptionValue builtIn="false" value="algobsec"/>
 									<listOptionValue builtIn="false" value="m"/>
