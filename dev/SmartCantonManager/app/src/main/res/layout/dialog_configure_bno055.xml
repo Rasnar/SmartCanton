@@ -17,7 +17,7 @@
         app:passwordToggleTint="@color/colorTextPrimary">
 
         <EditText
-            android:id="@+id/et_bno055_delay_ms"
+            android:id="@+id/et_bno055_interval_ms"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Measure interval in ms (300 - 10000)"

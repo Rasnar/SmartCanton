@@ -73,7 +73,7 @@ public class SmartCantonDevBoxBLEServices {
             UUID.fromString("DDDDDDDD-DDDD-CCCC-BBBB-AAAA02000030");
     public static final UUID SMARTCANTON_DEVBOX_BNO055_MAGNETOMETER =
             UUID.fromString("DDDDDDDD-DDDD-CCCC-BBBB-AAAA03000030");
-    public static final UUID SMARTCANTON_DEVBOX_BNO055_MEASURE_DELAY =
+    public static final UUID SMARTCANTON_DEVBOX_BNO055_MEASURE_INTERVAL =
             UUID.fromString("DDDDDDDD-DDDD-CCCC-BBBB-AAAA04000030");
 
 

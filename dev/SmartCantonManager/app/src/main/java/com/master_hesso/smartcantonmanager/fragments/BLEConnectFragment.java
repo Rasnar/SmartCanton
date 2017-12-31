@@ -461,7 +461,7 @@ public class BLEConnectFragment extends Fragment {
 
         swBno055EnableNotifications.setOnClickListener(view12 -> {
             if (swBno055EnableNotifications.isChecked()) {
-                readBleBno055MeasureDelay();
+                readBleBno055MeasureInterval();
                 enableBleBno055Notifications();
             } else {
                 disableBleBno055Notifications();
@@ -584,13 +584,13 @@ public class BLEConnectFragment extends Fragment {
         alertDialog.setTitle("Configure BNO055");
 
         View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_configure_bno055, null);
-        EditText etBno055DelayMs = view.findViewById(R.id.et_bno055_delay_ms);
+        EditText etBno055IntervalMs = view.findViewById(R.id.et_bno055_interval_ms);
 
         alertDialog.setView(view);
 
         // Setting Positive "Yes" Button
         alertDialog.setPositiveButton("Update", (dialogInterface, i) ->
-                writeBleBno055MeasureDelay(Integer.parseInt(etBno055DelayMs.getText().toString())));
+                writeBleBno055MeasureInterval(Integer.parseInt(etBno055IntervalMs.getText().toString())));
 
         // Setting Negative "NO" Button
         alertDialog.setNegativeButton("Cancel",
@@ -1368,38 +1368,38 @@ public class BLEConnectFragment extends Fragment {
     /**
      * Write the measure delay from the the service SMARTCANTON_DEVBOX_BNO055_SERVICE
      */
-    private void writeBleBno055MeasureDelay(int measureDelay) {
+    private void writeBleBno055MeasureInterval(int measureInterval) {
         ByteBuffer byteBuffer = ByteBuffer.allocate(4);
         byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-        byteBuffer.putInt(measureDelay);
+        byteBuffer.putInt(measureInterval);
         byte[] bytes = byteBuffer.array();
         mBleDevice.write(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_SERVICE,
-                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_MEASURE_DELAY,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_MEASURE_INTERVAL,
                 bytes,
                 e1 -> {
                     if (!e1.wasSuccess()) {
                         showSnackBarMessage(String.format("Error while writing characteristics %s",
-                                "BNO055 MEASURE DELAY"));
+                                "BNO055 MEASURE INTERVAL"));
 
                     } else {
                         // Update the display with the new value
-                        readBleBno055MeasureDelay();
+                        readBleBno055MeasureInterval();
                     }
                 });
     }
 
     /**
-     * Read the measure delay from the the service SMARTCANTON_DEVBOX_BNO055_SERVICE
+     * Read the measure interval from the the service SMARTCANTON_DEVBOX_BNO055_SERVICE
      */
-    private void readBleBno055MeasureDelay() {
+    private void readBleBno055MeasureInterval() {
         mBleDevice.read(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_SERVICE,
-                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_MEASURE_DELAY,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BNO055_MEASURE_INTERVAL,
                 e1 -> {
                     if (e1.wasSuccess()) {
                         if (FormatConversions.unsignedIntToLong(e1.data()) > 0) {
                             tvBno055ServiceMeasureDelayDevice.setText(
                                     String.format(Locale.getDefault(),
-                                            "Measure delay : %d [ms]",
+                                            "Measure interval : %d [ms]",
                                             FormatConversions.unsignedIntToLong(e1.data())));
                         }
                     }
