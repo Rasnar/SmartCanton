@@ -4,9 +4,9 @@
 #include <string.h>
 #include <stdio.h>
 
-// TODO hard coded max of 128 - I've never seen one anywhere near this
+// TODO hard coded max of 256 - I've never seen one anywhere near this
 // long so we're probably OK.
-#define AT_COMMANDER_MAX_REQUEST_LENGTH 128
+#define AT_COMMANDER_MAX_REQUEST_LENGTH 256
 #define AT_COMMANDER_DEFAULT_RESPONSE_DELAY_MS 100
 #define AT_COMMANDER_RETRY_DELAY_MS 50
 #define AT_COMMANDER_MAX_RESPONSE_LENGTH 8

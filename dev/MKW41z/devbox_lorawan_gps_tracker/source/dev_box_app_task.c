@@ -153,7 +153,17 @@ static uint8_t                 mScannedDevicesCount;
 #define mCayenneChannelEnableBme680DataInLoRaPacket			101
 #define mCayenneChannelEnableBno055DataInLoRaPacket			102
 #define mCayenneChannelEnableBleScannerDataInLoRaPacket		103
-#define mCayenneChannelEnableBleBatteryLevelInLoRaPacket	104
+#define mCayenneChannelEnableBatteryLevelInLoRaPacket	104
+
+/* Index used by the array mCayenneSensorsEnabled */
+enum mCayenneSensorsEnabledIndex
+{
+	EN_GPS, EN_BME680, EN_BNO055, EN_BLE_SCANNER, EN_BATTERY, EN_COUNT
+};
+
+/* By default, all sensors are enabled, they can be disabled with LoRa downlink calls */
+bool_t mCayenneSensorsEnabled[EN_COUNT] =
+{ TRUE, TRUE, TRUE, TRUE, TRUE };
 
 /************************************************************************************
  *************************************************************************************
@@ -226,7 +236,7 @@ static tmrTimerID_t mLoRaSendNewFrameTimerId;
 
 /* indicate the interval beetwen each LoRa packet
  * This value can be modified by a LoRa Downlink request (*/
-static int mLoRaNewDataReportInterval_c = mLoRaNewDataReportInterval_default_c;
+static int mLoRaNewDataReportInterval = mLoRaNewDataReportInterval_default_c;
 
 /************************************************************************************
  *************************************************************************************
@@ -974,7 +984,7 @@ void DevBox_App_Task(osaTaskParam_t argument)
 				/* Start timer to notify application every mLoRaNewDataReportInterval_c
 				 * to send a new LoRaWAN frame to the network with the last values available */
 				TMR_StartLowPowerTimer(mLoRaSendNewFrameTimerId,
-						gTmrLowPowerIntervalMillisTimer_c, TmrSeconds(mLoRaNewDataReportInterval_c),
+						gTmrLowPowerIntervalMillisTimer_c, TmrSeconds(mLoRaNewDataReportInterval),
 						LoRaSendNewDataTimerCallback, NULL);
 			}
 		}
@@ -1051,7 +1061,7 @@ void DevBox_App_Task(osaTaskParam_t argument)
 				cayenneLPPreset();
 
 				/* Send data only if new values since last transmission */
-				if (gpsData.frame_rmc.valid)
+				if (gpsData.frame_rmc.valid && mCayenneSensorsEnabled[EN_GPS])
 				{
 					cayenneLPPaddGPS(mCayenneChannelGps,
 							minmea_tocoord(&gpsData.frame_rmc.latitude), // Latitude
@@ -1062,12 +1072,13 @@ void DevBox_App_Task(osaTaskParam_t argument)
 				}
 
 				/* Send data only if new values since last transmission */
-				if(!((bno055Data.accel_xyz.x == 0.0) &&
+				if((!((bno055Data.accel_xyz.x == 0.0) &&
 						(bno055Data.accel_xyz.y == 0.0) &&
 						(bno055Data.accel_xyz.z == 0.0) &&
 						(bno055Data.gyro_xyz.x == 0.0) &&
 						(bno055Data.gyro_xyz.y == 0.0) &&
 						(bno055Data.gyro_xyz.x == 0.0)))
+						&& mCayenneSensorsEnabled[EN_BNO055])
 				{
 					cayenneLPPaddAccelerometer(mCayenneChannelBno055Accelerometer,
 							bno055Data.accel_xyz.x / 1000.0,
@@ -1082,9 +1093,10 @@ void DevBox_App_Task(osaTaskParam_t argument)
 				}
 
 				/* Send data only if new values since last transmission */
-				if(!((bme680Data.temperature == 0.0) &&
+				if((!((bme680Data.temperature == 0.0) &&
 						(bme680Data.humidity == 0.0) &&
 						(bme680Data.pressure == 0.0)))
+						&& mCayenneSensorsEnabled[EN_BME680])
 				{
 					cayenneLPPaddTemperature(mCayenneChannelBme680Temperature,
 							bme680Data.temperature);
@@ -1098,16 +1110,32 @@ void DevBox_App_Task(osaTaskParam_t argument)
 					bme680Data = EmptyBme680; // Invalidate the local data for the next msg
 				}
 
-				/* Read the current battery level */
-				cayenneLPPaddAnalogInput(mCayenneChannelBatteryLevel,
-						(float)BOARD_GetBatteryLevel());
+				if(mCayenneSensorsEnabled[EN_BATTERY])
+				{
+					/* Read the current battery level */
+					cayenneLPPaddAnalogInput(mCayenneChannelBatteryLevel,
+					(float)BOARD_GetBatteryLevel());
+				}
 
 				/* Read the current LED2 state and send it */
 				cayenneLPPaddDigitalOutput(mCayenneChannelLed2DigitalOutput,
 						!GpioReadOutputPin(&ledPins[1]));
 
-				//cayenneLPPaddAnalogOutput(3, 120.0);
-				//cayenneLPPaddDigitalOutput(4, 1);
+				/* Offer the possibility to control the interval beetwen each LoRa packets */
+				cayenneLPPaddAnalogOutput(mCayenneChannelLoRaPacketIntervalOutput,
+										mLoRaNewDataReportInterval);
+
+				/* Offer the possibility to enable the data that the user want to receive */
+				cayenneLPPaddDigitalOutput(mCayenneChannelEnableGpsDataInLoRaPacket,
+										mCayenneSensorsEnabled[EN_GPS]);
+				cayenneLPPaddDigitalOutput(mCayenneChannelEnableBme680DataInLoRaPacket,
+										mCayenneSensorsEnabled[EN_BME680]);
+				cayenneLPPaddDigitalOutput(mCayenneChannelEnableBno055DataInLoRaPacket,
+										mCayenneSensorsEnabled[EN_BNO055]);
+				cayenneLPPaddDigitalOutput(mCayenneChannelEnableBleScannerDataInLoRaPacket,
+										mCayenneSensorsEnabled[EN_BLE_SCANNER]);
+				cayenneLPPaddDigitalOutput(mCayenneChannelEnableBatteryLevelInLoRaPacket,
+										mCayenneSensorsEnabled[EN_BATTERY]);
 
 				/* Allocate data on the HEAP to send it to the LoRaWAN task */
 				lorawanControllerData = pvPortMalloc(sizeof(lorawanControllerDataToSend_t));

@@ -50,7 +50,7 @@
 extern const AtCommanderPlatform AT_PLATFORM_I_CUBE_LRWAN;
 static AtCommanderConfig config;
 
-#define AT_COMMANDER_MAX_REQUEST_LENGTH 128
+#define AT_COMMANDER_MAX_REQUEST_LENGTH 256
 
 /**
  * Serial Manager : pointer to a location where the interface Id will be stored
