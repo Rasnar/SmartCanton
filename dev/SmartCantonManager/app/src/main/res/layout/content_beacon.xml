@@ -8,215 +8,242 @@
     tools:context="com.master_hesso.smartcantonmanager.BeaconActivity"
     tools:showIn="@layout/activity_beacon">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        tools:context=".ProfileActivity">
+        android:animateLayoutChanges="true"
+        android:fillViewport="true">
 
-        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/cv_beacon_information"
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/child_margin_top"
-            card_view:cardBackgroundColor="@color/colorCardViewBackground"
-            card_view:cardCornerRadius="8dp">
+            android:layout_height="match_parent"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            tools:context=".ProfileActivity">
 
-            <RelativeLayout
+            <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/cv_beacon_information"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/child_margin_top"
+                card_view:cardBackgroundColor="@color/colorCardViewBackground"
+                card_view:cardCornerRadius="8dp">
 
-                <TextView
-                    android:id="@+id/tv_cv_beacon_information"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:background="@color/colorPrimaryDark"
-                    android:gravity="center"
-                    android:padding="@dimen/card_view_title_textview_padding"
-                    android:paddingTop="@dimen/card_padding"
-                    android:text="Beacon configuration"
-                    android:textAlignment="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:textColor="@color/colorTextPrimary"
-                    android:textStyle="bold" />
+                    android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/tv_beacon_type"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv_cv_beacon_information"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="@dimen/card_items_margin"
-                    android:gravity="center"
-                    android:text="Type : AltBeacon"
-                    android:textAlignment="center"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@color/colorTextPrimaryLightDark" />
+                    <TextView
+                        android:id="@+id/tv_cv_beacon_information"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:background="@color/colorPrimaryDark"
+                        android:gravity="center"
+                        android:padding="@dimen/card_view_title_textview_padding"
+                        android:paddingTop="@dimen/card_padding"
+                        android:text="Beacon content"
+                        android:textAlignment="center"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:textColor="@color/colorTextPrimary"
+                        android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/tv_beacon_manufacturer_id"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv_beacon_type"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="@dimen/card_items_margin"
-                    android:gravity="center"
-                    android:text="Manufacture ID :"
-                    android:textAlignment="center"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@color/colorTextPrimaryLightDark" />
+                    <TextView
+                        android:id="@+id/tv_beacon_type"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_cv_beacon_information"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/card_items_margin"
+                        android:gravity="center"
+                        android:text="Type : AltBeacon"
+                        android:textAlignment="center"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/colorTextPrimaryDark" />
 
-                <TextView
-                    android:id="@+id/tv_beacon_code"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv_beacon_manufacturer_id"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="@dimen/card_items_margin"
-                    android:gravity="center"
-                    android:text="Beacon code :"
-                    android:textAlignment="center"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@color/colorTextPrimaryLightDark" />
+                    <TextView
+                        android:id="@+id/tv_beacon_manufacturer_id"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_beacon_type"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/card_items_margin"
+                        android:gravity="center"
+                        android:text="Manufacture ID :"
+                        android:textAlignment="center"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/colorTextPrimaryDark" />
 
-                <TextView
-                    android:id="@+id/tv_beacon_uuid"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv_beacon_code"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="@dimen/card_items_margin"
-                    android:gravity="center"
-                    android:text="AltBeacon UUID :"
-                    android:textAlignment="center"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@color/colorTextPrimaryLightDark" />
+                    <TextView
+                        android:id="@+id/tv_beacon_code"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_beacon_manufacturer_id"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/card_items_margin"
+                        android:gravity="center"
+                        android:text="Beacon code :"
+                        android:textAlignment="center"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/colorTextPrimaryDark" />
 
-                <TextView
-                    android:id="@+id/tv_beacon_major"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv_beacon_uuid"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="@dimen/card_items_margin"
-                    android:gravity="center"
-                    android:text="AltBeacon major :"
-                    android:textAlignment="center"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@color/colorTextPrimaryLightDark" />
+                    <TextView
+                        android:id="@+id/tv_beacon_uuid"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_beacon_code"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/card_items_margin"
+                        android:gravity="center"
+                        android:lines="2"
+                        android:text="AltBeacon UUID :"
+                        android:textAlignment="center"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/colorTextPrimaryDark" />
 
-                <TextView
-                    android:id="@+id/tv_beacon_minor"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv_beacon_major"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="@dimen/card_items_margin"
-                    android:gravity="center"
-                    android:text="AltBeacon minor : "
-                    android:textAlignment="center"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@color/colorTextPrimaryLightDark" />
+                    <TextView
+                        android:id="@+id/tv_beacon_major"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_beacon_uuid"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/card_items_margin"
+                        android:gravity="center"
+                        android:text="AltBeacon major :"
+                        android:textAlignment="center"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/colorTextPrimaryDark" />
 
-                <TextView
-                    android:id="@+id/tv_beacon_rssi"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv_beacon_minor"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="@dimen/card_items_margin"
-                    android:gravity="center"
-                    android:text="RSSI at 1 meter : "
-                    android:textAlignment="center"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@color/colorTextPrimaryLightDark" />
+                    <TextView
+                        android:id="@+id/tv_beacon_minor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_beacon_major"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/card_items_margin"
+                        android:gravity="center"
+                        android:text="AltBeacon minor : "
+                        android:textAlignment="center"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/colorTextPrimaryDark" />
 
-                <TextView
-                    android:id="@+id/tv_beacon_manufacturer_feature"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv_beacon_rssi"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="@dimen/card_items_margin"
-                    android:layout_marginTop="@dimen/card_items_margin"
-                    android:gravity="center"
-                    android:text="AltBeacon manufacturer feature : "
-                    android:textAlignment="center"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@color/colorTextPrimaryLightDark" />
+                    <TextView
+                        android:id="@+id/tv_beacon_rssi"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_beacon_minor"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/card_items_margin"
+                        android:gravity="center"
+                        android:text="RSSI at 1 meter : "
+                        android:textAlignment="center"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/colorTextPrimaryDark" />
 
-            </RelativeLayout>
-        </android.support.v7.widget.CardView>
+                    <TextView
+                        android:id="@+id/tv_beacon_manufacturer_feature"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_beacon_rssi"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="@dimen/card_items_margin"
+                        android:layout_marginTop="@dimen/card_items_margin"
+                        android:gravity="center"
+                        android:text="AltBeacon manufacturer feature : "
+                        android:textAlignment="center"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/colorTextPrimaryDark" />
 
-        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/cv_number_advertisers"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/cv_beacon_information"
-            android:layout_marginTop="@dimen/child_margin_top"
-            card_view:cardBackgroundColor="@color/colorCardViewBackground"
-            card_view:cardCornerRadius="8dp">
+                </RelativeLayout>
+            </android.support.v7.widget.CardView>
 
-            <RelativeLayout
+            <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/cv_number_advertisers"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/cv_beacon_information"
+                android:layout_marginTop="@dimen/child_margin_top"
+                card_view:cardBackgroundColor="@color/colorCardViewBackground"
+                card_view:cardCornerRadius="8dp">
 
-                <TextView
-                    android:id="@+id/tv_cv_parallel_advertisers"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:background="@color/colorPrimaryDark"
-                    android:gravity="center"
-                    android:padding="@dimen/card_view_title_textview_padding"
-                    android:paddingTop="@dimen/card_padding"
-                    android:text="Maximum parallel advertisers"
-                    android:textAlignment="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:textColor="@color/colorTextPrimary"
-                    android:textStyle="bold" />
+                    android:layout_height="wrap_content">
 
-                <com.shawnlin.numberpicker.NumberPicker
-                    android:id="@+id/np_parallel_advertisers"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/tv_cv_parallel_advertisers"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="@dimen/child_margin_top"
-                    app:np_dividerColor="@color/colorAccent"
-                    app:np_dividerThickness="2dp"
-                    app:np_height="64dp"
-                    app:np_max="20"
-                    app:np_min="1"
-                    app:np_order="ascending"
-                    app:np_orientation="horizontal"
-                    app:np_selectedTextColor="@color/colorAccent"
-                    app:np_selectedTextSize="@dimen/numberpicker_selected_text_size"
-                    app:np_textColor="@color/colorAccent"
-                    app:np_textSize="@dimen/numberpicker_text_size"
-                    app:np_typeface="@string/roboto_medium"
-                    app:np_width="180dp"
-                    app:np_wrapSelectorWheel="false" />
+                    <TextView
+                        android:id="@+id/tv_cv_parallel_advertisers"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:background="@color/colorPrimaryDark"
+                        android:gravity="center"
+                        android:padding="@dimen/card_view_title_textview_padding"
+                        android:paddingTop="@dimen/card_padding"
+                        android:text="Maximum parallel advertisers"
+                        android:textAlignment="center"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:textColor="@color/colorTextPrimary"
+                        android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/tv_maximum_advertisers_disclaimer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/np_parallel_advertisers"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="@dimen/card_items_margin"
-                    android:layout_marginTop="@dimen/card_items_margin"
-                    android:gravity="center"
-                    android:text="@string/maximum_advertisers_disclaimer"
-                    android:textAlignment="center"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="@color/colorTextPrimaryLightDark" />
-            </RelativeLayout>
-        </android.support.v7.widget.CardView>
-    </RelativeLayout>
+                    <com.shawnlin.numberpicker.NumberPicker
+                        android:id="@+id/np_parallel_advertisers"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_cv_parallel_advertisers"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/child_margin_top"
+                        android:layout_marginBottom="@dimen/child_margin_top"
+                        app:np_dividerColor="@color/colorAccent"
+                        app:np_dividerThickness="3dp"
+                        app:np_height="64dp"
+                        app:np_width="200dp"
+                        app:np_max="20"
+                        app:np_min="1"
+                        app:np_value="2"
+                        app:np_order="ascending"
+                        app:np_wheelItemCount="3"
+                        app:np_orientation="horizontal"
+                        app:np_selectedTextColor="@color/colorAccent"
+                        app:np_selectedTextSize="@dimen/numberpicker_selected_text_size"
+                        app:np_textColor="@color/colorAccent"
+                        app:np_textSize="@dimen/numberpicker_text_size"
+                        app:np_typeface="@string/roboto_medium"
+                        app:np_wrapSelectorWheel="false" />
+
+                    <TextView
+                        android:id="@+id/tv_maximum_advertisers_disclaimer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/np_parallel_advertisers"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="@dimen/card_items_margin"
+                        android:layout_marginTop="@dimen/card_items_margin"
+                        android:gravity="center"
+                        android:text="@string/maximum_advertisers_disclaimer"
+                        android:textAlignment="center"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColor="@color/colorTextPrimaryLightDark" />
+                </RelativeLayout>
+            </android.support.v7.widget.CardView>
+
+
+            <!--Empty textview to -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="70dp"
+                android:layout_below="@+id/cv_number_advertisers"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/card_items_margin"
+                android:paddingEnd="@dimen/card_items_margin"
+                android:paddingStart="@dimen/card_items_margin"
+                android:text=""
+                android:textAlignment="center"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/colorTextPrimaryLightDark" />
+        </RelativeLayout>
+    </ScrollView>
 </android.support.constraint.ConstraintLayout>

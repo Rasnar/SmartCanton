@@ -4,6 +4,7 @@ import android.bluetooth.le.AdvertiseCallback;
 import android.bluetooth.le.AdvertiseData;
 import android.bluetooth.le.AdvertiseSettings;
 import android.bluetooth.le.BluetoothLeAdvertiser;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -172,7 +173,7 @@ public class BeaconActivity extends AppCompatActivity {
                 FormatConversions.bytesArrayToHexString(Constants.BEACON_MANUFACTURER_ID_BYTES)));
         tvBeaconCode.setText(String.format("AltBeacon code : 0x%s",
                 FormatConversions.bytesArrayToHexString(Constants.ALTBEACON_CODE)));
-        tvBeaconUuid.setText(String.format("AltBeacon UUID : 0x%s",
+        tvBeaconUuid.setText(String.format("AltBeacon UUID : %s",
                 Constants.ALTBEACON_UUID_STRING));
         tvBeaconMajor.setText(String.format("AltBeacon major : 0x%s",
                 FormatConversions.bytesArrayToHexString(Constants.ALTBEACON_MAJOR)));
@@ -210,60 +211,75 @@ public class BeaconActivity extends AppCompatActivity {
      * @param numberOfAdvertisersWanted Maximum number of advertiser wanted.
      */
     private void startAdvertisers(int numberOfAdvertisersWanted) {
-        for (int i = 0; i < numberOfAdvertisersWanted; i++) {
+        // Disable the use of the button while starting new advertisers
+        fab.setEnabled(false);
 
-            AdvertiseCallback advertiseCallback = new AdvertiseCallback() {
-                @Override
-                public void onStartSuccess(AdvertiseSettings settingsInEffect) {
-                    super.onStartSuccess(settingsInEffect);
-                    Log.i(TAG, settingsInEffect.toString());
-                    synchronized (mAdvertisersSuccessfullyStarted) {
-                        mAdvertisersSuccessfullyStarted++;
-                    }
-                }
+        // Execute code in background thread to prevent the UI from slowing down
+        AsyncTask.execute(() -> {
+            for (int i = 0; i < numberOfAdvertisersWanted; i++) {
 
-                @Override
-                public void onStartFailure(int errorCode) {
-                    super.onStartFailure(errorCode);
-                    Log.i(TAG, Integer.valueOf(errorCode).toString());
+                AdvertiseCallback advertiseCallback = new AdvertiseCallback() {
+                    @Override
+                    public void onStartSuccess(AdvertiseSettings settingsInEffect) {
+                        super.onStartSuccess(settingsInEffect);
+                        Log.i(TAG, settingsInEffect.toString());
+                        synchronized (mAdvertisersSuccessfullyStarted) {
+                            mAdvertisersSuccessfullyStarted++;
 
-                    if (errorCode == AdvertiseCallback.ADVERTISE_FAILED_TOO_MANY_ADVERTISERS) {
-
-                        if (!isMessageAlreadyShown) {
-                            /* Update the numberpicker with the maximum value possible */
-                            npParallelAdvertisers.setValue(mAdvertisersSuccessfullyStarted);
-                            isMessageAlreadyShown = true;
-                            showSnackBarMessage("Number maximum of simultaneous advertisers reached " +
-                                    "by your phone : " + mAdvertisersSuccessfullyStarted);
+                            if(mAdvertisersSuccessfullyStarted == numberOfAdvertisersWanted){
+                                fab.setEnabled(true);
+                                showSnackBarMessage(String.format(Locale.getDefault(),
+                                        "All %d advertiser(s) started successfully!",
+                                        mAdvertisersSuccessfullyStarted));
+                            }
                         }
-                        return;
                     }
 
-                    String description;
-                    if (errorCode == AdvertiseCallback.ADVERTISE_FAILED_FEATURE_UNSUPPORTED)
-                        description = "ADVERTISE_FAILED_FEATURE_UNSUPPORTED";
-                    else if (errorCode == AdvertiseCallback.ADVERTISE_FAILED_ALREADY_STARTED)
-                        description = "ADVERTISE_FAILED_ALREADY_STARTED";
-                    else if (errorCode == AdvertiseCallback.ADVERTISE_FAILED_DATA_TOO_LARGE)
-                        description = "ADVERTISE_FAILED_DATA_TOO_LARGE";
-                    else if (errorCode == AdvertiseCallback.ADVERTISE_FAILED_INTERNAL_ERROR)
-                        description = "ADVERTISE_FAILED_INTERNAL_ERROR";
-                    else description = "unknown";
+                    @Override
+                    public void onStartFailure(int errorCode) {
+                        super.onStartFailure(errorCode);
+                        Log.i(TAG, Integer.valueOf(errorCode).toString());
 
-                    showSnackBarMessage("Advertisement start failure : " + description);
-                }
-            };
+                        // The user can now stop the running advertisers
+                        fab.setEnabled(true);
 
-            /* Register the callback to be able to stop the corresponding advertisement later */
-            advertiseCallbacks.add(advertiseCallback);
+                        if (errorCode == AdvertiseCallback.ADVERTISE_FAILED_TOO_MANY_ADVERTISERS) {
+                            if (!isMessageAlreadyShown) {
+                            /* Update the numberpicker with the maximum value possible */
+                                npParallelAdvertisers.setValue(mAdvertisersSuccessfullyStarted);
+                                isMessageAlreadyShown = true;
+                                showSnackBarMessage("Number maximum of simultaneous advertisers reached " +
+                                        "by your phone : " + mAdvertisersSuccessfullyStarted);
+                            }
+                            return;
+                        }
 
-            /* Start the advertisement */
-            mBluetoothLeAdvertiser.startAdvertising(
-                    buildAdvertiseSettings(),
-                    buildAdvertisementData(),
-                    null,
-                    advertiseCallback);
-        }
+                        String description;
+                        if (errorCode == AdvertiseCallback.ADVERTISE_FAILED_FEATURE_UNSUPPORTED)
+                            description = "ADVERTISE_FAILED_FEATURE_UNSUPPORTED";
+                        else if (errorCode == AdvertiseCallback.ADVERTISE_FAILED_ALREADY_STARTED)
+                            description = "ADVERTISE_FAILED_ALREADY_STARTED";
+                        else if (errorCode == AdvertiseCallback.ADVERTISE_FAILED_DATA_TOO_LARGE)
+                            description = "ADVERTISE_FAILED_DATA_TOO_LARGE";
+                        else if (errorCode == AdvertiseCallback.ADVERTISE_FAILED_INTERNAL_ERROR)
+                            description = "ADVERTISE_FAILED_INTERNAL_ERROR";
+                        else description = "unknown";
+
+                        showSnackBarMessage("Advertisement start failure : " + description);
+                    }
+                };
+
+                /* Register the callback to be able to stop the corresponding advertisement later */
+                advertiseCallbacks.add(advertiseCallback);
+
+                /* Start the advertisement */
+                mBluetoothLeAdvertiser.startAdvertising(
+                        buildAdvertiseSettings(),
+                        buildAdvertisementData(),
+                        null,
+                        advertiseCallback);
+            }
+        });
     }
 
     @Override
