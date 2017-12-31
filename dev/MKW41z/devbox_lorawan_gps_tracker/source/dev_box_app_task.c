@@ -85,6 +85,7 @@
 #include "lorawan_controller_task.h"
 #include "bno055_task.h"
 #include "bme680_task.h"
+#include "gps_task.h"
 
 /************************************************************************************
  *************************************************************************************
@@ -98,12 +99,32 @@ osaTaskId_t gDevBoxAppTaskId = 0;
 /* Event ID to send new data to LoRaWAN task or save data from sensors */
 osaEventId_t gDevBoxAppEvent;
 
+
+extern gapAdvertisingParameters_t   gAdvParams;
+extern gapScanningParameters_t      gAppScanParams;
+extern gapConnectionRequestParameters_t gConnReqParams;
+
+#define mBleAppCmdsCount_c                20
+#define mBleAppMaxScannedDevicesCount_c   20
+#define mBleAppMaxDeviceNameLength_c      20
+
+typedef struct gapScannedDevices_tag
+{
+    bleAddressType_t    addrType;
+    bleDeviceAddress_t  aAddress;
+    uchar_t             name[mBleAppMaxDeviceNameLength_c];
+}gapScannedDevices_t;
+
+static gapScannedDevices_t     mScannedDevices[mBleAppMaxScannedDevicesCount_c];
+static uint8_t                 mScannedDevicesCount;
+
 /************************************************************************************
  *************************************************************************************
  * Private macros
  *************************************************************************************
  ************************************************************************************/
 #define mBatteryLevelReportInterval_c   (30)  /* battery level BLE report interval in seconds  */
+#define mLoRaNewDataReportInterval_c   (60)  /* LoRaWAN new data interval in seconds  */
 
 /************************************************************
  * Cayenne application configuration
@@ -112,21 +133,27 @@ osaEventId_t gDevBoxAppEvent;
 #define mCayenneDefaultPortDownlinkLoRaWAN		99
 
 /* Uplink and downlink Cayenne ports */
-#define mCayenneChannelGps						1
+#define mCayenneChannelGps									1
 
-#define mCayenneChannelBno055Accelerometer		2
-#define mCayenneChannelBno055Gyroscope			3
+#define mCayenneChannelBno055Accelerometer					2
+#define mCayenneChannelBno055Gyroscope						3
 
-#define mCayenneChannelBme680Temperature		4
-#define mCayenneChannelBme680Humidity			5
-#define mCayenneChannelBme680Pressure			6
-#define mCayenneChannelBme680Iaq				8
+#define mCayenneChannelBme680Temperature					4
+#define mCayenneChannelBme680Humidity						5
+#define mCayenneChannelBme680Pressure						6
+#define mCayenneChannelBme680Iaq							8
 
-#define mCayenneChannelBatteryLevel				10
+#define mCayenneChannelBatteryLevel							10
 
-#define mCayenneChannelLed2DigitalOutput		50
+#define mCayenneChannelLed2DigitalOutput					50
 
-#define mCayenneChannelMeasureDelayAnalogOutput	60
+#define mCayenneChannelLoRaFrameDelayOutput					60
+
+#define mCayenneChannelEnableGpsDataInLoRaPacket			100
+#define mCayenneChannelEnableBme680DataInLoRaPacket			101
+#define mCayenneChannelEnableBno055DataInLoRaPacket			102
+#define mCayenneChannelEnableBleScannerDataInLoRaPacket		103
+#define mCayenneChannelEnableBleBatteryLevelInLoRaPacket	104
 
 /************************************************************************************
  *************************************************************************************
@@ -147,6 +174,11 @@ typedef struct advState_tag
 	advType_t advType;
 } advState_t;
 
+typedef struct scnState_tag
+{
+	bool_t scnOn;
+} scnState_t;
+
 /************************************************************************************
  *************************************************************************************
  * Private memory declarations
@@ -158,6 +190,9 @@ static advState_t mAdvState;
 static bool_t mRestartAdv;
 static uint32_t mAdvTimeout;
 static deviceId_t mPeerDeviceId = gInvalidDeviceId_c;
+
+/* Scanning state */
+static scnState_t mScanningState;
 
 /* Service Data*/
 static basConfig_t basServiceConfig =
@@ -187,6 +222,7 @@ static uint16_t readHandles[2] =
 /* Application specific data*/
 static tmrTimerID_t mAdvTimerId;
 static tmrTimerID_t mBatteryMeasurementTimerId;
+static tmrTimerID_t mLoRaSendNewFrameTimerId;
 
 
 /************************************************************************************
@@ -206,6 +242,10 @@ static void AdvertisingTimerCallback(void *);
 static void BatteryMeasurementTimerCallback(void *);
 
 static void BleApp_Advertise(void);
+
+static void BleApp_SetScanParameters();
+static void BleApp_ParseScannedDevice(gapScannedDevice_t* pData);
+static void BleApp_ScanningCallback (gapScanningEvent_t* pScanningEvent);
 
 /************************************************************************************
  *************************************************************************************
@@ -252,7 +292,105 @@ void BleApp_Start(void)
 	PWR_ChangeDeepSleepMode(1); /* MCU=LLS3, LL=DSM, wakeup on GPIO/LL */
 	PWR_AllowDeviceToSleep();
 #endif       
+
+	//BleApp_SetScanParameters();
+	if(!mScanningState.scnOn) {
+		bleResult_t result = Gap_StartScanning(&gAppScanParams, BleApp_ScanningCallback, TRUE);
+		result = result;
+	}
 }
+
+static void BleApp_SetScanParameters()
+{
+
+	uint16_t interval = 1 *1000/625;
+	gAppScanParams.interval = interval;
+	gConnReqParams.scanInterval = interval;
+
+	uint16_t window = 0x10;
+	gAppScanParams.window = window;
+	gConnReqParams.scanWindow = window;
+
+	gAppScanParams.type = gScanTypePassive_c;
+
+}
+
+static void BleApp_ParseScannedDevice(gapScannedDevice_t* pData)
+{
+    uint8_t index = 0;
+    uint8_t nameLength;
+
+    while (index < pData->dataLength)
+    {
+        gapAdStructure_t adElement;
+
+        adElement.length = pData->data[index];
+        adElement.adType = (gapAdType_t)pData->data[index + 1];
+        adElement.aData = &pData->data[index + 2];
+
+        if ((adElement.adType == gAdShortenedLocalName_c) ||
+          (adElement.adType == gAdCompleteLocalName_c))
+        {
+            nameLength = MIN(adElement.length-1, mBleAppMaxDeviceNameLength_c);
+            FLib_MemCpy(mScannedDevices[mScannedDevicesCount].name, adElement.aData, nameLength);
+
+            printf("%s",(char*)mScannedDevices[mScannedDevicesCount].name);
+            printf(" ");
+        }
+
+        /* Move on to the next AD elemnt type */
+        index += adElement.length + sizeof(uint8_t);
+    }
+
+    //printf(pData->aAddress, sizeof(bleDeviceAddress_t));
+
+    /* Temporary store scanned data to use for connection */
+    mScannedDevices[mScannedDevicesCount].addrType = pData->addressType;
+    FLib_MemCpy(mScannedDevices[mScannedDevicesCount].aAddress,
+                pData->aAddress,
+                sizeof(bleDeviceAddress_t));
+
+    printf("%d",pData->rssi);
+    printf(" dBm");
+
+    mScannedDevicesCount++;
+}
+
+/*! *********************************************************************************
+ * \brief        Handles BLE Scanning callback from host stack.
+ *
+ * \param[in]    pScanningEvent    Pointer to gapScanningEvent_t.
+ ********************************************************************************** */
+static void BleApp_ScanningCallback (gapScanningEvent_t* pScanningEvent)
+{
+	switch (pScanningEvent->eventType)
+	{
+	case gDeviceScanned_c:
+	{
+		if (mScannedDevicesCount >= mBleAppMaxScannedDevicesCount_c)
+		{
+			break;
+		}
+
+		BleApp_ParseScannedDevice(&pScanningEvent->eventData.scannedDevice);
+		break;
+	}
+
+	case gScanStateChanged_c:
+	{
+		mScanningState.scnOn = !mScanningState.scnOn;
+		break;
+	}
+
+	case gScanCommandFailed_c:
+	{
+		break;
+	}
+	default:
+		break;
+	}
+}
+
 
 /*! *********************************************************************************
  * \brief        Handles keyboard events.
@@ -739,12 +877,23 @@ static void AdvertisingTimerCallback(void * pParam)
 /*! *********************************************************************************
  * \brief        Handles battery measurement timer callback.
  *
- * \param[in]    pParam        Calback parameters.
+ * \param[in]    pParam        Callback parameters.
  ********************************************************************************** */
 static void BatteryMeasurementTimerCallback(void * pParam)
 {
 	basServiceConfig.batteryLevel = BOARD_GetBatteryLevel();
 	Bas_RecordBatteryMeasurement(basServiceConfig.serviceHandle, basServiceConfig.batteryLevel);
+}
+
+/*! *********************************************************************************
+ * \brief        Handles battery measurement timer callback.
+ *
+ * \param[in]    pParam        Callback parameters.
+ ********************************************************************************** */
+static void LoRaSendNewDataTimerCallback(void * pParam)
+{
+	/* Notify the main task to send a new LoRa packet with the latest available data */
+	OSA_EventSet(gDevBoxAppEvent, gDevBoxEvtSendNewLoRaData_c);
 }
 
 osaStatus_t DevBoxApp_TaskInit(void)
@@ -762,6 +911,8 @@ osaStatus_t DevBoxApp_TaskInit(void)
 		return osaStatus_Error;
 	}
 
+	mLoRaSendNewFrameTimerId = TMR_AllocateTimer();
+
 	/* Task creation */
 	gDevBoxAppTaskId = OSA_TaskCreate(OSA_TASK(DevBox_App_Task), NULL);
 
@@ -771,27 +922,8 @@ osaStatus_t DevBoxApp_TaskInit(void)
 		return osaStatus_Error;
 	}
 
+
 	return osaStatus_Success;
-}
-
-/**
- * Callback function called when new data have been read from the GPS and can
- * be converted to NMEA data using the parsing function
- */
-int cnt_seconds = 0;
-void gps_neo_m8_new_data_available_callback(void)
-{
-	/* Inform the DevBox Task that she can read the data avaible */
-	OSA_EventSet(gDevBoxAppEvent, gDevBoxTaskEvtNewGPSDataRdy_c);
-
-	Led3Toggle();
-
-	// TODO : Implement timer to generate timing
-	if (cnt_seconds++ == 300)
-	{
-		cnt_seconds = 0;
-		OSA_EventSet(gDevBoxAppEvent, gDevBoxEvtSendNewLoRaData_c);
-	}
 }
 
 void DevBox_App_Task(osaTaskParam_t argument)
@@ -801,8 +933,8 @@ void DevBox_App_Task(osaTaskParam_t argument)
 	static const bme680Data_t EmptyBme680;
 	static const bno055Data_t EmptyBno055;
 
-	/* Store last values from the sensors */
-	struct minmea_sentence_rmc frameRmcGps;
+	/* Last data received from the GPS */
+	gpsData_t gpsData;
 
 	/* Last data received from the bno055 */
 	bno055Data_t bno055Data;
@@ -813,10 +945,15 @@ void DevBox_App_Task(osaTaskParam_t argument)
 	/* Data to be sent using the LoRaWAN module */
 	lorawanControllerDataToSend_t* lorawanControllerData;
 
-	gps_neo_m8_init(gps_neo_m8_new_data_available_callback);
-
-	/* Events received from multiples tasks */
+	/* Contain the last event reveiced */
 	osaEventFlags_t event;
+
+	/* Start timer to notify application every mLoRaNewDataReportInterval_c
+	 * to send a new LoRaWAN frame to the network with the last values available */
+	TMR_StartLowPowerTimer(mLoRaSendNewFrameTimerId,
+			gTmrLowPowerSecondTimer_c, TmrSeconds(mLoRaNewDataReportInterval_c),
+			LoRaSendNewDataTimerCallback, NULL);
+
 
 	/* Infinite loop */
 	while (1)
@@ -837,18 +974,29 @@ void DevBox_App_Task(osaTaskParam_t argument)
 		}
 
 		/* Event received when a new GPS frame is available to be read */
-		if (event & gDevBoxTaskEvtNewGPSDataRdy_c)
+		if (event & gDevBoxTaskEvtNewGgpMeasureAvailable_c)
 		{
-			if (gps_neo_m8_read_rmc(&frameRmcGps) == gpsNeo_Success)
+			/* Last data received from the BME680 */
+			gpsData_t* gpsData_tmp;
+
+			/* Retrieve data pointer */
+			while (OSA_MsgQGet(gGpsNewMessageMeasureQ, &gpsData_tmp, 0) == osaStatus_Success)
 			{
+				/* Store value in local in case we want to use it later on */
+				FLib_MemCpy(&gpsData, gpsData_tmp, sizeof(gpsData));
+
+				/* Destroy tmp buffer allocated by the bme680_task */
+				vPortFree(gpsData_tmp);
+
 				/* Send data as notification to connected BLE peer if there is one
 				 * and stored them inside the BLE database for future reads */
-				ScDbGPS_RecordNotificationFrameRmcAll(service_smartcanton_devbox_gps, &frameRmcGps);
+				ScDbGPS_RecordNotificationFrameRmcAll(service_smartcanton_devbox_gps,
+						&gpsData.frame_rmc);
 			}
 		}
 
 		/* Event received when a new measure to the BME680 as to be done */
-		if (event & gDevBoxTaskEvtNewBME680Measure_c)
+		if (event & gDevBoxTaskEvtNewBme680MeasureAvailable_c)
 		{
 			/* Last data received from the BME680 */
 			bme680Data_t* bme680Data_tmp;
@@ -868,7 +1016,7 @@ void DevBox_App_Task(osaTaskParam_t argument)
 		}
 
 		/* Event received when a new measure to the BNO055 has been done */
-		if (event & gDevBoxTaskEvtNewBNO055Measure_c)
+		if (event & gDevBoxTaskEvtNewBno055MeasureAvailable_c)
 		{
 			/* Last data received from the BNO055 */
 			bno055Data_t* bno055Data_tmp;
@@ -897,14 +1045,14 @@ void DevBox_App_Task(osaTaskParam_t argument)
 				cayenneLPPreset();
 
 				/* Send data only if new values since last transmission */
-				if (frameRmcGps.valid)
+				if (gpsData.frame_rmc.valid)
 				{
 					cayenneLPPaddGPS(mCayenneChannelGps,
-							minmea_tocoord(&frameRmcGps.latitude), // Latitude
-							minmea_tocoord(&frameRmcGps.longitude), // Longitude
+							minmea_tocoord(&gpsData.frame_rmc.latitude), // Latitude
+							minmea_tocoord(&gpsData.frame_rmc.longitude), // Longitude
 							0.0); // Altitude (not supported with RMC parsing)
 
-					frameRmcGps = EmptyframeRmcGps; // Invalidate the local data for the next msg
+					gpsData.frame_rmc = EmptyframeRmcGps; // Invalidate the local data for the next msg
 				}
 
 				/* Send data only if new values since last transmission */

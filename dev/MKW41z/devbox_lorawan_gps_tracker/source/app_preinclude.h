@@ -60,10 +60,10 @@
 /*! Enable/disable use of privacy */
 #define gAppUsePrivacy_d   0
 
+/*! Passkey asked when bonding with the device */
 #define gPasskeyValue_c                111100
 
-#define gSerialMgrRxBufSize_c          	(128)
-//#define gSerialTaskPriority_c          	(OSA_PRIORITY_BELOW_NORMAL)
+/*! Dev Box App Task OS Abstraction Priority */
 #define gHost_TaskPriority_c		OSA_PRIORITY_ABOVE_NORMAL
 
 #if (gAppUseBonding_d) && (!gAppUsePairing_d)
@@ -77,7 +77,10 @@
 #define gAppUseNvm_d                    1
 
 /* Bytes allowed to the Serial Manager Stack */
-#define gSerialTaskStackSize_c			(1024)
+#define gSerialTaskStackSize_c			(512)
+
+/*! Serial manager RX buffer size */
+#define gSerialMgrRxBufSize_c          	(128)
 
 /* Defines Num of Serial Manager interfaces */
 #define gSerialManagerMaxInterfaces_c   1

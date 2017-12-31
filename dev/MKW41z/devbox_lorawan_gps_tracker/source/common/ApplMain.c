@@ -84,6 +84,7 @@
 #include "lorawan_controller_task.h"
 #include "bno055_task.h"
 #include "bme680_task.h"
+#include "gps_task.h"
 
 
 #if gAppUseNvm_d
@@ -437,6 +438,30 @@ void main_task(uint32_t param)
 		   return;
 		}
 
+        /**
+		 * Init I2C used by BNO055 and BME680. Both Tasks using these peripherals needs
+		 * an handle to the same I2C.
+		 */
+		BOARD_InitI2CEmbeddedSensors();
+
+		if (osaStatus_Success != Bno055_TaskInit(BOARD_GetI2CEmbeddedSensorsHandle()))
+		{
+		   panic(0,0,0,0);
+		   return;
+		}
+
+		if (osaStatus_Success != Bme680_TaskInit(BOARD_GetI2CEmbeddedSensorsHandle()))
+		{
+		   panic(0,0,0,0);
+		   return;
+		}
+
+		if (osaStatus_Success != Gps_TaskInit())
+		{
+		   panic(0,0,0,0);
+		   return;
+		}
+
         /* Create application event */
         mAppEvent = OSA_EventCreate(TRUE);
         if( NULL == mAppEvent )
@@ -457,24 +482,6 @@ void main_task(uint32_t param)
             panic(0,0,0,0);
             return;
         }
-
-        /**
-		 * Init I2C used by BNO055 and BME680. Both Tasks using these peripherals needs
-		 * an handle to the same I2C.
-		 */
-		BOARD_InitI2CEmbeddedSensors();
-
-		if (osaStatus_Success != Bno055_TaskInit(BOARD_GetI2CEmbeddedSensorsHandle()))
-		{
-		   panic(0,0,0,0);
-		   return;
-		}
-
-		if (osaStatus_Success != Bme680_TaskInit(BOARD_GetI2CEmbeddedSensorsHandle()))
-		{
-		   panic(0,0,0,0);
-		   return;
-		}
     }
     
     /* Call application task */

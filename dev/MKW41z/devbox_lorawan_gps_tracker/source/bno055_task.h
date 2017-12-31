@@ -32,7 +32,7 @@ typedef struct bno055Data_tag
  * They are used by the BNO055 Task  initialization code from bno55_task.c.
  */
 /*! Idle Task Stack Size */
-#define gBno055TaskStackSize_c (1500)
+#define gBno055TaskStackSize_c (500)
 
 /*! Bno55 Task OS Abstraction Priority */
 #define gBno055TaskPriority_c  (OSA_PRIORITY_LOW)

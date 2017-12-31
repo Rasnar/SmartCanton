@@ -72,7 +72,7 @@ void Bno055_Task(osaTaskParam_t argument)
 
 		if(OSA_MsgQPut(gBno055NewMessageMeasureQ, &bno055Data) == osaStatus_Success) {
 			/* Only notify main task if the message can be added successfully to the Queue */
-			OSA_EventSet(gDevBoxAppEvent, gDevBoxTaskEvtNewBNO055Measure_c);
+			OSA_EventSet(gDevBoxAppEvent, gDevBoxTaskEvtNewBno055MeasureAvailable_c);
 		} else {
 			/* Otherwise, free the reserved memory */
 			vPortFree(bno055Data);

@@ -58,7 +58,7 @@ void output_ready(int64_t timestamp, float iaq, uint8_t iaq_accuracy, float temp
 	{
 		/* Only notify main task if the message can be added successfully to the Queue */
 		/* Inform the DevBox Task that she can read the data available */
-		OSA_EventSet(gDevBoxAppEvent, gDevBoxTaskEvtNewBME680Measure_c);
+		OSA_EventSet(gDevBoxAppEvent, gDevBoxTaskEvtNewBme680MeasureAvailable_c);
 	}
 	else
 	{
@@ -81,13 +81,13 @@ void Bme680_Task(osaTaskParam_t argument)
 		bme680_bsec_kw41z_I2C_routines_init(&bme680, master_rtos_handle);
 
 		/**
-		 * By default this function is an inifinte loop but there is a bug
+		 * By default this function is an infinite loop but there is a bug
 		 * with the current implementation.
 		 * It will quit when the Get MSEC is too small for the library
 		 * After 1h, we restart the library with a clean configuration.
 		 * TODO: Try to find a better way to do this. The ideal will be to
 		 * have a Get MSEC in 64bits instead of 32 bits for now.
-		 * See inside the function to have a peak where the calucul fails.
+		 * See inside the function to have a peak where the calculus fails.
 		 */
 		bme680_bsec_kw41z_iot_loop(output_ready);
 	}

@@ -57,15 +57,15 @@ extern osaEventId_t gDevBoxAppEvent;
 
 /* <Set by the GPS task when need data are ready to be process> */
 /* <Data can be read from the gGpsNewMessageMeasureQ Queue> */
-#define gDevBoxTaskEvtNewGPSDataRdy_c       		(1 << 1)
+#define gDevBoxTaskEvtNewGgpMeasureAvailable_c       		(1 << 1)
 
 /* <Set by the BME680 task when need data are ready to be process> */
 /* <Data can be read from the gBme680NewMessageMeasureQ Queue> */
-#define gDevBoxTaskEvtNewBME680Measure_c       		(1 << 2)
+#define gDevBoxTaskEvtNewBme680MeasureAvailable_c       		(1 << 2)
 
 /* <Set by the BNO055 task when need data are ready to be process> */
 /* <Data can be read from the gBno055NewMessageMeasureQ Queue> */
-#define gDevBoxTaskEvtNewBNO055Measure_c       		(1 << 3)
+#define gDevBoxTaskEvtNewBno055MeasureAvailable_c       		(1 << 3)
 
 /* <Set when the user want to send new data to the LoRaWAN network> */
 /* <Data should be sent to the gLorawanCtrlSendNewMessageQ Queue> */
