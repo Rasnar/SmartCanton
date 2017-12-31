@@ -2119,3 +2119,85 @@ Copy the file `lib_ble_4-2_host_cm0p.a` from an existing project using this libr
 
 https://github.com/ShawnLin013/NumberPicker
 
+
+
+
+
+
+
+# 31.12.2017
+
+## LoRaWAN maximum payload by datarate 
+
+
+
+Inside the STM32 code we can find the following definition inside the file `RegionEU868.h`:
+
+````
+/*!
+ * Maximum payload with respect to the datarate index. Cannot operate with repeater.
+ */
+static const uint8_t MaxPayloadOfDatarateEU868[] = { 51, 51, 51, 115, 242, 242, 242, 242 };
+````
+
+The maximum payload is defined by the datarate applied. 
+
+We need to disable the adaptative data rate in the `main.c` :
+
+````
+/**
+ * @brief LoRaWAN Adaptive Data Rate
+ * @note Please note that when ADR is enabled the end-device should be static
+ */
+#define LORAWAN_ADR_ON                              0
+````
+
+
+
+To change the data rate, we changed `DR_0` to `DR_4` : 
+
+````
+/**
+ * Initialises the Lora Parameters
+ */
+static LoRaParam_t LoRaParamInit = {TX_ON_EVENT,
+                                    0,
+                                    CLASS_A,
+                                    LORAWAN_ADR_ON,
+									DR_4,
+                                    LORAWAN_PUBLIC_NETWORK,
+                                    JOINREQ_NBTRIALS};
+````
+
+
+
+The parameter `DR_4`is the following configuration : 
+
+````
+/*!
+ * Region       | SF
+ * ------------ | :-----:
+ * AS923        | SF8  - BW125
+ * AU915        | SF8  - BW500
+ * CN470        | SF8  - BW125
+ * CN779        | SF8  - BW125
+ * EU433        | SF8  - BW125
+ * EU868        | SF8  - BW125
+ * IN865        | SF8  - BW125
+ * KR920        | SF8  - BW125
+ * US915        | SF8  - BW500
+ * US915_HYBRID | SF8  - BW500
+ */
+#define DR_4                                        4
+````
+
+The length of the payload is calculated inside the function `ValidatePayloadLength` in the file `LoRaMAC.c `:
+
+`static bool ValidatePayloadLength( uint8_t lenN, int8_t datarate, uint8_t fOptsLen )`
+
+
+
+
+
+
+

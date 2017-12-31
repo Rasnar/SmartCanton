@@ -74,7 +74,7 @@ Maintainer: Miguel Luis, Gregory Cristian and Wael Guibene
  * @brief LoRaWAN Adaptive Data Rate
  * @note Please note that when ADR is enabled the end-device should be static
  */
-#define LORAWAN_ADR_ON                              1
+#define LORAWAN_ADR_ON                              0
 
 /**
  * When fast wake up is enabled, the mcu wakes up in ~20us and
@@ -112,7 +112,7 @@ static LoRaParam_t LoRaParamInit = {TX_ON_EVENT,
                                     0,
                                     CLASS_A,
                                     LORAWAN_ADR_ON,
-                                    DR_0,
+                                    DR_4,
                                     LORAWAN_PUBLIC_NETWORK,
                                     JOINREQ_NBTRIALS};
 
