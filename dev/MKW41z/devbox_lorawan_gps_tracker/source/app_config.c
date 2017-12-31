@@ -57,6 +57,30 @@
 *************************************************************************************
 ************************************************************************************/
 
+gapScanningParameters_t gAppScanParams =
+{
+    /* type */              gScanTypePassive_c, \
+    /* interval */          gGapScanIntervalDefault_d, \
+    /* window */            gGapScanWindowDefault_d, \
+    /* ownAddressType */    gBleAddrTypePublic_c, \
+    /* filterPolicy */      gScanAll_c \
+};
+
+/* Default Connection Request Parameters */
+gapConnectionRequestParameters_t gConnReqParams =
+{
+    .scanInterval = gGapScanIntervalDefault_d,
+    .scanWindow = gGapScanWindowDefault_d,
+    .filterPolicy = gUseDeviceAddress_c,
+    .ownAddressType = gBleAddrTypePublic_c,
+    .connIntervalMin = gGapDefaultMaxConnectionInterval_d,
+    .connIntervalMax = gGapDefaultMaxConnectionInterval_d,
+    .connLatency = gGapConnLatencyMin_d,
+    .supervisionTimeout = gGapConnSuperTimeoutMax_d,
+    .connEventLengthMin = gGapConnEventLengthMin_d,
+    .connEventLengthMax = gGapConnEventLengthMax_d,
+};
+
 /* Default Advertising Parameters. Values can be changed at runtime
     to align with profile requirements */
 gapAdvertisingParameters_t gAdvParams = {
