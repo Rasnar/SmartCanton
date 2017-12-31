@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Characteristic xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://schemas.bluetooth.org/Documents/characteristic.xsd"
+  type="com.hepia.characteristic.bno055_measure_interval"
+  uuid="30000004-aaaa-bbbb-cccc-dddddddddddd"
+  name="BNO055 Measure Interval">
+  <Value>
+    <Field
+      name="New Field">
+      <Requirement>Mandatory</Requirement>
+      <Format>uint32</Format>
+      <Unit>org.bluetooth.unit.unitless</Unit>
+      <Repeated>false</Repeated>
+    </Field>
+  </Value>
+</Characteristic>

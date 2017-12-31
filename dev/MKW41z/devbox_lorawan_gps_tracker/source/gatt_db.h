@@ -142,9 +142,9 @@ PRIMARY_SERVICE_UUID128(service_smartcanton_devbox_bno055, uuid_service_smartcan
 		VALUE_UUID128_VARLEN(value_bno055_magnetometer, uuid_bno055_magnetometer, (gPermissionNone_c), 20, 12, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
 		CCCD(cccd_bno055_magnetometer)
 		DESCRIPTOR(descriptor_bno055_magnetometer, 0x2901, (gPermissionFlagReadable_c), 23, "BNO055 Magnetometer xyz")
-	CHARACTERISTIC_UUID128(char_bno055_measure_delay, uuid_bno055_measure_delay, (gGattCharPropRead_c | gGattCharPropWrite_c))
-		VALUE_UUID128(value_bno055_measure_delay, uuid_bno055_measure_delay, (gPermissionFlagReadable_c | gPermissionFlagWritable_c), 4, 0x00, 0x00, 0x00, 0x00)
-		DESCRIPTOR(descriptor_bno055_measure_delay, 0x2901, (gPermissionFlagReadable_c), 17, "BNO Measure Delay")
+	CHARACTERISTIC_UUID128(char_bno055_measure_interval, uuid_bno055_measure_interval, (gGattCharPropRead_c | gGattCharPropWrite_c))
+		VALUE_UUID128(value_bno055_measure_interval, uuid_bno055_measure_interval, (gPermissionFlagReadable_c | gPermissionFlagWritable_c), 4, 0x00, 0x00, 0x00, 0x00)
+		DESCRIPTOR(descriptor_bno055_measure_interval, 0x2901, (gPermissionFlagReadable_c), 17, "BNO Measure Delay")
 
 PRIMARY_SERVICE_UUID128(service_smartcanton_devbox_ble, uuid_service_smartcanton_devbox_ble)
 	CHARACTERISTIC_UUID128(char_ble_devices_scanned, uuid_ble_devices_scanned, (gGattCharPropNotify_c | gGattCharPropRead_c))

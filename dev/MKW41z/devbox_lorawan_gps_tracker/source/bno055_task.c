@@ -12,8 +12,8 @@
 #include "Panic.h"
 #include "bno055_support.h"
 
-#define BNO055_MAXIMUM_MEASURE_DELAY_MS 10000
-#define BNO055_MINIMUM_MEASURE_DELAY_MS 300
+#define BNO055_MAXIMUM_MEASURE_INTERVAL_MS 10000
+#define BNO055_MINIMUM_MEASURE_INTERVAL_MS 300
 
 OSA_TASK_DEFINE(Bno055_Task, gBno055TaskPriority_c, 1, gBno055TaskStackSize_c, FALSE);
 osaTaskId_t gBno055TaskId = 0;
@@ -29,7 +29,7 @@ static i2c_rtos_handle_t* master_rtos_handle;
 
 osaMsgQId_t gBno055NewMessageMeasureQ;
 
-uint32_t mDelayNewMsgSentMilliSeconds = BNO055_MINIMUM_MEASURE_DELAY_MS * 10;
+uint32_t mIntervalNewMsgSentMilliSeconds = BNO055_MINIMUM_MEASURE_INTERVAL_MS * 10;
 
 /**
  * Callback function called when an interruption as been received from the
@@ -61,7 +61,7 @@ void Bno055_Task(osaTaskParam_t argument)
 	{
 		rslt = BNO055_SUCCESS;
 
-		OSA_TimeDelay(mDelayNewMsgSentMilliSeconds);
+		OSA_TimeDelay(mIntervalNewMsgSentMilliSeconds);
 
 		bno055Data = pvPortMalloc(sizeof(bno055Data_t));
 
@@ -109,19 +109,19 @@ osaStatus_t Bno055_TaskInit(i2c_rtos_handle_t* i2c_master_rtos_handle)
 	return osaStatus_Success;
 }
 
-osaStatus_t Bno055Task_SetMeasureDelay(uint32_t delay)
+osaStatus_t Bno055Task_SetMeasureInterval(uint32_t interval)
 {
-	if ((delay >= BNO055_MINIMUM_MEASURE_DELAY_MS)
-			&& (delay <= BNO055_MAXIMUM_MEASURE_DELAY_MS))
+	if ((interval >= BNO055_MINIMUM_MEASURE_INTERVAL_MS)
+			&& (interval <= BNO055_MAXIMUM_MEASURE_INTERVAL_MS))
 	{
-		mDelayNewMsgSentMilliSeconds = delay;
+		mIntervalNewMsgSentMilliSeconds = interval;
 		return osaStatus_Success;
 	}
 	return osaStatus_Error;
 }
 
-uint32_t Bno055Task_GetMeasureDelay()
+uint32_t Bno055Task_GetMeasureInterval()
 {
-	return mDelayNewMsgSentMilliSeconds;
+	return mIntervalNewMsgSentMilliSeconds;
 }
 

@@ -150,7 +150,7 @@
         <Requirement>Mandatory</Requirement>
       </Characteristic>
       <Characteristic
-        type="com.hepia.characteristic.bno055_measure_delay">
+        type="com.hepia.characteristic.bno055_measure_interval">
         <Requirement>Mandatory</Requirement>
       </Characteristic>
     </Service>

@@ -124,7 +124,7 @@ static uint8_t                 mScannedDevicesCount;
  *************************************************************************************
  ************************************************************************************/
 #define mBatteryLevelReportInterval_c   (30)  /* battery level BLE report interval in seconds  */
-#define mLoRaNewDataReportInterval_c   (60)  /* LoRaWAN new data interval in seconds  */
+#define mLoRaNewDataReportInterval_default_c   (60)   /* LoRaWAN new data interval in seconds  */
 
 /************************************************************
  * Cayenne application configuration
@@ -147,7 +147,7 @@ static uint8_t                 mScannedDevicesCount;
 
 #define mCayenneChannelLed2DigitalOutput					50
 
-#define mCayenneChannelLoRaFrameDelayOutput					60
+#define mCayenneChannelLoRaPacketIntervalOutput				60
 
 #define mCayenneChannelEnableGpsDataInLoRaPacket			100
 #define mCayenneChannelEnableBme680DataInLoRaPacket			101
@@ -214,16 +214,19 @@ static scdbLoRaConfig_t scdbLoRaServiceConfig =
 static uint16_t writeHandles[10] =
 { value_lora_app_eui, value_lora_app_key, value_lora_device_eui, value_lora_confirm_mode,
 		value_lora_device_address, value_lora_network_session_key, value_lora_app_session_key,
-		value_lora_validate_new_configuration, value_bno055_measure_delay };
+		value_lora_validate_new_configuration, value_bno055_measure_interval };
 
 static uint16_t readHandles[2] =
-{ value_lora_network_join_status, value_bno055_measure_delay };
+{ value_lora_network_join_status, value_bno055_measure_interval };
 
 /* Application specific data*/
 static tmrTimerID_t mAdvTimerId;
 static tmrTimerID_t mBatteryMeasurementTimerId;
 static tmrTimerID_t mLoRaSendNewFrameTimerId;
 
+/* indicate the interval beetwen each LoRa packet
+ * This value can be modified by a LoRa Downlink request (*/
+static int mLoRaNewDataReportInterval_c = mLoRaNewDataReportInterval_default_c;
 
 /************************************************************************************
  *************************************************************************************
@@ -775,9 +778,9 @@ static void BleApp_GattServerCallback(deviceId_t deviceId, gattServerEvent_t* pS
 					gLoRaCtrlTaskEvtConfigureFromModuleConfig_c);
 		}
 
-		if (handle == value_bno055_measure_delay)
+		if (handle == value_bno055_measure_interval)
 		{
-			status = Bno055Task_SetMeasureDelay(pServerEvent->eventData.attributeWrittenEvent.aValue[0] |
+			status = Bno055Task_SetMeasureInterval(pServerEvent->eventData.attributeWrittenEvent.aValue[0] |
 					pServerEvent->eventData.attributeWrittenEvent.aValue[1] << 8);
 		}
 
@@ -825,10 +828,10 @@ static void BleApp_GattServerCallback(deviceId_t deviceId, gattServerEvent_t* pS
 			status = ScDbLoRa_SetJoinStatus(&scdbLoRaServiceConfig, joinStatusArray);
 		}
 
-		/* Update the measure delay inside the database in case something else has changed it */
-		if (handle == value_bno055_measure_delay) {
-			ScDbBno055_RecordValueMeasureDelay(service_smartcanton_devbox_bno055,
-					Bno055Task_GetMeasureDelay());
+		/* Update the measure interval inside the database in case something else has changed it */
+		if (handle == value_bno055_measure_interval) {
+			ScDbBno055_RecordValueMeasureInterval(service_smartcanton_devbox_bno055,
+					Bno055Task_GetMeasureInterval());
 		}
 
 		GattServer_SendAttributeReadStatus(deviceId, handle, status);
@@ -948,13 +951,6 @@ void DevBox_App_Task(osaTaskParam_t argument)
 	/* Contain the last event reveiced */
 	osaEventFlags_t event;
 
-	/* Start timer to notify application every mLoRaNewDataReportInterval_c
-	 * to send a new LoRaWAN frame to the network with the last values available */
-	TMR_StartLowPowerTimer(mLoRaSendNewFrameTimerId,
-			gTmrLowPowerSecondTimer_c, TmrSeconds(mLoRaNewDataReportInterval_c),
-			LoRaSendNewDataTimerCallback, NULL);
-
-
 	/* Infinite loop */
 	while (1)
 	{
@@ -970,6 +966,16 @@ void DevBox_App_Task(osaTaskParam_t argument)
 			{
 				*scdbLoRaServiceConfig.loRaCtrlConfig = lorawan_controller_get_current_configuration();
 				ScDbLoRa_UpdateAllGattTable(&scdbLoRaServiceConfig);
+
+				/* If the timer is already running, stop if first before restarting it */
+				if(TMR_IsTimerActive(mLoRaSendNewFrameTimerId))
+					TMR_StopTimer(mLoRaSendNewFrameTimerId);
+
+				/* Start timer to notify application every mLoRaNewDataReportInterval_c
+				 * to send a new LoRaWAN frame to the network with the last values available */
+				TMR_StartLowPowerTimer(mLoRaSendNewFrameTimerId,
+						gTmrLowPowerIntervalMillisTimer_c, TmrSeconds(mLoRaNewDataReportInterval_c),
+						LoRaSendNewDataTimerCallback, NULL);
 			}
 		}
 

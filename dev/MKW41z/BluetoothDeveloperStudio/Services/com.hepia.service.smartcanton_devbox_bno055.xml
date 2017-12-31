@@ -111,8 +111,8 @@
       </Descriptors>
     </Characteristic>
     <Characteristic
-      type="com.hepia.characteristic.bno055_measure_delay"
-      name="BNO055 Measure Delay">
+      type="com.hepia.characteristic.bno055_measure_interval"
+      name="BNO055 Measure Interval">
       <Requirement>Optional</Requirement>
       <Properties>
         <Read>Mandatory</Read>
