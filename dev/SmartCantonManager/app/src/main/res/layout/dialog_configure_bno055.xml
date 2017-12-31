@@ -20,38 +20,8 @@
             android:id="@+id/et_bno055_delay_ms"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Measure delay in ms (300 - 10000)"
+            android:hint="Measure interval in ms (300 - 10000)"
             android:inputType="numberDecimal"/>
 
     </android.support.design.widget.TextInputLayout>
-
-    <!--<Button-->
-        <!--android:id="@+id/btn_change_password"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_below="@id/ti_new_password"-->
-        <!--android:layout_alignParentRight="true"-->
-        <!--android:text="Change Password"-->
-        <!--android:layout_marginTop="@dimen/button_margin"-->
-        <!--style="@style/Widget.AppCompat.Button.Borderless.Colored"/>-->
-
-    <!--<Button-->
-        <!--android:id="@+id/btn_cancel"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_below="@id/ti_new_password"-->
-        <!--android:text="Cancel"-->
-        <!--android:layout_alignParentLeft="true"-->
-        <!--android:layout_marginTop="@dimen/button_margin"-->
-        <!--style="@style/Widget.AppCompat.Button.Borderless.Colored"/>-->
-
-    <!--<TextView-->
-        <!--android:id="@+id/tv_message"-->
-        <!--android:visibility="gone"-->
-        <!--android:layout_below="@+id/btn_change_password"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:textColor="@android:color/holo_red_dark"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content" />-->
-
 </RelativeLayout>
