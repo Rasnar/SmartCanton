@@ -125,7 +125,7 @@ static uint16_t                mScannedDevicesCount;
  ************************************************************************************/
 #define BLE_SCANNER_MINIMUM_SCAN_INTERVAL_SEC		(10)
 #define BLE_SCANNER_MAXIMUM_SCAN_INTERVAL_SEC		(600)
-#define LORAWAN_MINIMUM_PACKET_INTERVAL_MIN			(5)
+#define LORAWAN_MINIMUM_PACKET_INTERVAL_MIN			(1)
 #define LORAWAN_MAXIMUM_PACKET_INTERVAL_MIN			(1440) /* 1 day */
 
 /* Battery level BLE report interval in seconds  */
@@ -133,7 +133,7 @@ static uint16_t                mScannedDevicesCount;
 /* Every x seconds that the BLE history is wiped to remove hold data  */
 #define mBleScannerReportScanInterval_default_c   	(BLE_SCANNER_MINIMUM_SCAN_INTERVAL_SEC)
 /* LoRaWAN new data interval in minutes  */
-#define mLoRaNewDataReportInterval_default_c   		(LORAWAN_MINIMUM_PACKET_INTERVAL_MIN)
+#define mLoRaNewDataReportInterval_default_c   		(5)
 
 /************************************************************
  * Cayenne application configuration
@@ -269,7 +269,7 @@ osaMsgQId_t gBleScannerNewMessageMeasureQ;
 
 /* indicate the interval beetwen each LoRa packet
  * This value can be modified by a LoRa Downlink request (*/
-static int mLoRaNewDataReportInterval = mLoRaNewDataReportInterval_default_c;
+static uint16_t mLoRaNewDataReportInterval = mLoRaNewDataReportInterval_default_c;
 
 /* indicate the interval beetwen each Bluetooth Scan update
  * This value can be modified by a Bluetooth write */
@@ -1380,11 +1380,21 @@ void DevBox_App_Task(osaTaskParam_t argument)
 
 					case mCayenneChannelLoRaPacketIntervalOutput:
 					{
-						uint16_t interval = lorawanDataReceived->data[2];
+						uint16_t interval = lorawanDataReceived->data[1] << 8 | lorawanDataReceived->data[2];
+						interval = interval / 100; // Convert fixed floating point value
 						if ((interval >= LORAWAN_MINIMUM_PACKET_INTERVAL_MIN)
 								&& (interval <= LORAWAN_MAXIMUM_PACKET_INTERVAL_MIN))
 						{
+							mLoRaNewDataReportInterval = interval;
 
+							TMR_StopTimer(mLoRaSendNewFrameTimerId);
+
+							/* Start timer to notify application every mLoRaNewDataReportInterval
+							 * to send a new LoRaWAN frame to the network with the last values available */
+							TMR_StartLowPowerTimer(mLoRaSendNewFrameTimerId,
+									gTmrLowPowerIntervalMillisTimer_c,
+									TmrMinutes(mLoRaNewDataReportInterval),
+									LoRaSendNewDataTimerCallback, NULL);
 						}
 					}
 						break;
