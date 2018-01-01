@@ -938,6 +938,22 @@
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:textColor="@color/colorTextPrimary"
                         android:textStyle="bold" />
+
+                    <RelativeLayout
+                        android:layout_alignStart="@+id/tv_cv_title_ble_scan"
+                        android:paddingEnd="@dimen/card_padding"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <ImageButton
+                            android:id="@+id/btn_ble_scan_ble_write"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/card_view_title_textview_padding"
+                            android:scaleType="fitStart"
+                            android:layout_gravity="center"
+                            android:layout_centerHorizontal="true"
+                            android:src="@drawable/ic_upload_white"/>
+                    </RelativeLayout>
                 </RelativeLayout>
 
                 <RelativeLayout

@@ -38,4 +38,13 @@ public class FormatConversions {
         return l;
     }
 
+    public static final int unsignedShortToInt(byte[] b)
+    {
+        int integer = 0;
+        integer |= b[1] & 0xFF;
+        integer <<= 8;
+        integer |= b[0] & 0xFF;
+        return integer;
+    }
+
 }

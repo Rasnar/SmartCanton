@@ -183,6 +183,7 @@ public class BLEConnectFragment extends Fragment {
 
     private CardView cardBleScan;
     private TextView tvCvTitleBleScan;
+    private ImageButton btnBleScanBleWrite;
     private RelativeLayout rlBleScanNotifsSwitch;
     private Switch swBleScanEnableNotifications;
     private TextView tvBleScanMessageDevice;
@@ -190,6 +191,8 @@ public class BLEConnectFragment extends Fragment {
     private TextView tvBleScanServiceScanWindowDevice;
 
     private Button btnBleConnectDevice;
+
+    private boolean bleScannedFirstBuggedDataRead = false;
 
     /**
      * Listener that is used when a connected is started. It will force the connection to the device
@@ -459,6 +462,8 @@ public class BLEConnectFragment extends Fragment {
 
         btnBno055BleWrite.setOnClickListener(view1 -> showBno055WriteDialog());
 
+        btnBleScanBleWrite.setOnClickListener(view1 -> showBleScannerWriteDialog());
+
         swBno055EnableNotifications.setOnClickListener(view12 -> {
             if (swBno055EnableNotifications.isChecked()) {
                 readBleBno055MeasureInterval();
@@ -470,6 +475,7 @@ public class BLEConnectFragment extends Fragment {
 
         swBleScanEnableNotifications.setOnClickListener(view12 -> {
             if (swBleScanEnableNotifications.isChecked()) {
+                readBleScannerWindow();
                 enableBleScannerNotifications();
             } else {
                 disableBleScannerNotifications();
@@ -482,8 +488,9 @@ public class BLEConnectFragment extends Fragment {
 
     /**
      * Show a loading dialog to be displayed when data are been write/read to/from the device
-     * @param title Dialog title
-     * @param message Message to display in the dialog
+     *
+     * @param title    Dialog title
+     * @param message  Message to display in the dialog
      * @param maxValue The number of characteristics been acceded
      */
     private void showBleReadWriteProgressDialog(String title, String message, int maxValue) {
@@ -519,6 +526,7 @@ public class BLEConnectFragment extends Fragment {
 
     /**
      * Display a dialog showing the Passkey to enter if a passkey is required by the system
+     *
      * @param onClickListener A listener to be called once the user press OK on the dialog
      */
     private void showBleConnectionConfirmationDialog(DialogInterface.OnClickListener onClickListener) {
@@ -601,6 +609,34 @@ public class BLEConnectFragment extends Fragment {
     }
 
     /**
+     * Display a dialog that can edit all information on the Ble Scanner BLE service
+     */
+    private void showBleScannerWriteDialog() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(new ContextThemeWrapper(
+                getActivity(), R.style.AppTheme_Dialog_Alert));
+
+        // Setting Dialog Title
+        alertDialog.setTitle("Configure Ble Scanner");
+
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_configure_ble, null);
+        EditText etBleScanIntervalMs = view.findViewById(R.id.et_ble_scan_interval_ms);
+
+        alertDialog.setView(view);
+
+        // Setting Positive "Yes" Button
+        alertDialog.setPositiveButton("Update", (dialogInterface, i) ->
+                writeBleScannerWindow(Integer.parseInt(etBleScanIntervalMs.getText().toString())));
+
+        // Setting Negative "NO" Button
+        alertDialog.setNegativeButton("Cancel",
+                (dialogInterface, i) -> dialogInterface.dismiss());
+
+        // Showing Alert Message
+        alertDialog.show();
+    }
+
+
+    /**
      * Display a dialog while the Ble Connection is in progress
      */
     private void showBleConnectionProgressDialog() {
@@ -634,6 +670,7 @@ public class BLEConnectFragment extends Fragment {
 
     /**
      * Extract all views from the current load layout
+     *
      * @param view The current view displayed
      */
     private void initViews(View view) {
@@ -707,6 +744,7 @@ public class BLEConnectFragment extends Fragment {
 
         cardBleScan = view.findViewById(R.id.card_ble_scan);
         tvCvTitleBleScan = view.findViewById(R.id.tv_cv_title_ble_scan);
+        btnBleScanBleWrite = view.findViewById(R.id.btn_ble_scan_ble_write);
         rlBleScanNotifsSwitch = view.findViewById(R.id.rl_ble_scan_notifs_switch);
         swBleScanEnableNotifications = view.findViewById(R.id.sw_ble_scan_enable_notifications);
         tvBleScanMessageDevice = view.findViewById(R.id.tv_ble_scan_message_device);
@@ -727,6 +765,7 @@ public class BLEConnectFragment extends Fragment {
 
     /**
      * Change the visibility for all GPS fields
+     *
      * @param visibility Visibility View.GONE or View.VISIBLE
      */
     private void setGpsCardFieldsVisibility(int visibility) {
@@ -741,6 +780,7 @@ public class BLEConnectFragment extends Fragment {
 
     /**
      * Change the visibility for all BME680 fields
+     *
      * @param visibility Visibility View.GONE or View.VISIBLE
      */
     private void setBme680CardFieldsVisibility(int visibility) {
@@ -758,6 +798,7 @@ public class BLEConnectFragment extends Fragment {
 
     /**
      * Change the visibility for all BNO055 fields
+     *
      * @param visibility Visibility View.GONE or View.VISIBLE
      */
     private void setBno055CardFieldsVisibility(int visibility) {
@@ -771,11 +812,13 @@ public class BLEConnectFragment extends Fragment {
 
     /**
      * Change the visibility for all Ble Scanner fields
+     *
      * @param visibility Visibility View.GONE or View.VISIBLE
      */
     private void setBleScannerCardFieldsVisibility(int visibility) {
 
         rlBleScanNotifsSwitch.setVisibility(visibility);
+        btnBleScanBleWrite.setVisibility(visibility);
         tvBleScanServiceDevicesScannedDevice.setVisibility(visibility);
         tvBleScanServiceScanWindowDevice.setVisibility(visibility);
     }
@@ -853,6 +896,7 @@ public class BLEConnectFragment extends Fragment {
 
     /**
      * Handle all correct responses from the rest API when requesting a SmartCantonDevBoxDevice
+     *
      * @param device A SmartCantonDevBoxDevice from the server with all his information
      */
     private void handleResponse(SmartCantonDevBoxDevice device) {
@@ -873,6 +917,7 @@ public class BLEConnectFragment extends Fragment {
 
     /**
      * Handle error from the REST API throught the RetroFit interface
+     *
      * @param error Error with the http exception
      */
     private void handleError(Throwable error) {
@@ -949,6 +994,7 @@ public class BLEConnectFragment extends Fragment {
 
     /**
      * Display a snack bar with a custom message
+     *
      * @param message Message to be displayed on the snack bar
      */
     private void showSnackBarMessage(String message) {
@@ -1474,14 +1520,20 @@ public class BLEConnectFragment extends Fragment {
      * Enable all notifications from the service SMARTCANTON_DEVBOX_BLE_SCAN_SERVICE
      */
     private void enableBleScannerNotifications() {
+        bleScannedFirstBuggedDataRead = false;
         mBleDevice.enableNotify(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BLE_SCAN_SERVICE,
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BLE_DEVICES_SCANNED,
                 e1 -> {
                     if (e1.wasSuccess()) {
-                        tvBleScanServiceDevicesScannedDevice.setText(
-                                String.format(Locale.getDefault(),
-                                        "BLE device scanned : %d",
-                                        e1.data_short(false)));
+                        if (e1.data().length == 2) {
+                            if(bleScannedFirstBuggedDataRead){
+                                tvBleScanServiceDevicesScannedDevice.setText(
+                                        String.format(Locale.getDefault(),
+                                                "BLE beacons scanned : %d",
+                                                FormatConversions.unsignedShortToInt(e1.data())));
+                            }
+                            bleScannedFirstBuggedDataRead = true;
+                        }
                     }
                 });
     }
@@ -1494,12 +1546,35 @@ public class BLEConnectFragment extends Fragment {
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BLE_SCAN_WINDOW,
                 e1 -> {
                     if (e1.wasSuccess()) {
-                        if (FormatConversions.unsignedIntToLong(e1.data()) > 0) {
-                            tvBno055ServiceMeasureDelayDevice.setText(
+                        if (e1.data().length == 2) {
+                            tvBleScanServiceScanWindowDevice.setText(
                                     String.format(Locale.getDefault(),
-                                            "Scan window : %d [ms]",
-                                            FormatConversions.unsignedIntToLong(e1.data())));
+                                            "Scan interval : %d [s]",
+                                            e1.data_short(true)));
                         }
+                    }
+                });
+    }
+
+    /**
+     * Write the measure delay from the the service SMARTCANTON_DEVBOX_BNO055_SERVICE
+     */
+    private void writeBleScannerWindow(int interval) {
+        ByteBuffer byteBuffer = ByteBuffer.allocate(2);
+        byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+        byteBuffer.putShort((short)interval);
+        byte[] bytes = byteBuffer.array();
+        mBleDevice.write(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BLE_SCAN_SERVICE,
+                SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BLE_SCAN_WINDOW,
+                bytes,
+                e1 -> {
+                    if (!e1.wasSuccess()) {
+                        showSnackBarMessage(String.format("Error while writing characteristics %s",
+                                "BLE_SCAN_WINDOW"));
+
+                    } else {
+                        // Update the display with the new value
+                        readBleScannerWindow();
                     }
                 });
     }
