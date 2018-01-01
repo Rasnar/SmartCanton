@@ -57,6 +57,9 @@ static AtCommanderConfig config;
  */
 static uint8_t interfaceId;
 
+/* Mutex to lock the get and set commands */
+osaMutexId_t cmdMutexId;
+
 /**
  * Flash programmer
  */
@@ -131,15 +134,30 @@ lorawanControllerStatus_t lorawan_controller_set_cmd(AtCommand cmd, ...)
 	va_end(args);
 
 	cmd.request_format = request;
+
+	OSA_MutexLock(cmdMutexId, 1000);
 	if (!at_commander_set(&config, &cmd))
+	{
+		OSA_MutexUnlock(cmdMutexId);
 		return lorawanController_Error;
+
+	}
 	else
+	{
+		OSA_MutexUnlock(cmdMutexId);
 		return lorawanController_Success;
+	}
 }
 
 inline int lorawan_controller_get_cmd(AtCommand cmd, char* response_buffer, int response_buffer_length)
 {
-	return at_commander_get(&config, &cmd, response_buffer, response_buffer_length);
+	int status;
+
+	OSA_MutexLock(cmdMutexId, 1000);
+	status = at_commander_get(&config, &cmd, response_buffer, response_buffer_length);
+	OSA_MutexUnlock(cmdMutexId);
+
+	return status;
 }
 
 lorawanControllerStatus_t lorawan_controller_init_module()
@@ -234,6 +252,13 @@ osaStatus_t lorawan_controller_init(void)
 
 	status = Serial_SetBaudRate(interfaceId, SERIAL_MANAGER_LPUART_BAUDRATE);
 	if (gSerial_Success_c != status)
+	{
+		panic(0, 0, 0, 0);
+		return osaStatus_Error;
+	}
+
+	cmdMutexId = OSA_MutexCreate();
+	if (NULL == cmdMutexId)
 	{
 		panic(0, 0, 0, 0);
 		return osaStatus_Error;
