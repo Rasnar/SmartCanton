@@ -53,7 +53,7 @@ bleResult_t ScDbBleScanner_Start(scdbBleScannerConfig_t *pServiceConfig)
 	ScDbBleScanner_RecordValueMeasureInterval(pServiceConfig->serviceHandle,
 			&pServiceConfig->bleScanInterval);
 
-	uint8_t defaultDeviceScanned = 0;
+	uint16_t defaultDeviceScanned = 0;
 	ScDbBleScanner_RecordNotificationBleDevicesScanned(pServiceConfig->serviceHandle,
 			&defaultDeviceScanned);
 
@@ -82,18 +82,17 @@ bleResult_t ScDbBleScanner_Unsubscribe()
 	return gBleSuccess_c;
 }
 
-bleResult_t ScDbBleScanner_RecordNotificationBleDevicesScanned(uint16_t serviceHandle, uint16_t* ble_devices_scanned){
+bleResult_t ScDbBleScanner_RecordNotificationBleDevicesScanned(uint16_t serviceHandle, uint16_t* ble_devices_scanned)
+{
 	uint16_t handle;
 	bleResult_t result;
 
-	/* Get handle of GPS latitude characteristic */
 	result = GattDb_FindCharValueHandleInService(serviceHandle, gBleUuidType128_c, (bleUuid_t*)
 			uuid_ble_devices_scanned, &handle);
 
 	if (result != gBleSuccess_c)
 		return result;
 
-	/* Update characteristic value and send notification */
 	result = GattDb_WriteAttribute(handle, sizeof(uint16_t), (uint8_t*) ble_devices_scanned);
 	if (result != gBleSuccess_c)
 			return result;
@@ -118,19 +117,20 @@ bleResult_t ScDbBleScanner_RecordNotificationBleDevicesScanned(uint16_t serviceH
 	return gBleSuccess_c;
 }
 
-bleResult_t ScDbBleScanner_RecordValueMeasureInterval(uint16_t serviceHandle, uint16_t* interval){
+bleResult_t ScDbBleScanner_RecordValueMeasureInterval(uint16_t serviceHandle, uint16_t* interval)
+{
+	uint16_t handle;
+	bleResult_t result;
 
-    uint16_t  handle;
+	result = GattDb_FindCharValueHandleInService(serviceHandle, gBleUuidType128_c, (bleUuid_t*)
+			uuid_ble_scan_window, &handle);
 
-   	bleResult_t result = GattDb_FindCharValueHandleInService(serviceHandle,
-   		gBleUuidType128_c, (bleUuid_t*) uuid_ble_scan_window, &handle);
+	if (result != gBleSuccess_c)
+		return result;
 
-   	if (result != gBleSuccess_c)
-   		return result;
-
-   	/* Update characteristic value */
-   	result = GattDb_WriteAttribute(handle, sizeof(uint16_t), (uint8_t*)interval);
-   	return result;
+	/* Update characteristic value and send notification */
+	result = GattDb_WriteAttribute(handle, sizeof(uint16_t), (uint8_t*) interval);
+	return result;
 }
 
 /************************************************************************************
@@ -147,7 +147,6 @@ bleResult_t ScDbBleScanner_SendInstantValueNotifications(bleUuid_t* pCharacteris
 	uint16_t handle;
 	bleResult_t result;
 
-	/* Get handle of GPS latitude characteristic */
 	result = GattDb_FindCharValueHandleInService(*serviceHandle, gBleUuidType128_c,
 			(bleUuid_t*) pCharacteristicUuid, &handle);
 

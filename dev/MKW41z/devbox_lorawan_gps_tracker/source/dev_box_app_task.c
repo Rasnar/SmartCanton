@@ -123,13 +123,17 @@ static uint16_t                mScannedDevicesCount;
  * Private macros
  *************************************************************************************
  ************************************************************************************/
-#define BLE_SCANNER_MINIMUM_SCAN_INTERVAL_MS		(10)
-#define BLE_SCANNER_MAXIMUM_SCAN_INTERVAL_MS		(600)
+#define BLE_SCANNER_MINIMUM_SCAN_INTERVAL_SEC		(10)
+#define BLE_SCANNER_MAXIMUM_SCAN_INTERVAL_SEC		(600)
+#define LORAWAN_MINIMUM_PACKET_INTERVAL_MIN			(5)
+#define LORAWAN_MAXIMUM_PACKET_INTERVAL_MIN			(1440) /* 1 day */
 
-#define mBatteryLevelReportInterval_c   			(30)  /* Battery level BLE report interval in seconds  */
+/* Battery level BLE report interval in seconds  */
+#define mBatteryLevelReportInterval_c   			(30)
 /* Every x seconds that the BLE history is wiped to remove hold data  */
-#define mBleScannerReportScanInterval_default_c   	(BLE_SCANNER_MINIMUM_SCAN_INTERVAL_MS)
-#define mLoRaNewDataReportInterval_default_c   		(300)   /* LoRaWAN new data interval in seconds  */
+#define mBleScannerReportScanInterval_default_c   	(BLE_SCANNER_MINIMUM_SCAN_INTERVAL_SEC)
+/* LoRaWAN new data interval in minutes  */
+#define mLoRaNewDataReportInterval_default_c   		(LORAWAN_MINIMUM_PACKET_INTERVAL_MIN)
 
 /************************************************************
  * Cayenne application configuration
@@ -240,7 +244,7 @@ static scdbLoRaConfig_t scdbLoRaServiceConfig =
 { service_smartcanton_devbox_lora, &loraConfig };
 
 static scdbBleScannerConfig_t scdbBleScannerConfig =
-{ service_smartcanton_devbox_lora, mBleScannerReportScanInterval_default_c};
+{ service_smartcanton_devbox_ble, mBleScannerReportScanInterval_default_c};
 
 
 /* Attribute handles that will be notified through the GATT Server callback
@@ -248,12 +252,12 @@ static scdbBleScannerConfig_t scdbBleScannerConfig =
 static uint16_t writeHandles[10] =
 { value_lora_app_eui, value_lora_app_key, value_lora_device_eui, value_lora_confirm_mode,
 		value_lora_device_address, value_lora_network_session_key, value_lora_app_session_key,
-		value_lora_validate_new_configuration, value_bno055_measure_interval };
+		value_lora_validate_new_configuration, value_ble_scan_window, value_bno055_measure_interval};
 
 /* Attribute handles that will be notified through the GATT Server callback
  * when a GATT Client attempts to read the attributes values.*/
-static uint16_t readHandles[2] =
-{ value_lora_network_join_status, value_bno055_measure_interval };
+static uint16_t readHandles[3] =
+{ value_lora_network_join_status, value_bno055_measure_interval, value_ble_scan_window };
 
 /* Application specific data*/
 static tmrTimerID_t mAdvTimerId;
@@ -269,7 +273,7 @@ static int mLoRaNewDataReportInterval = mLoRaNewDataReportInterval_default_c;
 
 /* indicate the interval beetwen each Bluetooth Scan update
  * This value can be modified by a Bluetooth write */
-static int mBleScannerReportScanInterval_c = mBleScannerReportScanInterval_default_c;
+static uint16_t mBleScannerReportScanInterval = mBleScannerReportScanInterval_default_c;
 
 /************************************************************************************
  *************************************************************************************
@@ -348,7 +352,7 @@ void BleApp_Start(void)
 
 		/* Timer that will report the main task how many devices have been found while scanning */
 		TMR_StartLowPowerTimer(mBleScannerTimerId,
-				gTmrLowPowerIntervalMillisTimer_c, TmrSeconds(mBleScannerReportScanInterval_c),
+				gTmrLowPowerIntervalMillisTimer_c, TmrSeconds(mBleScannerReportScanInterval),
 				BleScannerReportDevicesFoundCallback, NULL);
 	}
 }
@@ -853,16 +857,15 @@ static void BleApp_GattServerCallback(deviceId_t deviceId, gattServerEvent_t* pS
 					pServerEvent->eventData.attributeWrittenEvent.aValue[1] << 8);
 		}
 
-		if(handle == value_ble_scan_window_long)
+		if (handle == value_ble_scan_window)
 		{
-			uint16_t intervalWanted = eventData.attributeWrittenEvent.aValue[0]
+			uint16_t intervalWanted = pServerEvent->eventData.attributeWrittenEvent.aValue[0]
 					| pServerEvent->eventData.attributeWrittenEvent.aValue[1] << 8;
 
-			if ((interval >= BLE_SCANNER_MINIMUM_SCAN_INTERVAL_MS)
-					&& (interval <= BLE_SCANNER_MAXIMUM_SCAN_INTERVAL_MS))
+			if ((intervalWanted >= BLE_SCANNER_MINIMUM_SCAN_INTERVAL_SEC)
+					&& (intervalWanted <= BLE_SCANNER_MAXIMUM_SCAN_INTERVAL_SEC))
 			{
-
-				mBleScannerReportScanInterval_c = intervalWanted;
+				mBleScannerReportScanInterval = intervalWanted;
 
 				if (mScanningState.scnOn)
 				{
@@ -871,8 +874,10 @@ static void BleApp_GattServerCallback(deviceId_t deviceId, gattServerEvent_t* pS
 
 				/* Timer that will report the main task how many devices have been found while scanning */
 				TMR_StartLowPowerTimer(mBleScannerTimerId,
-				gTmrLowPowerIntervalMillisTimer_c, TmrSeconds(mBleScannerReportScanInterval_c),
+				gTmrLowPowerIntervalMillisTimer_c, TmrSeconds(mBleScannerReportScanInterval),
 						BleScannerReportDevicesFoundCallback, NULL);
+
+				status = gBleSuccess_c;
 			}
 			else
 			{
@@ -928,6 +933,11 @@ static void BleApp_GattServerCallback(deviceId_t deviceId, gattServerEvent_t* pS
 		if (handle == value_bno055_measure_interval) {
 			ScDbBno055_RecordValueMeasureInterval(service_smartcanton_devbox_bno055,
 					Bno055Task_GetMeasureInterval());
+		}
+
+		if (handle == value_ble_scan_window) {
+			ScDbBleScanner_RecordValueMeasureInterval(service_smartcanton_devbox_ble,
+					&mBleScannerReportScanInterval);
 		}
 
 		GattServer_SendAttributeReadStatus(deviceId, handle, status);
@@ -1101,7 +1111,7 @@ void DevBox_App_Task(osaTaskParam_t argument)
 				 * to send a new LoRaWAN frame to the network with the last values available */
 				TMR_StartLowPowerTimer(mLoRaSendNewFrameTimerId,
 						gTmrLowPowerIntervalMillisTimer_c,
-						TmrSeconds(mLoRaNewDataReportInterval),
+						TmrMinutes(mLoRaNewDataReportInterval),
 						LoRaSendNewDataTimerCallback, NULL);
 			}
 		}
@@ -1323,8 +1333,39 @@ void DevBox_App_Task(osaTaskParam_t argument)
 					 * Each port is assigned to a specific task*/
 					switch (lorawanDataReceived->data[0])
 					{
-					case mCayenneChannelLed2DigitalOutput:
 
+					case mCayenneChannelEnableGpsDataInLoRaPacket:
+					{
+						mCayenneSensorsEnabled[EN_GPS] = lorawanDataReceived->data[2]/100;
+					}
+						break;
+
+					case mCayenneChannelEnableBno055DataInLoRaPacket:
+					{
+						mCayenneSensorsEnabled[EN_BNO055] = lorawanDataReceived->data[2]/100;
+					}
+						break;
+
+					case mCayenneChannelEnableBme680DataInLoRaPacket:
+					{
+						mCayenneSensorsEnabled[EN_BME680] = lorawanDataReceived->data[2]/100;
+					}
+						break;
+
+					case mCayenneChannelEnableBatteryLevelInLoRaPacket:
+					{
+						mCayenneSensorsEnabled[EN_BATTERY] = lorawanDataReceived->data[2]/100;
+					}
+						break;
+
+					case mCayenneChannelEnableBleScannerDataInLoRaPacket:
+					{
+						mCayenneSensorsEnabled[EN_BLE_SCANNER] = lorawanDataReceived->data[2]/100;
+					}
+						break;
+
+					case mCayenneChannelLed2DigitalOutput:
+					{
 						/* If the data ask to turn on the LED */
 						if (lorawanDataReceived->data[2] == 100)
 						{
@@ -1334,6 +1375,18 @@ void DevBox_App_Task(osaTaskParam_t argument)
 						{
 							Led2Off();
 						}
+					}
+						break;
+
+					case mCayenneChannelLoRaPacketIntervalOutput:
+					{
+						uint16_t interval = lorawanDataReceived->data[2];
+						if ((interval >= LORAWAN_MINIMUM_PACKET_INTERVAL_MIN)
+								&& (interval <= LORAWAN_MAXIMUM_PACKET_INTERVAL_MIN))
+						{
+
+						}
+					}
 						break;
 					default:
 						break;
@@ -1342,7 +1395,7 @@ void DevBox_App_Task(osaTaskParam_t argument)
 					break;
 				}
 
-				/* Destroy tmp buffer allocated by the lorawan controller task */
+				/* Destroy tmp buffer that was allocated by the lorawan controller task */
 				vPortFree(lorawanDataReceived);
 			}
 		}

@@ -148,9 +148,9 @@ PRIMARY_SERVICE_UUID128(service_smartcanton_devbox_bno055, uuid_service_smartcan
 
 PRIMARY_SERVICE_UUID128(service_smartcanton_devbox_ble, uuid_service_smartcanton_devbox_ble)
 	CHARACTERISTIC_UUID128(char_ble_devices_scanned, uuid_ble_devices_scanned, (gGattCharPropNotify_c | gGattCharPropRead_c))
-		VALUE_UUID128(value_ble_devices_scanned, uuid_ble_devices_scanned, (gPermissionNone_c), 2, 0x00, 0x00)
+		VALUE_UUID128(value_ble_devices_scanned, uuid_ble_devices_scanned, (gPermissionFlagReadable_c), 2, 0x00, 0x00)
 		CCCD(cccd_ble_devices_scanned)
 		DESCRIPTOR(descriptor_ble_devices_scanned, 0x2901, (gPermissionFlagReadable_c), 19, "BLE Devices Scanned")
 	CHARACTERISTIC_UUID128(char_ble_scan_window, uuid_ble_scan_window, (gGattCharPropRead_c | gGattCharPropWrite_c))
-		VALUE_UUID128(value_ble_scan_window, uuid_ble_scan_window, (gPermissionFlagReadable_c | gPermissionFlagWritable_c), 2, 0x00, 0x00)
+		VALUE_UUID128(value_ble_scan_window, uuid_ble_scan_window, (gPermissionFlagReadable_c | gPermissionFlagWritable_c), 2, 0x0A, 0x00)
 		DESCRIPTOR(descriptor_ble_scan_window, 0x2901, (gPermissionFlagReadable_c), 15, "BLE Window Scan")
