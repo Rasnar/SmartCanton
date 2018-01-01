@@ -53,28 +53,41 @@ extern osaEventId_t gDevBoxAppEvent;
 
 /* Task Events */
 /* <Set by the LoRaWAN controller task when a network as been successfully joined> */
-#define gDevBoxTaskEvtNewLoRaWANConfig_c       		(1 << 0)
+#define gDevBoxTaskEvtNewLoRaWANConfig_c       						(1 << 0)
 
 /* <Set by the GPS task when need data are ready to be process> */
 /* <Data can be read from the gGpsNewMessageMeasureQ Queue> */
-#define gDevBoxTaskEvtNewGgpMeasureAvailable_c       		(1 << 1)
+#define gDevBoxTaskEvtNewGgpMeasureAvailable_c       				(1 << 1)
 
 /* <Set by the BME680 task when need data are ready to be process> */
 /* <Data can be read from the gBme680NewMessageMeasureQ Queue> */
-#define gDevBoxTaskEvtNewBme680MeasureAvailable_c       		(1 << 2)
+#define gDevBoxTaskEvtNewBme680MeasureAvailable_c       			(1 << 2)
 
 /* <Set by the BNO055 task when need data are ready to be process> */
 /* <Data can be read from the gBno055NewMessageMeasureQ Queue> */
-#define gDevBoxTaskEvtNewBno055MeasureAvailable_c       		(1 << 3)
+#define gDevBoxTaskEvtNewBno055MeasureAvailable_c       			(1 << 3)
+
+/* <Set by the BLE Scanner when need data are ready to be process> */
+/* <Data can be read from the gBleScannerNewMessageMeasureQ Queue> */
+#define gDevBoxTaskEvtNewBleScannerMeasureAvailable_c       		(1 << 4)
 
 /* <Set when the user want to send new data to the LoRaWAN network> */
 /* <Data should be sent to the gLorawanCtrlSendNewMessageQ Queue> */
-#define gDevBoxEvtSendNewLoRaData_c       			(1 << 4)
+#define gDevBoxEvtSendNewLoRaData_c       							(1 << 5)
 
 /* <Set by the LoRaWAN controller when new data have been received> */
 /* <Data can be read from the gLorawanCtrlReceiveNewMessageQ Queue> */
-#define gDevBoxEvtNewLoRaDataReceived_c 			(1 << 5)
+#define gDevBoxEvtNewLoRaDataReceived_c 							(1 << 6)
 
+
+#define BLE_SCANNER_MEASURE_QUEUE_SIZE 								4
+
+extern osaMsgQId_t gBleScannerNewMessageMeasureQ;
+
+typedef struct bleScannerData_tag
+{
+	uint16_t bleBeaconsFound;
+} bleScannerData_t;
 
 /************************************************************************************
  *************************************************************************************
