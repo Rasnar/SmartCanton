@@ -1,3 +1,17 @@
+/**
+ * @file    dev_box_app_task.h
+ * @author  Da Silva Andrade David
+ * @version V1.0
+ * @date    02-01-2018
+ * @brief	Contain the main task the handle everything in the application. 
+ * 			Will receive data from sensors, store it, create a Cayenne frame
+ * 			and send it every X seconds through a LoRaWAN network using the 
+ * 			LoRaWAN controller task.
+ *			It also implement the callbacks from the Host task to control the
+ * 			Bluetooth client registration. Provide data to the implemented
+ * 			BLE services.
+ */
+
 #ifndef _APP_H_
 #define _APP_H_
 
@@ -12,8 +26,7 @@
  * Public macros
  **************************************************************************************
  *************************************************************************************/
-/* Profile Parameters */
-
+/* Bluetooth Profile Parameters */
 #define gFastConnMinAdvInterval_c       32 /* 20 ms */
 #define gFastConnMaxAdvInterval_c       48 /* 30 ms */
 
@@ -41,10 +54,10 @@ extern gapSmpKeys_t gSmpKeys;
 extern gapPairingParameters_t gPairingParameters;
 extern gapDeviceSecurityRequirements_t deviceSecurityRequirements;
 
-/*! Dev Box App Task Stack Size */
+/* Dev Box App Task Stack Size */
 #define gDevBoxAppTaskStackSize_c (2048)
 
-/*! Dev Box App Task OS Abstraction Priority */
+/* Dev Box App Task OS Abstraction Priority */
 #define gDevBoxAppTaskPriority_c  (OSA_PRIORITY_NORMAL)
 
 /* Event ID to sent new data to task or to request a new LoRaWAN to be sent
@@ -82,6 +95,7 @@ extern osaEventId_t gDevBoxAppEvent;
 
 #define BLE_SCANNER_MEASURE_QUEUE_SIZE 								4
 
+/* Queue to hold the data to be send to the task consumming the data */
 extern osaMsgQId_t gBleScannerNewMessageMeasureQ;
 
 typedef struct bleScannerData_tag
@@ -100,14 +114,37 @@ extern "C"
 {
 #endif
 
+/**
+ * @brief Initializes application specific functionality before the BLE stack init.
+ */
 void BleApp_Init(void);
 
+/**
+ * @brief Starts the BLE application.
+ */
 void BleApp_Start(void);
 
+/**
+ * @brief Handles BLE generic callback.
+ * 
+ * @param pGenericEvent Pointer to gapGenericEvent_t.
+ */
 void BleApp_GenericCallback(gapGenericEvent_t* pGenericEvent);
 
+/**
+ * @brief Main application task. Handling data from sensors and sending periodically
+ * data using the LoRaWAN stack
+ * 
+ * @param argument Parameters to pass to the task (ignored)
+ */
 void DevBox_App_Task(osaTaskParam_t argument);
 
+/**
+ * @brief Init the main task components, such as event handle and timers.
+ * 
+ * @return osaStatus_t osaStatus_Success if correctly initialized, otherwise
+ * osaStatus_Error.
+ */
 osaStatus_t DevBoxApp_TaskInit(void);
 
 #ifdef __cplusplus

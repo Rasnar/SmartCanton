@@ -1,31 +1,9 @@
-/*
- * Copyright (c) 2013-2015, Freescale Semiconductor, Inc.
- * Copyright 2016-2017 NXP
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- * o Redistributions of source code must retain the above copyright notice, this list
- *   of conditions and the following disclaimer.
- *
- * o Redistributions in binary form must reproduce the above copyright notice, this
- *   list of conditions and the following disclaimer in the documentation and/or
- *   other materials provided with the distribution.
- *
- * o Neither the name of Freescale Semiconductor, Inc. nor the names of its
- *   contributors may be used to endorse or promote products derived from this
- *   software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+/**
+ * @file    board.c
+ * @author  Da Silva Andrade David
+ * @version V1.0
+ * @date    02-01-2018
+ * @brief	Functions and definitions hard on the SmartCanton DevBox board.
  */
 
 /************************************************************************************
@@ -163,8 +141,15 @@ uint32_t maPCRSave[mNoOfPinsDisabledInLowPower_c];
 /* FRDM-KW41Z Rev A2 xtal trim */
 static const uint8_t mXtalTrimDefault = 0x30;
 
-
+/* CONFIGURATION for all embedded sensors requiring the I2C on the board
+ * The I2C number is defined by the constant BOARD_I2C_EMBEDDED_SENSORS_BASEADDR
+ */
 static i2c_master_config_t i2cEmbedSensorsConfig;
+
+/* Handler for the i2c DEVICE for all embedded sensors on the board.
+ * The handler is thread safe. The I2C number is defined by the 
+ * constant BOARD_I2C_EMBEDDED_SENSORS_BASEADDR
+ */
 static i2c_rtos_handle_t i2c0_master_rtos_handle;
 
 /************************************************************************************

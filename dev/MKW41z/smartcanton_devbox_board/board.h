@@ -1,31 +1,9 @@
-/*
- * Copyright (c) 2015, Freescale Semiconductor, Inc.
- * Copyright 2016-2017 NXP
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- * o Redistributions of source code must retain the above copyright notice, this list
- *   of conditions and the following disclaimer.
- *
- * o Redistributions in binary form must reproduce the above copyright notice, this
- *   list of conditions and the following disclaimer in the documentation and/or
- *   other materials provided with the distribution.
- *
- * o Neither the name of Freescale Semiconductor, Inc. nor the names of its
- *   contributors may be used to endorse or promote products derived from this
- *   software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+/**
+ * @file    board.h
+ * @author  Da Silva Andrade David
+ * @version V1.0
+ * @date    02-01-2018
+ * @brief	Functions and definitions hard on the SmartCanton DevBox board.
  */
 
 #ifndef _BOARD_H_
@@ -163,20 +141,54 @@ void hardware_init(void);
 /* Function to initialize ADC on board configuration. */
 void BOARD_InitAdc(void);
 
-/* Function to initialize I2C0 on board configuration. */
+/**
+ * @brief Initialize the I2C used by all sensors on the board.
+ * The configuration is the following:
+ * masterConfig.baudRate_Bps = 100000U;
+ * masterConfig.enableStopHold = false;
+ * masterConfig.glitchFilterWidth = 0U;
+ * masterConfig.enableMaster = true;
+ *
+ */
 status_t BOARD_InitI2CEmbeddedSensors(void);
+
+/**
+ * @brief Get the current i2c handler for all the sensors on the board.
+ * The handler is thread safe.
+ * 
+ * @return i2c_rtos_handle_t* I2C handler to be used to read/write
+ */
 i2c_rtos_handle_t* BOARD_GetI2CEmbeddedSensorsHandle(void);
 
-/* Function to initialize DCDC on board configuration. */
+/**
+ * @brief Initialize the DCDC if used.  
+ */
 void BOARD_DCDCInit(void);
 
 /* Function to read battery level on board configuration. */
+
+/**
+ * @brief Get the battery level if we are in DCDC mode
+ * connected on the channel ADC16_BATLVL_CHN
+ * 
+ * @param void 
+ * @return uint8_t Battery pourcentage
+ */
 uint8_t BOARD_GetBatteryLevelDCDC(void);
 
-/* Function to read battery level on board configuration. */
+/**
+ * @brief Get the battery level connected on the channel ADC16_BATLVL_CHN
+ * 
+ * @return uint8_t Battery pourcentage
+ */
 uint8_t BOARD_GetBatteryLevel(void);
 
-/* Function to read temperature level on board configuration. */
+/**
+ * @brief Get the current temperature on the board from the 
+ * internal sensor.
+ * 
+ * @return int32_t Temperature in °C multiplied by 1000
+ */
 int32_t BOARD_GetTemperature(void);
 
 /* Function to generate a random number if no potentiometer is present on the board. */

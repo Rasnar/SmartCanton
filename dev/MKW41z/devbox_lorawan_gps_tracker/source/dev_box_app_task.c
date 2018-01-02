@@ -1,39 +1,15 @@
-/*! *********************************************************************************
- * \addtogroup Heart Rate Sensor
- * @{
- ********************************************************************************** */
-/*!
- * Copyright (c) 2014, Freescale Semiconductor, Inc.
- * Copyright 2016-2017 NXP
- *
- * \file
- *
- * This file is the source file for the Heart Rate Sensor application
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- * o Redistributions of source code must retain the above copyright notice, this list
- *   of conditions and the following disclaimer.
- *
- * o Redistributions in binary form must reproduce the above copyright notice, this
- *   list of conditions and the following disclaimer in the documentation and/or
- *   other materials provided with the distribution.
- *
- * o Neither the name of Freescale Semiconductor, Inc. nor the names of its
- *   contributors may be used to endorse or promote products derived from this
- *   software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+/**
+ * @file    dev_box_app_task.c
+ * @author  Da Silva Andrade David
+ * @version V1.0
+ * @date    02-01-2018
+ * @brief	Contain the main task the handle everything in the application. 
+ * 			Will receive data from sensors, store it, create a Cayenne frame
+ * 			and send it every X seconds through a LoRaWAN network using the 
+ * 			LoRaWAN controller task.
+ *			It also implement the callbacks from the Host task to control the
+ * 			Bluetooth client registration. Provide data to the implemented
+ * 			BLE services.
  */
 
 /************************************************************************************
@@ -571,7 +547,7 @@ static void BleApp_Config()
 	 * /!\ Be sure that the function lorawan_controller_init(void)
 	 * as been called before (eg. from another task)
 	 */
-	*scdbLoRaServiceConfig.loRaCtrlConfig = lorawan_controller_get_current_configuration();
+	*scdbLoRaServiceConfig.loRaCtrlConfig = lorawan_controller_get_stored_configuration();
 	ScDbLoRa_Start(&scdbLoRaServiceConfig);
 
 	ScDbGPS_Start(&scdbGPSServiceConfig);
@@ -1008,9 +984,23 @@ static void BleScannerReportDevicesFoundCallback(void * pParam)
 
 	bleScannerData->bleBeaconsFound = mScannedDevicesCount;
 
+	if (Gap_StopScanning() == gBleSuccess_c)
+	{
+		mScanningState.scnOn = FALSE;
+	}
+
 	OSA_InterruptDisable();
+
+	/* Invalidate already found devies */
 	mScannedDevicesCount = 0;
+
 	OSA_InterruptEnable();
+
+	if (mScanningState.scnOn == FALSE)
+	{
+		/* Restart a mew scanner */
+		Gap_StartScanning(&gAppScanParams, BleApp_ScanningCallback, TRUE);
+	}
 
 	if (OSA_MsgQPut(gBleScannerNewMessageMeasureQ, &bleScannerData) == osaStatus_Success)
 	{
@@ -1103,7 +1093,7 @@ void DevBox_App_Task(osaTaskParam_t argument)
 		{
 			if (lorawan_controller_get_configuration_validity() == lorawanController_Success)
 			{
-				*scdbLoRaServiceConfig.loRaCtrlConfig = lorawan_controller_get_current_configuration();
+				*scdbLoRaServiceConfig.loRaCtrlConfig = lorawan_controller_get_stored_configuration();
 				ScDbLoRa_UpdateAllGattTable(&scdbLoRaServiceConfig);
 
 				/* If the timer is already running, stop if first before restarting it */

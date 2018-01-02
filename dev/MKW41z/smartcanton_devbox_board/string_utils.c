@@ -1,3 +1,12 @@
+/**
+ * @file    string_utils.c
+ * @author  Da Silva Andrade David
+ * @version V1.0
+ * @date    02-01-2018
+ * @brief	Set of functions that can be used to convert data to String or the
+ * reverse.
+ */
+
 #include "string_utils.h"
 #include "ctype.h"
 

@@ -2,7 +2,7 @@
  * @file    bno055_support.c
  * @author  Da Silva Andrade David
  * @version V1.0
- * @date    25-10-2017
+ * @date    02-01-2018
  * @brief   Functions to support the bno055 on a Freescale KW41z processor
  */
 
@@ -16,40 +16,46 @@
 #define	I2C_BUFFER_LEN 8
 #define	BNO055_I2C_BUS_WRITE_ARRAY_INDEX	((u8)1)
 
+/* Define the configuration of the interrupt pin when we want to receive 
+an event from the BNO055 */
 static gpioInputPinConfig_t mBno055IntCfg =
 { .gpioPort = BOARD_BNO055_INT_GPIO_PORT, .gpioPin = BOARD_BNO055_INT_PIN, .pullSelect = pinPull_Down_c,
 		.interruptSelect = pinInt_RisingEdge_c, };
 
+/* Handle to the i2c (thread safe) */
 static i2c_rtos_handle_t* master_rtos_handle;
+
+/* Structure to define the transfert by specifying the buffers and the 
+length to read/write */
 static i2c_master_transfer_t masterXfer;
 
 /* Pointer to a callback function provided by the application */
 static void (*bno055_app_function_notification_callback)(void);
 
-/*	\Brief: The API is used as I2C bus read
- *	\Return : Status of the I2C read
- *	\param dev_addr : The device address of the sensor
- *	\param reg_addr : Address of the first register,
+/*	@brief: The API is used as I2C bus read
+ *	@return : Status of the I2C read
+ *	@param dev_addr : The device address of the sensor
+ *	@param reg_addr : Address of the first register,
  *   will data is going to be read
- *	\param reg_data : This data read from the sensor,
+ *	@param reg_data : This data read from the sensor,
  *   which is hold in an array
- *	\param cnt : The no of byte of data to be read
+ *	@param cnt : The no of byte of data to be read
  */
 static s8 BNO055_I2C_bus_read(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt);
 
-/*	\Brief: The API is used as SPI bus write
- *	\Return : Status of the SPI write
- *	\param dev_addr : The device address of the sensor
- *	\param reg_addr : Address of the first register,
+/*	@brief: The API is used as SPI bus write
+ *	@return : Status of the SPI write
+ *	@param dev_addr : The device address of the sensor
+ *	@param reg_addr : Address of the first register,
  *   will data is going to be written
- *	\param reg_data : It is a value hold in the array,
+ *	@param reg_data : It is a value hold in the array,
  *	will be used for write the value into the register
- *	\param cnt : The no of byte of data to be write
+ *	@param cnt : The no of byte of data to be write
  */
 static s8 BNO055_I2C_bus_write(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt);
 
-/*	Brief : The delay routine
- *	\param : delay in ms
+/*	brief : The delay routine
+ *	@param : delay in ms
  */
 static void BNO055_delay_msek(u32 msek);
 
@@ -67,6 +73,10 @@ static void bno055_irq(void)
 	GpioClearPinIntFlag(&mBno055IntCfg);
 }
 
+/**
+ * @brief Initialize the interruption on the pins and port devined by mBno055IntCfg
+ * 
+ */
 static void init_bno055_irq()
 {
 
@@ -98,14 +108,14 @@ void bno055_kw41z_I2C_routines_init(struct bno055_t* bno055, i2c_rtos_handle_t* 
  *
  *--------------------------------------------------------------------*/
 
-/*	\Brief: The API is used as I2C bus write
- *	\Return : Status of the I2C write
- *	\param dev_addr : The device address of the sensor
- *	\param reg_addr : Address of the first register,
+/*	@brief: The API is used as I2C bus write
+ *	@return : Status of the I2C write
+ *	@param dev_addr : The device address of the sensor
+ *	@param reg_addr : Address of the first register,
  *   will data is going to be written
- *	\param reg_data : It is a value hold in the array,
+ *	@param reg_data : It is a value hold in the array,
  *		will be used for write the value into the register
- *	\param cnt : The no of byte of data to be write
+ *	@param cnt : The no of byte of data to be write
  */
 static s8 BNO055_I2C_bus_write(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
 {
@@ -128,14 +138,14 @@ static s8 BNO055_I2C_bus_write(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
 	}
 }
 
-/*	\Brief: The API is used as I2C bus read
- *	\Return : Status of the I2C read
- *	\param dev_addr : The device address of the sensor
- *	\param reg_addr : Address of the first register,
+/*	@brief: The API is used as I2C bus read
+ *	@return : Status of the I2C read
+ *	@param dev_addr : The device address of the sensor
+ *	@param reg_addr : Address of the first register,
  *  will data is going to be read
- *	\param reg_data : This data read from the sensor,
+ *	@param reg_data : This data read from the sensor,
  *   which is hold in an array
- *	\param cnt : The no of byte of data to be read
+ *	@param cnt : The no of byte of data to be read
  */
 static s8 BNO055_I2C_bus_read(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
 {
@@ -158,8 +168,8 @@ static s8 BNO055_I2C_bus_read(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
 	}
 
 }
-/*	Brief : The delay routine
- *	\param : delay in ms
+/*	brief : The delay routine
+ *	@param : delay in ms
  */
 static void BNO055_delay_msek(u32 msek)
 {

@@ -1,3 +1,14 @@
+/**
+ * @file    neo-m8.c
+ * @author  Da Silva Andrade David
+ * @version V1.0
+ * @date    02-01-2018
+ * @brief	Functions to initialize a GPS UBlox NEO-M8 connected by SPI.
+ * This library does not support the GPS configuration using the 
+ * UBX protocol. This means that the GPS can only be used to retrieve
+ * RMC/GGA frames from the GPS with his default configuration.
+ */
+
 #include "neo-m8.h"
 #include "SerialManager.h"
 #include "board.h"
@@ -28,6 +39,7 @@
 #define DISABLE_CHIP_SELECT_GPS()	GPIO_WritePinOutput(BOARD_GPS_nCS_GPIO, BOARD_GPS_nCS_PIN, 1)
 #define ENABLE_CHIP_SELECT_GPS()	GPIO_WritePinOutput(BOARD_GPS_nCS_GPIO, BOARD_GPS_nCS_PIN, 0)
 
+/* Configuration for the Timepulse interruption */ 
 static gpioInputPinConfig_t mTimePulseCfg =
 { 		.gpioPort = BOARD_GPS_TIMEPULSE_GPIO_PORT,
 		.gpioPin = BOARD_GPS_TIMEPULSE_PIN,
@@ -51,6 +63,13 @@ static void (*app_function_notification_callback)(void);
 
 static void timepulse_irq_callback(void);
 
+/**
+ * @brief Function to initialize the SPI with the Neo M8 GPS 
+ * TODO: This function should be initialize with a RTOS SPI handler. 
+ * For now this isn't problematic because the GPS is the only device
+ * used in SPI, but for the future, the same think done with the I2C
+ * (Bme680 + Bno055) should be done here too.
+ */
 static void init_spi_master()
 {
 
@@ -84,28 +103,17 @@ static void init_spi_master()
 	DSPI_MasterInit(DSPI_MASTER_BASEADDR, &masterConfig, srcClock_Hz);
 }
 
+/**
+ * @brief Install a gpio interruption on the timepulse_irq_callback function with the pin specified
+ * by the structure mTimePulseCfg.
+ */
 static void init_timepulse_irq()
 {
 	GpioInstallIsr(timepulse_irq_callback, gGpioIsrPrioLow_c, gGpioDefaultNvicPrio_c, &mTimePulseCfg);
 	GpioInputPinInit(&mTimePulseCfg, 1);
 }
 
-void read_spi_blocking(uint8_t *txData, uint8_t *rxData, size_t dataSize)
-{
-	/* Start master transfer */
-	masterXfer.txData = txData;
-	masterXfer.rxData = rxData;
-	masterXfer.dataSize = dataSize;
-
-	// If using a PCs pin configured :
-	//masterXfer.configFlags = kDSPI_MasterCtar0 | DSPI_MASTER_PCS_FOR_TRANSFER | kDSPI_MasterPcsContinuous;
-
-	masterXfer.configFlags = kDSPI_MasterCtar0;
-
-	DSPI_MasterTransferBlocking(DSPI_MASTER_BASEADDR, &masterXfer);
-}
-
-void DSPI_MasterUserCallback(SPI_Type *base, dspi_master_handle_t *handle, status_t status, void *userData)
+static void DSPI_MasterUserCallback(SPI_Type *base, dspi_master_handle_t *handle, status_t status, void *userData)
 {
 
 	DISABLE_CHIP_SELECT_GPS();
@@ -118,7 +126,15 @@ void DSPI_MasterUserCallback(SPI_Type *base, dspi_master_handle_t *handle, statu
 	}
 }
 
-void read_spi_non_blocking(uint8_t *txData, uint8_t *rxData, size_t dataSize)
+/**
+ * @brief Read data from the SPI handle. The read isn't blocking, the function
+ * DSPI_MasterUserCallback will be called once the read is finished.
+ * 
+ * @param txData Buffer with data to transmit while reading
+ * @param rxData Buffer to store the read data
+ * @param dataSize Size of the read and write buffer
+ */
+static void read_spi_non_blocking(uint8_t *txData, uint8_t *rxData, size_t dataSize)
 {
 	/* Start master transfer */
 	masterXfer.txData = txData;
@@ -136,23 +152,8 @@ void read_spi_non_blocking(uint8_t *txData, uint8_t *rxData, size_t dataSize)
 	DSPI_MasterTransferNonBlocking(DSPI_MASTER_BASEADDR, &g_m_handle, &masterXfer);
 }
 
-void write_spi_blocking()
-{
-	/* Start master transfer */
-	masterXfer.txData = masterTxData;
-	masterXfer.rxData = masterRxData;
-	masterXfer.dataSize = TRANSFER_SIZE;
-
-	// If using a PCs pin configured :
-	//masterXfer.configFlags = kDSPI_MasterCtar0 | DSPI_MASTER_PCS_FOR_TRANSFER | kDSPI_MasterPcsContinuous;
-
-	masterXfer.configFlags = kDSPI_MasterCtar0;
-
-	DSPI_MasterTransferBlocking(DSPI_MASTER_BASEADDR, &masterXfer);
-}
-
 /*!
- * @brief Interrupt service each second when the gps is synchronized
+ * @brief Interrupt service each X second when the gps is synchronized
  */
 void timepulse_irq_callback(void)
 {
@@ -173,8 +174,6 @@ gpsNeoStatus_t gps_neo_m8_read_rmc(struct minmea_sentence_rmc *frame)
 	{
 		return gpsNeo_ParseError;
 	}
-
-	return gpsNeo_ReadError;
 }
 
 osaStatus_t gps_neo_m8_init(void (*app_notification_callback)(void))

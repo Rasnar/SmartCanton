@@ -2,8 +2,8 @@
  * @file    bno055_task.c
  * @author  Da Silva Andrade David
  * @version V1.0
- * @date    25-10-2017
- * @brief
+ * @date    02-01-2018
+ * @brief	Define the bno055 task. Functions to init and manage the task. 
  */
 
 #include "bno055_task.h"
@@ -12,30 +12,29 @@
 #include "Panic.h"
 #include "bno055_support.h"
 
-#define BNO055_MAXIMUM_MEASURE_INTERVAL_MS 10000
-#define BNO055_MINIMUM_MEASURE_INTERVAL_MS 300
-
+/* Define the task with the given parameters */
 OSA_TASK_DEFINE(Bno055_Task, gBno055TaskPriority_c, 1, gBno055TaskStackSize_c, FALSE);
+
+/* Holding the current Task id */
 osaTaskId_t gBno055TaskId = 0;
 
+/* Bno055 informations and configuration */
 struct bno055_t bno055;
 
-struct bno055_accel_t accel_xyz;
-struct bno055_mag_t mag_xyz;
-struct bno055_gyro_t gyro_xyz;
-struct bno055_gravity_t gravity;
-
+/* Handle to hold the i2c peripheral that is connected to the Bno055 */
 static i2c_rtos_handle_t* master_rtos_handle;
 
+/* Queue to hold the data to be send to the task consumming it */
 osaMsgQId_t gBno055NewMessageMeasureQ;
 
+/* Current interval beetwen measures */
 uint32_t mIntervalNewMsgSentMilliSeconds = BNO055_MINIMUM_MEASURE_INTERVAL_MS * 10;
 
 /**
- * Callback function called when an interruption as been received from the
- *
+ * @brief Callback function called when an interruption as been received from the bno055
+ * 
  */
-void bno055_new_data_available_callback(void)
+static void bno055_new_data_available_callback(void)
 {
 	/*
 	 * Use this callback if the BNO055 is configured to generate an interruption
@@ -109,12 +108,12 @@ osaStatus_t Bno055_TaskInit(i2c_rtos_handle_t* i2c_master_rtos_handle)
 	return osaStatus_Success;
 }
 
-osaStatus_t Bno055Task_SetMeasureInterval(uint32_t interval)
+osaStatus_t Bno055Task_SetMeasureInterval(uint32_t interval_ms)
 {
-	if ((interval >= BNO055_MINIMUM_MEASURE_INTERVAL_MS)
-			&& (interval <= BNO055_MAXIMUM_MEASURE_INTERVAL_MS))
+	if ((interval_ms >= BNO055_MINIMUM_MEASURE_INTERVAL_MS)
+			&& (interval_ms <= BNO055_MAXIMUM_MEASURE_INTERVAL_MS))
 	{
-		mIntervalNewMsgSentMilliSeconds = interval;
+		mIntervalNewMsgSentMilliSeconds = interval_ms;
 		return osaStatus_Success;
 	}
 	return osaStatus_Error;

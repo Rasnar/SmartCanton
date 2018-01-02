@@ -1,19 +1,23 @@
-#include <bme680_bsec_support.h>
 /**
  * @file    bme680_support.c
  * @author  Da Silva Andrade David
  * @version V1.0
- * @date    25-10-2017
+ * @date    02-01-2018
  * @brief   Functions to support the bno055 driver libraries on a Freescale KW41z processor
  */
 
+#include <bme680_bsec_support.h>
 #include "board.h"
 #include "fsl_i2c.h"
 #include "fsl_os_abstraction.h"
 #include "fsl_gpio.h"
 #include "GPIO_Adapter.h"
 
+/* Handle to the i2c (thread safe) */
 static i2c_rtos_handle_t* master_rtos_handle;
+
+/* Structure to define the transfert by specifying the buffers and the 
+length to read/write */
 static i2c_master_transfer_t masterXfer;
 
 

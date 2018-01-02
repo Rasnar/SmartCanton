@@ -2,8 +2,9 @@
  * @file    gps_task.h
  * @author  Da Silva Andrade David
  * @version V1.0
- * @date    25-10-2017
- * @brief
+ * @date    02-01-2018
+ * @brief	Define the GPS task. Function to hold the init the task, to manage the task
+ * and a callback to notify to task when data are ready to be read from the device.
  */
 
 #ifndef __GPS_TASK_H__
@@ -13,8 +14,10 @@
 #include "fsl_os_abstraction.h"
 #include "minmea/minmea.h"
 
+/* Number of maximum elements handled by the queue */
 #define GPS_MEASURE_QUEUE_SIZE	4
 
+/* Queue to hold the data to be send to the task consumming it */
 extern osaMsgQId_t gGpsNewMessageMeasureQ;
 
 typedef struct gpsData_tag
@@ -26,17 +29,26 @@ typedef struct gpsData_tag
  * These values should be modified by the application as necessary.
  * They are used by the GPS Task  initialization code from gps_task.c.
  */
-/*! Idle Task Stack Size */
+/* GPS Task Stack Size */
 #define gGpsTaskStackSize_c (900)
 
-/*! Gps Task OS Abstraction Priority */
+/* GPS Task OS Abstraction Priority */
 #define gGpsTaskPriority_c  (OSA_PRIORITY_NORMAL)
 
+/**
+ * @brief Main task function, infinite loop capturing data and sending them 
+ * through the gGpsNewMessageMeasureQ.
+ * 
+ * @param argument Parameters that can be sent to the task.
+ */
 void Gps_Task(osaTaskParam_t argument);
+
+/**
+ * @brief Inititalize the Gps parameters, event and the data queue. 
+ * 
+ * @return osaStatus_t osaStatus_Success if the initialization is a success,
+ * otherwise osaStatus_error
+ */
 osaStatus_t Gps_TaskInit();
-
-osaStatus_t GpsTask_SetMeasureDelay(uint32_t delay);
-
-uint32_t GpsTask_GetMeasureDelay();
 
 #endif /* __GPS_TASK_H__ */

@@ -1,3 +1,13 @@
+/**
+ * @file    pin_mux.h
+ * @author  Da Silva Andrade David
+ * @version V1.0
+ * @date    02-01-2018
+ * @brief	Functions to initialize the MUX on the KW41z. This file is mainly 
+ * generated using the pin tool provided by MCUXpresso (mcuxpresso.nxp.com/en/pins).
+ * Do not attempt to change it manually.
+ */
+
 /*
  * Copyright (c) 2015, Freescale Semiconductor, Inc.
  * Copyright 2016-2017 NXP

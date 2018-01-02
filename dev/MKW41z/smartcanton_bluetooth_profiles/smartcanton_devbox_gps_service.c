@@ -1,10 +1,20 @@
-#include <smartcanton_devbox_gps_interface.h>
+/**
+ * @file    smartcanton_devbox_gps_interface.h
+ * @author  Da Silva Andrade David
+ * @version V1.0
+ * @date    02-01-2018
+ * @brief	Define the interface to manage the gps service of the SmartCanton
+ * 			DevBox. Contain function to start, stop, subscribe and unsubscribe from 
+ *  		the service. Data can be written to the ble database or/and generate 
+ * 			notifications.
+ */
 
 /************************************************************************************
  *************************************************************************************
  * Include
  *************************************************************************************
  ************************************************************************************/
+#include "smartcanton_devbox_gps_interface.h"
 #include "gatt_uuid_decl_x.h"
 #include "stdio.h"
 #include "string_utils.h"

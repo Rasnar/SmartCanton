@@ -2,8 +2,8 @@
  * @file    lorawan_controller_task.h
  * @author  Da Silva Andrade David
  * @version V1.0
- * @date    25-10-2017
- * @brief
+ * @date    02-01-2018
+ * @brief	Define the lorawan controller task. Functions to init and manage the task. 
  */
 
 #ifndef __LORAWAN_CONTROLLER_TASK_H__
@@ -49,14 +49,33 @@ typedef struct lorawanControllerDataReceived_tag
 #define gLoRaCtrlTaskEvtConfigure_c					(1 << 1)
 #define gLoRaCtrlTaskEvtConfigureFromModuleConfig_c	(1 << 2)
 
+/* Event to be used when a task when to send data or init the lora module */
 extern osaEventId_t gLoRaControllerEvent;
+
+/* Queue to hold the data to be send to the LoRaWAN module */
 extern osaMsgQId_t gLorawanCtrlSendNewMessageQ;
+
+/* Queue to hold the data received from the the LoRaWAN module */
 extern osaMsgQId_t gLorawanCtrlReceiveNewMessageQ;
 
 /* This parameter should not exceed osNumberOfMessages defined in app_preinclude.h */
 #define LORAWAN_CTRL_TASK_QUEUE_SIZE 8
 
+/**
+ * @brief Main task function, infinite loop reacting to event from gLoRaControllerEvent.
+ * Sending data received from the gLorawanCtrlSendNewMessageQ to the LoRaWAN module.
+ * Providing data received from the LoRaWAN module through gLorawanCtrlReceiveNewMessageQ.
+ * 
+ * @param argument Parameters that can be sent to the task.
+ */
 void Lorawan_Controller_Task(osaTaskParam_t argument);
+
+/**
+ * @brief Inititalize the LoRaWAN parameters and the data queues.
+ * 
+ * @return osaStatus_t osaStatus_Success if the initialization is a success,
+ * otherwise osaStatus_error
+ */
 osaStatus_t LorawanController_TaskInit(void);
 
 #endif /* __LORAWAN_CONTROLLER_TASK_H__ */

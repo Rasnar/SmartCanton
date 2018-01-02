@@ -1,9 +1,9 @@
 /**
- * @file    lorawan_controller_task.h
+ * @file    lorawan_controller_task.c
  * @author  Da Silva Andrade David
  * @version V1.0
- * @date    25-10-2017
- * @brief
+ * @date    02-01-2018
+ * @brief	Define the lorawan controller task. Functions to init and manage the task. 
  */
 
 #include "lorawan_controller_task.h"
@@ -11,6 +11,7 @@
 #include "LED.h"
 #include "string_utils.h"
 
+/* */
 #define mDelayPacketSentsSeconds				300		/* s */
 
 #define mConfirmStatusReadDelayBeetweenRetry	250 	/* ms */
@@ -19,32 +20,31 @@
 #define mResendFrameDelayBeetweenRetry			10000 	/* ms */
 #define mResendFrameNumberOfAttempts			50
 
+/* Define the task with the given parameters */
 OSA_TASK_DEFINE(Lorawan_Controller_Task, gLorawanControllerTaskPriority_c, 1,
 		gLorawanControllerTaskStackSize_c, FALSE);
+
+/* Holding the current Task id */
 osaTaskId_t gLorawanControllerTaskId = 0;
 
-static tmrTimerID_t mLoraSendId;
+/* Event to be used when a task when to send data or init the lora module */
 osaEventId_t gLoRaControllerEvent;
-osaMsgQId_t gLorawanCtrlSendNewMessageQ;
-osaMsgQId_t gLorawanCtrlReceiveNewMessageQ;
 
-static void TimerCheckLoRaWANCallback(void * pParam);
+/* Queue to hold the data to be send to the LoRaWAN module */
+osaMsgQId_t gLorawanCtrlSendNewMessageQ;
+
+/* Queue to hold the data received from the the LoRaWAN module */
+osaMsgQId_t gLorawanCtrlReceiveNewMessageQ;
 
 /**
  * Main LoRaWan controller task
  */
 void Lorawan_Controller_Task(osaTaskParam_t argument)
 {
-
-	/* Allocate application timers */
-	mLoraSendId = TMR_AllocateTimer();
-
-	TMR_StartLowPowerTimer(mLoraSendId, gTmrLowPowerIntervalMillisTimer_c,
-			TmrSeconds(mDelayPacketSentsSeconds), TimerCheckLoRaWANCallback, NULL);
-
-	// Start by configuring the LoRa Module
+	/* Start by configuring the LoRa Module */
 	OSA_EventSet(gLoRaControllerEvent, gLoRaCtrlTaskEvtConfigure_c);
 
+	/* Hold the current event read from the gLoRaControllerEvent */
 	osaEventFlags_t event;
 
 	/* Buffer to store the data from the module */
@@ -60,7 +60,7 @@ void Lorawan_Controller_Task(osaTaskParam_t argument)
 	lorawanControllerDataReceived_t* lorawanDataReceived;
 
 	/**
-	 * Send data every DELAY_BEETWEEN_LORA_PACKETS_MS
+	 * Handle the LoRaWAN controller
 	 */
 	while (1)
 	{
@@ -155,7 +155,7 @@ void Lorawan_Controller_Task(osaTaskParam_t argument)
 						continue;
 
 					/* If the message is a confirmed one, wait for the confirmation */
-					if (lorawan_controller_get_current_configuration().confirmMode[0] == '1')
+					if (lorawan_controller_get_stored_configuration().confirmMode[0] == '1')
 					{
 						nbAttempts = 0;
 						do
@@ -233,13 +233,6 @@ void Lorawan_Controller_Task(osaTaskParam_t argument)
 			}
 		}
 	}
-}
-
-static void TimerCheckLoRaWANCallback(void * pParam)
-{
-
-	//OSA_EventSet(gLoRaControllerEvent, gLoRaCtrlTaskEvtNewMsgToSend_c);
-
 }
 
 osaStatus_t LorawanController_TaskInit(void)

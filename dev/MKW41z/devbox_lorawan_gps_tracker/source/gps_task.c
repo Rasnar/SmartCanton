@@ -2,8 +2,9 @@
  * @file    gps_task.c
  * @author  Da Silva Andrade David
  * @version V1.0
- * @date    25-10-2017
- * @brief
+ * @date    02-01-2018
+ * @brief	Define the GPS task. Function to hold the init the task, to manage the task
+ * and a callback to notify to task when data are ready to be read from the device.
  */
 
 #include "gps_task.h"
@@ -12,14 +13,20 @@
 #include "Panic.h"
 #include "neo-m8.h"
 
+/* Define the task with the given parameters */
 OSA_TASK_DEFINE(Gps_Task, gGpsTaskPriority_c, 1, gGpsTaskStackSize_c, FALSE);
+
+/* Holding the current Task id */
 osaTaskId_t gGpsTaskId = 0;
 
+/* Queue to hold the data to be send to the task consumming it */
 osaMsgQId_t gGpsNewMessageMeasureQ;
 
+/* Event used to notify the GPS task when a data is ready to be parsed
+ * to a valid GPS sentence */
 osaEventId_t mGpsEvent;
 
-/* <Notifiy the task that a new data is available to be read> */
+/* <Notify the task that a new data is available to be read> */
 #define mGpsTaskEvtNewDataAvailable_c       		(1 << 0)
 
 /**

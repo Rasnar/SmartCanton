@@ -1,41 +1,45 @@
-#include <bme680_bsec_support.h>
 /**
  * @file    bme680_task.c
  * @author  Da Silva Andrade David
  * @version V1.0
- * @date    25-10-2017
- * @brief
+ * @date    02-01-2018
+ * @brief	Define the bme680 task. Functions to init and manage the task.
  */
 
+#include <bme680_bsec_support.h>
 #include "bme680_task.h"
 #include "dev_box_app_task.h"
 #include "LED.h"
 #include "Panic.h"
 
+/* Define the task with the given parameters */
 OSA_TASK_DEFINE(Bme680_Task, gBme680TaskPriority_c, 1, gBme680TaskStackSize_c, FALSE);
+
+/* Holding the current Task id */
 osaTaskId_t gBme680TaskId = 0;
 
+/* Handle to hold the i2c peripheral that is connected to the Bme680 */
 static i2c_rtos_handle_t* master_rtos_handle;
 
+/* Bme680 struct holding the device configuration */
 struct bme680_dev bme680;
 
+/* Queue to hold the data to be send to the task consumming it */
 osaMsgQId_t gBme680NewMessageMeasureQ;
 
-/*!
- * @brief           Handling of the ready outputs
- *
- * @param[in]       timestamp       time in nanoseconds
- * @param[in]       iaq             IAQ signal
- * @param[in]       iaq_accuracy    accuracy of IAQ signal
- * @param[in]       temperature     temperature signal
- * @param[in]       humidity        humidity signal
- * @param[in]       pressure        pressure signal
- * @param[in]       raw_temperature raw temperature signal
- * @param[in]       raw_humidity    raw humidity signal
- * @param[in]       gas             raw gas sensor signal
- * @param[in]       bsec_status     value returned by the bsec_do_steps() call
- *
- * @return          none
+/**
+ * @brief Handling of the ready outputs
+ * 
+ * @param timestamp time in nanoseconds
+ * @param iaq IAQ signal
+ * @param iaq_accuracy accuracy of IAQ signal
+ * @param temperature temperature signal
+ * @param humidity humidity signal
+ * @param pressure pressure signal
+ * @param raw_temperature raw temperature signal
+ * @param raw_humidity raw humidity signal
+ * @param gas raw gas sensor signal
+ * @param bsec_status value returned by the bsec_do_steps() call
  */
 void output_ready(int64_t timestamp, float iaq, uint8_t iaq_accuracy, float temperature, float humidity,
      float pressure, float raw_temperature, float raw_humidity, float gas, bsec_library_return_t bsec_status)

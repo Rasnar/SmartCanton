@@ -2,8 +2,9 @@
  * @file    lorawan_controller.h
  * @author  Da Silva Andrade David
  * @version V1.0
- * @date    25-10-2017
- * @brief
+ * @date    02-01-2018
+ * @brief	This file contains all the functions to communication with the 
+ * LoRaWAN module from the initialization to the command set/get. 
  */
 
 #include <lorawan_controller.h>
@@ -12,7 +13,8 @@
 #include "fsl_flash.h"
 
 /**
- * LoRa authentication app keys and EUI
+ * LoRa authentication app keys and EUI used by default when calling 
+ * lorawan_controller_apply_default_configuration
  */
 #define ORBIWISE_APP_EUI 	"70:b3:d5:07:80:00:00:04"
 #define ORBIWISE_APP_KEY	"f1:fb:27:1f:3f:f2:d7:3b:c1:f5:a1:45:7c:56:c0:00"
@@ -34,6 +36,9 @@
 #define LORA_SEND_PACKET_PORT		"1"		// Define port to use in Back-End: from 1 to 223
 #define LORA_NETWORK_JOINED_STATUS	"1"		// 0 : Network not yet joined, 1 : Network joined
 
+/**
+ * Delay and attempts beetwen each Networkjoin status test (to know if a network has been successfully joined)
+ */
 #define DELAY_BEETWEEN_CHECK_MS 	100
 #define ATTEMPTS_TO_CHECK_NETWORK_STATUS 	200		// Try X Attempts
 
@@ -68,6 +73,7 @@ static flash_config_t s_flashDriver;
 
 uint32_t flashDestAdrss; /* Address of the target location */
 
+/* Flash attributes */
 static uint32_t pflashBlockBase = 0;
 static uint32_t pflashTotalSize = 0;
 static uint32_t pflashSectorSize = 0;
@@ -78,12 +84,12 @@ static uint32_t pflashSectorSize = 0;
 static bool lorawan_configuration_valid = false;
 lorawanControllerConfiguration_t currentLoRaWanConfig;
 
-lorawanControllerStatus_t lorawan_controller_read_module_configuration();
+/* Private function prototypes */
+static uint16_t crc16(const uint8_t* data_p, uint32_t length);
 static lorawanControllerStatus_t lorawan_controller_flash_init(void);
 static lorawanControllerConfiguration_t lorawan_controller_read_configuration_from_flash(void);
 static lorawanControllerStatus_t lorawan_controller_write_configuration_to_flash(void);
-void lorawan_controller_apply_default_configuration();
-static uint16_t crc16(const uint8_t* data_p, uint32_t length);
+
 
 /**
  * Callback called by the ATCommander library to write bytes
@@ -425,11 +431,16 @@ lorawanControllerStatus_t lorawan_controller_read_module_configuration(void)
 	return lorawanController_Success;
 }
 
-lorawanControllerConfiguration_t lorawan_controller_get_current_configuration(void)
+lorawanControllerConfiguration_t lorawan_controller_get_stored_configuration(void)
 {
 	return currentLoRaWanConfig;
 }
 
+/**
+ * @brief Read the data stored in flash from the last valid configuration
+ * 
+ * @return lorawanControllerConfiguration_t The last valid configuration
+ */
 static lorawanControllerConfiguration_t lorawan_controller_read_configuration_from_flash(void)
 {
 
@@ -439,6 +450,12 @@ static lorawanControllerConfiguration_t lorawan_controller_read_configuration_fr
 	return currentLoRaWanConfig;
 }
 
+/**
+ * @brief Write the current local configuration to flash. (Thread safe)
+ * 
+ * @return lorawanControllerStatus_t lorawanController_Success if the configuration
+ * is correctly written. 
+ */
 static lorawanControllerStatus_t lorawan_controller_write_configuration_to_flash(void)
 {
 	uint32_t failAddr, failDat;
@@ -492,6 +509,13 @@ static lorawanControllerStatus_t lorawan_controller_write_configuration_to_flash
 	return lorawanController_Success;
 }
 
+
+/**
+ * @brief Initilize the flash driver to read and write from the flash.
+ * 
+ * @return lorawanControllerStatus_t lorawanController_Success if the 
+ * flash is ready to be used, otherwise lorawanController_Error
+ */
 static lorawanControllerStatus_t lorawan_controller_flash_init(void)
 {
 	/* Clean up Flash driver Structure*/
@@ -537,6 +561,13 @@ static lorawanControllerStatus_t lorawan_controller_flash_init(void)
 	return lorawanController_Success;
 }
 
+/**
+ * @brief Calculate a 16 bits crc 
+ * 
+ * @param data_p Pointer to data to include in the crc calculation
+ * @param length Length of the data
+ * @return uint16_t CRC 16 bit
+ */
 static uint16_t crc16(const uint8_t* data_p, uint32_t length)
 {
 	unsigned char x;

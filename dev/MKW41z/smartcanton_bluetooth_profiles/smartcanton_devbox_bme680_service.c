@@ -1,4 +1,13 @@
-
+/**
+ * @file    smartcanton_devbox_bme680_service.c
+ * @author  Da Silva Andrade David
+ * @version V1.0
+ * @date    02-01-2018
+ * @brief	Define the interface to manage the bme680 service of the SmartCanton
+ * 			DevBox. Contain function to start, stop, subscribe and unsubscribe from 
+ *  		the service. Data can be written to the ble database or/and generate 
+ * 			notifications.
+ */
 
 /************************************************************************************
  *************************************************************************************
