@@ -409,13 +409,16 @@ static void BleApp_ParseScannedDevice(gapScannedDevice_t* pData)
 		/* If it's a valid beacon */
 		if (rslt == 0)
 		{
-
+			/* Prevent the mScannedDevicesCount to be modified,
+			 * TOFIX : Should be replaced by a mutex */
+			OSA_InterruptDisable();
 			/* Temporary store scanned data to use for connection */
 			mScannedDevices[mScannedDevicesCount].addrType = pData->addressType;
 			FLib_MemCpy(mScannedDevices[mScannedDevicesCount].aAddress, pData->aAddress,
 					sizeof(bleDeviceAddress_t));
 
 			mScannedDevicesCount++;
+			OSA_InterruptEnable();
 		}
 	}
 }
