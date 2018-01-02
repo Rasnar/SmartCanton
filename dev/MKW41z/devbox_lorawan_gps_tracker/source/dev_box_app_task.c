@@ -133,13 +133,13 @@ static uint16_t                mScannedDevicesCount;
 /* Every x seconds that the BLE history is wiped to remove hold data  */
 #define mBleScannerReportScanInterval_default_c   	(BLE_SCANNER_MINIMUM_SCAN_INTERVAL_SEC)
 /* LoRaWAN new data interval in minutes  */
-#define mLoRaNewDataReportInterval_default_c   		(5)
+#define mLoRaNewDataReportInterval_default_c   		(1)
 
 /************************************************************
  * Cayenne application configuration
  ************************************************************/
 /* This LoRaWAN downlink port can't be changed with Cayenne */
-#define mCayenneDefaultPortDownlinkLoRaWAN		99
+#define mCayenneDefaultPortDownlinkLoRaWAN					99
 
 /* Uplink and downlink Cayenne ports */
 #define mCayenneChannelEnableGpsDataInLoRaPacket			10
@@ -1234,9 +1234,9 @@ void DevBox_App_Task(osaTaskParam_t argument)
 						&& mCayenneSensorsEnabled[EN_BNO055])
 				{
 					cayenneLPPaddAccelerometer(mCayenneChannelBno055Accelerometer,
-							bno055Data.accel_xyz.x / 1000.0,
-							bno055Data.accel_xyz.y / 1000.0,
-							bno055Data.accel_xyz.z / 1000.0);
+							bno055Data.accel_xyz.x / 1024.0,
+							bno055Data.accel_xyz.y / 1024.0,
+							bno055Data.accel_xyz.z / 1024.0);
 
 					cayenneLPPaddGyrometer(mCayenneChannelBno055Gyroscope,
 							bno055Data.gyro_xyz.x,
@@ -1307,9 +1307,17 @@ void DevBox_App_Task(osaTaskParam_t argument)
 				FLib_MemCpy(lorawanControllerData->data, cayenneLPPgetBuffer(),
 						lorawanControllerData->dataLength);
 
-				/* Send and notify LoRaWAN task to send this new message */
-				OSA_MsgQPut(gLorawanCtrlSendNewMessageQ, &lorawanControllerData);
-				OSA_EventSet(gLoRaControllerEvent, gLoRaCtrlTaskEvtNewMsgToSend_c);
+				if (OSA_MsgQPut(gLorawanCtrlSendNewMessageQ, &lorawanControllerData) == osaStatus_Success)
+				{
+					/* Notify the LoRaWAN controller to read the pending data */
+					OSA_EventSet(gLoRaControllerEvent, gLoRaCtrlTaskEvtNewMsgToSend_c);
+				}
+				else
+				{
+					vPortFree(lorawanControllerData);
+					/* Notify the LoRaWAN controller to read the pending data */
+					OSA_EventSet(gLoRaControllerEvent, gLoRaCtrlTaskEvtNewMsgToSend_c);
+				}
 			}
 		}
 

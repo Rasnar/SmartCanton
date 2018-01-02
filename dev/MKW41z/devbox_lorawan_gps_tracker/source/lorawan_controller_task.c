@@ -16,8 +16,8 @@
 #define mConfirmStatusReadDelayBeetweenRetry	250 	/* ms */
 #define mConfirmStatusReadNumberOfAttempts		8
 
-#define mResendFrameDelayBeetweenRetry			1000 	/* ms */
-#define mResendFrameNumberOfAttempts			300
+#define mResendFrameDelayBeetweenRetry			10000 	/* ms */
+#define mResendFrameNumberOfAttempts			50
 
 OSA_TASK_DEFINE(Lorawan_Controller_Task, gLorawanControllerTaskPriority_c, 1,
 		gLorawanControllerTaskStackSize_c, FALSE);
@@ -122,7 +122,7 @@ void Lorawan_Controller_Task(osaTaskParam_t argument)
 			{
 
 				/* Retrieve all messages from the queue */
-				while (OSA_MsgQGet(gLorawanCtrlSendNewMessageQ, &lorawanDataToSend, 1) == osaStatus_Success)
+				while (OSA_MsgQGet(gLorawanCtrlSendNewMessageQ, &lorawanDataToSend, 0) == osaStatus_Success)
 				{
 					uint8_t nbAttempts = 0;
 					int delayReceiveWindow2 = 0;
@@ -157,6 +157,7 @@ void Lorawan_Controller_Task(osaTaskParam_t argument)
 					/* If the message is a confirmed one, wait for the confirmation */
 					if (lorawan_controller_get_current_configuration().confirmMode[0] == '1')
 					{
+						nbAttempts = 0;
 						do
 						{
 

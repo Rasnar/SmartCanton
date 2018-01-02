@@ -42,7 +42,7 @@ typedef struct lorawanControllerDataReceived_tag
 #define gLorawanControllerTaskStackSize_c (2048)
 
 /*! LoRaWAN Controller Task OS Abstraction Priority */
-#define gLorawanControllerTaskPriority_c  (OSA_PRIORITY_NORMAL)
+#define gLorawanControllerTaskPriority_c  (OSA_PRIORITY_ABOVE_NORMAL)
 
 /* Task Events */
 #define gLoRaCtrlTaskEvtNewMsgToSend_c       		(1 << 0)
