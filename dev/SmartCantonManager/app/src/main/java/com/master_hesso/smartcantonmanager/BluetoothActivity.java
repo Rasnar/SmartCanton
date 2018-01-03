@@ -1,3 +1,22 @@
+/*
+ *   ______                              _______
+ *  / _____)                        _   (_______)                 _
+ * ( (____   ____   _____   ____  _| |_  _        _____  ____   _| |_   ___   ____
+ *  \____ \ |    \ (____ | / ___)(_   _)| |      (____ ||  _ \ (_   _) / _ \ |  _ \
+ *  _____) )| | | |/ ___ || |      | |_ | |_____ / ___ || | | |  | |_ | |_| || | | |
+ * (______/ |_|_|_|\_____||_|       \__) \______)\_____||_| |_|   \__) \___/ |_| |_|
+ *  ______                 ______
+ * (______)               (____  \
+ *  _     _  _____  _   _  ____)  )  ___   _   _
+ * | |   | || ___ || | | ||  __  (  / _ \ ( \ / )
+ * | |__/ / | ____| \ V / | |__)  )| |_| | ) X (
+ * |_____/  |_____)  \_/  |______/  \___/ (_/ \_)
+ *
+ * @author  Da Silva Andrade David
+ * @version V1.0
+ * @date    02-01-2018
+ */
+
 package com.master_hesso.smartcantonmanager;
 
 import android.content.Intent;
@@ -20,7 +39,11 @@ import com.master_hesso.smartcantonmanager.utils.Constants;
 
 import java.util.Date;
 
-
+/**
+ * Principal activity that manager a fragment holder
+ * Switch between the Scanner fragment to the BleFragment when a device is selected on the scanner
+ * list.
+ */
 public class BluetoothActivity extends AppCompatActivity implements ChangePasswordDialog.Listener {
 
     public static final String TAG = BluetoothActivity.class.getSimpleName();
@@ -82,6 +105,9 @@ public class BluetoothActivity extends AppCompatActivity implements ChangePasswo
         }
     }
 
+    /**
+     * Display the action bar to be able to return to the last view
+     */
     private void initViews() {
         try {
             this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -89,6 +115,9 @@ public class BluetoothActivity extends AppCompatActivity implements ChangePasswo
         }
     }
 
+    /**
+     * Reset user and token information on the shared preferences
+     */
     private void initSharedPreferences() {
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -96,6 +125,9 @@ public class BluetoothActivity extends AppCompatActivity implements ChangePasswo
         mUsername = mSharedPreferences.getString(Constants.USERNAME, "");
     }
 
+    /**
+     * Extract token information from the token
+     */
     private void extractTokenInformation() {
         try {
             mJwt = new JWT(mToken);
@@ -107,6 +139,9 @@ public class BluetoothActivity extends AppCompatActivity implements ChangePasswo
         mTokenExpiresAt = mJwt.getExpiresAt();
     }
 
+    /**
+     * Load the Scanner Fragment
+     */
     private void loadFragment() {
 
         if (mScannerFragment == null) {
@@ -117,6 +152,9 @@ public class BluetoothActivity extends AppCompatActivity implements ChangePasswo
         getSupportFragmentManager().beginTransaction().replace(R.id.fragmentFrame, mScannerFragment, LoginFragment.TAG).commit();
     }
 
+    /**
+     * Logout from the current activity
+     */
     private void logout() {
 
         SharedPreferences.Editor editor = mSharedPreferences.edit();
@@ -126,20 +164,8 @@ public class BluetoothActivity extends AppCompatActivity implements ChangePasswo
         finish();
     }
 
-    private void showDialog() {
-
-        ChangePasswordDialog fragment = new ChangePasswordDialog();
-
-        Bundle bundle = new Bundle();
-        bundle.putString(Constants.USERNAME, mUsername);
-        bundle.putString(Constants.TOKEN, mToken);
-        fragment.setArguments(bundle);
-
-        fragment.show(getFragmentManager(), ChangePasswordDialog.TAG);
-    }
-
     /**
-     * Display a snackbar with a custom message
+     * Display a snack bar with a custom message
      * @param message Message to display
      */
     private void showSnackBarMessage(String message) {

@@ -57,6 +57,11 @@ public class RegisterFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Extract all views from the current load layout
+     *
+     * @param v The current view displayed
+     */
     private void initViews(View v) {
 
         mEtUsername = v.findViewById(R.id.et_name);

@@ -1,17 +1,20 @@
 /*
- * Copyright (C) 2015 The Android Open Source Project
+ *   ______                              _______
+ *  / _____)                        _   (_______)                 _
+ * ( (____   ____   _____   ____  _| |_  _        _____  ____   _| |_   ___   ____
+ *  \____ \ |    \ (____ | / ___)(_   _)| |      (____ ||  _ \ (_   _) / _ \ |  _ \
+ *  _____) )| | | |/ ___ || |      | |_ | |_____ / ___ || | | |  | |_ | |_| || | | |
+ * (______/ |_|_|_|\_____||_|       \__) \______)\_____||_| |_|   \__) \___/ |_| |_|
+ *  ______                 ______
+ * (______)               (____  \
+ *  _     _  _____  _   _  ____)  )  ___   _   _
+ * | |   | || ___ || | | ||  __  (  / _ \ ( \ / )
+ * | |__/ / | ____| \ V / | |__)  )| |_| | ) X (
+ * |_____/  |_____)  \_/  |______/  \___/ (_/ \_)
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @author  Da Silva Andrade David
+ * @version V1.0
+ * @date    02-01-2018
  */
 
 package com.master_hesso.smartcantonmanager.adapters;
@@ -34,6 +37,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Adapter to hold the devices scanned and display them in a list view
+ */
 public class ScanResultAdapter extends BaseAdapter {
 
     private ArrayList<BleDevice> mArrayList;

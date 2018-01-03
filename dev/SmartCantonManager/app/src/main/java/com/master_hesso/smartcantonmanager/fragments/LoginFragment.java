@@ -1,3 +1,22 @@
+/*
+ *   ______                              _______
+ *  / _____)                        _   (_______)                 _
+ * ( (____   ____   _____   ____  _| |_  _        _____  ____   _| |_   ___   ____
+ *  \____ \ |    \ (____ | / ___)(_   _)| |      (____ ||  _ \ (_   _) / _ \ |  _ \
+ *  _____) )| | | |/ ___ || |      | |_ | |_____ / ___ || | | |  | |_ | |_| || | | |
+ * (______/ |_|_|_|\_____||_|       \__) \______)\_____||_| |_|   \__) \___/ |_| |_|
+ *  ______                 ______
+ * (______)               (____  \
+ *  _     _  _____  _   _  ____)  )  ___   _   _
+ * | |   | || ___ || | | ||  __  (  / _ \ ( \ / )
+ * | |__/ / | ____| \ V / | |__)  )| |_| | ) X (
+ * |_____/  |_____)  \_/  |______/  \___/ (_/ \_)
+ *
+ * @author  Da Silva Andrade David
+ * @version V1.0
+ * @date    02-01-2018
+ */
+
 package com.master_hesso.smartcantonmanager.fragments;
 
 import android.app.Fragment;
@@ -33,6 +52,10 @@ import rx.subscriptions.CompositeSubscription;
 import static com.master_hesso.smartcantonmanager.utils.Validation.validateUsername;
 import static com.master_hesso.smartcantonmanager.utils.Validation.validateFields;
 
+/**
+ * Fragment to login on the SmartCanton APP Key server. This fragment will connect to the
+ * server and if the connection is successful, go to the next fragment
+ */
 public class LoginFragment extends Fragment {
 
     public static final String TAG = LoginFragment.class.getSimpleName();
@@ -61,6 +84,11 @@ public class LoginFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Extract all views from the current load layout
+     *
+     * @param v The current view displayed
+     */
     private void initViews(View v) {
 
         mEtUsername = v.findViewById(R.id.et_username);
@@ -82,6 +110,9 @@ public class LoginFragment extends Fragment {
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
     }
 
+    /**
+     * Extract the information entered by the user and ask a login to the server
+     */
     private void login() {
 
         setError();
@@ -114,12 +145,20 @@ public class LoginFragment extends Fragment {
         }
     }
 
+    /**
+     * Clear all errors messages on the TextInputLayouts
+     */
     private void setError() {
 
         mTiUsername.setError(null);
         mTiPassword.setError(null);
     }
 
+    /**
+     * Contact the server to request a login
+     * @param username The username of the user
+     * @param password The password matching the username
+     */
     private void loginProcess(String username, String password) {
 
         mSubscriptions.add(NetworkUtil.getRetrofit(username, password).login()
@@ -128,6 +167,10 @@ public class LoginFragment extends Fragment {
                 .subscribe(this::handleResponse,this::handleError));
     }
 
+    /**
+     * Handle a correct response from the server (code 200)
+     * @param response The response from the server
+     */
     private void handleResponse(Response response) {
 
         mProgressBar.setVisibility(View.GONE);
@@ -146,6 +189,10 @@ public class LoginFragment extends Fragment {
 
     }
 
+    /**
+     * Handle errors when contacting the server
+     * @param error The error throw by the server with this HTTP code
+     */
     private void handleError(Throwable error) {
 
         mProgressBar.setVisibility(View.GONE);
@@ -179,6 +226,11 @@ public class LoginFragment extends Fragment {
         }
     }
 
+
+    /**
+     * Display a message on the SnackBar
+     * @param message Message to display
+     */
     private void showSnackBarMessage(String message) {
 
         if (getView() != null) {

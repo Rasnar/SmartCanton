@@ -1,17 +1,20 @@
 /*
- * Copyright (C) 2015 The Android Open Source Project
+ *   ______                              _______
+ *  / _____)                        _   (_______)                 _
+ * ( (____   ____   _____   ____  _| |_  _        _____  ____   _| |_   ___   ____
+ *  \____ \ |    \ (____ | / ___)(_   _)| |      (____ ||  _ \ (_   _) / _ \ |  _ \
+ *  _____) )| | | |/ ___ || |      | |_ | |_____ / ___ || | | |  | |_ | |_| || | | |
+ * (______/ |_|_|_|\_____||_|       \__) \______)\_____||_| |_|   \__) \___/ |_| |_|
+ *  ______                 ______
+ * (______)               (____  \
+ *  _     _  _____  _   _  ____)  )  ___   _   _
+ * | |   | || ___ || | | ||  __  (  / _ \ ( \ / )
+ * | |__/ / | ____| \ V / | |__)  )| |_| | ) X (
+ * |_____/  |_____)  \_/  |______/  \___/ (_/ \_)
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @author  Da Silva Andrade David
+ * @version V1.0
+ * @date    02-01-2018
  */
 
 package com.master_hesso.smartcantonmanager.fragments;
@@ -163,29 +166,11 @@ public class ScannerFragment extends ListFragment {
         bundle.putString(Constants.BLE_DEVICE_MAC, device.getMacAddress());
         bleConnectFragment.setArguments(bundle);
 
-//        // create a transaction for transition here
-//        final FragmentTransaction transaction = getFragmentManager()
-//                .beginTransaction();
-//
-//        transaction.setCustomAnimations(R.animator.slide_in_left, R.animator.slide_out_left,
-//                R.animator.slide_out_right, R.animator.slide_in_right);
-//
-//
-//
-//        // put the fragment in place
-//        transaction.replace(R.id.fragmentFrame, bleConnectFragment);
-
         FragmentTransaction transaction = this.getFragmentManager().beginTransaction();
         transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right);
         transaction.replace(R.id.fragmentFrame, bleConnectFragment);
         transaction.addToBackStack(TAG);
         transaction.commit();
-
-//        // this is the part that will cause a fragment to be added to backstack,
-//        // this way we can return to it at any time using this tag
-//        transaction.addToBackStack(TAG);
-//
-//        transaction.commit();
     }
 
     @Override
@@ -213,8 +198,4 @@ public class ScannerFragment extends ListFragment {
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
     }
-
-//    public interface OnScannerDeviceSelected {
-//        public void onScannerDevicePicked(BleDevice device);
-//    }
 }

@@ -1,17 +1,20 @@
 /*
- * Copyright (C) 2015 The Android Open Source Project
+ *   ______                              _______
+ *  / _____)                        _   (_______)                 _
+ * ( (____   ____   _____   ____  _| |_  _        _____  ____   _| |_   ___   ____
+ *  \____ \ |    \ (____ | / ___)(_   _)| |      (____ ||  _ \ (_   _) / _ \ |  _ \
+ *  _____) )| | | |/ ___ || |      | |_ | |_____ / ___ || | | |  | |_ | |_| || | | |
+ * (______/ |_|_|_|\_____||_|       \__) \______)\_____||_| |_|   \__) \___/ |_| |_|
+ *  ______                 ______
+ * (______)               (____  \
+ *  _     _  _____  _   _  ____)  )  ___   _   _
+ * | |   | || ___ || | | ||  __  (  / _ \ ( \ / )
+ * | |__/ / | ____| \ V / | |__)  )| |_| | ) X (
+ * |_____/  |_____)  \_/  |______/  \___/ (_/ \_)
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @author  Da Silva Andrade David
+ * @version V1.0
+ * @date    02-01-2018
  */
 
 package com.master_hesso.smartcantonmanager.fragments;
@@ -82,7 +85,8 @@ import static com.idevicesinc.sweetblue.BleDevice.StateListener.StateEvent;
 
 
 /**
- * Scans for Bluetooth Low Energy Advertisements matching a filter and displays them to the user.
+ * Connect to a SmartCanton Dev Box and display the services available. At the same time, contact
+ * the server to know all the parameters of the connected device.
  */
 public class BLEConnectFragment extends Fragment {
 
@@ -1526,7 +1530,7 @@ public class BLEConnectFragment extends Fragment {
                 e1 -> {
                     if (e1.wasSuccess()) {
                         if (e1.data().length == 2) {
-                            if(bleScannedFirstBuggedDataRead){
+                            if (bleScannedFirstBuggedDataRead) {
                                 tvBleScanServiceDevicesScannedDevice.setText(
                                         String.format(Locale.getDefault(),
                                                 "BLE beacons scanned : %d",
@@ -1562,7 +1566,7 @@ public class BLEConnectFragment extends Fragment {
     private void writeBleScannerWindow(int interval) {
         ByteBuffer byteBuffer = ByteBuffer.allocate(2);
         byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-        byteBuffer.putShort((short)interval);
+        byteBuffer.putShort((short) interval);
         byte[] bytes = byteBuffer.array();
         mBleDevice.write(SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BLE_SCAN_SERVICE,
                 SmartCantonDevBoxBLEServices.SMARTCANTON_DEVBOX_BLE_SCAN_WINDOW,

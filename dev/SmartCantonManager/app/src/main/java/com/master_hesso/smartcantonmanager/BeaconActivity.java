@@ -1,3 +1,22 @@
+/*
+ *   ______                              _______
+ *  / _____)                        _   (_______)                 _
+ * ( (____   ____   _____   ____  _| |_  _        _____  ____   _| |_   ___   ____
+ *  \____ \ |    \ (____ | / ___)(_   _)| |      (____ ||  _ \ (_   _) / _ \ |  _ \
+ *  _____) )| | | |/ ___ || |      | |_ | |_____ / ___ || | | |  | |_ | |_| || | | |
+ * (______/ |_|_|_|\_____||_|       \__) \______)\_____||_| |_|   \__) \___/ |_| |_|
+ *  ______                 ______
+ * (______)               (____  \
+ *  _     _  _____  _   _  ____)  )  ___   _   _
+ * | |   | || ___ || | | ||  __  (  / _ \ ( \ / )
+ * | |__/ / | ____| \ V / | |__)  )| |_| | ) X (
+ * |_____/  |_____)  \_/  |______/  \___/ (_/ \_)
+ *
+ * @author  Da Silva Andrade David
+ * @version V1.0
+ * @date    02-01-2018
+ */
+
 package com.master_hesso.smartcantonmanager;
 
 import android.bluetooth.le.AdvertiseCallback;
@@ -25,6 +44,10 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Locale;
 
+/**
+ * Activity offrering the possibility to generate a number of beacons selectable by the
+ * user
+ */
 public class BeaconActivity extends AppCompatActivity {
 
     public static final String TAG = BeaconActivity.class.getSimpleName();
@@ -155,6 +178,9 @@ public class BeaconActivity extends AppCompatActivity {
         return advertiseData;
     }
 
+    /**
+     * Extract all views from the current load layout
+     */
     private void initViews() {
         fab = findViewById(R.id.fab);
         toolbar = findViewById(R.id.toolbar);

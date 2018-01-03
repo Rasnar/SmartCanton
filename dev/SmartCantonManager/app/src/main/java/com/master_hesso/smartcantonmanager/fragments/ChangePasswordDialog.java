@@ -1,3 +1,22 @@
+/*
+ *   ______                              _______
+ *  / _____)                        _   (_______)                 _
+ * ( (____   ____   _____   ____  _| |_  _        _____  ____   _| |_   ___   ____
+ *  \____ \ |    \ (____ | / ___)(_   _)| |      (____ ||  _ \ (_   _) / _ \ |  _ \
+ *  _____) )| | | |/ ___ || |      | |_ | |_____ / ___ || | | |  | |_ | |_| || | | |
+ * (______/ |_|_|_|\_____||_|       \__) \______)\_____||_| |_|   \__) \___/ |_| |_|
+ *  ______                 ______
+ * (______)               (____  \
+ *  _     _  _____  _   _  ____)  )  ___   _   _
+ * | |   | || ___ || | | ||  __  (  / _ \ ( \ / )
+ * | |__/ / | ____| \ V / | |__)  )| |_| | ) X (
+ * |_____/  |_____)  \_/  |______/  \___/ (_/ \_)
+ *
+ * @author  Da Silva Andrade David
+ * @version V1.0
+ * @date    02-01-2018
+ */
+
 package com.master_hesso.smartcantonmanager.fragments;
 
 import android.app.DialogFragment;
@@ -31,6 +50,9 @@ import rx.subscriptions.CompositeSubscription;
 
 import static com.master_hesso.smartcantonmanager.utils.Validation.validateFields;
 
+/**
+ * Display a dialog to change the password currently connected
+ */
 public class ChangePasswordDialog extends DialogFragment {
 
     public interface Listener {
@@ -60,13 +82,16 @@ public class ChangePasswordDialog extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.dialog_change_password,container,false);
+        View view = inflater.inflate(R.layout.dialog_change_password, container, false);
         mSubscriptions = new CompositeSubscription();
         getData();
         initViews(view);
         return view;
     }
 
+    /**
+     * Retrieve user information from the bundle of data
+     */
     private void getData() {
 
         Bundle bundle = getArguments();
@@ -78,9 +103,14 @@ public class ChangePasswordDialog extends DialogFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mListener = (ProfileActivity)context;
+        mListener = (ProfileActivity) context;
     }
 
+    /**
+     * Init all views present on the layout displayed
+     *
+     * @param v Current view displayed
+     */
     private void initViews(View v) {
 
         mEtOldPassword = v.findViewById(R.id.et_old_password);
@@ -96,6 +126,9 @@ public class ChangePasswordDialog extends DialogFragment {
         mBtCancel.setOnClickListener(view -> dismiss());
     }
 
+    /**
+     * Verify the validity of the password entered and send it to the server
+     */
     private void changePassword() {
 
         setError();
@@ -128,20 +161,34 @@ public class ChangePasswordDialog extends DialogFragment {
         }
     }
 
+    /**
+     * Clear error on the text input layout
+     */
     private void setError() {
 
         mTiOldPassword.setError(null);
         mTiNewPassword.setError(null);
     }
 
+    /**
+     * Contact the server to change the password on the user. Use the local token to request the
+     * change.
+     *
+     * @param user The user with the new password
+     */
     private void changePasswordProgress(User user) {
 
-        mSubscriptions.add(NetworkUtil.getRetrofit(mToken).changePassword(mEmail,user)
+        mSubscriptions.add(NetworkUtil.getRetrofit(mToken).changePassword(mEmail, user)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(this::handleResponse,this::handleError));
+                .subscribe(this::handleResponse, this::handleError));
     }
 
+    /**
+     * Handle the response from the server after changing the password
+     *
+     * @param response Response from the server
+     */
     private void handleResponse(Response response) {
 
         mProgressBar.setVisibility(View.GONE);
@@ -149,6 +196,11 @@ public class ChangePasswordDialog extends DialogFragment {
         dismiss();
     }
 
+    /**
+     * If the server throw an HTTP error, handle it here
+     *
+     * @param error Error to be handled
+     */
     private void handleError(Throwable error) {
 
         mProgressBar.setVisibility(View.GONE);
@@ -160,7 +212,7 @@ public class ChangePasswordDialog extends DialogFragment {
             try {
 
                 String errorBody = ((HttpException) error).response().errorBody().string();
-                Response response = gson.fromJson(errorBody,Response.class);
+                Response response = gson.fromJson(errorBody, Response.class);
                 showMessage(response.getMessage());
 
             } catch (IOException e) {
@@ -172,6 +224,11 @@ public class ChangePasswordDialog extends DialogFragment {
         }
     }
 
+    /**
+     * Show a message on the TextView present on the dialog fragment
+     *
+     * @param message Message to be displayed
+     */
     private void showMessage(String message) {
 
         mTvMessage.setVisibility(View.VISIBLE);

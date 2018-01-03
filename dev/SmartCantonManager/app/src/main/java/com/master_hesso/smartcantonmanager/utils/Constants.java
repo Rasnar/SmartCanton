@@ -2,8 +2,15 @@ package com.master_hesso.smartcantonmanager.utils;
 
 import java.util.UUID;
 
+/**
+ * Multiple constants used in this project, such has the server address, and the AltBeacon
+ * configuration
+ */
 public class Constants {
+    /* Server address hosting the REST API */
     public static final String BASE_URL = "https://lsn.eig.ch:5000/";
+
+    /* Constant to store parameters in shared preferences */
     public static final String TOKEN = "token";
     public static final String USERNAME = "username";
     public static final String BLE_DEVICE_MAC = "ble_device_mac";

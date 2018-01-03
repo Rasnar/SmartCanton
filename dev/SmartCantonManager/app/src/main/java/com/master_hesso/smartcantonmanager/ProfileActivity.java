@@ -1,3 +1,22 @@
+/*
+ *   ______                              _______
+ *  / _____)                        _   (_______)                 _
+ * ( (____   ____   _____   ____  _| |_  _        _____  ____   _| |_   ___   ____
+ *  \____ \ |    \ (____ | / ___)(_   _)| |      (____ ||  _ \ (_   _) / _ \ |  _ \
+ *  _____) )| | | |/ ___ || |      | |_ | |_____ / ___ || | | |  | |_ | |_| || | | |
+ * (______/ |_|_|_|\_____||_|       \__) \______)\_____||_| |_|   \__) \___/ |_| |_|
+ *  ______                 ______
+ * (______)               (____  \
+ *  _     _  _____  _   _  ____)  )  ___   _   _
+ * | |   | || ___ || | | ||  __  (  / _ \ ( \ / )
+ * | |__/ / | ____| \ V / | |__)  )| |_| | ) X (
+ * |_____/  |_____)  \_/  |______/  \___/ (_/ \_)
+ *
+ * @author  Da Silva Andrade David
+ * @version V1.0
+ * @date    02-01-2018
+ */
+
 package com.master_hesso.smartcantonmanager;
 
 import android.content.Intent;
@@ -29,6 +48,10 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
+/**
+ * Activity displaying the profile of the current user with his JWT token, the possibility to change
+ * the password and a logout button
+ */
 public class ProfileActivity extends AppCompatActivity implements ChangePasswordDialog.Listener {
 
     public static final String TAG = ProfileActivity.class.getSimpleName();
@@ -93,6 +116,9 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
         btnLogout.setOnClickListener(view -> logoutAndRestartApp());
     }
 
+    /**
+     * Clear the shared preferences
+     */
     private void initSharedPreferences() {
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -100,6 +126,9 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
         mUsername = mSharedPreferences.getString(Constants.USERNAME,"");
     }
 
+    /**
+     * Extract token information from the token string
+     */
     private void extractTokenInformation() {
         try {
             mJwt = new JWT(mToken);
@@ -111,6 +140,9 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
         mUserPublicId = mJwt.getClaim("public_id").asString();
     }
 
+    /**
+     * Display the token information on the token card view
+     */
     private void showTokenInformation(){
 
         tvJwtToken.setText(mJwt.toString());
@@ -124,6 +156,9 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
 
     }
 
+    /**
+     * Logout and restart the app to ask a new login
+     */
     private void logoutAndRestartApp() {
 
         SharedPreferences.Editor editor = mSharedPreferences.edit();
@@ -140,6 +175,9 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
         Runtime.getRuntime().exit(0);
     }
 
+    /**
+     * Show a dialog to change the password
+     */
     private void showDialog(){
 
         ChangePasswordDialog fragment = new ChangePasswordDialog();
@@ -152,6 +190,9 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
         fragment.show(getFragmentManager(), ChangePasswordDialog.TAG);
     }
 
+    /**
+     * Contact the server to ask more information about the logged user
+     */
     private void loadProfile() {
 
         mSubscriptions.add(NetworkUtil.getRetrofit(mToken).getProfile(mUserPublicId)
@@ -160,6 +201,10 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
                 .subscribe(this::handleResponse,this::handleError));
     }
 
+    /**
+     * Handle a correct response from the server
+     * @param user User object with all his information
+     */
     private void handleResponse(User user) {
 
         mProgressbar.setVisibility(View.GONE);
@@ -170,6 +215,10 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
 
     }
 
+    /**
+     * Handle errors from the server (eg. token not valid)
+     * @param error HTTP error
+     */
     private void handleError(Throwable error) {
 
         mProgressbar.setVisibility(View.GONE);
