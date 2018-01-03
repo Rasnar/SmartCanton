@@ -271,7 +271,7 @@ static void BleScannerReportDevicesFoundCallback(void * pParam);
 static void BleApp_Advertise(void);
 
 static void BleApp_SetScanParameters();
-static void BleApp_ParseScannedDevice(gapScannedDevice_t* pData);
+static void BleApp_ParseScannedDeviceAsAltBeacon(gapScannedDevice_t* pData);
 static void BleApp_ScanningCallback (gapScanningEvent_t* pScanningEvent);
 
 /************************************************************************************
@@ -281,7 +281,7 @@ static void BleApp_ScanningCallback (gapScanningEvent_t* pScanningEvent);
  ************************************************************************************/
 
 /*! *********************************************************************************
- * \brief    Initializes application specific functionality before the BLE stack init.
+ * @brief    Initializes application specific functionality before the BLE stack init.
  *
  ********************************************************************************** */
 void BleApp_Init(void)
@@ -292,7 +292,7 @@ void BleApp_Init(void)
 }
 
 /*! *********************************************************************************
- * \brief    Starts the BLE application.
+ * @brief    Starts the BLE application.
  *
  ********************************************************************************** */
 void BleApp_Start(void)
@@ -348,7 +348,13 @@ static void BleApp_SetScanParameters()
 
 }
 
-static void BleApp_ParseScannedDevice(gapScannedDevice_t* pData)
+/*! *********************************************************************************
+ * @brief        Parse the read scanned ble device to find if they are beacons to be
+ * 				 valid AltBeacon with the format specified on the top of this file.
+ *
+ * @param[in]    gapScannedDevice_t    Pointer to a device scanned
+ ********************************************************************************** */
+static void BleApp_ParseScannedDeviceAsAltBeacon(gapScannedDevice_t* pData)
 {
 	/* /!\ This parser is highly basic, please consult the AltBeacon specification to
 	 * see the AltBeacon advertisement packet content
@@ -388,21 +394,23 @@ static void BleApp_ParseScannedDevice(gapScannedDevice_t* pData)
 			/* Prevent the mScannedDevicesCount to be modified,
 			 * TOFIX : Should be replaced by a mutex */
 			OSA_InterruptDisable();
+
 			/* Temporary store scanned data to use for connection */
 			mScannedDevices[mScannedDevicesCount].addrType = pData->addressType;
 			FLib_MemCpy(mScannedDevices[mScannedDevicesCount].aAddress, pData->aAddress,
 					sizeof(bleDeviceAddress_t));
 
 			mScannedDevicesCount++;
+
 			OSA_InterruptEnable();
 		}
 	}
 }
 
 /*! *********************************************************************************
- * \brief        Handles BLE Scanning callback from host stack.
+ * @brief        Handles BLE Scanning callback from host stack.
  *
- * \param[in]    pScanningEvent    Pointer to gapScanningEvent_t.
+ * @param[in]    pScanningEvent    Pointer to gapScanningEvent_t.
  ********************************************************************************** */
 static void BleApp_ScanningCallback (gapScanningEvent_t* pScanningEvent)
 {
@@ -415,7 +423,7 @@ static void BleApp_ScanningCallback (gapScanningEvent_t* pScanningEvent)
 			break;
 		}
 
-		BleApp_ParseScannedDevice(&pScanningEvent->eventData.scannedDevice);
+		BleApp_ParseScannedDeviceAsAltBeacon(&pScanningEvent->eventData.scannedDevice);
 		break;
 	}
 
@@ -436,9 +444,9 @@ static void BleApp_ScanningCallback (gapScanningEvent_t* pScanningEvent)
 
 
 /*! *********************************************************************************
- * \brief        Handles keyboard events.
+ * @brief        Handles keyboard events.
  *
- * \param[in]    events    Key event structure.
+ * @param[in]    events    Key event structure.
  ********************************************************************************** */
 void BleApp_HandleKeys(key_event_t events)
 {
@@ -477,9 +485,9 @@ void BleApp_HandleKeys(key_event_t events)
 }
 
 /*! *********************************************************************************
- * \brief        Handles BLE generic callback.
+ * @brief        Handles BLE generic callback.
  *
- * \param[in]    pGenericEvent    Pointer to gapGenericEvent_t.
+ * @param[in]    pGenericEvent    Pointer to gapGenericEvent_t.
  ********************************************************************************** */
 void BleApp_GenericCallback(gapGenericEvent_t* pGenericEvent)
 {
@@ -521,7 +529,7 @@ void BleApp_GenericCallback(gapGenericEvent_t* pGenericEvent)
  ************************************************************************************/
 
 /*! *********************************************************************************
- * \brief        Configures BLE Stack after initialization. Usually used for
+ * @brief        Configures BLE Stack after initialization. Usually used for
  *               configuring advertising, scanning, white list, services, et al.
  *
  ********************************************************************************** */
@@ -577,7 +585,7 @@ static void BleApp_Config()
 }
 
 /*! *********************************************************************************
- * \brief        Configures GAP Advertise parameters. Advertise will satrt after
+ * @brief        Configures GAP Advertise parameters. Advertise will satrt after
  *               the parameters are set.
  *
  ********************************************************************************** */
@@ -619,9 +627,9 @@ static void BleApp_Advertise(void)
 }
 
 /*! *********************************************************************************
- * \brief        Handles BLE Advertising callback from host stack.
+ * @brief        Handles BLE Advertising callback from host stack.
  *
- * \param[in]    pAdvertisingEvent    Pointer to gapAdvertisingEvent_t.
+ * @param[in]    pAdvertisingEvent    Pointer to gapAdvertisingEvent_t.
  ********************************************************************************** */
 static void BleApp_AdvertisingCallback(gapAdvertisingEvent_t* pAdvertisingEvent)
 {
@@ -678,10 +686,10 @@ static void BleApp_AdvertisingCallback(gapAdvertisingEvent_t* pAdvertisingEvent)
 }
 
 /*! *********************************************************************************
- * \brief        Handles BLE Connection callback from host stack.
+ * @brief        Handles BLE Connection callback from host stack.
  *
- * \param[in]    peerDeviceId        Peer device ID.
- * \param[in]    pConnectionEvent    Pointer to gapConnectionEvent_t.
+ * @param[in]    peerDeviceId        Peer device ID.
+ * @param[in]    pConnectionEvent    Pointer to gapConnectionEvent_t.
  ********************************************************************************** */
 static void BleApp_ConnectionCallback(deviceId_t peerDeviceId, gapConnectionEvent_t* pConnectionEvent)
 {
@@ -770,10 +778,10 @@ static void BleApp_ConnectionCallback(deviceId_t peerDeviceId, gapConnectionEven
 }
 
 /*! *********************************************************************************
- * \brief        Handles GATT server callback from host stack.
+ * @brief        Handles GATT server callback from host stack.
  *
- * \param[in]    deviceId        Peer device ID.
- * \param[in]    pServerEvent    Pointer to gattServerEvent_t.
+ * @param[in]    deviceId        Peer device ID.
+ * @param[in]    pServerEvent    Pointer to gattServerEvent_t.
  ********************************************************************************** */
 static void BleApp_GattServerCallback(deviceId_t deviceId, gattServerEvent_t* pServerEvent)
 {
@@ -928,9 +936,9 @@ static void BleApp_GattServerCallback(deviceId_t deviceId, gattServerEvent_t* pS
 }
 
 /*! *********************************************************************************
- * \brief        Handles advertising timer callback.
+ * @brief        Handles advertising timer callback.
  *
- * \param[in]    pParam        Calback parameters.
+ * @param[in]    pParam        Calback parameters.
  ********************************************************************************** */
 static void AdvertisingTimerCallback(void * pParam)
 {
@@ -963,9 +971,9 @@ static void AdvertisingTimerCallback(void * pParam)
 }
 
 /*! *********************************************************************************
- * \brief        Handles battery measurement timer callback.
+ * @brief        Handles battery measurement timer callback.
  *
- * \param[in]    pParam        Callback parameters.
+ * @param[in]    pParam        Callback parameters.
  ********************************************************************************** */
 static void BatteryMeasurementTimerCallback(void * pParam)
 {
@@ -974,9 +982,9 @@ static void BatteryMeasurementTimerCallback(void * pParam)
 }
 
 /*! *********************************************************************************
- * \brief        Handle the report of how many BLE beacons have been found
+ * @brief        Handle the report of how many BLE beacons have been found
  *
- * \param[in]    pParam        Calback parameters.
+ * @param[in]    pParam        Calback parameters.
  ********************************************************************************** */
 static void BleScannerReportDevicesFoundCallback(void * pParam)
 {
@@ -986,21 +994,16 @@ static void BleScannerReportDevicesFoundCallback(void * pParam)
 
 	if (Gap_StopScanning() == gBleSuccess_c)
 	{
-		mScanningState.scnOn = FALSE;
+		/* Restart a mew scanner */
+		Gap_StartScanning(&gAppScanParams, BleApp_ScanningCallback, TRUE);
 	}
 
 	OSA_InterruptDisable();
 
-	/* Invalidate already found devies */
+	/* Invalidate already found devices */
 	mScannedDevicesCount = 0;
 
 	OSA_InterruptEnable();
-
-	if (mScanningState.scnOn == FALSE)
-	{
-		/* Restart a mew scanner */
-		Gap_StartScanning(&gAppScanParams, BleApp_ScanningCallback, TRUE);
-	}
 
 	if (OSA_MsgQPut(gBleScannerNewMessageMeasureQ, &bleScannerData) == osaStatus_Success)
 	{
@@ -1015,9 +1018,9 @@ static void BleScannerReportDevicesFoundCallback(void * pParam)
 }
 
 /*! *********************************************************************************
- * \brief        Notify the main task that it's time to generate a new LoRaWAN packet
+ * @brief        Notify the main task that it's time to generate a new LoRaWAN packet
  *
- * \param[in]    pParam        Callback parameters.
+ * @param[in]    pParam        Callback parameters.
  ********************************************************************************** */
 static void LoRaSendNewDataTimerCallback(void * pParam)
 {
