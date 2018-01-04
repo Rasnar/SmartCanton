@@ -53,10 +53,10 @@ typedef struct lorawanControllerDataReceived_tag
 extern osaEventId_t gLoRaControllerEvent;
 
 /* Queue to hold the data to be send to the LoRaWAN module */
-extern osaMsgQId_t gLorawanCtrlSendNewMessageQ;
+extern osaMsgQId_t gLorawanCtrlSendNewMsgQ;
 
 /* Queue to hold the data received from the the LoRaWAN module */
-extern osaMsgQId_t gLorawanCtrlReceiveNewMessageQ;
+extern osaMsgQId_t gLorawanCtrlReceiveNewMsgQ;
 
 /* This parameter should not exceed osNumberOfMessages defined in app_preinclude.h */
 #define LORAWAN_CTRL_TASK_QUEUE_SIZE 8

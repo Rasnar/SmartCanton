@@ -31,10 +31,10 @@ osaTaskId_t gLorawanControllerTaskId = 0;
 osaEventId_t gLoRaControllerEvent;
 
 /* Queue to hold the data to be send to the LoRaWAN module */
-osaMsgQId_t gLorawanCtrlSendNewMessageQ;
+osaMsgQId_t gLorawanCtrlSendNewMsgQ;
 
 /* Queue to hold the data received from the the LoRaWAN module */
-osaMsgQId_t gLorawanCtrlReceiveNewMessageQ;
+osaMsgQId_t gLorawanCtrlReceiveNewMsgQ;
 
 /**
  * Main LoRaWan controller task
@@ -122,7 +122,7 @@ void Lorawan_Controller_Task(osaTaskParam_t argument)
 			{
 
 				/* Retrieve all messages from the queue */
-				while (OSA_MsgQGet(gLorawanCtrlSendNewMessageQ, &lorawanDataToSend, 0) == osaStatus_Success)
+				while (OSA_MsgQGet(gLorawanCtrlSendNewMsgQ, &lorawanDataToSend, 0) == osaStatus_Success)
 				{
 					uint8_t nbAttempts = 0;
 					int delayReceiveWindow2 = 0;
@@ -212,7 +212,7 @@ void Lorawan_Controller_Task(osaTaskParam_t argument)
 						lorawanDataReceived->port = convertIntStringToInt(dataStr);
 
 						/* Add message to the Queue */
-						if(OSA_MsgQPut(gLorawanCtrlReceiveNewMessageQ, &lorawanDataReceived)
+						if(OSA_MsgQPut(gLorawanCtrlReceiveNewMsgQ, &lorawanDataReceived)
 								== osaStatus_Success) {
 							/* Only notify main task if the message can be added successfully to the Queue */
 							OSA_EventSet(gDevBoxAppEvent, gDevBoxEvtNewLoRaDataReceived_c);
@@ -257,16 +257,16 @@ osaStatus_t LorawanController_TaskInit(void)
 	}
 
 	/* Create Queue to send message through the LoRaWAN module */
-	gLorawanCtrlSendNewMessageQ = OSA_MsgQCreate(LORAWAN_CTRL_TASK_QUEUE_SIZE);
-	if ( NULL == gLorawanCtrlSendNewMessageQ)
+	gLorawanCtrlSendNewMsgQ = OSA_MsgQCreate(LORAWAN_CTRL_TASK_QUEUE_SIZE);
+	if ( NULL == gLorawanCtrlSendNewMsgQ)
 	{
 		panic(0, 0, 0, 0);
 		return osaStatus_Error;
 	}
 
 	/* Create Queue to receive message through the LoRaWAN module */
-	gLorawanCtrlReceiveNewMessageQ = OSA_MsgQCreate(LORAWAN_CTRL_TASK_QUEUE_SIZE);
-	if ( NULL == gLorawanCtrlReceiveNewMessageQ)
+	gLorawanCtrlReceiveNewMsgQ = OSA_MsgQCreate(LORAWAN_CTRL_TASK_QUEUE_SIZE);
+	if ( NULL == gLorawanCtrlReceiveNewMsgQ)
 	{
 		panic(0, 0, 0, 0);
 		return osaStatus_Error;

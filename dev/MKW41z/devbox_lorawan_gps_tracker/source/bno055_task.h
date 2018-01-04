@@ -23,7 +23,7 @@
 #define BNO055_MEASURE_QUEUE_SIZE	8
 
 /* Queue to hold the data to be send to the task consumming it */
-extern osaMsgQId_t gBno055NewMessageMeasureQ;
+extern osaMsgQId_t gBno055NewMeasureQ;
 
 typedef struct bno055Data_tag
 {

@@ -25,7 +25,7 @@ static i2c_rtos_handle_t* master_rtos_handle;
 struct bme680_dev bme680;
 
 /* Queue to hold the data to be send to the task consumming it */
-osaMsgQId_t gBme680NewMessageMeasureQ;
+osaMsgQId_t gBme680NewMeasureQ;
 
 /**
  * @brief Handling of the ready outputs
@@ -58,7 +58,7 @@ void output_ready(int64_t timestamp, float iaq, uint8_t iaq_accuracy, float temp
 	bme680Data->raw_humidity = raw_humidity;
 	bme680Data->gas = gas;
 
-	if(OSA_MsgQPut(gBme680NewMessageMeasureQ, &bme680Data) == osaStatus_Success)
+	if(OSA_MsgQPut(gBme680NewMeasureQ, &bme680Data) == osaStatus_Success)
 	{
 		/* Only notify main task if the message can be added successfully to the Queue */
 		/* Inform the DevBox Task that she can read the data available */
@@ -107,8 +107,8 @@ osaStatus_t Bme680_TaskInit(i2c_rtos_handle_t* i2c_master_rtos_handle)
 	master_rtos_handle = i2c_master_rtos_handle;
 
 	/* Create application Queue */
-	gBme680NewMessageMeasureQ = OSA_MsgQCreate(BME680_MEASURE_QUEUE_SIZE);
-	if ( NULL == gBme680NewMessageMeasureQ)
+	gBme680NewMeasureQ = OSA_MsgQCreate(BME680_MEASURE_QUEUE_SIZE);
+	if ( NULL == gBme680NewMeasureQ)
 	{
 		panic(0, 0, 0, 0);
 		return osaStatus_Error;

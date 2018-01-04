@@ -20,7 +20,7 @@ OSA_TASK_DEFINE(Gps_Task, gGpsTaskPriority_c, 1, gGpsTaskStackSize_c, FALSE);
 osaTaskId_t gGpsTaskId = 0;
 
 /* Queue to hold the data to be send to the task consumming it */
-osaMsgQId_t gGpsNewMessageMeasureQ;
+osaMsgQId_t gGpsNewMeasureQ;
 
 /* Event used to notify the GPS task when a data is ready to be parsed
  * to a valid GPS sentence */
@@ -67,7 +67,7 @@ void Gps_Task(osaTaskParam_t argument)
 
 			if (gps_neo_m8_read_rmc(&gpsData->frame_rmc) == gpsNeo_Success)
 			{
-				if (OSA_MsgQPut(gGpsNewMessageMeasureQ, &gpsData) == osaStatus_Success)
+				if (OSA_MsgQPut(gGpsNewMeasureQ, &gpsData) == osaStatus_Success)
 				{
 					/* Only notify main task if the message can be added successfully to the Queue */
 					OSA_EventSet(gDevBoxAppEvent, gDevBoxTaskEvtNewGgpMeasureAvailable_c);
@@ -95,8 +95,8 @@ osaStatus_t Gps_TaskInit()
 	}
 
 	/* Create application Queue */
-	gGpsNewMessageMeasureQ = OSA_MsgQCreate(GPS_MEASURE_QUEUE_SIZE);
-	if ( NULL == gGpsNewMessageMeasureQ)
+	gGpsNewMeasureQ = OSA_MsgQCreate(GPS_MEASURE_QUEUE_SIZE);
+	if ( NULL == gGpsNewMeasureQ)
 	{
 		panic(0, 0, 0, 0);
 		return osaStatus_Error;

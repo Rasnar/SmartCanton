@@ -25,7 +25,7 @@ struct bno055_t bno055;
 static i2c_rtos_handle_t* master_rtos_handle;
 
 /* Queue to hold the data to be send to the task consumming it */
-osaMsgQId_t gBno055NewMessageMeasureQ;
+osaMsgQId_t gBno055NewMeasureQ;
 
 /* Current interval beetwen measures */
 uint32_t mIntervalNewMsgSentMilliSeconds = BNO055_MINIMUM_MEASURE_INTERVAL_MS * 10;
@@ -69,7 +69,7 @@ void Bno055_Task(osaTaskParam_t argument)
 		rslt += bno055_convert_float_mag_xyz_uT(&bno055Data->mag_xyz);
 		rslt += bno055_convert_float_gravity_xyz_msq(&bno055Data->gravity);
 
-		if(OSA_MsgQPut(gBno055NewMessageMeasureQ, &bno055Data) == osaStatus_Success) {
+		if(OSA_MsgQPut(gBno055NewMeasureQ, &bno055Data) == osaStatus_Success) {
 			/* Only notify main task if the message can be added successfully to the Queue */
 			OSA_EventSet(gDevBoxAppEvent, gDevBoxTaskEvtNewBno055MeasureAvailable_c);
 		} else {
@@ -89,8 +89,8 @@ osaStatus_t Bno055_TaskInit(i2c_rtos_handle_t* i2c_master_rtos_handle)
 	master_rtos_handle = i2c_master_rtos_handle;
 
 	/* Create application Queue */
-	gBno055NewMessageMeasureQ = OSA_MsgQCreate(BNO055_MEASURE_QUEUE_SIZE);
-	if ( NULL == gBno055NewMessageMeasureQ)
+	gBno055NewMeasureQ = OSA_MsgQCreate(BNO055_MEASURE_QUEUE_SIZE);
+	if ( NULL == gBno055NewMeasureQ)
 	{
 		panic(0, 0, 0, 0);
 		return osaStatus_Error;

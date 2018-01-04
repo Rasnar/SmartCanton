@@ -241,7 +241,7 @@ static tmrTimerID_t mBatteryMeasurementTimerId;
 static tmrTimerID_t mLoRaSendNewFrameTimerId;
 static tmrTimerID_t mBleScannerTimerId;
 
-osaMsgQId_t gBleScannerNewMessageMeasureQ;
+osaMsgQId_t gBleScannerNewMeasureQ;
 
 /* indicate the interval beetwen each LoRa packet
  * This value can be modified by a LoRa Downlink request (*/
@@ -572,8 +572,8 @@ static void BleApp_Config()
 	mBleScannerTimerId = TMR_AllocateTimer();
 
 	/* Create application Queue */
-	gBleScannerNewMessageMeasureQ = OSA_MsgQCreate(BLE_SCANNER_MEASURE_QUEUE_SIZE);
-	if ( NULL == gBleScannerNewMessageMeasureQ)
+	gBleScannerNewMeasureQ = OSA_MsgQCreate(BLE_SCANNER_MEASURE_QUEUE_SIZE);
+	if ( NULL == gBleScannerNewMeasureQ)
 	{
 		panic(0, 0, 0, 0);
 	}
@@ -1005,7 +1005,7 @@ static void BleScannerReportDevicesFoundCallback(void * pParam)
 
 	OSA_InterruptEnable();
 
-	if (OSA_MsgQPut(gBleScannerNewMessageMeasureQ, &bleScannerData) == osaStatus_Success)
+	if (OSA_MsgQPut(gBleScannerNewMeasureQ, &bleScannerData) == osaStatus_Success)
 	{
 		/* Only notify main task if the message can be added successfully to the Queue */
 		OSA_EventSet(gDevBoxAppEvent, gDevBoxTaskEvtNewBleScannerMeasureAvailable_c);
@@ -1119,7 +1119,7 @@ void DevBox_App_Task(osaTaskParam_t argument)
 			gpsData_t* gpsData_tmp;
 
 			/* Retrieve data pointer */
-			while (OSA_MsgQGet(gGpsNewMessageMeasureQ, &gpsData_tmp, 0) == osaStatus_Success)
+			while (OSA_MsgQGet(gGpsNewMeasureQ, &gpsData_tmp, 0) == osaStatus_Success)
 			{
 				/* Store value in local in case we want to use it later on */
 				FLib_MemCpy(&gpsData, gpsData_tmp, sizeof(gpsData));
@@ -1141,7 +1141,7 @@ void DevBox_App_Task(osaTaskParam_t argument)
 			bme680Data_t* bme680Data_tmp;
 
 			/* Retrieve data pointer */
-			while (OSA_MsgQGet(gBme680NewMessageMeasureQ, &bme680Data_tmp, 0)
+			while (OSA_MsgQGet(gBme680NewMeasureQ, &bme680Data_tmp, 0)
 					== osaStatus_Success)
 			{
 				/* Store value in local in case we want to use it later on */
@@ -1163,7 +1163,7 @@ void DevBox_App_Task(osaTaskParam_t argument)
 			bno055Data_t* bno055Data_tmp;
 
 			/* Retrieve data pointer */
-			while (OSA_MsgQGet(gBno055NewMessageMeasureQ, &bno055Data_tmp, 0)
+			while (OSA_MsgQGet(gBno055NewMeasureQ, &bno055Data_tmp, 0)
 					== osaStatus_Success)
 			{
 				/* Store value in local in case we want to use it later on */
@@ -1185,7 +1185,7 @@ void DevBox_App_Task(osaTaskParam_t argument)
 			bleScannerData_t* bleScannerData_tmp;
 
 			/* Retrieve data pointer */
-			while (OSA_MsgQGet(gBleScannerNewMessageMeasureQ, &bleScannerData_tmp, 0)
+			while (OSA_MsgQGet(gBleScannerNewMeasureQ, &bleScannerData_tmp, 0)
 					== osaStatus_Success)
 			{
 				/* Store value in local in case we want to use it later on */
@@ -1303,7 +1303,7 @@ void DevBox_App_Task(osaTaskParam_t argument)
 				FLib_MemCpy(lorawanControllerData->data, cayenneLPPgetBuffer(),
 						lorawanControllerData->dataLength);
 
-				if (OSA_MsgQPut(gLorawanCtrlSendNewMessageQ, &lorawanControllerData) == osaStatus_Success)
+				if (OSA_MsgQPut(gLorawanCtrlSendNewMsgQ, &lorawanControllerData) == osaStatus_Success)
 				{
 					/* Notify the LoRaWAN controller to read the pending data */
 					OSA_EventSet(gLoRaControllerEvent, gLoRaCtrlTaskEvtNewMsgToSend_c);
@@ -1324,7 +1324,7 @@ void DevBox_App_Task(osaTaskParam_t argument)
 			lorawanControllerDataReceived_t* lorawanDataReceived;
 
 			/* Retrieve data pointer */
-			while (OSA_MsgQGet(gLorawanCtrlReceiveNewMessageQ, &lorawanDataReceived, 0)
+			while (OSA_MsgQGet(gLorawanCtrlReceiveNewMsgQ, &lorawanDataReceived, 0)
 					== osaStatus_Success)
 			{
 				switch (lorawanDataReceived->port)

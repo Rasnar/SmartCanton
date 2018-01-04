@@ -18,7 +18,7 @@
 #define GPS_MEASURE_QUEUE_SIZE	4
 
 /* Queue to hold the data to be send to the task consumming it */
-extern osaMsgQId_t gGpsNewMessageMeasureQ;
+extern osaMsgQId_t gGpsNewMeasureQ;
 
 typedef struct gpsData_tag
 {

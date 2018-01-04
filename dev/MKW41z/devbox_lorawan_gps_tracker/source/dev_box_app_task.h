@@ -96,7 +96,7 @@ extern osaEventId_t gDevBoxAppEvent;
 #define BLE_SCANNER_MEASURE_QUEUE_SIZE 								4
 
 /* Queue to hold the data to be send to the task consumming the data */
-extern osaMsgQId_t gBleScannerNewMessageMeasureQ;
+extern osaMsgQId_t gBleScannerNewMeasureQ;
 
 typedef struct bleScannerData_tag
 {
