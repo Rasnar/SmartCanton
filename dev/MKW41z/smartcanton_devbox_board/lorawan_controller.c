@@ -92,7 +92,7 @@ static lorawanControllerStatus_t lorawan_controller_write_configuration_to_flash
 
 
 /**
- * Callback called by the ATCommander library to write bytes
+ * @brief Callback called by the ATCommander library to write bytes
  */
 void at_commander_write_byte(void* device, uint8_t byte)
 {
@@ -100,7 +100,7 @@ void at_commander_write_byte(void* device, uint8_t byte)
 }
 
 /**
- * Function called by the AT Commander to read one byte from the Queue
+ * @brief Function called by the AT Commander to read one byte from the Queue
  */
 int at_commander_read_byte(void* device)
 {
@@ -122,11 +122,22 @@ int at_commander_read_byte(void* device)
 }
 
 /**
- * AT Commander function to wait from device to have a response
+ * @brief AT Commander function to wait from device to have a response
  */
 void at_commander_delayms(long unsigned int delayInMs)
 {
 	OSA_TimeDelay(delayInMs);
+}
+
+/**
+ * @brief Function to flush the RX buffer used by the serial manager
+ */
+static void lorawan_controller_flush_rx_buffer(void)
+{
+	char data[64];
+	uint16_t bytesRead;
+	/* Empty reception buffer with glitches from the reset */
+	Serial_Read(0, (uint8_t*) data, sizeof(data), &bytesRead);
 }
 
 lorawanControllerStatus_t lorawan_controller_set_cmd(AtCommand cmd, ...)
@@ -143,6 +154,8 @@ lorawanControllerStatus_t lorawan_controller_set_cmd(AtCommand cmd, ...)
 	cmd.request_format = request;
 
 	OSA_MutexLock(cmdMutexId, 1000);
+	lorawan_controller_flush_rx_buffer();
+
 	if (!at_commander_set(&config, &cmd))
 	{
 		OSA_MutexUnlock(cmdMutexId);
@@ -161,6 +174,8 @@ inline int lorawan_controller_get_cmd(AtCommand cmd, char* response_buffer, int 
 	int status;
 
 	OSA_MutexLock(cmdMutexId, 1000);
+	lorawan_controller_flush_rx_buffer();
+
 	status = at_commander_get(&config, &cmd, response_buffer, response_buffer_length);
 	OSA_MutexUnlock(cmdMutexId);
 

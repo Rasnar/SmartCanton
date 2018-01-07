@@ -67,6 +67,7 @@ void Lorawan_Controller_Task(osaTaskParam_t argument)
 
 		OSA_EventWait(gLoRaControllerEvent, osaEventFlagsAll_c, FALSE, osaWaitForever_c, &event);
 
+
 		/**
 		 * This event force a new config from the configuration that is stored in local
 		 */
@@ -75,7 +76,7 @@ void Lorawan_Controller_Task(osaTaskParam_t argument)
 			Led1Flashing();
 			lorawanControllerStatus_t status = lorawan_controller_init_module();
 
-			/* The configuration is successfull because we joined a new network */
+			/* The configuration is successful because we joined a new network */
 			if (status == lorawanController_Success)
 			{
 				/* Notify the main app that a the LoRaWAN module is ready to be used */
@@ -183,7 +184,9 @@ void Lorawan_Controller_Task(osaTaskParam_t argument)
 					delayReceiveWindow2 = convertIntStringToInt(dataStr);
 
 					/* Wait the end of the receive window to check if data have been received */
-					OSA_TimeDelay(delayReceiveWindow2);
+					if(delayReceiveWindow2 > 0) {
+						OSA_TimeDelay(delayReceiveWindow2);
+					}
 
 					/* Read from the module Downlink data buffer */
 					bytesRead = lorawan_controller_get_cmd(CMD_LAST_RECEIVED_BIN_DATA,
