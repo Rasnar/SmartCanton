@@ -225,11 +225,11 @@ lorawanControllerStatus_t lorawan_controller_init_module()
 	/* Read the configuration from the module to be sure that the one store is correct */
 	lorawan_controller_read_module_configuration();
 
-//	/* Save the configuration to flash */
-//	if (lorawan_controller_write_configuration_to_flash() != lorawanController_Success)
-//	{
-//		return lorawanController_Error;
-//	}
+	/* Save the configuration to flash */
+	if (lorawan_controller_write_configuration_to_flash() != lorawanController_Success)
+	{
+		return lorawanController_Error;
+	}
 
 	return lorawanController_Success;
 }
