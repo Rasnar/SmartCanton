@@ -289,7 +289,7 @@ osaStatus_t lorawan_controller_init(void)
 	 * the data has been corrupted (eg. by turning off the board when the
 	 * configuration was been written).
 	 */
-	if(currentLoRaWanConfig.crc == crc16((uint8_t*)&currentLoRaWanConfig,
+	if(currentLoRaWanConfig.crc == crc16((uint8_t*)&currentLoRaWanConfig + sizeof(currentLoRaWanConfig.crc),
 			sizeof(currentLoRaWanConfig) - sizeof(currentLoRaWanConfig.crc)))
 	{
 		/* If the magic word is not correct it means that the configuration has been
@@ -337,7 +337,7 @@ void lorawan_controller_apply_default_configuration()
 	currentLoRaWanConfig.magicWord = LORAWAN_CONTROLLER_MAGIC_WORD;
 
 	/* Calculate the crc on all the data except the crc value itsef */
-	currentLoRaWanConfig.crc = crc16((uint8_t*)&currentLoRaWanConfig,
+	currentLoRaWanConfig.crc = crc16((uint8_t*)&currentLoRaWanConfig + sizeof(currentLoRaWanConfig.crc),
 			sizeof(currentLoRaWanConfig) - sizeof(currentLoRaWanConfig.crc));
 
 }
@@ -463,6 +463,10 @@ static lorawanControllerStatus_t lorawan_controller_write_configuration_to_flash
 	// Disable hardware interrupts while accessing memory flash
 	OSA_DisableIRQGlobal();
 
+	/* Calculate the crc on all the data except the crc value itsef */
+	currentLoRaWanConfig.crc = crc16((uint8_t*)&currentLoRaWanConfig + sizeof(currentLoRaWanConfig.crc),
+			sizeof(currentLoRaWanConfig) - sizeof(currentLoRaWanConfig.crc));
+
 	// Equivalent to taskENTER_CRITICAL in freertos. It's means to disable all context
 	// switch in this code.
 	OSA_InterruptDisable();
@@ -568,16 +572,58 @@ static lorawanControllerStatus_t lorawan_controller_flash_init(void)
  * @param length Length of the data
  * @return uint16_t CRC 16 bit
  */
-static uint16_t crc16(const uint8_t* data_p, uint32_t length)
+#define CRC16 0x8005
+static uint16_t crc16(const uint8_t* data, uint32_t size)
 {
-	unsigned char x;
-	unsigned short crc = 0xFFFF;
+	uint16_t out = 0;
+	int bits_read = 0, bit_flag;
 
-	while (length--)
+	/* Sanity check: */
+	if (data == NULL)
+		return 0;
+
+	while (size > 0)
 	{
-		x = crc >> 8 ^ *data_p++;
-		x ^= x >> 4;
-		crc = (crc << 8) ^ ((unsigned short) (x << 12)) ^ ((unsigned short) (x << 5)) ^ ((unsigned short) x);
+		bit_flag = out >> 15;
+
+		/* Get next bit: */
+		out <<= 1;
+		out |= (*data >> bits_read) & 1; // item a) work from the least significant bits
+
+		/* Increment bit counter: */
+		bits_read++;
+		if (bits_read > 7)
+		{
+			bits_read = 0;
+			data++;
+			size--;
+		}
+
+		/* Cycle check: */
+		if (bit_flag)
+			out ^= CRC16;
+
 	}
+
+	// item b) "push out" the last 16 bits
+	int i;
+	for (i = 0; i < 16; ++i)
+	{
+		bit_flag = out >> 15;
+		out <<= 1;
+		if (bit_flag)
+			out ^= CRC16;
+	}
+
+	// item c) reverse the bits
+	uint16_t crc = 0;
+	i = 0x8000;
+	int j = 0x0001;
+	for (; i != 0; i >>= 1, j <<= 1)
+	{
+		if (i & out)
+			crc |= j;
+	}
+
 	return crc;
 }

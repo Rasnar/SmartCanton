@@ -35,6 +35,12 @@
  */
 typedef struct lorawanControllerConfiguration_tag
 {
+	// Used to make the lorawanControllerConfiguration_tag a
+	// multiple of 4 and to verify validity
+	uint16_t crc;
+
+	uint32_t magicWord;
+
 	char appEui[24];
 	char appKey[48];
 	char devEui[24];
@@ -46,12 +52,6 @@ typedef struct lorawanControllerConfiguration_tag
 	char networkJoinMode[2];
 	char confirmMode[2];
 	char etsiDutyCycleEnable[2];
-
-	uint32_t magicWord;
-
-	// Used to make the lorawanControllerConfiguration_tag a
-	// multiple of 4 and to verify validity
-	uint16_t crc;
 } lorawanControllerConfiguration_t;
 
 typedef enum lorawanControllerStatus_tag
