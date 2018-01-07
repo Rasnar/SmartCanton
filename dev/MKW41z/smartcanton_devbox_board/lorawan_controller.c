@@ -71,7 +71,7 @@ osaMutexId_t cmdMutexId;
 /* Flash driver Structure */
 static flash_config_t s_flashDriver;
 
-uint32_t flashDestAdrss; /* Address of the target location */
+static uint32_t flashDestAdrss; /* Address of the target location */
 
 /* Flash attributes */
 static uint32_t pflashBlockBase = 0;

@@ -13,6 +13,7 @@
 #include "fsl_gpio.h"
 #include "GPIO_Adapter.h"
 #include "FunctionLib.h"
+#include "fsl_flash.h"
 
 /* Handle to the i2c (thread safe) */
 static i2c_rtos_handle_t* master_rtos_handle;
@@ -60,6 +61,37 @@ const uint8_t generic_33v_300s_4d[400] =
 		255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
 		48, 117, 0, 0, 0, 0, 32, 195, 0, 0 };
 
+
+/* Structure to store the BME680 state in flash. This structure is
+ * used to read and write the data from flash
+ */
+typedef struct bme680State_tag
+{
+	uint8_t state[400];
+	uint32_t length;
+}bme680State_t;
+
+bme680State_t bme680State;
+
+/**
+ * Flash programmer
+ */
+/* Flash driver Structure */
+static flash_config_t s_flashDriver;
+
+static uint32_t flashDestAdrss; /* Address of the target location */
+
+/* Flash attributes */
+static uint32_t pflashBlockBase = 0;
+static uint32_t pflashTotalSize = 0;
+static uint32_t pflashSectorSize = 0;
+
+bme680BsecIntegrationStatus_t bme680_bsec_kw41z_controller_flash_init(void);
+static bme680BsecIntegrationStatus_t bme680_bsec_kw41z_write_state_to_flash(
+		bme680State_t* bme680StateToSave);
+static void inline bme680_bsec_kw41z_read_state_from_flash(
+		bme680State_t* bme680StateToRead);
+
 /*!
  * @brief           Load previous library state from non-volatile memory
  *
@@ -77,7 +109,18 @@ uint32_t state_load(uint8_t *state_buffer, uint32_t n_buffer)
     // Return zero if loading was unsuccessful or no state was available,
     // otherwise return length of loaded state string.
     // ...
-    return 0;
+	bme680_bsec_kw41z_read_state_from_flash(&bme680State);
+
+	if (bme680State.length <= n_buffer)
+	{
+		FLib_MemCpy(state_buffer, bme680State.state, bme680State.length);
+	}
+	else
+	{
+		return 0;
+	}
+
+    return bme680State.length;
 }
 
 /*!
@@ -94,6 +137,11 @@ void state_save(const uint8_t *state_buffer, uint32_t length)
 	// TODO :
     // Save the string some form of non-volatile memory, if possible.
     // ...
+
+	FLib_MemCpy(bme680State.state, (uint8_t *)state_buffer, length);
+	bme680State.length = length;
+
+	bme680_bsec_kw41z_write_state_to_flash(&bme680State);
 }
 
 /*!
@@ -224,7 +272,132 @@ return_values_init bme680_bsec_kw41z_I2C_routines_init(struct bme680_dev *bme680
 void bme680_bsec_kw41z_iot_loop(output_ready_fct output_ready)
 {
 	/* Call to endless loop function which reads and processes data based on sensor settings */
-	/* State is saved every 10.000 samples, which means every 5.000 * 3 secs = 250 minutes  */
-	bsec_iot_loop(sleep, get_timestamp_us, output_ready, state_save, 5000);
+	/* State is saved every 10.000 samples, which means every 1200 * 3 secs = 60 minutes  */
+	bsec_iot_loop(sleep, get_timestamp_us, output_ready, state_save, 1200);
 
+}
+
+/**
+ * @brief Read the data stored in flash from the last valid configuration
+ * 		  (NOTE: DATA NEED TO BE ALIGNED TO 32 BIT LENGTH)
+ *
+ */
+static void inline bme680_bsec_kw41z_read_state_from_flash(
+		bme680State_t* bme680StateToRead)
+{
+
+	FLib_MemCpy((uint32_t *) bme680StateToRead, (uint32_t *) flashDestAdrss, sizeof(bme680State_t));
+}
+
+/**
+ * @brief Write the current local configuration to flash. (Thread safe)
+ * 		  (NOTE: DATA NEED TO BE ALIGNED TO 32 BIT LENGTH)
+ *
+ * @return bme680BsecIntegrationStatus_t bme680BsecIntegration_Success if the
+ * flash is ready to be used, otherwise bme680BsecIntegration_Error
+ */
+static bme680BsecIntegrationStatus_t bme680_bsec_kw41z_write_state_to_flash(
+		bme680State_t* bme680StateToSave)
+{
+	uint32_t failAddr, failDat;
+
+	// Disable hardware interrupts while accessing memory flash
+	OSA_DisableIRQGlobal();
+
+	// Equivalent to taskENTER_CRITICAL in freertos. It's means to disable all context
+	// switch in this code.
+	OSA_InterruptDisable();
+
+	status_t result = FLASH_Erase(&s_flashDriver, flashDestAdrss, pflashSectorSize, kFLASH_ApiEraseKey);
+	if (kStatus_FLASH_Success != result)
+	{
+		OSA_InterruptEnable();
+		OSA_EnableIRQGlobal();
+		return bme680BsecIntegration_Error;
+	}
+
+	/* Verify sector if it's been erased. */
+	result = FLASH_VerifyErase(&s_flashDriver, flashDestAdrss, pflashSectorSize,
+			kFLASH_MarginValueUser);
+	if (kStatus_FLASH_Success != result)
+	{
+		OSA_InterruptEnable();
+		OSA_EnableIRQGlobal();
+		return bme680BsecIntegration_Error;
+	}
+
+	/* Program user buffer into flash*/
+	result = FLASH_Program(&s_flashDriver, flashDestAdrss, (uint32_t *)
+			bme680StateToSave->state, sizeof(bme680State_t));
+	if (kStatus_FLASH_Success != result)
+	{
+		OSA_InterruptEnable();
+		OSA_EnableIRQGlobal();
+		return bme680BsecIntegration_Error;
+	}
+
+	/* Verify programming by Program Check command with user margin levels */
+	result = FLASH_VerifyProgram(&s_flashDriver, flashDestAdrss, sizeof(bme680State_t),
+			(uint32_t *) bme680StateToSave->state, kFLASH_MarginValueUser, &failAddr, &failDat);
+	if (kStatus_FLASH_Success != result)
+	{
+		OSA_InterruptEnable();
+		OSA_EnableIRQGlobal();
+		return bme680BsecIntegration_Error;
+	}
+
+	OSA_InterruptEnable();
+	OSA_EnableIRQGlobal();
+	return bme680BsecIntegration_Success;
+}
+
+/**
+ * @brief Initialize the flash driver to read and write from the flash.
+ *
+ * @return bme680BsecIntegrationStatus_t bme680BsecIntegration_Success if the
+ * flash is ready to be used, otherwise bme680BsecIntegration_Error
+ */
+bme680BsecIntegrationStatus_t bme680_bsec_kw41z_controller_flash_init(void)
+{
+	/* Clean up Flash driver Structure*/
+	memset(&s_flashDriver, 0, sizeof(flash_config_t));
+
+	status_t result = FLASH_Init(&s_flashDriver);
+	if (kStatus_FLASH_Success != result)
+	{
+		return bme680BsecIntegration_Error;
+	}
+
+	/* Get flash properties*/
+	FLASH_GetProperty(&s_flashDriver, kFLASH_PropertyPflashBlockBaseAddr, &pflashBlockBase);
+	FLASH_GetProperty(&s_flashDriver, kFLASH_PropertyPflashTotalSize, &pflashTotalSize);
+	FLASH_GetProperty(&s_flashDriver, kFLASH_PropertyPflashSectorSize, &pflashSectorSize);
+
+	flash_security_state_t securityStatus = kFLASH_SecurityStateNotSecure; /* Return protection status */
+
+	/* Check security status. */
+	result = FLASH_GetSecurityState(&s_flashDriver, &securityStatus);
+	if (kStatus_FLASH_Success != result)
+	{
+		return bme680BsecIntegration_Error;
+	}
+
+	/* Print security status. */
+	switch (securityStatus)
+	{
+	case kFLASH_SecurityStateNotSecure:
+		break;
+	case kFLASH_SecurityStateBackdoorEnabled:
+		return bme680BsecIntegration_Error;
+		break;
+	case kFLASH_SecurityStateBackdoorDisabled:
+		return bme680BsecIntegration_Error;
+		break;
+	default:
+		break;
+	}
+
+	flashDestAdrss = pflashBlockBase + (pflashTotalSize - 2*pflashSectorSize);
+
+	return bme680BsecIntegration_Success;
 }

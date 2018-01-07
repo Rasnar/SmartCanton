@@ -80,6 +80,8 @@ void Bme680_Task(osaTaskParam_t argument)
 	int8_t rslt = 0;
 	(void)rslt;
 
+	bme680_bsec_kw41z_controller_flash_init();
+
 	while (1)
 	{
 		bme680_bsec_kw41z_I2C_routines_init(&bme680, master_rtos_handle);
