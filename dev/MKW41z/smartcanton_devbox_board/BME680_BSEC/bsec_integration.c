@@ -545,6 +545,12 @@ void bsec_iot_loop(sleep_fct sleep, get_timestamp_us_fct get_timestamp_us, outpu
         else {
         	time_stamp_interval_ms = time_stamp_interval_ms;
 			sleep((uint32_t)3); // By default the wait time is 3s
+
+			bsec_status = bsec_get_state(0, bsec_state, sizeof(bsec_state), work_buffer, sizeof(work_buffer), &bsec_state_len);
+			if (bsec_status == BSEC_OK)
+			{
+				state_save(bsec_state, bsec_state_len);
+			}
 			return;
         }
     }

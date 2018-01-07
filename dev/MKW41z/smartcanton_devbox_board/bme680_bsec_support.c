@@ -12,6 +12,7 @@
 #include "fsl_os_abstraction.h"
 #include "fsl_gpio.h"
 #include "GPIO_Adapter.h"
+#include "FunctionLib.h"
 
 /* Handle to the i2c (thread safe) */
 static i2c_rtos_handle_t* master_rtos_handle;
@@ -20,6 +21,44 @@ static i2c_rtos_handle_t* master_rtos_handle;
 length to read/write */
 static i2c_master_transfer_t masterXfer;
 
+/* These arrays are configuration availables for the BME680
+ * Please refer to the PDF named "Integration Guide Bosch Software
+ * Environmental Cluster (BSEC)" for more information */
+/* generic_33v_3s_4d 3.3V 3s 4 days */
+const uint8_t generic_33v_3s_4d[400] =
+{ 1, 5, 4, 1, 61, 0, 0, 0, 0, 0, 0, 0, 120, 1, 0, 0, 105, 0, 1, 0, 3, 205, 204, 76, 62, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 113, 61, 138, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 137, 65, 0, 63, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 225, 68, 0, 192, 168, 71, 40, 0, 2, 0, 0, 0, 0,
+		0, 0, 0, 250, 67, 0, 0, 97, 67, 0, 0, 200, 65, 0, 0, 200, 65, 173, 250, 228, 64, 41, 28, 93, 67, 0, 0,
+		112, 65, 0, 0, 0, 63, 9, 0, 5, 0, 0, 0, 0, 0, 1, 51, 0, 9, 0, 10, 215, 163, 59, 205, 204, 204, 61,
+		225, 122, 148, 62, 41, 92, 15, 61, 0, 0, 0, 63, 0, 0, 0, 63, 154, 153, 89, 63, 154, 153, 25, 62, 1, 1,
+		0, 0, 128, 63, 6, 236, 81, 184, 61, 51, 51, 131, 64, 40, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 131, 0, 254, 0, 2, 1, 5, 48,
+		117, 100, 0, 44, 1, 151, 7, 132, 3, 197, 0, 144, 1, 64, 1, 64, 1, 48, 117, 48, 117, 48, 117, 48, 117,
+		100, 0, 100, 0, 100, 0, 48, 117, 48, 117, 48, 117, 100, 0, 100, 0, 48, 117, 100, 0, 100, 0, 100, 0,
+		100, 0, 48, 117, 48, 117, 48, 117, 100, 0, 100, 0, 100, 0, 48, 117, 48, 117, 100, 0, 44, 1, 44, 1, 44,
+		1, 44, 1, 44, 1, 44, 1, 44, 1, 44, 1, 44, 1, 44, 1, 44, 1, 44, 1, 44, 1, 255, 255, 255, 255, 255, 255,
+		255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+		44, 1, 0, 0, 0, 0, 178, 202, 0, 0 };
+
+/* generic_33v_3s_4d 3.3V 300s 4 days */
+const uint8_t generic_33v_300s_4d[400] =
+{ 1, 5, 4, 1, 61, 0, 0, 0, 0, 0, 0, 0, 120, 1, 0, 0, 105, 0, 1, 0, 3, 205, 204, 76, 62, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 113, 61, 138, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 137, 65, 0, 63, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 225, 68, 0, 192, 168, 71, 40, 0, 2, 0, 0, 0, 0,
+		0, 0, 0, 250, 67, 0, 0, 97, 67, 0, 0, 200, 65, 0, 0, 200, 65, 173, 250, 228, 64, 41, 28, 93, 67, 0, 0,
+		112, 65, 0, 0, 0, 63, 9, 0, 5, 0, 0, 0, 0, 0, 1, 51, 0, 9, 0, 10, 215, 163, 59, 205, 204, 204, 61,
+		225, 122, 148, 62, 41, 92, 15, 61, 0, 0, 0, 63, 0, 0, 0, 63, 154, 153, 89, 63, 154, 153, 25, 62, 1, 1,
+		0, 0, 128, 63, 6, 236, 81, 184, 61, 51, 51, 131, 64, 40, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 131, 0, 254, 0, 2, 1, 5, 48,
+		117, 100, 0, 44, 1, 151, 7, 132, 3, 197, 0, 144, 1, 64, 1, 64, 1, 48, 117, 48, 117, 48, 117, 48, 117,
+		100, 0, 100, 0, 100, 0, 48, 117, 48, 117, 48, 117, 100, 0, 100, 0, 48, 117, 100, 0, 100, 0, 100, 0,
+		100, 0, 48, 117, 48, 117, 48, 117, 100, 0, 100, 0, 100, 0, 48, 117, 48, 117, 100, 0, 44, 1, 44, 1, 44,
+		1, 44, 1, 44, 1, 44, 1, 44, 1, 44, 1, 44, 1, 44, 1, 44, 1, 44, 1, 44, 1, 255, 255, 255, 255, 255, 255,
+		255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+		48, 117, 0, 0, 0, 0, 32, 195, 0, 0 };
 
 /*!
  * @brief           Load previous library state from non-volatile memory
@@ -67,14 +106,16 @@ void state_save(const uint8_t *state_buffer, uint32_t length)
  */
 uint32_t config_load(uint8_t *config_buffer, uint32_t n_buffer)
 {
-    // ...
-	// TODO :
-    // Load a library config from non-volatile memory, if available.
-    //
-    // Return zero if loading was unsuccessful or no config was available,
-    // otherwise return length of loaded config string.
-    // ...
-    return 0;
+	/* By default we load the generic_33v_3s_4d config. More configuration can be found in the
+	 * BSEC folder.
+	 */
+	if (n_buffer >= sizeof(generic_33v_3s_4d))
+	{
+		FLib_MemCpy(config_buffer, (uint8_t *)generic_33v_3s_4d, sizeof(generic_33v_3s_4d));
+		return sizeof(generic_33v_3s_4d);
+	}
+
+	return 0;
 }
 
 /*!
@@ -183,7 +224,7 @@ return_values_init bme680_bsec_kw41z_I2C_routines_init(struct bme680_dev *bme680
 void bme680_bsec_kw41z_iot_loop(output_ready_fct output_ready)
 {
 	/* Call to endless loop function which reads and processes data based on sensor settings */
-	/* State is saved every 10.000 samples, which means every 10.000 * 3 secs = 500 minutes  */
-	bsec_iot_loop(sleep, get_timestamp_us, output_ready, state_save, 10000);
+	/* State is saved every 10.000 samples, which means every 5.000 * 3 secs = 250 minutes  */
+	bsec_iot_loop(sleep, get_timestamp_us, output_ready, state_save, 5000);
 
 }
