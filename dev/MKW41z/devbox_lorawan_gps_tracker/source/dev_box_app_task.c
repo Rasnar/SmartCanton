@@ -107,7 +107,7 @@ static uint16_t                mScannedDevicesCount;
 /* Battery level BLE report interval in seconds  */
 #define mBatteryLevelReportInterval_c   			(30)
 /* Every x seconds that the BLE history is wiped to remove hold data  */
-#define mBleScannerReportScanInterval_default_c   	(BLE_SCANNER_MINIMUM_SCAN_INTERVAL_SEC)
+#define mBleScannerReportScanInterval_default_c   	(BLE_SCANNER_MINIMUM_SCAN_INTERVAL_SEC*3)
 /* LoRaWAN new data interval in minutes  */
 #define mLoRaNewDataReportInterval_default_c   		(1)
 
@@ -992,6 +992,8 @@ static void BleScannerReportDevicesFoundCallback(void * pParam)
 
 	bleScannerData->bleBeaconsFound = mScannedDevicesCount;
 
+	/* Trying to fix the scan problem (cf. https://community.nxp.com/thread/453829)
+	 * But the fact to restart the scan is not enough... */
 	if (Gap_StopScanning() == gBleSuccess_c)
 	{
 		/* Restart a mew scanner */
@@ -1253,8 +1255,15 @@ void DevBox_App_Task(osaTaskParam_t argument)
 							bme680Data.humidity);
 					cayenneLPPaddBarometricPressure(mCayenneChannelBme680Pressure,
 							bme680Data.pressure);
-					cayenneLPPaddAnalogInput(mCayenneChannelBme680Iaq,
-							bme680Data.iaq);
+
+					/* Only send the IAQ if the accuracy is high enough
+					 * Please refer to the "Integration Guide" of the BSEC lib
+					 * for a description of the IAQ accuracy values */
+					if (bme680Data.iaq_accuracy > 1)
+					{
+						cayenneLPPaddAnalogInput(mCayenneChannelBme680Iaq,
+								bme680Data.iaq);
+					}
 
 					bme680Data = EmptyBme680; // Invalidate the local data for the next msg
 				}
