@@ -69,6 +69,11 @@ void Bno055_Task(osaTaskParam_t argument)
 		rslt += bno055_convert_float_mag_xyz_uT(&bno055Data->mag_xyz);
 		rslt += bno055_convert_float_gravity_xyz_msq(&bno055Data->gravity);
 
+		/* Direcrtly transfert the accelerometer values with g unit */
+		bno055Data->accel_xyz.x /= 1024.0;
+		bno055Data->accel_xyz.y /= 1024.0;
+		bno055Data->accel_xyz.z /= 1024.0;
+
 		if(OSA_MsgQPut(gBno055NewMeasureQ, &bno055Data) == osaStatus_Success) {
 			/* Only notify main task if the message can be added successfully to the Queue */
 			OSA_EventSet(gDevBoxAppEvent, gDevBoxTaskEvtNewBno055MeasureAvailable_c);

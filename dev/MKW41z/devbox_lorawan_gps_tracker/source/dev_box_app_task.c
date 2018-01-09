@@ -1232,9 +1232,9 @@ void DevBox_App_Task(osaTaskParam_t argument)
 						&& mCayenneSensorsEnabled[EN_BNO055])
 				{
 					cayenneLPPaddAccelerometer(mCayenneChannelBno055Accelerometer,
-							bno055Data.accel_xyz.x / 1024.0,
-							bno055Data.accel_xyz.y / 1024.0,
-							bno055Data.accel_xyz.z / 1024.0);
+							bno055Data.accel_xyz.x,
+							bno055Data.accel_xyz.y,
+							bno055Data.accel_xyz.z);
 
 					cayenneLPPaddGyrometer(mCayenneChannelBno055Gyroscope,
 							bno055Data.gyro_xyz.x,
