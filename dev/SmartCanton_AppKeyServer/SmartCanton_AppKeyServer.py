@@ -30,7 +30,7 @@ from datetime import timedelta
 import ssl
 import os
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -138,7 +138,7 @@ def hello():
 
     @return: A message to be sure that the WebServer is running correctly
     """
-    return "hello!"
+    return render_template("index.htm")
 
 
 @app.route('/auth', methods=['POST'])
@@ -481,7 +481,7 @@ def update_device(ble_mac_addr):
     except:
         return jsonify({'message': "Device parameter not valid!"}), 401
 
-    return jsonify({'message': "New device created!"})
+    return jsonify({'message': "Device updated successfully!"})
 
 
 @app.route('/device/<ble_mac_addr>', methods=['DELETE'])

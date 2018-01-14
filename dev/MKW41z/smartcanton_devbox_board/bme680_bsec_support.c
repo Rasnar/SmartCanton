@@ -232,7 +232,41 @@ static void sleep(uint32_t t_ms)
  */
 int64_t get_timestamp_us()
 {
-	return ((int64_t)OSA_TimeGetMsec()) * ((int64_t)1000);
+	static int64_t real_time_us = 0;
+	static int64_t elapsed_time_us = 0;
+
+	static int64_t last_osa_time_us = 0;
+	static int64_t osa_time_us = 0;
+
+	 osa_time_us = ((int64_t)OSA_TimeGetMsec()) * ((int64_t)1000);
+
+	/*
+	 * The max value of OSA_TimeGetMsec is 2^32/1000 = 4294967
+	 * This only give us 70min before the time reset. So we implement
+	 * our own us counter.
+	 */
+	if(osa_time_us < last_osa_time_us)
+	{
+		elapsed_time_us = 4294967000 - last_osa_time_us;
+		elapsed_time_us += osa_time_us;
+		last_osa_time_us = osa_time_us;
+	}
+	else
+	{
+		elapsed_time_us = osa_time_us - last_osa_time_us;
+	}
+
+	last_osa_time_us = osa_time_us;
+
+	if(elapsed_time_us > 0)
+	{
+		real_time_us += elapsed_time_us;
+		return real_time_us;
+	}
+	else // Should never happen, but is it's the case, just discard the change
+	{
+		return ++real_time_us;
+	}
 }
 
 return_values_init bme680_bsec_kw41z_I2C_routines_init(struct bme680_dev *bme680,
@@ -243,7 +277,7 @@ return_values_init bme680_bsec_kw41z_I2C_routines_init(struct bme680_dev *bme680
 
 	/* Call to the function which initializes the BSEC library
 	 * Switch on low-power mode and provide no temperature offset */
-	return_values_init ret = bsec_iot_init(BSEC_SAMPLE_RATE_LP, 0.0f, user_i2c_write, user_i2c_read, sleep,
+	return_values_init ret = bsec_iot_init(BSEC_SAMPLE_RATE_LP, 4.5f, user_i2c_write, user_i2c_read, sleep,
 			state_load, config_load);
 	if (ret.bme680_status)
 	{
@@ -272,7 +306,7 @@ return_values_init bme680_bsec_kw41z_I2C_routines_init(struct bme680_dev *bme680
 void bme680_bsec_kw41z_iot_loop(output_ready_fct output_ready)
 {
 	/* Call to endless loop function which reads and processes data based on sensor settings */
-	/* State is saved every 10.000 samples, which means every 1200 * 3 secs = 60 minutes  */
+	/* State is saved every 10.000 samples, which means every 1800 * 3 secs = 90 minutes  */
 	bsec_iot_loop(sleep, get_timestamp_us, output_ready, state_save, 1200);
 
 }
