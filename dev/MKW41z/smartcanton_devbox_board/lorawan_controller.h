@@ -25,7 +25,7 @@
  * if the user want to force a new default config from the software 
  * point of view, this value can be changed.
  */
-#define LORAWAN_CONTROLLER_MAGIC_WORD	0x1111
+#define LORAWAN_CONTROLLER_MAGIC_WORD	0x1122
 
 /**
  * @brief Structure defining the configuration that will be saved in flash.

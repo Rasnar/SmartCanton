@@ -29,7 +29,7 @@
 #define LORA_DEFAULT_CONFIG_APP_SES_KEY     "00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00"
 #define LORA_DEFAULT_CONFIG_DEV_EUI			"00:00:00:00:00:00:00:00"
 
-#define LORA_DEFAULT_CONFIG_CONFIRM_MODE			"1" 	// 0 : Unconfirmed, 1 : Confirmed messages
+#define LORA_DEFAULT_CONFIG_CONFIRM_MODE			"0" 	// 0 : Unconfirmed, 1 : Confirmed messages
 #define LORA_DEFAULT_CONFIG_NETWORK_JOIN_MODE		"1" 	// 0 : ABP, 1 : OTAA
 #define LORA_DEFAULT_CONFIG_DUTYCYCLE_SETTINGS		"0" 	// 0 : ETSI duty cycle disable, 1 : Enable
 
