@@ -17,7 +17,7 @@
 #define mConfirmStatusReadDelayBeetweenRetry	250 	/* ms */
 #define mConfirmStatusReadNumberOfAttempts		8
 
-#define mResendFrameDelayBeetweenRetry			10000 	/* ms */
+#define mResendFrameDelayBeetweenRetry			1000 	/* ms */
 #define mResendFrameNumberOfAttempts			50
 
 /* Define the task with the given parameters */

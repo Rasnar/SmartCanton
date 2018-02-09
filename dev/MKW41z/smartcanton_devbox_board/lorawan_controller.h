@@ -31,7 +31,6 @@
  * @brief Structure defining the configuration that will be saved in flash.
  * Every time we restart, this configuration is read and reapplied to the 
  * LoRaWAN module.
- * 
  */
 typedef struct lorawanControllerConfiguration_tag
 {

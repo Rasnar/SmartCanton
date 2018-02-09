@@ -165,17 +165,16 @@ gapSmpKeys_t gSmpKeys = {
 
 /* Device Security Requirements */
 static const gapSecurityRequirements_t masterSecurity = {
-		gSecurityMode_1_Level_3_c,
+		gSecurityMode_1_Level_4_c,
         FALSE,
         gDefaultEncryptionKeySize_d
 };
 
 /* Device Security Requirements */
-//static const gapSecurityRequirements_t masterSecurity = gGapDefaultSecurityRequirements_d;
 static const gapServiceSecurityRequirements_t serviceSecurity[1] = {
 	{
 	.requirements = {
-		.securityModeLevel = gSecurityMode_1_Level_3_c,
+		.securityModeLevel = gSecurityMode_1_Level_4_c,
 		.authorization = FALSE,
 		.minimumEncryptionKeySize = gDefaultEncryptionKeySize_d
 	},
