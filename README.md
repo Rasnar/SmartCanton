@@ -37,15 +37,25 @@ The software for the CMWX1ZZABZ-078 can be found under the directory `SmartCanto
 
 ### Bluetooth
 
-The software for the CMWX1ZZABZ-078 can be found under the directory `SmartCanton\dev\MKW41z`. It requires to be open with the MCUXpresso IDE.
+The software for the NXP KW41Z can be found under the directory `SmartCanton\dev\MKW41z`. It requires to be open with the MCUXpresso IDE.
 
 ### Android
 
-In developpement.
+An Application developed with Android Studio is available under the directory `SmartCanton\dev\SmartCantonManager`.
+
+### Web Server
+
+A web server developed using Python 3.6 and Pycharm has been developed. It run coupled with a SQLite to store all the information about the users and the DevBox (LoRaWAN et BLE configurations).
+
+The project can be opened with Pycharm under the directory `SmartCanton\dev\SmartCanton_AppKeyServer`.
 
 ## Documentation
 
+The final report of the project can be found in the root tree of the project under the name ``. It's written in French, with appendices in English. The REST API documentation, an user guide for the Android application and all the BLE services developed can be found as appendices in the PDF file.
+
 All the documentation can be found under the `SmartCanton\documentation` directory.
+
+
 
 
 
