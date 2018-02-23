@@ -51,7 +51,7 @@ The project can be opened with Pycharm under the directory `SmartCanton\dev\Smar
 
 ## Documentation
 
-The final report of the project can be found in the root tree of the project under the name ``. It's written in French, with appendices in English. The REST API documentation, an user guide for the Android application and all the BLE services developed can be found as appendices in the PDF file.
+The final report of the project can be found in the root tree of the project under the name `[Da_Silva_Andrade_TM_2017-2018.pdf](https://github.com/Rasnar/SmartCanton/blob/master/Da_Silva_Andrade_TM_2017-2018.pdf)`. It's written in French, with appendices in English. The REST API documentation, an user guide for the Android application and all the BLE services developed can be found as appendices in the PDF file.
 
 All the documentation can be found under the `SmartCanton\documentation` directory.
 
