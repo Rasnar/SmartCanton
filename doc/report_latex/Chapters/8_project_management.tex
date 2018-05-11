@@ -1,0 +1,48 @@
+\chapter{Gestion du projet}
+% ------------------------------------------------------------------------------ %
+\section{Planning}
+% ------------------------------------------------------------------------------ %
+
+Au démarrage de ce projet, suite à l'établissement du cahier des charges, un planning GANTT a été réalisé. Celui-ci a permis de lister les différentes tâches à réaliser et de fixer des \textit{milestones} pour la réalisation. Le planning GANTT relatif au temps estimé est visible en \cref{AppendixGanttPlanning_estimate}; celui relatif au temps réalisé est quant à lui exposé à l'\cref{AppendixGanttPlanning_real_time}. \\
+
+
+Dans l'ensemble, les prévisions ont été respectées. Quelques changements sont néanmoins survenus sur les différentes tâches à réaliser. Nous nous sommes en effet rendu compte qu'il n'était pas forcément nécessaire de faire 4 petites applications distinctes, puisqu'à l'heure actuelle, seules deux cartes électroniques ont été montées. Nous avons ainsi décidé de faire une seule et unique application qui intègre toutes les fonctionnalités désirées. Cette application est toutefois modulable et les différents capteurs peuvent être désactivés en supprimant les différentes tâches au démarrage (cf. \cref{sec-smartcanton_tasks_overview}). La mise en place de l'API entre les deux microcontrôleurs a été simplifiée par la reprise du projet de commandes AT créé par STMicroelectronics.\\
+
+
+Il découle du planning final en \cref{AppendixGanttPlanning_real_time} que les éléments qui ont requis le plus de temps sont surtout liés au développement logiciel sur le KW41Z. C'était une première expérience avec ce microcontrôleur, de même qu'avec une \textit{stack} Bluetooth sur RTOS, complexifiant ainsi l'implémentation. Certaines tâches se sont révélées plus complexes que prévu, par exemple, la réalisation de l'application Android. À l'origine, il a été prévu 10 jours pour le développement de l'application et les tests avec le serveur; au final, il en a fallu le double, en raison, notamment de l'intégration fastidieuse du Bluetooth sur Android et l'aspect visuel de l'application qui prend du temps si l'on souhaite obtenir un résultat agréable et pratique.\\
+
+Tous ces légers retards ont été rattrapés lors de la mise en place du démonstrateur. Au départ, il avait été imaginé de créer une application web afin d'afficher les différents capteurs, mais un gain de temps a été effectué en utilisant directement une solution comme Cayenne. Finalement, le planning a été respecté, la plus grande partie du projet a été finalisé le 12 janvier 2018, nous laissant ainsi du temps pour préparer la documentation du code et corriger les derniers petits problèmes de stabilité. 
+
+
+% ------------------------------------------------------------------------------ %
+\section{Séparation des dépendances}
+% ------------------------------------------------------------------------------ %
+
+Afin d'éviter une dépendance au matériel électronique, une partie de la programmation a été démarrée sur les cartes de développement des deux processeurs (cf. \cref{3_hardware} pour les différentes cartes de développement disponibles). Cette démarche a accéléré la prise en main des différents IDE imposés par les fabricants et les tests des différentes implémentations logicielles possibles (ex. les différents RTOS disponibles).
+
+% ------------------------------------------------------------------------------ %
+\section{Gestionnaire de version}
+% ------------------------------------------------------------------------------ %
+
+Pour être le plus rigoureux possible, un système de gestion des versions a été utilisé. C'est sur GitHub que le projet a été hébergé : 
+
+\begin{center}
+    \url{https://github.com/Rasnar/SmartCanton}
+\end{center}
+
+Ce dépôt GitHub a aujourd'hui plus de 300 commits. La plupart de ces commits recensent les divers changements effectués. Des balises dans les titres ont été utilisées pour différencier les types de modifications et leur impact (ex. [Android], [KW41Z], etc).
+
+Pour faciliter la tâche, un seul dépôt git a été créé pour le projet intégral. Celui-ci sera splitté en différents sous-projets une fois ce mémoire fini. Le lien GitHub susmentionné restera toujours le même, avec une vue d'ensemble du projet.
+
+% ------------------------------------------------------------------------------ %
+\section{Documentation du code}
+% ------------------------------------------------------------------------------ %
+
+L'intégralité du code source écrit dans ce projet a été commenté en utilisant la syntaxe Doxygen : 
+
+\begin{center}
+\url{https://www.stack.nl/~dimitri/doxygen/manual/docblocks.html}
+\end{center}
+
+Cette syntaxe a été appliquée à trois langages différents; C, Java/Android et Python. Il est ainsi possible de créer la documentation à partir des commentaires créés, mais le temps a manqué pour que cette opération puisse être réalisée dans le cadre de ce projet.
+

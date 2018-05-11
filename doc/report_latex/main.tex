@@ -1,0 +1,655 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Masters/Doctoral Thesis 
+% LaTeX Template
+% Version 2.4 (22/11/16)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Version 2.x major modifications by:
+% Vel (vel@latextemplates.com)
+%
+% This template is based on a template by:
+% Steve Gunn (http://users.ecs.soton.ac.uk/srg/softwaretools/document/templates/)
+% Sunil Patel (http://www.sunilpatel.co.uk/thesis-template/)
+%
+% Template license:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+
+
+\documentclass[
+11pt, % The default document font size, options: 10pt, 11pt, 12pt
+twoside, % Two side (alternating margins) for binding by default, uncomment to switch to one side
+french, % ngerman for German
+singlespacing, % Single line spacing, alternatives: onehalfspacing or doublespacing
+%draft, % Uncomment to enable draft mode (no pictures, no links, overfull hboxes indicated)
+nolistspacing, % If the document is onehalfspacing or doublespacing, uncomment this to set spacing in lists to single
+%liststotoc, % Uncomment to add the list of figures/tables/etc to the table of contents
+%toctotoc, % Uncomment to add the main table of contents to the table of contents
+%parskip, % Uncomment to add space between paragraphs
+%nohyperref, % Uncomment to not load the hyperref package
+headsepline, % Uncomment to get a line under the header
+%chapterinoneline, % Uncomment to place the chapter title next to the number on one line
+% consistentlayout, % Uncomment to change the layout of the declaration, abstract and acknowledgements pages to match the default layout
+]{MastersDoctoralThesis} % The class file specifying the document structure
+
+\usepackage[utf8]{inputenc} % Required for inputting international characters
+\usepackage[T1]{fontenc} % Output font encoding for international characters
+
+\usepackage{palatino} % Use the Palatino font by default
+\usepackage{placeins}
+\usepackage[hyphens]{url}
+\usepackage{amsmath}
+\usepackage{listings}
+ \lstdefinestyle{ascii-tree}{
+    literate={├}{|}1 {─}{--}1 {└}{+}1 
+ }
+\usepackage{textcomp}
+\usepackage{pdfpages}
+\usepackage{rotating}
+\usepackage{tikz}
+
+\usepackage{array}
+\usepackage{caption}
+
+\usepackage{multirow}
+\usepackage{hhline}
+\usepackage{colortbl}
+\usepackage{multicol}
+
+\usepackage{rotating}
+
+\usepackage[backend=biber,style=numeric,sorting=none]{biblatex} % Use the bibtex backend with the authoryear citation style (which resembles APA)
+
+\addbibresource{bibliography.bib} % The filename of the bibliography
+
+\usepackage[autostyle=true]{csquotes} % Required to generate language-dependent quotes in the bibliography
+
+\usepackage[perpage]{footmisc} % Footnote counter reset per page
+
+\usepackage[breaklinks=true,bookmarksopen,bookmarksdepth=5]{hyperref}
+\usepackage{breakcites}
+\usepackage{lmodern}
+
+\usepackage{graphicx}
+\usepackage[nameinlink,capitalize,noabbrev]{cleveref} % 'nameinlink' used to mimic \autoref's behavior of
+                                  % including the cross-reference's name in the link
+                                  
+\usepackage{siunitx}
+
+\usepackage[most]{tcolorbox}
+
+
+\usepackage{titlesec}
+\titleclass{\subsubsubsection}{straight}[\subsection]
+
+\newcounter{subsubsubsection}[subsubsection]
+\renewcommand\thesubsubsubsection{\thesubsubsection.\arabic{subsubsubsection}}
+\renewcommand\theparagraph{\thesubsubsubsection.\arabic{paragraph}} % optional; useful if paragraphs are to be numbered
+
+\titleformat{\subsubsubsection}
+  {\normalfont\normalsize\bfseries}{\thesubsubsubsection}{1em}{}
+\titlespacing*{\subsubsubsection}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+\makeatletter
+\renewcommand\paragraph{\@startsection{paragraph}{5}{\z@}%
+  {3.25ex \@plus1ex \@minus.2ex}%
+  {-1em}%
+  {\normalfont\normalsize\bfseries}}
+\renewcommand\subparagraph{\@startsection{subparagraph}{6}{\parindent}%
+  {3.25ex \@plus1ex \@minus .2ex}%
+  {-1em}%
+  {\normalfont\normalsize\bfseries}}
+\def\toclevel@subsubsubsection{4}
+\def\toclevel@paragraph{5}
+\def\toclevel@paragraph{6}
+\def\l@subsubsubsection{\@dottedtocline{4}{7em}{4em}}
+\def\l@paragraph{\@dottedtocline{5}{10em}{5em}}
+\def\l@subparagraph{\@dottedtocline{6}{14em}{6em}}
+\makeatother
+
+\crefname{subsubsubsection}{Section}{Sections}
+\Crefname{subsubsubsection}{Section}{Sections}
+
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+
+\definecolor{solarized@base03}{HTML}{002B36}
+\definecolor{solarized@base02}{HTML}{073642}
+\definecolor{solarized@base01}{HTML}{586e75}
+\definecolor{solarized@base00}{HTML}{657b83}
+\definecolor{solarized@base0}{HTML}{839496}
+\definecolor{solarized@base1}{HTML}{93a1a1}
+\definecolor{solarized@base2}{HTML}{EEE8D5}
+\definecolor{solarized@base3}{HTML}{FDF6E3}
+\definecolor{solarized@yellow}{HTML}{B58900}
+\definecolor{solarized@orange}{HTML}{CB4B16}
+\definecolor{solarized@red}{HTML}{DC322F}
+\definecolor{solarized@magenta}{HTML}{D33682}
+\definecolor{solarized@violet}{HTML}{6C71C4}
+\definecolor{solarized@blue}{HTML}{268BD2}
+\definecolor{solarized@cyan}{HTML}{2AA198}
+\definecolor{solarized@green}{HTML}{859900}
+\definecolor{solarized@yellowclear}{HTML}{f9f9f9}
+
+\colorlet{LightGray}{gray!1}
+\colorlet{DarkGray}{red!50!black}
+
+\newcommand{\signname}[1]{%      
+  \begin{tabular}[t]{@{}l@{}}
+  \makebox[1.5in]{\hfill}\\
+  \strut#1\strut
+  \end{tabular}%
+}
+\newcommand{\sign}[1]{%      
+  \begin{tabular}[t]{@{}l@{}}
+  \makebox[1.5in]{\dotfill}\\
+  \strut#1\strut
+  \end{tabular}%
+}
+\newcommand{\Date}{%
+  \begin{tabular}[t]{@{}p{1.5in}@{}}
+  \\[-2ex]
+  \strut Date: \dotfill\strut
+  \end{tabular}%
+}
+
+\lstset{
+  language=Ruby,
+  upquote=true,
+  columns=fixed,
+  tabsize=2,
+  extendedchars=true,
+  breaklines=true,
+  frame=single,
+  numbers=left,
+  numbersep=5pt,
+  rulesepcolor=\color{solarized@base03},
+  numberstyle=\tiny\color{solarized@base01},
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=,
+  showstringspaces=false,
+  aboveskip=\baselineskip,
+  belowskip=\baselineskip,
+  %stringstyle=\color{solarized@cyan}\ttfamily,
+  identifierstyle=,
+  %commentstyle=\color{solarized@base01},
+  backgroundcolor=\color{solarized@yellowclear}
+  %emphstyle=\color{solarized@red}
+}
+
+\lstset{
+aboveskip=1ex,
+backgroundcolor=\color{gray!15},
+basicstyle=\small\ttfamily,
+belowskip=1ex,
+breaklines=true,
+columns=fullflexible,
+framerule=0pt,
+framexrightmargin=0em,
+framexleftmargin=0em,
+language=[LaTeX]TeX,
+numbers=left,
+numberstyle=\footnotesize\sffamily,
+tabsize=2
+ % postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+}
+
+\newmintedfile[cfile]{c}{bgcolor=LightGray,fontsize=\footnotesize,linenos}
+
+\usepackage{lipsum}                     % Dummytext
+\usepackage{xargs}                      % Use more than one optional parameter in a new commands
+%\usepackage[pdftex,dvipsnames]{xcolor}  % Coloured text etc.
+% 
+\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
+\newcommandx{\unsure}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,#1]{#2}}
+\newcommandx{\change}[2][1=]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue,#1]{#2}}
+\newcommandx{\info}[2][1=]{\todo[linecolor=OliveGreen,backgroundcolor=OliveGreen!25,bordercolor=OliveGreen,#1]{#2}}
+\newcommandx{\improvement}[2][1=]{\todo[linecolor=Plum,backgroundcolor=Plum!25,bordercolor=Plum,#1]{#2}}
+\newcommandx{\thiswillnotshow}[2][1=]{\todo[disable,#1]{#2}}
+
+\newcommand{\appendixpagenumbering}{
+  \break
+  \pagenumbering{arabic}
+  \renewcommand{\thepage}{\thechapter-\arabic{page}}
+}
+
+%----------------------------------------------------------------------------------------
+%	MARGIN SETTINGS
+%----------------------------------------------------------------------------------------
+
+\geometry{
+	paper=a4paper, % Change to letterpaper for US letter
+	inner=2.5cm, % Inner margin
+	outer=3.8cm, % Outer margin
+	bindingoffset=.5cm, % Binding offset
+	top=1.5cm, % Top margin
+	bottom=1.5cm, % Bottom margin
+	%showframe, % Uncomment to show how the type block is set on the page
+}
+
+%----------------------------------------------------------------------------------------
+%	THESIS INFORMATION
+%----------------------------------------------------------------------------------------
+
+\thesistitle{Projets LoRa pour le SmartCanton de Genève} % Your thesis title, this is used in the title and abstract, print it elsewhere with \ttitle
+\supervisor{Fabien \textsc{Vannel}} % Your supervisor's name, this is used in the title page, print it elsewhere with \supname
+\examiner{TBH} % Your examiner's name, this is not currently used anywhere in the template, print it elsewhere with \examname
+\degree{Master of Science HES-SO in Engineering} % Your degree name, this is used in the title page and abstract, print it elsewhere with \degreename
+\author{David \textsc{Da Silva Andrade}} % Your name, this is used in the title page and abstract, print it elsewhere with \authorname
+\addresses{} % Your address, this is not currently used anywhere in the template, print it elsewhere with \addressname
+
+\subject{Embedded Hardware Engineering} % Your subject area, this is not currently used anywhere in the template, print it elsewhere with \subjectname
+\keywords{} % Keywords for your thesis, this is not currently used anywhere in the template, print it elsewhere with \keywordnames
+\university{\href{https://www.hes-so.ch/}{Haute École Spécialisée de Suisse Occidentale}} % Your university's name and URL, this is used in the title page and abstract, print it elsewhere with \univname
+\department{\href{http://department.university.com}{}} % Your department's name and URL, this is used in the title page and abstract, print it elsewhere with \deptname
+\group{\href{http://hepia.hesge.ch/fr/rad-et-mandats/institut-init/init-institute/}{}} % Your research group's name and URL, this is used in the title page, print it elsewhere with \groupname
+\faculty{\href{http://faculty.university.com}{}} % Your faculty's name and URL, this is used in the title page and abstract, print it elsewhere with \facname
+
+% \AtBeginDocument{
+% \hypersetup{pdftitle=\ttitle} % Set the PDF's title to your title
+% \hypersetup{pdfauthor=\authorname} % Set the PDF's author to your name
+% \hypersetup{pdfkeywords=\keywordnames} % Set the PDF's keywords to your keywords
+% }
+
+\begin{document}
+
+\frontmatter % Use roman page numbering style (i, ii, iii, iv...) for the pre-content pages
+
+\pagestyle{plain} % Default to the plain heading style until the thesis style is called for the body content
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+
+
+\includepdf{front_page.pdf}
+
+% \begin{titlepage}
+% \begin{center}
+
+% \vspace*{.06\textheight}
+% {\scshape\LARGE \univname\par}\vspace{1.5cm} % University name
+% \textsc{\Large Projet d'approfondissement}\\[0.5cm] % Thesis type
+
+% \HRule \\[0.4cm] % Horizontal line
+% {\huge \bfseries \ttitle\par}\vspace{0.4cm} % Thesis title
+% \HRule \\[1.5cm] % Horizontal line
+ 
+% \begin{minipage}[t]{0.4\textwidth}
+% \begin{flushleft} \large
+% \emph{Author:}\\
+% \authorname % Author name - remove the \href bracket to remove the link
+% \end{flushleft}
+% \end{minipage}
+% \begin{minipage}[t]{0.4\textwidth}
+% \begin{flushright} \large
+% \emph{Supervisor:} \\
+% \supname % Supervisor name - remove the \href bracket to remove the link  
+% \end{flushright}
+% \end{minipage}\\[3cm]
+ 
+% \vfill
+
+% \large \textit{A thesis submitted in fulfillment of the requirements\\ for the degree of \degreename}\\[0.3cm] % University requirement text
+% \textit{in the}\\[0.4cm]
+% \groupname\\\deptname\\[2cm] % Research group name and department name
+ 
+% \vfill
+
+% {\large \today}\\[4cm] % Date
+% %\includegraphics{Logo} % University/department logo - uncomment to place it
+ 
+% \vfill
+% \end{center}
+
+
+% \end{titlepage}
+
+%----------------------------------------------------------------------------------------
+%	DECLARATION PAGE
+%----------------------------------------------------------------------------------------
+
+% \begin{declaration}
+% \addchaptertocentry{\authorshipname} % Add the declaration to the table of contents
+% \noindent I, \authorname, declare that this thesis titled, \enquote{\ttitle} and the work presented in it are my own. I confirm that:
+
+% \begin{itemize} 
+% \item This work was done wholly or mainly while in candidature for a research degree at this University.
+% \item Where any part of this thesis has previously been submitted for a degree or any other qualification at this University or any other institution, this has been clearly stated.
+% \item Where I have consulted the published work of others, this is always clearly attributed.
+% \item Where I have quoted from the work of others, the source is always given. With the exception of such quotations, this thesis is entirely my own work.
+% \item I have acknowledged all main sources of help.
+% \item Where the thesis is based on work done by myself jointly with others, I have made clear exactly what was done by others and what I have contributed myself.\\
+% \end{itemize}
+ 
+% \noindent Signed:\\
+% \rule[0.5em]{25em}{0.5pt} % This prints a line for the signature
+ 
+% \noindent Date:\\
+% \rule[0.5em]{25em}{0.5pt} % This prints a line to write the date
+% \end{declaration}
+
+% \cleardoublepage
+
+%----------------------------------------------------------------------------------------
+%	QUOTATION PAGE
+%----------------------------------------------------------------------------------------
+
+% \vspace*{0.2\textheight}
+
+% \noindent\enquote{\itshape Thanks to my solid academic training, today I can write hundreds of words on virtually any topic without possessing a shred of information, which is how I got a good job in journalism.}\bigbreak
+
+% \hfill Dave Barry
+
+%----------------------------------------------------------------------------------------
+%	ABSTRACT PAGE
+%----------------------------------------------------------------------------------------
+
+\begin{abstract}
+% \addchaptertocentry{\abstractname} % Add the abstract to the table of contents
+
+Ce document contient la description, l'analyse ainsi que le développement nécessaire à la réalisation de ce travail de master. Ce travail a été réalisé en collaboration avec la Direction Générale des Systèmes d'Information (DGSI) de la ville et du canton de Genève.\\
+
+Le projet avait pour but de créer une carte électronique pouvant être utilisée pour divers tests de développement d'un réseau LoRaWAN. L'infrastructure de ce réseau a été mise en place sous forme d'un \textit{proof of concept} (poc), via un projet nommé SmartCanton avancé par la ville et le canton de Genève. Le but de ce réseau est d'offrir une plateforme utilisable par les citoyens et les entreprises autour de Genève tout en garantissant une sécurité accrue des données.\\
+
+Dans le cadre de ce projet, une carte électronique a donc été développée afin de répondre à plusieurs critères définis par des \textit{use cases} souhaités par la DGSI. Ces \textit{use cases} ont influencé le choix des technologies utilisées, des composants d'alimentation, la portabilité, les périphériques, etc. Cette carte est équipée de deux types d'interfaces de communication sans fil. Un module LoRa avec une implémentation du protocole LoRaWAN, ainsi qu'un circuit intégré supportant les liaisons Bluetooth Low Energy et IEEE 802.15.4. Cette carte a été dénommée SmartCanton DevBox.\\
+
+Pour pouvoir changer les clés utilisées par la spécification LoRaWAN, une application Android a été développée. Celle-ci se connecte en Bluetooth Low Energy sur la carte électronique pour récupérer les données de certains capteurs, mais surtout afin de pouvoir modifier les informations du réseau LoRaWAN sur lequel la carte se connecte. En parallèle, un serveur exposant une API REST offre la possibilité de gérer des utilisateurs, ainsi que les divers périphériques LoRaWAN assignés à ceux-ci. L'application Android communique avec ce serveur pour authentifier ces utilisateurs et récupérer les diverses informations sur les SmartCanton DevBox connectées via Bluetooth.\\
+
+
+L'affichage final des données capturées par la DevBox est réalisé sur un tableau de bord de la plateforme en ligne Cayenne de l'entreprise MyDevices. Il est ainsi possible de contrôler les données que l'on souhaite recevoir, la fréquence d'émission, de même que changer l'état de certains périphériques via des paquets LoRaWAN.
+
+\end{abstract}
+
+\cleardoublepage
+
+%----------------------------------------------------------------------------------------
+% ACKNOWLEDGEMENTS
+%----------------------------------------------------------------------------------------
+
+\begin{acknowledgements}
+% \addchaptertocentry{Remerciements} % Add the acknowledgements to the table of contents
+~\\
+
+J'adresse mes remerciements aux personnes qui m'ont aidé dans la réalisation de ce travail de master, ainsi que dans la rédaction de ce mémoire.\\
+
+En premier lieu, je remercie M. Fabien Vannel, professeur à la Haute école du paysage, d’ingénierie et d’architecture de Genève. En tant que Directeur de mémoire, il a proposé ce sujet fort intéressant et il a me guider dans mon travail afin de le concrétiser au mieux. Il a également pris sur son temps pour m'aider à trouver des solutions aux différentes problématiques rencontrées durant l'avancement du présent travail.\\
+
+Je remercie également M. Christopher Larraz, conseiller au numérique et à l'innovation pour la République et Canton de Genève, pour m'avoir offert cette opportunité de travailler sur le projet SmartCanton. C'est grâce à lui que ce sujet a été proposé comme travail de Master en collaboration avec la HES-SO.\\
+
+Je souhaite tout particulièrement remercier M. Maxime Feroul, Directeur Technique de la société Kyos, qui a travaillé en collaboration avec la DGSI sur la création du SmartCanton. Il m'a non seulement aider à avoir la vue d'ensemble du projet SmartCanton, mais également lors de la compréhension des besoins du projet. Grâce à lui, j'ai pu affiner le cahier des charges de ce travail et ainsi accélérer le développement de celui-ci. Malgré son emploi du temps chargé, il a toujours su trouver du temps pour répondre à mes e-mails et me rencontrer, de sorte à m'aider lors de l'avancement du projet et effectuer des tests d'implémentation.\\
+
+Je remercie aussi ma famille pour leur soutien et compréhension durant ces derniers mois. Tout particulièrement Mme Marques et Mme De Lima Ferreira pour leur précieuse aide à la relecture et à la correction de ce mémoire.\\
+
+Un grand merci à tous les collègues et amis au laboratoire de systèmes numériques d'hepia. Ils ont toujours su rire à mes mauvaises blagues et n'ont jamais hésité à me donner un coup de main pour résoudre les divers obstacles rencontrés dans la réalisation de ce travail.
+\end{acknowledgements}
+\cleardoublepage
+
+%----------------------------------------------------------------------------------------
+%	LIST OF CONTENTS/FIGURES/TABLES PAGES
+%----------------------------------------------------------------------------------------
+
+\tableofcontents % Prints the main table of contents
+\listoffigures % Prints the list of figures
+\listoftables % Prints the list of tables
+
+
+\chapter*{Convention topographique}
+
+{\setlength{\parindent}{0cm}
+
+Afin d’aider le lecteur à parcourir ce document, les conventions typographiques ci-dessous ont été adoptées.
+Tous les mots empruntés à la langue anglaise ont été écrits en \textit{italique}. Pour les mots de la langue française, la rectification de l'orthographe de 1990 (mise en oeuvre en 2016) a été utilisée, ayant pour conséquence la disparition des accents circonflexes sur une majorité de mots.\\
+
+Toute référence à un nom de fichier (ou dossier), un chemin d’accès, une utilisation de paramètre, variable ou commande utilisable par l’utilisateur, est écrite avec le type d'écriture \texttt{Teletypefont Family}. \\
+
+Tout extrait de fichier, de code ou de configuration est écrit selon le format suivant :\\
+
+}
+
+
+\begin{tcolorbox}
+  [top=-1mm, bottom=-3mm, left=0mm, right=0mm, enhanced,breakable,
+  attach boxed title to top center={yshift=-3mm,yshifttext=-1mm},colback=LightGray,colframe=DarkGray,
+  colbacktitle=DarkGray, fonttitle=\bfseries,boxed title style={size=small,colframe=DarkGray},
+  title=HelloWorld.c ]
+\begin{minted}[bgcolor=LightGray,fontsize=\footnotesize,breaklines,linenos]{C}
+/* Hello World example */
+#include<stdio.h>
+int main()
+{
+    printf("Hello World");
+    return 0;
+}
+\end{minted}
+\end{tcolorbox}
+
+% \begin{tcolorbox}[top=-3mm, bottom=-3mm, left=0mm, right=0mm, enhanced, breakable, colback=LightGray, colframe=DarkGray, colbacktitle=DarkGray]
+% \begin{minted}[bgcolor=LightGray,fontsize=\footnotesize,breaklines]{bash}
+% {
+%     "message": "SmartCanton Devbox item deleted!"
+% }
+% \end{minted}
+% \end{tcolorbox}
+
+\cleardoublepage
+
+%----------------------------------------------------------------------------------------
+%	ABBREVIATIONS
+%----------------------------------------------------------------------------------------
+\begin{abbreviations}{ll} % Include a list of abbreviations (a table of two columns)
+% \addchaptertocentry{Abréviations} % Add the acknowledgements to the table of contents
+\textbf{hepia} & \textbf{H}aute \textbf{É}cole du \textbf{P}aysage, d’\textbf{I}ngénierie et  \\
+ & d’\textbf{A}rchitecture de Genève \\
+\textbf{HES-SO} & \textbf{H}aute \textbf{É}cole \textbf{S}pécialisée de \textbf{S}uisse \textbf{O}ccidentale \\
+\textbf{POC} & \textbf{P}roof \textbf{O}f \textbf{C}oncept \\
+\textbf{DGSI} & \textbf{D}irection \textbf{G}énérale des \textbf{S}ystèmes d'\textbf{I}nformation \\
+\textbf{CERN} & \textbf{C}onseil \textbf{E}uropéen pour la \textbf{R}echerche \textbf{N}ucléaire \\
+\textbf{SITG} & \textbf{S}ystème d'\textbf{I}nformation du \textbf{T}erritoire à \textbf{G}enève \\
+
+\textbf{SIG} & \textbf{S}ervices \textbf{I}ndustriels de \textbf{G}enève \\
+\textbf{ISRG} & \textbf{I}nternet \textbf{S}ecurity \textbf{R}esearch \textbf{G}roup \\
+\textbf{IEEE} & \textbf{I}nstitute of \textbf{E}lectrical and \textbf{E}lectronics \textbf{E}ngineers\\
+\textbf{NIST} & \textbf{N}ational \textbf{I}nstitute of \textbf{S}tandards and \textbf{T}echnology\\
+
+\textbf{IoT} & \textbf{I}nternet \textbf{o}f \textbf{T}hings \\
+
+\textbf{HSM} & \textbf{H}ardware \textbf{S}ecurity \textbf{M}odule \\
+
+\textbf{PIN} & \textbf{P}ersonal \textbf{I}dentification \textbf{N}umber\\
+
+ &  \\
+ &  \textbf{\textit{\underline{Électronique}}}\\
+ &  \\
+\textbf{UART} & \textbf{U}niversal \textbf{A}synchronous \\
+\textbf{SPI} & \textbf{S}erial \textbf{P}eripheral \textbf{I}nterface \\
+\textbf{I2C} & \textbf{I}nter-\textbf{I}ntegrated \textbf{C}ircuit \\
+\textbf{BGA} & \textbf{B}all \textbf{G}rid \textbf{A}rray \\
+\textbf{VOC} & \textbf{V}olatile \textbf{O}rganic \textbf{C}ompounds \\
+\textbf{LNA} & \textbf{L}ow-\textbf{N}oise \textbf{A}mplifier \\
+\textbf{SAW} & \textbf{S}urface \textbf{A}coustic \textbf{W}ave \\ 
+\textbf{IAQ} & \textbf{I}ndoor \textbf{A}ir \textbf{Q}uality \\
+\textbf{TRNG} & \textbf{T}rue \textbf{R}andom \textbf{N}umber \textbf{G}enerator\\
+\textbf{JTAG} & \textbf{J}oint \textbf{T}est \textbf{A}ction \textbf{G}roup \\
+
+
+ &  \\
+ &  \textbf{\textit{\underline{Programmation}}}\\
+ &  \\
+\textbf{API} & \textbf{A}pplication \textbf{P}rogramming \textbf{I}nterface \\
+\textbf{RTOS} & \textbf{R}eal-\textbf{T}ime \textbf{O}perating \textbf{S}ystem \\
+\textbf{HTTPS} & \textbf{H}yperText \textbf{T}ransfer \textbf{P}rotocol \textbf{S}ecure \\
+\textbf{JSON} & \textbf{J}avaScript \textbf{O}bject \textbf{N}otation \\
+\textbf{JWT} & \textbf{JSON}  \textbf{W}eb \textbf{T}okens \\
+\textbf{FSCI} & \textbf{F}reescale \textbf{S}erial \textbf{C}ommunication \textbf{I}nterface \\
+\textbf{BSEC} & \textbf{B}osch \textbf{S}ensortec \textbf{E}nvironmental \textbf{C}luster \\
+\textbf{BDS} & \textbf{B}luetooth \textbf{D}eveloper \textbf{S}tudio \\
+
+ &  \\
+ &  \textbf{\textit{\underline{Réseaux sans fil et protocoles}}}\\
+ &  \\
+\textbf{RF} & \textbf{R}adio \textbf{F}réquence\\
+\textbf{LPWAN} & \textbf{L}ow-\textbf{P}ower \textbf{W}ide-\textbf{A}rea Network \\
+\textbf{LR WPAN} & \textbf{L}ow \textbf{R}ate \textbf{W}ireless \textbf{P}ersonal \textbf{A}rea \textbf{N}etwork \\
+\textbf{UNB} & \textbf{U}ltra \textbf{N}arrow \textbf{B}and \\
+\textbf{ISM} Band & \textbf{I}ndustrial, \textbf{S}cientific and \textbf{M}edical Band\\
+\textbf{GFSK} & \textbf{G}aussian \textbf{F}requency \textbf{S}hift \textbf{K}eying \\
+\textbf{RSSI} & \textbf{R}eceive \textbf{S}ignal \textbf{S}trength \textbf{I}ndicator \\
+\textbf{SNR} & \textbf{S}ignal to \textbf{N}oise \textbf{R}atio \\
+\textbf{OSI} & \textbf{O}pen \textbf{S}ystems \textbf{I}nterconnection\\
+\textbf{MAC} & \textbf{M}edium \textbf{A}ccess \textbf{C}ontrol \\
+\textbf{6LowPAN} & IPv\textbf{6} over \textbf{L}ow-\textbf{P}ower \textbf{W}ireless \textbf{P}ersonal \textbf{A}rea \textbf{N}etworks \\
+\textbf{UDP} & \textbf{U}ser \textbf{D}atagram \textbf{P}rotocol\\
+\textbf{TCP} & \textbf{T}ransmission \textbf{C}ontrol \textbf{P}rotocol\\
+\textbf{NFC} & \textbf{N}ear-\textbf{F}ield \textbf{C}ommunication\\
+\textbf{SSH} & \textbf{S}ecure \textbf{Sh}ell \\
+
+ &  \\
+ &  \textbf{\textit{\underline{Bluetooth Low Energy}}}\\
+ &  \\
+\textbf{BLE} & \textbf{B}luetooth \textbf{L}ow \textbf{E}nergy \\
+\textbf{B SIG} & \textbf{B}luetooth \textbf{S}pecial \textbf{I}nterest \textbf{G}roup \\
+\textbf{CCCD} & \textbf{C}lient \textbf{C}haracteristic \textbf{C}onfiguration \textbf{D}escriptor \\
+\textbf{CUDD} & \textbf{C}haracteristic \textbf{U}ser \textbf{D}escription \textbf{D}escriptor \\
+\textbf{MITM} & \textbf{M}an-\textbf{I}n-\textbf{T}he-\textbf{M}iddle \\
+\textbf{OOB} & \textbf{O}ut-\textbf{O}f-\textbf{B}and\\
+\textbf{DTLS} & \textbf{D}atagram \textbf{T}ransport \textbf{L}ayer \textbf{S}ecurity \\
+
+
+ &  \\
+ &  \textbf{\textit{\underline{LoRa et LoRaWAN}}}\\
+ &  \\
+\textbf{LoRa} & \textbf{Lo}ng \textbf{Ra}nge \\
+\textbf{LoRaWAN} & \textbf{Lo}ng \textbf{Ra}nge \textbf{W}ide-\textbf{A}rea \textbf{N}etwork \\
+\textbf{CSS} & \textbf{C}hirp \textbf{S}pread \textbf{S}pectrum \\
+\textbf{BW} & \textbf{B}and\textbf{w}idth \\
+\textbf{SF} & \textbf{S}preading \textbf{F}actor \\
+\textbf{CSS} & \textbf{C}hirp \textbf{S}pread \textbf{S}pectrum \\
+
+\textbf{ToA} & \textbf{T}ime of \textbf{A}rrival \\
+\textbf{DR} & \textbf{D}ata \textbf{R}ate \\
+\textbf{ADR} & \textbf{A}daptative \textbf{D}ata \textbf{R}ate \\
+
+\textbf{TTN} & \textbf{T}he \textbf{T}hings \textbf{N}etwork \\
+\textbf{DASS} & \textbf{D}ata \textbf{A}ccess \textbf{S}ub-\textbf{S}ystem \\
+\textbf{RNSS} & \textbf{R}adio \textbf{N}etwork \textbf{S}ub-\textbf{S}ystem \\
+
+\textbf{ABP} & \textbf{A}ctivation \textbf{B}y \textbf{P}ersonalization \\
+\textbf{OTAA} & \textbf{O}ver-\textbf{T}he-\textbf{A}ir \textbf{A}ctivation \\
+
+\textbf{MIC} & \textbf{M}essage \textbf{I}ntegrity \textbf{C}ode \\
+
+\textbf{FCntDown} & \textbf{F}rame \textbf{C}ounter \textbf{D}own \\ 
+\textbf{FCntUp} & \textbf{F}rame \textbf{C}ounter \textbf{U}p \\ 
+
+\textbf{AppKey} & \textbf{App}lication \textbf{Key} \\ 
+\textbf{AppSKey} & \textbf{App}lication \textbf{S}ession \textbf{Key} \\ 
+\textbf{NwkSKey} & \textbf{N}etwork \textbf{S}ession \textbf{Key} \\ 
+\textbf{App EUI} & \textbf{App}lication \textbf{EUI} \\ 
+\textbf{Dev Addr} & \textbf{Dev}ice \textbf{Addr}ess \\ 
+
+
+\end{abbreviations}
+\cleardoublepage
+
+%----------------------------------------------------------------------------------------
+%	PHYSICAL CONSTANTS/OTHER DEFINITIONS
+%----------------------------------------------------------------------------------------
+
+% \begin{constants}{lr@{${}={}$}l} % The list of physical constants is a three column table
+
+% % The \SI{}{} command is provided by the siunitx package, see its documentation for instructions on how to use it
+
+% Speed of Light & $c_{0}$ & \SI{2.99792458e8}{\meter\per\second} (exact)\\
+% %Constant Name & $Symbol$ & $Constant Value$ with units\\
+
+% \end{constants}
+
+%----------------------------------------------------------------------------------------
+%	SYMBOLS
+%----------------------------------------------------------------------------------------
+
+% \begin{symbols}{lll} % Include a list of Symbols (a three column table)
+
+% $a$ & distance & \si{\meter} \\
+% $P$ & power & \si{\watt} (\si{\joule\per\second}) \\
+% %Symbol & Name & Unit \\
+
+% \addlinespace % Gap to separate the Roman symbols from the Greek
+
+% $\omega$ & angular frequency & \si{\radian} \\
+
+% \end{symbols}
+
+%----------------------------------------------------------------------------------------
+%	DEDICATION
+%----------------------------------------------------------------------------------------
+
+%\dedicatory{For/Dedicated to/To my\ldots} 
+
+%----------------------------------------------------------------------------------------
+%	THESIS CONTENT - CHAPTERS
+%----------------------------------------------------------------------------------------
+
+\mainmatter % Begin numeric (1,2,3...) page numbering
+
+\pagestyle{thesis} % Return the page headers back to the "thesis" style
+
+\addtocontents{lot}{\protect\setcounter{tocdepth}{5}}  % Enable Array table for appendix
+\addtocontents{lof}{\protect\setcounter{tocdepth}{5}}  % Enable images table for appendix
+
+% Include the chapters of the thesis as separate files from the Chapters folder
+% Uncomment the lines as you write the chapters
+
+\include{Chapters/1_introduction}
+\include{Chapters/2_state_of_the_art}
+\include{Chapters/3_protocols}
+\include{Chapters/4_security}
+\include{Chapters/5_hardware}
+\include{Chapters/6_software}
+\include{Chapters/7_use_cases}
+\include{Chapters/8_project_management}
+\include{Chapters/9_discussions}
+
+%----------------------------------------------------------------------------------------
+%	BIBLIOGRAPHY
+%----------------------------------------------------------------------------------------
+
+\printbibliography[heading=bibintoc]
+
+%----------------------------------------------------------------------------------------
+%	THESIS CONTENT - APPENDICES
+%----------------------------------------------------------------------------------------
+
+\appendix % Cue to tell LaTeX that the following "chapters" are Appendices
+
+% Include the appendices of the thesis as separate files from the Appendices folder
+% Uncomment the lines as you write the Appendices
+
+\addtocontents{lot}{\protect\setcounter{tocdepth}{2}}  % Enable Array table for appendix
+\addtocontents{lof}{\protect\setcounter{tocdepth}{2}}  % Enable images table for appendix
+\cleardoublepage
+\include{Appendices/AppendixBluetoothServices}
+\cleardoublepage
+\include{Appendices/AppendixRestApiDoc}
+\cleardoublepage
+\include{Appendices/AppendixAndroidAppUserGuide}
+\cleardoublepage
+\include{Appendices/AppendixGanttPlanning}
+\cleardoublepage
+\include{Appendices/AppendixDevBoxHardware}
+
+
+%----------------------------------------------------------------------------------------
+
+\end{document}  

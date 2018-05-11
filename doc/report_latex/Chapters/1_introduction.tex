@@ -1,0 +1,35 @@
+\chapter{Introduction}
+\label{1_introduction}
+
+
+De nos jours, de plus en plus de villes offrent à leurs habitants un accès à une multitude de données. Ces données sont acquises en utilisant divers capteurs disséminés à travers la ville. \\
+
+L'expression \textit{Smart City} est de plus en plus présente dans notre quotidien. Principalement dans l'optique d'améliorer la qualité des services urbains et de réduire leurs couts que les institutions publiques se sont intéressées au concept. \\
+
+
+Dans le canton de Genève plusieurs données sont librement accessibles à la population. Ces données sont mises à disposition par le Système d'Information du Territoire à Genève (SITG)\footnote{\url{http://ge.ch/sitg/}}. Parmi ces données, il est possible de récupérer le flux représentant la concentration du trafic routier sur les grands axes de la ville de Genève. Certaines données, plus sensibles, sont uniquement mises à disposition des clients professionnels, notamment, le réseau des conduites de gaz.
+
+
+\section{Contexte}
+
+Le canton de Genève a décidé de proposer un projet nommé SmartCanton, afin de laisser la possibilité à des entreprises ou des particuliers la possibilité d'alimenter une base de données commune ou privée.  \\
+
+Afin de couvrir la plus grande zone possible, une technologie de type LPWAN (\textit{Low-Power Wide-Area Network}) a été utilisée. La technologie retenue pour ces capteurs a été le LoRa \cite{LPWANWik40:online} car il s'agit d'une technologie prometteuse pour les \textit{Smart Cities}. LoRa est une modulation de fréquence (couche 1 du modèle OSI) propriétaire de l'entreprise Semtech. LoRa utilise différentes fréquences dans le monde des fréquences libres. En Europe il s'agit de la fréquence 868\,MHz, alors qu'en Amérique du Nord, la fréquence de 915\,MHz est utilisée. Au dessus de cette couche physique, il est possible de  trouver différentes spécifications. Celle utilisée dans ce projet est le LoRaWAN, soit la spécification proposée par la LoRa Alliance \cite{loraalli46:online}. \\
+
+Le projet SmartCanton doit également pourvoir à la sécurité, que ce soit au niveau du transfert des données ou de l'authentification sur le réseau. Une fois un dispositif implanté sur le réseau, les données échangées sont toujours chiffrées. Ceci est géré par la spécification LoRaWAN. \\
+
+Dans le cadre du projet SmartCanton, il est souhaité que la génération les clés d'authentification du réseau LoRa aient une durée de validité limitée dans le temps. Se pose dès lors la question du réapprovisionnement de celles-ci aux périphériques lorsqu'elles sont périmées. À l'heure actuelle, ces périphériques reçoivent les clés lorsqu'ils sont programmés (en mode ABP) ou quand ils s'authentifient auprès d'un réseau (OTAA). 
+
+
+\section{Objectifs}
+
+Le projet a été structuré en trois segments. Le premier étant la réalisation d'une carte électronique suivant plusieurs restrictions telles que les types de capteurs l'équipant, la consommation et la modularité. Deux technologies sont imposées dans le choix des composants intégrant cette carte : Bluetooth et LoRa. \\
+
+
+Le deuxième segment se consacre à la programmation de la carte électronique avec la mise en avant d'une modularité en utilisant des tâches séparées pour chaque périphérique. Le but de cette approche est de faciliter la compréhension de la structure pour l'utilisateur souhaitant modifier les données envoyées. Deux interfaces de communication sans fil doivent être implémentées pour le LoRa et le Bluetooth. \\
+
+
+Pour conclure ce travail, un démonstrateur doit afficher les différentes données récupérées, mais également contrôler quels flux de données sont récupérés par l'utilisateur. Pour ce faire, la communication LoRaWAN doit être bidirectionnelle. \\
+
+
+La sécurité doit être prise en compte tout au long de l'implémentation logicielle de ce travail, afin de respecter la philosophie adoptée dans le projet SmartCanton. Pour cela, un système d'échange d'informations sécurisé doit être mis en place. Ceci afin de pouvoir programmer les différents paramètres nécessaires à la connexion et la communication sur un réseau LoRaWAN. \\

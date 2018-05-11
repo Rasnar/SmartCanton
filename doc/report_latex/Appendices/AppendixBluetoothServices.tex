@@ -1,0 +1,287 @@
+% Appendix Template
+
+\appendixpagenumbering % Restart numbering for each appendix
+
+\chapter{SmartCanton DevBox: Bluetooth Services} % Main appendix title
+\label{AppendixBluetoothServices} 
+
+% ---------------------------------------------------------------------------------------------%
+\FloatBarrier
+\section{Generic Access}
+% ---------------------------------------------------------------------------------------------%
+
+\begin{table}[ht]
+\centering
+\caption{Description du Generic Access service}
+\label{tab-GenericAccessService}
+\begin{tabular}{|l|l|l|l|}
+\hline
+\rowcolor[HTML]{BBDAFF} 
+\multicolumn{4}{|c|}{\cellcolor[HTML]{BBDAFF}\textbf{Generic Access Service}} \\ \hline
+Service UUID & \multicolumn{3}{l|}{\textbf{00001800-0000-1000-8000-00805f9b34fb}} \\ \hline
+\rowcolor[HTML]{BBDAFF} 
+\textbf{Characteristic Name} & \textbf{\begin{tabular}[c]{@{}l@{}}Characteristic \\ UUID\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Rights \\     {[}R,W,N{]}\end{tabular}} & \textbf{Example Value} \\ \hline
+Device Name & \begin{tabular}[c]{@{}l@{}}00002a00-0000-1000-\\ 8000-00805f9b34fb\end{tabular} & R,W & \begin{tabular}[c]{@{}l@{}}"SmartCanton\\ DevBox"\end{tabular} \\ \hline
+Appearance & \begin{tabular}[c]{@{}l@{}}00002a01-0000-1000-\\ 8000-00805f9b34fb\end{tabular} & R & 0x0 \\ \hline
+\begin{tabular}[c]{@{}l@{}}Peripheral\\   Preferred \\     Connection\\ Parameters\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002a04-0000-1000-\\ 8000-00805f9b34fb\end{tabular} & R & 0x0 \\ \hline
+\end{tabular}
+\end{table}
+
+% ---------------------------------------------------------------------------------------------%
+\FloatBarrier
+\section{Generic Attribute}
+% ---------------------------------------------------------------------------------------------%
+
+\begin{table}[ht]
+\centering
+\caption{Description du Generic Attribute service}
+\label{tab-GenericAttributeService}
+\begin{tabular}{|l|l|l|l|}
+\hline
+\rowcolor[HTML]{BBDAFF} 
+\multicolumn{4}{|c|}{\cellcolor[HTML]{BBDAFF}\textbf{Generic Attribute Service}} \\ \hline
+Service UUID & \multicolumn{3}{c|}{\textbf{00001801-0000-1000-8000-00805f9b34fb}} \\ \hline
+\rowcolor[HTML]{BBDAFF} 
+\textbf{Characteristic Name} & \textbf{\begin{tabular}[c]{@{}l@{}}Characteristic\\ UUID\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Functions \\     {[}R,W,N{]}\end{tabular}} & \textbf{Example Value} \\ \hline
+\begin{tabular}[c]{@{}l@{}}Service\\   Changed\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002a05-0000-1000-\\ 8000-00805f9b34fb\end{tabular} & R,N & 0x0 \\ \hline
+\begin{tabular}[c]{@{}l@{}}Service\\   Changed CCCD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002902-0000-1000-\\ 8000-00805f9b34fb\end{tabular} & R,W & \begin{tabular}[c]{@{}l@{}}\textless notifications\\ status\textgreater\end{tabular} \\ \hline
+\end{tabular}
+\end{table}
+
+% ---------------------------------------------------------------------------------------------%
+\FloatBarrier
+\section{SmartCanton DevBox LoRaWAN}
+% ---------------------------------------------------------------------------------------------%
+
+\begin{table}[ht]
+\centering
+\caption{Description du SmartCanton DevBox LoRaWAN service}
+\label{tab-SmartCantonLoRaService}
+\begin{tabular}{|l|l|l|l|}
+\hline
+\rowcolor[HTML]{BBDAFF} 
+\multicolumn{4}{|c|}{\cellcolor[HTML]{BBDAFF}\textbf{SmartCanton DevBox LoRaWAN Service}} \\ \hline
+Service UUID & \multicolumn{3}{c|}{\textbf{dddddddd-dddd-cccc-bbbb-aaaa00000000}} \\ \hhline{|=|=|=|=|}
+\rowcolor[HTML]{BBDAFF} 
+\textbf{\begin{tabular}[c]{@{}l@{}}Characteristic\\ Name\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Characteristic\\ UUID\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Rights \\     {[}R,W,N{]}\end{tabular}} & \textbf{Example Value} \\ \hline
+AppEUI & \begin{tabular}[c]{@{}l@{}}dddddddd-dddd-cccc-\\ bbbb-aaaa01000000\end{tabular} & R,W & \begin{tabular}[c]{@{}l@{}}0x70B3D57ED\\ 0008E8C\end{tabular} \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+\begin{tabular}[c]{@{}l@{}}AppEUI\\ CUDD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002901-0000-1000-\\ 8000-00805f9b34fb\end{tabular} & R & \begin{tabular}[c]{@{}l@{}}"LoRaWAN \\ Application EUI"\end{tabular} \\ \hline
+AppKey & \begin{tabular}[c]{@{}l@{}}dddddddd-dddd-cccc-\\ bbbb-aaaa02000000\end{tabular} & W & \begin{tabular}[c]{@{}l@{}}0x509C1B97989D40C1\\ 62D84681C91E67CD\end{tabular} \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+\begin{tabular}[c]{@{}l@{}}AppKey\\ CUDD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002901-0000-1000-\\ 8000-00805f9b34fb\end{tabular} & R & \begin{tabular}[c]{@{}l@{}}"LoRaWAN \\ Application Key"\end{tabular} \\ \hline
+Device EUI & \begin{tabular}[c]{@{}l@{}}dddddddd-dddd-cccc-\\ bbbb-aaaa03000000\end{tabular} & R & 0x323831395C367815 \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+\begin{tabular}[c]{@{}l@{}}Device EUI\\ CUDD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002901-0000-1000-\\ 8000-00805f9b34fb\end{tabular} & R & \begin{tabular}[c]{@{}l@{}}"LoRaWAN \\ Application Key"\end{tabular} \\ \hline
+Confirmation Mode & \begin{tabular}[c]{@{}l@{}}dddddddd-dddd-cccc-\\ bbbb-aaaa04000000\end{tabular} & R,W & 0x01 \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+\begin{tabular}[c]{@{}l@{}}Confirmation Mode\\ CUDD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002901-0000-1000-\\ 8000-00805f9b34fb\end{tabular} & R & \begin{tabular}[c]{@{}l@{}}"LoRaWAN \\ Confirmation Mode"\end{tabular} \\ \hline
+Confirmation Mode & \begin{tabular}[c]{@{}l@{}}dddddddd-dddd-cccc-\\ bbbb-aaaa05000000\end{tabular} & R,W & 0x01 \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+\begin{tabular}[c]{@{}l@{}}Confirmation Mode\\ CUDD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002901-0000-1000-\\ 8000-00805f9b34fb\end{tabular} & R & \begin{tabular}[c]{@{}l@{}}"LoRaWAN \\ Network Join Status"\end{tabular} \\ \hline
+Device Addr & \begin{tabular}[c]{@{}l@{}}dddddddd-dddd-cccc-\\ bbbb-aaaa06000000\end{tabular} & R & 0x32383000 \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+\begin{tabular}[c]{@{}l@{}}Device Addr\\ CUDD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002901-0000-1000-\\ 8000-00805f9b34fb\end{tabular} & R & \begin{tabular}[c]{@{}l@{}}"LoRaWAN \\ Device Address"\end{tabular} \\ \hline
+Network Session Key & \begin{tabular}[c]{@{}l@{}}dddddddd-dddd-cccc-\\ bbbb-aaaa07000000\end{tabular} & \begin{tabular}[c]{@{}l@{}}R\\ {[}Debug{]}\end{tabular} & \begin{tabular}[c]{@{}l@{}}0x27B3A1BB9CA9AC\\ 0E67880B4632CAEB4A\end{tabular} \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+\begin{tabular}[c]{@{}l@{}}Network Session Key\\ CUDD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002901-0000-1000-\\ 8000-00805f9b34fb\end{tabular} & R & \begin{tabular}[c]{@{}l@{}}"LoRaWAN Network \\ Session Key"\end{tabular} \\ \hline
+App Session Key & \begin{tabular}[c]{@{}l@{}}dddddddd-dddd-cccc-\\ bbbb-aaaa08000000\end{tabular} & \begin{tabular}[c]{@{}l@{}}R\\ {[}Debug{]}\end{tabular} & \begin{tabular}[c]{@{}l@{}}0x59F8407F851FB75\\ 57640B8345E50E729\end{tabular} \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+\begin{tabular}[c]{@{}l@{}}App Session Key\\ CUDD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002901-0000-1000-\\ 8000-00805f9b34fb\end{tabular} & R & \begin{tabular}[c]{@{}l@{}}"LoRaWAN App \\ Session Key"\end{tabular} \\ \hline
+Validate New Config & \begin{tabular}[c]{@{}l@{}}dddddddd-dddd-cccc-\\ bbbb-aaaa09000000\end{tabular} & W & 0x1 \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+\begin{tabular}[c]{@{}l@{}}Validate New Config\\ CUDD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002901-0000-1000-\\ 8000-00805f9b34fb\end{tabular} & R & \begin{tabular}[c]{@{}l@{}}"LoRaWAN Validate \\ New Configuration"\end{tabular} \\ \hline
+\end{tabular}
+\end{table}
+
+
+
+% ---------------------------------------------------------------------------------------------%
+\FloatBarrier
+\section{SmartCanton DevBox GPS}
+% ---------------------------------------------------------------------------------------------%
+
+\begin{table}[ht]
+\centering
+\caption{Description du SmartCanton DevBox GPS service}
+\label{tab-SmartCantonGPSService}
+\begin{tabular}{|l|l|l|l|}
+\hline
+\rowcolor[HTML]{BBDAFF} 
+\multicolumn{4}{|c|}{\cellcolor[HTML]{BBDAFF}\textbf{SmartCanton DevBox GPS Service}} \\ \hline
+Service UUID & \multicolumn{3}{c|}{\textbf{dddddddd-dddd-cccc-bbbb-aaaa00000010}} \\ \hline
+\rowcolor[HTML]{BBDAFF} 
+\textbf{\begin{tabular}[c]{@{}l@{}}Characteristic\\     Name\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Characteristic \\     UUID\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Rights \\     {[}R,W,N{]}\end{tabular}} & \textbf{Example Value} \\ \hline
+GPS Position & \begin{tabular}[c]{@{}l@{}}dddddddd-dddd-cccc-\\     bbbb-aaaa01000010\end{tabular} & R,W,N & \begin{tabular}[c]{@{}l@{}}"46.209126,\\     6.134028"\end{tabular} \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+\begin{tabular}[c]{@{}l@{}}GPS Position\\     CUDD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002901-0000-1000-\\     8000-00805f9b34fb\end{tabular} & R & "GPS Position" \\ \hline
+\rowcolor[HTML]{ECF4FF} 
+\begin{tabular}[c]{@{}l@{}}GPS Position\\     CCCD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002902-0000-1000-\\     8000-00805f9b34fb\end{tabular} & R,W & \begin{tabular}[c]{@{}l@{}}\textless notifications\\     status\textgreater\end{tabular} \\ \hline
+GPS Speed & \begin{tabular}[c]{@{}l@{}}dddddddd-dddd-cccc-\\     bbbb-aaaa02000010\end{tabular} & R,W,N & "0.095" \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+\begin{tabular}[c]{@{}l@{}}GPS Speed\\     CUDD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002901-0000-1000-\\     8000-00805f9b34fb\end{tabular} & R & "GPS Speed" \\ \hline
+\rowcolor[HTML]{ECF4FF} 
+\begin{tabular}[c]{@{}l@{}}GPS Speed\\     CCCD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002902-0000-1000-\\     8000-00805f9b34fb\end{tabular} & R,W & \begin{tabular}[c]{@{}l@{}}\textless notifications\\     status\textgreater\end{tabular} \\ \hline
+GPS Course & \begin{tabular}[c]{@{}l@{}}dddddddd-dddd-cccc-\\     bbbb-aaaa03000010\end{tabular} & R,W,N & "0.1" \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+\begin{tabular}[c]{@{}l@{}}GPS Course\\     CUDD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002901-0000-1000-\\     8000-00805f9b34fb\end{tabular} & R & "GPS Course" \\ \hline
+\rowcolor[HTML]{ECF4FF} 
+\begin{tabular}[c]{@{}l@{}}GPS Course\\     CCCD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002902-0000-1000-\\     8000-00805f9b34fb\end{tabular} & R,W & \begin{tabular}[c]{@{}l@{}}\textless notifications\\     status\textgreater\end{tabular} \\ \hline
+GPS Date & \begin{tabular}[c]{@{}l@{}}dddddddd-dddd-cccc-\\     bbbb-aaaa04000010\end{tabular} & R,W,N & "16/01/18" \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+\begin{tabular}[c]{@{}l@{}}GPS Date\\     CUDD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002901-0000-1000-\\     8000-00805f9b34fb\end{tabular} & R & "GPS Date" \\ \hline
+\rowcolor[HTML]{ECF4FF} 
+\begin{tabular}[c]{@{}l@{}}GPS Date\\ CCCD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002902-0000-1000-\\     8000-00805f9b34fb\end{tabular} & R,W & \begin{tabular}[c]{@{}l@{}}\textless notifications\\     status\textgreater\end{tabular} \\ \hline
+GPS Time & \begin{tabular}[c]{@{}l@{}}dddddddd-dddd-cccc-\\     bbbb-aaaa05000010\end{tabular} & R,W,N & "13\string:35\string:02" \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+\begin{tabular}[c]{@{}l@{}}GPS Time\\     CUDD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002901-0000-1000-\\     8000-00805f9b34fb\end{tabular} & R & "GPS Time" \\ \hline
+\rowcolor[HTML]{ECF4FF} 
+\begin{tabular}[c]{@{}l@{}}GPS Time\\     CCCD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002902-0000-1000-\\     8000-00805f9b34fb\end{tabular} & R,W & \begin{tabular}[c]{@{}l@{}}\textless notifications\\     status\textgreater\end{tabular} \\ \hline
+\end{tabular}
+\end{table}
+
+
+Le service Bluetooth implémenté pour le GPS permet de recevoir les différentes informations provenant de celui-ci. Pour l'heure actuelle, uniquement les trames de type RMC sont supportée \cite{NMEAdata3:online}. 
+% ---------------------------------------------------------------------------------------------%
+\FloatBarrier
+\section{SmartCanton DevBox BME680}
+% ---------------------------------------------------------------------------------------------%
+
+\begin{table}[ht]
+\centering
+\caption{Description du SmartCanton DevBox BME680 service}
+\label{tab-SmartCantonBME680Service}
+\begin{tabular}{|l|l|l|l|}
+\hline
+\rowcolor[HTML]{BBDAFF} 
+\multicolumn{4}{|c|}{\cellcolor[HTML]{BBDAFF}\textbf{SmartCanton DevBox BME680 Service}} \\ \hline
+Service UUID & \multicolumn{3}{l|}{\textbf{dddddddd-dddd-cccc-bbbb-aaaa00000020}} \\ \hline
+\rowcolor[HTML]{BBDAFF} 
+\textbf{\begin{tabular}[c]{@{}l@{}}Characteristic\\     Name\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Characteristic \\     UUID\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Rights \\     {[}R,W,N{]}\end{tabular}} & \textbf{Example Value} \\ \hline
+IAQ & \begin{tabular}[c]{@{}l@{}}dddddddd-dddd-cccc-\\     bbbb-aaaa01000020\end{tabular} & N & 0xACDAFE41 \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+\begin{tabular}[c]{@{}l@{}}IAQ\\     CUDD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002901-0000-1000-\\     8000-00805f9b34fb\end{tabular} & R & \begin{tabular}[c]{@{}l@{}}"BME680 \\ IAQ"\end{tabular} \\ \hline
+\rowcolor[HTML]{ECF4FF} 
+\begin{tabular}[c]{@{}l@{}}IAQ\\     CCCD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002902-0000-1000-\\     8000-00805f9b34fb\end{tabular} & R,W & \begin{tabular}[c]{@{}l@{}}\textless notifications\\     status\textgreater\end{tabular} \\ \hline
+IAQ Accuracy & \begin{tabular}[c]{@{}l@{}}dddddddd-dddd-cccc-\\     bbbb-aaaa02000020\end{tabular} & N & 0x01 \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+\begin{tabular}[c]{@{}l@{}}IAQ Accuracy\\     CUDD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002901-0000-1000-\\     8000-00805f9b34fb\end{tabular} & R & \begin{tabular}[c]{@{}l@{}}"BME680 IAQ\\     Accuracy"\end{tabular} \\ \hline
+\rowcolor[HTML]{ECF4FF} 
+\begin{tabular}[c]{@{}l@{}}IAQ Accuracy\\     CCCD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002902-0000-1000-\\     8000-00805f9b34fb\end{tabular} & R,W & \begin{tabular}[c]{@{}l@{}}\textless notifications\\     status\textgreater\end{tabular} \\ \hline
+Temperature & \begin{tabular}[c]{@{}l@{}}dddddddd-dddd-cccc-\\     bbbb-aaaa03000020\end{tabular} & N & 0x1F85B741 \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+\begin{tabular}[c]{@{}l@{}}Temperature\\     CUDD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002901-0000-1000-\\     8000-00805f9b34fb\end{tabular} & R & \begin{tabular}[c]{@{}l@{}}"BME680\\     Temperature"\end{tabular} \\ \hline
+\rowcolor[HTML]{ECF4FF} 
+\begin{tabular}[c]{@{}l@{}}Temperature\\     CCCD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002902-0000-1000-\\     8000-00805f9b34fb\end{tabular} & R,W & \begin{tabular}[c]{@{}l@{}}\textless notifications\\     status\textgreater\end{tabular} \\ \hline
+Humidity & \begin{tabular}[c]{@{}l@{}}dddddddd-dddd-cccc-\\     bbbb-aaaa04000020\end{tabular} & N & 0x6b021121 \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+\begin{tabular}[c]{@{}l@{}}Humidity\\     CUDD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002901-0000-1000-\\     8000-00805f9b34fb\end{tabular} & R & \begin{tabular}[c]{@{}l@{}}"BME680 \\     Humidity"\end{tabular} \\ \hline
+\rowcolor[HTML]{ECF4FF} 
+\begin{tabular}[c]{@{}l@{}}Humidity\\     CCCD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002902-0000-1000-\\     8000-00805f9b34fb\end{tabular} & R,W & \begin{tabular}[c]{@{}l@{}}\textless notifications\\     status\textgreater\end{tabular} \\ \hline
+Pressure & \begin{tabular}[c]{@{}l@{}}dddddddd-dddd-cccc-\\     bbbb-aaaa05000020\end{tabular} & R,N & 0x710D7044 \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+\begin{tabular}[c]{@{}l@{}}Pressure\\     CUDD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002901-0000-1000-\\     8000-00805f9b34fb\end{tabular} & R & \begin{tabular}[c]{@{}l@{}}"BME680\\     Pressure"\end{tabular} \\ \hline
+\rowcolor[HTML]{ECF4FF} 
+\begin{tabular}[c]{@{}l@{}}Pressure\\     CCCD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002902-0000-1000-\\     8000-00805f9b34fb\end{tabular} & R,W & \begin{tabular}[c]{@{}l@{}}\textless notifications\\     status\textgreater\end{tabular} \\ \hline
+Raw Gas & \begin{tabular}[c]{@{}l@{}}dddddddd-dddd-cccc-\\     bbbb-aaaa08000020\end{tabular} & N & 0x206AEA48 \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+\begin{tabular}[c]{@{}l@{}}Raw Gas\\     CUDD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002901-0000-1000-\\     8000-00805f9b34fb\end{tabular} & R & \begin{tabular}[c]{@{}l@{}}"BME680\\ Raw Gas"\end{tabular} \\ \hline
+\rowcolor[HTML]{ECF4FF} 
+\begin{tabular}[c]{@{}l@{}}Raw Gas\\     CCCD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002902-0000-1000-\\     8000-00805f9b34fb\end{tabular} & R,W & \begin{tabular}[c]{@{}l@{}}\textless notifications\\     status\textgreater\end{tabular} \\ \hline
+\begin{tabular}[c]{@{}l@{}}Raw\\     Temperature\end{tabular} & \begin{tabular}[c]{@{}l@{}}dddddddd-dddd-cccc-\\     bbbb-aaaa06000020\end{tabular} & R & 0x52B8DC41 \\ \hline
+\rowcolor[HTML]{ECF4FF} 
+\begin{tabular}[c]{@{}l@{}}Raw Temper-\\     ature CUDD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002901-0000-1000-\\     8000-00805f9b34fb\end{tabular} & R & \begin{tabular}[c]{@{}l@{}}"BME680 Raw\\     Temperature"\end{tabular} \\ \hline
+\begin{tabular}[c]{@{}l@{}}Raw\\     Humidity\end{tabular} & \begin{tabular}[c]{@{}l@{}}dddddddd-dddd-cccc-\\     bbbb-aaaa07000020\end{tabular} & R & 0xBA49E441 \\ \hline
+\rowcolor[HTML]{ECF4FF} 
+\begin{tabular}[c]{@{}l@{}}Raw Humidity\\     CUDD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002901-0000-1000-\\     8000-00805f9b34fb\end{tabular} & R & \begin{tabular}[c]{@{}l@{}}"BME680 Raw\\     Humidity\end{tabular} \\ \hline
+\end{tabular}
+\end{table}
+
+% ---------------------------------------------------------------------------------------------%
+\FloatBarrier
+\section{SmartCanton DevBox BNO055}
+% ---------------------------------------------------------------------------------------------%
+
+
+\begin{table}[ht]
+\centering
+\caption{Description du SmartCanton DevBox BNO055 service}
+\label{tab-SmartCantonBNO055Service}
+\begin{tabular}{|l|l|l|l|}
+\hline
+\rowcolor[HTML]{BBDAFF} 
+\multicolumn{4}{|c|}{\cellcolor[HTML]{BBDAFF}\textbf{SmartCanton DevBox BNO055 Service}} \\ \hline
+Service UUID & \multicolumn{3}{l|}{\textbf{dddddddd-dddd-cccc-bbbb-aaaa00000030}} \\ \hline
+\rowcolor[HTML]{BBDAFF} 
+\textbf{\begin{tabular}[c]{@{}l@{}}Characteristic\\     Name\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Characteristic \\     UUID\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Rights \\     {[}R,W,N{]}\end{tabular}} & \textbf{Example Value} \\ \hline
+Accel xyz & \begin{tabular}[c]{@{}l@{}}dddddddd-dddd-cccc-\\     bbbb-aaaa01000030\end{tabular} & N & \begin{tabular}[c]{@{}l@{}}0x0000E0BB0000\\     44BD00807D3F\end{tabular} \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+\begin{tabular}[c]{@{}l@{}}Accel\\   xyz\\     CUDD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002901-0000-1000-\\     8000-00805f9b34fb\end{tabular} & R & \begin{tabular}[c]{@{}l@{}}"BNO055\\     Accelerometer\\     xyz"\end{tabular} \\ \hline
+\rowcolor[HTML]{ECF4FF} 
+\begin{tabular}[c]{@{}l@{}}Accel\\   xyz\\     CCCD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002902-0000-1000-\\     8000-00805f9b34fb\end{tabular} & R,W & \begin{tabular}[c]{@{}l@{}}\textless notifications\\     status\textgreater\end{tabular} \\ \hline
+Gyroscope xyz & \begin{tabular}[c]{@{}l@{}}dddddddd-dddd-cccc-\\     bbbb-aaaa02000030\end{tabular} & N & \begin{tabular}[c]{@{}l@{}}0x0000E0BB0000\\     44BD00807D3F\end{tabular} \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+\begin{tabular}[c]{@{}l@{}}Gyroscope\\   xyz\\     CUDD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002901-0000-1000-\\     8000-00805f9b34fb\end{tabular} & R & \begin{tabular}[c]{@{}l@{}}"BNO055\\     Gyroscope\\     xyz"\end{tabular} \\ \hline
+\rowcolor[HTML]{ECF4FF} 
+\begin{tabular}[c]{@{}l@{}}Gyroscope\\   xyz\\     CCCD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002902-0000-1000-\\     8000-00805f9b34fb\end{tabular} & R,W & \begin{tabular}[c]{@{}l@{}}\textless notifications\\     status\textgreater\end{tabular} \\ \hline
+\begin{tabular}[c]{@{}l@{}}Magnetometer\\   xyz\end{tabular} & \begin{tabular}[c]{@{}l@{}}dddddddd-dddd-cccc-\\     bbbb-aaaa03000030\end{tabular} & N & \begin{tabular}[c]{@{}l@{}}0x0000E0BB0000\\     44BD00807D3F\end{tabular} \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+\begin{tabular}[c]{@{}l@{}}Magnetometer\\   xyz\\     CUDD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002901-0000-1000-\\     8000-00805f9b34fb\end{tabular} & R & \begin{tabular}[c]{@{}l@{}}"BNO055\\     Magnetometer\\     xyz"\end{tabular} \\ \hline
+\rowcolor[HTML]{ECF4FF} 
+\begin{tabular}[c]{@{}l@{}}Magnetometer\\   xyz\\     CCCD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002902-0000-1000-\\     8000-00805f9b34fb\end{tabular} & R,W & \begin{tabular}[c]{@{}l@{}}\textless notifications\\     status\textgreater\end{tabular} \\ \hline
+Measure interval & \begin{tabular}[c]{@{}l@{}}dddddddd-dddd-cccc-\\     bbbb-aaaa04000030\end{tabular} & R,W & 0xB80B0000 \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+\begin{tabular}[c]{@{}l@{}}Measure\\   interval\\     CUDD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002901-0000-1000-\\     8000-00805f9b34fb\end{tabular} & R & \begin{tabular}[c]{@{}l@{}}"BNO055\\     Measure Interval"\end{tabular} \\ \hline
+\end{tabular}
+\end{table}
+
+
+% ---------------------------------------------------------------------------------------------%
+\FloatBarrier
+\newpage
+\section{SmartCanton DevBox BLE Scanner}
+% ---------------------------------------------------------------------------------------------%
+
+\begin{table}[ht]
+\centering
+\caption{Description du SmartCanton DevBox BLE Scanner service}
+\label{tab-SmartCantonBLEScannerService}
+\begin{tabular}{|l|l|l|l|}
+\hline
+\rowcolor[HTML]{BBDAFF} 
+\multicolumn{4}{|c|}{\cellcolor[HTML]{BBDAFF}\textbf{SmartCanton DevBox BLE Scanner Service}} \\ \hline
+Service UUID & \multicolumn{3}{l|}{\textbf{dddddddd-dddd-cccc-bbbb-aaaa00000040}} \\ \hline
+\rowcolor[HTML]{BBDAFF} 
+\textbf{\begin{tabular}[c]{@{}l@{}}Characteristic\\     Name\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Characteristic \\     UUID\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Rights \\     {[}R,W,N{]}\end{tabular}} & \textbf{Example Value} \\ \hline
+Devices Scanned & \begin{tabular}[c]{@{}l@{}}dddddddd-dddd-cccc-\\     bbbb-aaaa01000040\end{tabular} & R,N & 0x0002 \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+\begin{tabular}[c]{@{}l@{}}Devices Scanned\\ CUDD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002901-0000-1000-\\     8000-00805f9b34fb\end{tabular} & R & \begin{tabular}[c]{@{}l@{}}"BLE Devices\\     Scanned"\end{tabular} \\ \hline
+\rowcolor[HTML]{ECF4FF} 
+\begin{tabular}[c]{@{}l@{}}Devices Scanned\\ CCCD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002902-0000-1000-\\     8000-00805f9b34fb\end{tabular} & R,W & \begin{tabular}[c]{@{}l@{}}\textless notifications\\     status\textgreater\end{tabular} \\ \hline
+\begin{tabular}[c]{@{}l@{}}Measure\\   interval\end{tabular} & \begin{tabular}[c]{@{}l@{}}dddddddd-dddd-cccc-\\     bbbb-aaaa02000040\end{tabular} & R,W & 0x1E00 \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+\begin{tabular}[c]{@{}l@{}}Measure\\   interval\\     CUDD\end{tabular} & \begin{tabular}[c]{@{}l@{}}00002901-0000-1000-\\     8000-00805f9b34fb\end{tabular} & R & "BLE Window Scan" \\ \hline
+\end{tabular}
+\end{table}
+
+% ---------------------------------------------------------------------------------------------%
+\FloatBarrier
+\section{Batterie}
+% ---------------------------------------------------------------------------------------------%
+
+\begin{table}[ht]
+\centering
+\caption{Description du Battery Service}
+\label{tab-BatteryService}
+\begin{tabular}{|l|l|l|l|}
+\hline
+\rowcolor[HTML]{BBDAFF} 
+\multicolumn{4}{|c|}{\cellcolor[HTML]{BBDAFF}\textbf{Battery Service}} \\ \hline
+Service UUID & \multicolumn{3}{c|}{\textbf{0000180f-0000-1000-8000-00805f9b34fb}} \\ \hline
+\rowcolor[HTML]{BBDAFF} 
+\textbf{\begin{tabular}[c]{@{}l@{}}Characteristic\\ Name\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Characteristic\\ UUID\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Functions \\     {[}R,W,N{]}\end{tabular}} & \textbf{Example Value} \\ \hline
+Battery Level & \begin{tabular}[c]{@{}l@{}}0000180f-0000-1000-\\ 8000-00805f9b34fb\end{tabular} & R,N & 0x64 \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+Battery Level CCCD & \begin{tabular}[c]{@{}l@{}}00002902-0000-1000-\\ 8000-00805f9b34fb\end{tabular} & R,W & \begin{tabular}[c]{@{}l@{}}\textless notifications\\ status\textgreater\end{tabular} \\ \hline
+\end{tabular}
+\end{table}

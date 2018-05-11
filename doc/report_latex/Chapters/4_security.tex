@@ -1,0 +1,135 @@
+\chapter{Sécurité}
+
+Ce chapitre a pour but d'examiner plus en détail les concepts de sécurité des protocoles qui peuvent être utilisés dans ce projet. 
+
+
+
+\section{Bluetooth Low Energy}
+\label{sec-security_ble}
+\input{Chapters/4_1_BLE.tex}
+
+
+\newpage
+\section{LoRaWAN}
+\label{sec-security_lorawan}
+
+\input{Chapters/4_2_LoRaWAN.tex}
+
+\subsection{SmartCanton}
+\label{sec-smartcanton_security}
+
+\input{Chapters/4_3_smartcanton.tex}
+
+\section{Serveur Web}
+
+Dans le cadre du présent projet, un serveur web a été créé. S'est posée la question de savoir comment sécuriser l'accès à celui-ci. Ci-dessous, une brève explication des deux mécanismes retenus.
+
+\subsection{HTTPS}
+
+Le protocole \textit{HyperText Transfer Protocol Secure} (HTTPS) consiste, de manière résumée, en l'utilisation de la couche HTTP couplée avec un chiffrement à l'aide de SSL ou TLS \cite{HyperTex87:online}. HTTPS a pour but d'identifier (l'identité) le site web auquel le client accède. Pour cela, un certificat d'authentification doit être émis par une autorité de certification tierce, reconnue comme fiable par le navigateur ou système d'exploitation effectuant la requête. Toutes les données communiquées entre le client et le serveur sont chiffrées à l'aide d'une paire de clé publique et clé privée (chiffrement asymétrique) \cite{HyperTex87:online}.
+
+\subsection{JWT}
+\label{sec-security_jwt}
+
+Les \textit{JSON Web Tokens} (JWT) sont définis dans un standard \textit{open source} (RFC 7519\footnote{\url{https://tools.ietf.org/html/rfc7519}} \cite{JSONWebT15:online}. Ils offrent la possibilité d'échanger de l'information de manière sécurisée à l'aide d'un jeton signé. Le processus d'identification est illustré à l'aide de la \cref{fig-jwt_connexion}. Il y a deux étapes : 
+\begin{enumerate}
+    \item L'utilisateur se connecte à un serveur d'authentification afin de récupérer un JWT. Le processus d'identification n'est pas standardisé, le développeur peut ainsi utiliser une \textit{basic authentification} ou un champ clé/valeur dans une requête POST.
+    \item L'utilisateur envoie ce JWT dans chacune de ses requêtes vers le serveur applicatif. \\
+\end{enumerate}
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Figures/Security/jwt_connexion.png}
+    \caption{Génération et utilisation d'un \textit{token} JWT}
+    \label{fig-jwt_connexion}
+\end{figure}
+
+Un JWT est composé de trois champs codés en base64 et séparés par un point. Le site officiel de JWT\footnote{\url{http://jwt.io}} offre la possibilité de déchiffre un \textit{token} directement en ligne. Ce déchiffrement est visible sur la \cref{fig-jwt_token_decrypt} et se décompose comme suit : 
+\begin{enumerate}
+    \item \textit{Header} : entête contenant uniquement le nom de l'algorithme utilisé pour générer la signature du paquet ainsi que le format du \textit{token}. 
+    \item \textit{Payload} : champ modifiable par l'utilisateur comme il le souhaite. Il y a toutefois des clés qui sont standardisées par la norme RFC 7519. Par exemple, la clé \texttt{exp} signifie \textit{Expiration Time} exprimée en heure POSIX\footnote{\url{https://en.wikipedia.org/wiki/Unix_time}}.
+    \item \textit{Signature} : champ dérivé de la concaténation des deux champs précédents en base64, sur lequel un chiffrement est appliqué à l'aide de la clé privée basée sur l'algorithme spécifié dans le champ \texttt{Header}. Quand le serveur reçoit un JWT, ce champ est utilisé pour confirmer que le \textit{token} n'a pas été forgé. La clé privée ne quitte jamais le serveur et doit être gardée en lieu sûr.
+\end{enumerate}
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=1.0\textwidth]{Figures/Security/jwt_token_decrypt.png}
+    \caption{Déchiffrement d'un JWT}
+    \label{fig-jwt_token_decrypt}
+\end{figure}
+
+Il faut être conscient que les \textit{tokens} JWT n'ajoutent aucune couche de sécurité sur les données. Cela permet d'authentifier l'utilisateur à l'aide d'un \textit{token} temporaire. Cela évite d'envoyer en permanence son \textit{login} et mot de passe dans chacune de ses requêtes. Le développeur peut ainsi gérer automatiquement le concept de sessions et, s’il le souhaite, invalider des \textit{tokens} sans demander à l'utilisateur de changer son mot de passe. Si une personne malveillante s'approprie ce \textit{token}, il pourra toujours l'utiliser pour forcer ses propres requêtes. Pour éviter cela, il convient d'utiliser un protocole qui encapsule les trames avec une couche de sécurité, telle que HTTPS.
+
+
+
+\section{Protections matérielles}
+\label{sec-security_hardware_protections}
+
+La sécurité est d'autant plus importante lorsqu'un produit est commercialisé. La question n'est pas de savoir si le système est infaillible, car chaque système est accessible d'une façon ou d'une autre, ce n'est souvent qu'une question de temps et de détermination. La réelle question est de savoir quels sont les dangers une fois qu'une personne malveillante a accès à un périphérique et quelles sont les meilleures protections disponibles contre les risques engendrés par ces attaques. Il y a toutefois des mécanismes très simples et peu couteux qui peuvent rendre le travail de personnes malveillantes beaucoup plus difficile. 
+
+
+\subsection{Détection d'ouverture de boitier}
+
+Il est possible de détecter si un périphérique a été ouvert par une personne, par exemple avec le placement d'un capteur de luminosité à l'intérieur d'un boitier ou de tout autre mécanisme de détection de mouvement. On peut imaginer envoyer un message à la centrale pour notifier un problème et demander à une personne physique de se déplacer pour analyser l'état de la situation. Outrepasser ce mécanisme est néanmoins très simple; il est par exemple possible de se placer dans un milieu qui empêche l'accès au réseau de communications (ex. cage de faraday ou autre). Ce type de mécanismes sont toutefois inutiles si la batterie du dispositif est vide, car les capteurs ne peuvent rien détecter. Il faut ainsi éviter de stocker des informations critiques dans des mémoires non volatiles mal protégées.
+
+\subsection{Protection de la mémoire flash}
+
+Beaucoup de microcontrôleurs proposent des options pour verrouiller les accès à la mémoire flash bloquant ainsi la possibilité de relire le code et de le décompiler pour tenter de trouver des failles dans les implémentations. Le KW41Z de NXP propose ce mode de sécurité. Celui-ci est décrit dans la note d'application AN4507 intitulée \textit{Using the Kinetis Security and Flash Protection Features}\footnote{\url{https://www.nxp.com/docs/en/application-note/AN4507.pdf}}. Voici quelques exemples d'options qui peuvent être activées pour protéger la mémoire flash : 
+\begin{enumerate}
+    \item \textit{Flash Security} (SEC) : ce mode par défaut est désactivé. La mémoire peut donc être lue et écrite à volonté.
+    \item \textit{Mass Erase Enable} (MEEN) : cela permet d'empêcher que le dispositif ne soit reprogrammable à l'aide d'une nouvelle application.
+    \item \textit{Freescale Failure Analysis Code} (FSLACC) : ce mode est désactivé par défaut. S’il est activé et que le microcontrôleur est retourné à l'usine de Freescale à cause d'un problème lié à la construction du microcontrôleur, Freescale aura la possibilité d'accéder au contenu de la Flash, et ce, même si la sécurité est activée. La note d'application de Freescale ne fournit pas d'informations supplémentaires sur ce mode.
+    \item \textit{Backdoor Key Security} : si l'application a besoin d'écrire dans la mémoire flash, il est possible de forcer la création d'une \textit{backdoor key} offrant la possibilité de désactiver temporairement la sécurité de la mémoire. Ce type d'accès est nécessaire, par exemple, lorsque le microcontrôleur doit mettre à jour son \textit{firmware}. Lorsque le microcontrôleur active cette option, une clé est générée et celle-ci doit être sauvegardée à l'extérieur du microcontrôleur. Lorsque la sécurité devra être désactivée, cette clé sera demandée à l'utilisateur qui devra la fournir à l'aide d'une interface de communication (UART, SPI, I2C, etc.).
+\end{enumerate}
+
+Selon le type de sécurité choisie, le JTAG reste accessible, mais uniquement les registres qui lui sont propres en revanche. Si la lecture de la mémoire flash est désactivée, le JTAG ne pourra pas y avoir accès.
+
+
+\subsection{Coffres-forts matériels}
+\label{sec-mcu_stsafe}
+
+Le CMWX1ZZABZ de Murata dispose d'un coffre fort matériel (cf. \cref{sec-hardware_lora_module}) pouvant stocker des informations et être utilisé comme coprocesseur cryptographie. Ce circuit intégré est nommé \textit{STSAFE-A100.} 
+
+Voici une liste des quelques fonctionnalités mises en avant par le fabricant\footnote{\url{http://www.st.com/en/secure-mcus/stsafe-a100.html}} : 
+\begin{itemize}
+    \item Service de vérification de signature avec possibilité de contrôler un \textit{secure boot} et mise à jour du firmware signée.
+    \item Cryptographie asymétrique avancée :
+        \begin{itemize}
+            \item \textit{Elliptic curve cryptography} (ECC) avec NIST ou Brainpool 256-bit et 384-bit. \textit{curves};
+            
+            \item \textit{Elliptic curve digital signature algorithm} (ECDSA) avec SHA-256 et SHA-384 pour la génération et vérification de signatures numériques;
+            
+            \item \textit{Elliptic curve Diffie-Hellman} (ECDH) pour l'établissement des clés.
+        \end{itemize}
+    \item Cryptographie symétrique avancée :
+    \begin{itemize}
+        \item \textit{Key wrapping} et \textit{unwrapping} en utilisant AES-128/AES-256;
+        
+        \item Création de canaux sécurisés basés sur AES-128.
+    \end{itemize}
+    
+    \item Système d'exploitation sécurisé avec protection contre les attaques logicielles et physiques.
+\end{itemize}
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=0.7\textwidth]{Figures/Security/stsafe_authentification.png}
+    \caption{Authentifications possibles avec un STSAFE}
+    \label{fig-stsafe_authentification}
+\end{figure}
+
+La communication avec ce module s'effectue à l'aide d'une interface I2C.
+Malheureusement, la documentation de ce coffre n'est pas disponible en ligne, à l'exception d'un \textit{databrief}\footnote{\url{http://www.st.com/resource/en/data_brief/stsafe-a100.pdf}} de 15 pages expliquant les caractéristiques principales du circuit et les descriptions matérielles du boitier électronique. Il faut directement s'adresser à STMicroelectronics pour recevoir informations précises sur le module et la programmation (registres I2C). Les fonctionnalités listées par le fabricant demeurent toutefois vagues et, à défaut de documentation, il est difficile d'en apprendre davantage. Cette même \textit{databrief}, présente le schéma illustré en \cref{fig-stsafe_authentification} afin d'expliquer les deux types d'authentification pouvant être utilisé avec ce module. On constate ainsi que ce module peut également authentifier une connexion externe sans fil. Celui-ci peut, par exemple, être couplé à du Bluetooth pour garantir l'identité du maitre initiant la communication sans utiliser de \textit{passkey}. Dans le cadre du présent projet, la première option de ce schéma qui est celle qui présente un réel intérêt.
+
+
+
+
+
+% \section{IEEE 802.15.4 et les protocoles dérivés}
+
+% Étant donné que le microcontrôleur choisi supporte le standard IEEE 802.15.4, il est intéressant de faire une petit analyse sur la sécurité implémentée dans ce standard. 
+
+% Le standard IEEE 802.15.4 décrit des procédures de sécurité. Le standard décrit quel algorithme de cryptage doit être utilisé pour chiffrer les données à transmettre \cite{Security81:online}. Cependant, le standard ne spécifie pas comment les clés doivent être échangées ni l'authentification de celles-ci. Le standard laisse cela aux couches supérieures. Le protocole ZigBee, qui est le protocole le plus répandu basé sur le standard IEEE 802.15.2.
+
+
+% IEEE 802.15.4 sets the encryption algorithm to use when cyphering the data to transmit, however,  the standard does not specify how the keys have to be managed or what kind of authentication policies have to be applied. These issues are treated ihttps://www.sharelatex.com/project/595651688581f1b870a4ac64n the upper layers which are managed by technologies such as ZigBee

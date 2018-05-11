@@ -1,0 +1,65 @@
+\chapter{Développement logiciel}
+
+Ce chapitre a pour but d'expliquer l'implémentation logicielle sur les 3 plateformes utilisées (DevBox, Android et le serveur en Python). L'architecture générale y est présentée, mais également les implémentations spécifiques à chaque sous-catégorie.
+
+
+\section{Architecture générale}
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=0.7\textwidth]{Figures/Software/diagram_project_software.pdf}
+    \caption{Schéma général du projet avec les différentes technologies utilisées}
+    \label{fig-diagram_project_software}
+\end{figure}
+
+L'architecture logicielle avec les différents protocoles de communications est visible sur la \cref{fig-diagram_project_software}. Au centre se situe la DevBox qui a deux interfaces de communication avec le LoRa et le Bluetooth Low Energy. Le Bluetooth sera accessible par une application développée pour Android dans un premier temps. La DevBox implémente une table GATT pour les services liés à la DevBox (batterie, LoRaWAN, GPS, BME680, etc. ). Ceux-ci sont explorés en détail en \cref{sec-BLEAllServices}.
+
+
+
+\section{Scanneur de périphériques Bluetooth Low Energy}
+\label{sec-software_scanner_ble}
+
+L'implémentation du scanner de périphériques Bluetooth Low Energy est à cheval sur deux plateformes (Android et DevBox). Les spécifications liées à l'implémentation sur les plateformes sont présentées dans leurs sections respectives (\cref{sec-soft_devbox} et \cref{sec-soft_android}). \\
+
+
+Les spécificités des \textit{advertisements} BLE ont été présentées dans l'état de l'art de ce document (\cref{sec-stateoftheart_ble}). Lorsqu'un périphérique Bluetooth Low Energy souhaite être visible, il doit diffuser un paquet de données. Ce paquet est entièrement personnalisable par l'utilisateur. Trois types de \textit{beacons} ont été présentés, parmi ceux-là, l'AltBeacon a été l'implémentation choisie. Principalement parce qu'elle est plus libre que le iBeacon. En effet, les \textit{Manufacturer ID} ne sont pas délivrés par une entité, contrairement aux iBeacons (si on souhaite être certifiée
+par Apple). L'Eddystone est aussi très personnalisable, mais son grand avantage provient de ses URLs, qui dans notre projet ne sont pas nécessaires.  \\
+
+Le \cref{tab-AltBeaconSmartCantonFormat} explique le contenu du format choisi pour diffuser la position. L'UUID de 16bit a un \textit{pattern} similaire à celui choisi pour les services Bluetooth. Ce qui est intéressant de voir c'est les bytes pour le Major et le Minor. Ceux-ci sont générés une seule fois aléatoirement pour chaque client au lancement du diffuseur d'\textit{advertisements}. Cela permet ainsi de traquer un utilisateur durant un laps de temps contrôlable, c'est-à-dire, tant que l'application n'est pas arrêtée sur le périphérique. L'adresse MAC du Bluetooth peut donc changer, mais on pourra suivre un utilisateur simplement en sauvegardant ce paquet.
+
+
+\begin{table}[ht!]
+\centering
+\caption{Format du AltBeacon utilisé par le scanner Bluetooth}
+\label{tab-AltBeaconSmartCantonFormat}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\multicolumn{5}{|c|}{\cellcolor[HTML]{BBDAFF}\textbf{AltBeacon Template}} \\ \hline
+\textbf{Byte} & \textbf{0} & \textbf{1} & \textbf{2} & \textbf{3} \\ \hline
+\textbf{0} & AD Length & AD Type & \multicolumn{2}{c|}{MFG ID} \\ \hline
+\textbf{32} & \multicolumn{2}{c|}{BEACON Code} & \multicolumn{2}{c|}{BEACON ID} \\ \hline
+\textbf{64} & \multicolumn{2}{c|}{BEACON ID} & \multicolumn{2}{c|}{BEACON ID} \\ \hline
+\textbf{96} & \multicolumn{2}{c|}{BEACON ID} & \multicolumn{2}{c|}{BEACON ID} \\ \hline
+\textbf{128} & \multicolumn{2}{c|}{BEACON ID} & \multicolumn{2}{c|}{BEACON ID} \\ \hline
+\textbf{160} & \multicolumn{2}{c|}{BEACON ID} & \multicolumn{2}{c|}{BEACON ID} \\ \hline
+\textbf{192} & \multicolumn{2}{c|}{BEACON ID} & RSSI TX & MFG RSV \\ \hhline{=====}
+\multicolumn{5}{|c|}{\cellcolor[HTML]{BBDAFF}\textbf{AltBeacon SmartCanton}} \\ \hline
+\textbf{Byte} & \textbf{0} & \textbf{1} & \textbf{2} & \textbf{3} \\ \hline
+\textbf{0} & 0x1B & 0xFF & 0xFF & 0xFF \\ \hline
+\textbf{32} & 0xBE & 0xAC & 0x00 & 0x00 \\ \hline
+\textbf{64} & 0x00 & 0x00 & 0xAA & 0xAA \\ \hline
+\textbf{96} & 0xBB & 0xBB & 0xCC & 0xCC \\ \hline
+\textbf{128} & 0xDD & 0xDD & 0xDD & 0xDD \\ \hline
+\textbf{160} & 0xDD & 0xDD & \multicolumn{2}{c|}{RANDOM} \\ \hline
+\textbf{192} & \multicolumn{2}{c|}{RANDOM} & 0xBB & 0x00 \\ \hline
+\end{tabular}
+\end{table}
+
+
+% ----------------------------------------------------------------- %
+\FloatBarrier
+\input{Chapters/6_2_rtos_devbox}
+\input{Chapters/6_3_android}
+\input{Chapters/6_4_server}
+
+
